@@ -63,25 +63,31 @@ export function Header({ path }: HeaderProps) {
   }, [path]);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-blue-900/10 bg-background/85 backdrop-blur-xl">
-      <div className="mx-auto flex h-[4.5rem] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/85 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Logo />
 
-        {/* Desktop nav */}
-        <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
+        {/* Desktop nav — editorial text links with active underline */}
+        <nav aria-label="Main navigation" className="hidden items-center gap-7 lg:flex">
           <DropdownMenu modal={false} open={megaOpen} onOpenChange={setMegaOpen}>
             <DropdownMenuTrigger asChild>
               <button
                 className={cn(
-                  'group inline-flex h-10 items-center gap-1 rounded-full px-4 text-sm font-medium transition-colors hover:bg-blue-50 hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                  servicesActive ? 'bg-blue-50 text-blue-800' : 'text-foreground/80'
+                  'group relative inline-flex h-16 items-center gap-1.5 text-sm font-medium transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  servicesActive || megaOpen ? 'text-foreground' : 'text-foreground/65'
                 )}
               >
                 Services
                 <ChevronDown
-                  className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180"
+                  className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180"
                   aria-hidden="true"
                 />
+                {(servicesActive || megaOpen) && (
+                  <span
+                    className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500"
+                    aria-hidden="true"
+                  />
+                )}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -170,19 +176,28 @@ export function Header({ path }: HeaderProps) {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {MAIN_NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'inline-flex h-10 items-center rounded-full px-4 text-sm font-medium transition-colors hover:bg-blue-50 hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                isActive(path, item.href) ? 'bg-blue-50 text-blue-800' : 'text-foreground/80'
-              )}
-              aria-current={isActive(path, item.href) ? 'page' : undefined}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {MAIN_NAV.map((item) => {
+            const active = isActive(path, item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'relative inline-flex h-16 items-center text-sm font-medium transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  active ? 'text-foreground' : 'text-foreground/65'
+                )}
+                aria-current={active ? 'page' : undefined}
+              >
+                {item.label}
+                {active && (
+                  <span
+                    className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500"
+                    aria-hidden="true"
+                  />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="hidden lg:block">
@@ -204,13 +219,13 @@ export function Header({ path }: HeaderProps) {
                 <Logo />
               </SheetTitle>
             </SheetHeader>
-            <nav aria-label="Mobile navigation" className="flex flex-col gap-1">
+            <nav aria-label="Mobile navigation" className="flex flex-col gap-0.5">
               <Link
                 href="/"
                 onClick={() => setMobileOpen(false)}
                 className={cn(
-                  'rounded-xl px-3 py-3 text-base font-medium transition-colors hover:bg-blue-50',
-                  path === '/' ? 'bg-blue-50 text-blue-800' : 'text-foreground'
+                  'rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-accent/60',
+                  path === '/' ? 'bg-accent/70 font-semibold text-foreground' : 'text-foreground'
                 )}
               >
                 Home
@@ -227,8 +242,8 @@ export function Header({ path }: HeaderProps) {
                     href={href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      'flex min-h-[44px] items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-accent/70',
-                      active ? 'bg-accent text-accent-foreground' : 'text-foreground/85'
+                      'flex min-h-[44px] items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-accent/60',
+                      active ? 'bg-accent/70 font-semibold text-foreground' : 'text-foreground/85'
                     )}
                     aria-current={active ? 'page' : undefined}
                   >
@@ -256,8 +271,8 @@ export function Header({ path }: HeaderProps) {
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    'rounded-xl px-3 py-2.5 text-[15px] font-medium transition-colors hover:bg-blue-50',
-                    isActive(path, item.href) ? 'bg-blue-50 text-blue-800' : 'text-foreground/85'
+                    'rounded-lg px-3 py-2.5 text-[15px] font-medium transition-colors hover:bg-accent/60',
+                    isActive(path, item.href) ? 'bg-accent/70 font-semibold text-foreground' : 'text-foreground/85'
                   )}
                 >
                   {item.label}

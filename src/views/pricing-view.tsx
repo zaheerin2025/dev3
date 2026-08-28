@@ -40,12 +40,6 @@ const QUOTE_PROMISES = [
 
 const QUOTE_PROMISE_ICONS = [Clock, FileCheck2, Lock];
 
-const TRUST_CHIPS = [
-  { icon: ShieldCheck, label: 'No hidden fees' },
-  { icon: FileCheck2, label: 'Fixed quotes' },
-  { icon: Wallet, label: '40/40/20 payments' },
-];
-
 const HOW_IT_WORKS_STEPS = ['Pick a package', 'Free discovery call', 'Fixed quote & kickoff'];
 
 const PRICE_MOVERS = [
@@ -191,31 +185,16 @@ export function PricingView() {
         />
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'Pricing' }]} />
-          <span className="mt-6 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700 ring-1 ring-inset ring-blue-600/20">
-            <span
-              className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-blue-500"
-              aria-hidden="true"
-            />
+          <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.22em] text-blue-600">
             Simple, fixed pricing
-          </span>
-          <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
+          </p>
+          <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
             Website &amp; <span className="text-gradient">Digital Pricing</span>
           </h1>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
             Real prices, published up front. Pick a package, book a free call, and get a fixed,
             itemized quote within one business day.
           </p>
-          <ul className="mt-7 flex flex-wrap gap-2.5">
-            {TRUST_CHIPS.map(({ icon: Icon, label }) => (
-              <li
-                key={label}
-                className="glass-chip inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-foreground"
-              >
-                <Icon className="h-4 w-4 text-blue-600" aria-hidden="true" />
-                {label}
-              </li>
-            ))}
-          </ul>
         </div>
       </Section>
 

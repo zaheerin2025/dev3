@@ -38,10 +38,9 @@ export function AboutView() {
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'About Us' }]} />
           <Reveal className="mt-6">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700 ring-1 ring-inset ring-blue-600/20">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-500" aria-hidden="true" />
+            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-blue-600">
               About us
-            </span>
+            </p>
             <h1 className="text-4xl font-bold text-balance sm:text-5xl lg:text-[3.25rem] lg:leading-[1.12]">
               About <span className="text-gradient">Developers3</span>
             </h1>
@@ -151,9 +150,9 @@ export function AboutView() {
                   className="absolute left-0 top-1.5 h-3.5 w-3.5 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 ring-4 ring-blue-100"
                   aria-hidden="true"
                 />
-                <span className="inline-flex rounded-full bg-blue-50 px-3 py-1 font-display text-sm font-bold text-blue-700 ring-1 ring-inset ring-blue-600/15">
+                <p className="font-display text-sm font-bold tracking-wide text-blue-700">
                   {entry.year}
-                </span>
+                </p>
                 <h3 className="mt-3 text-lg font-semibold">{entry.title}</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
                   {entry.description}

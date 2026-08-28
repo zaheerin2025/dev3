@@ -97,13 +97,9 @@ export function BlogView() {
         />
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'Blog' }]} />
-          <span className="mt-6 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700 ring-1 ring-inset ring-blue-600/20">
-            <span
-              className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-blue-500"
-              aria-hidden="true"
-            />
+          <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.22em] text-blue-600">
             Insights &amp; guides
-          </span>
+          </p>
           <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
             The Developers3 <span className="text-gradient">Blog</span>
           </h1>
@@ -176,7 +172,7 @@ export function BlogView() {
                     <Quote className="h-16 w-16 text-white/40" aria-hidden="true" />
                   </span>
                 </div>
-                <span className="glass-chip absolute left-4 top-4 z-10 rounded-full px-3.5 py-1.5 text-xs font-semibold text-blue-800">
+                <span className="absolute left-4 top-4 z-10 rounded-md bg-white px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700 shadow-sm">
                   {featured.category}
                 </span>
               </Link>
@@ -244,7 +240,7 @@ export function BlogView() {
                         <Newspaper className="h-10 w-10 text-white/40" aria-hidden="true" />
                       </span>
                     </div>
-                    <span className="glass-chip absolute left-3 top-3 z-10 rounded-full px-3 py-1 text-xs font-semibold text-blue-800">
+                    <span className="absolute left-3 top-3 z-10 rounded-md bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-700 shadow-sm">
                       {post.category}
                     </span>
                   </div>

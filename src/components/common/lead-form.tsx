@@ -685,13 +685,13 @@ function LeadRail() {
     <aside className="section-dark-deep bg-dots-dark relative hidden overflow-hidden lg:flex lg:flex-col">
       <span className="glow-orb -right-20 top-10 h-72 w-72 bg-blue-500/25" aria-hidden="true" />
       <div className="relative z-10 flex h-full flex-col gap-7 p-8">
-        <span className="glass-chip-dark inline-flex w-fit items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-white">
+        <p className="flex w-fit items-center gap-2 text-xs font-medium text-cyan-200">
           <span
             className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-cyan-300"
             aria-hidden="true"
           />
           Average response: under 4h
-        </span>
+        </p>
 
         <div>
           <h3 className="text-2xl font-bold text-white">Tell us about your project</h3>
@@ -745,16 +745,7 @@ function LeadRail() {
           </div>
 
           <figure className="rounded-2xl bg-white/5 p-4 ring-1 ring-inset ring-white/10">
-            <div className="flex items-center gap-0.5" role="img" aria-label="Rated 5 out of 5">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <Star
-                  key={index}
-                  className="h-3.5 w-3.5 fill-amber-400 text-amber-400"
-                  aria-hidden="true"
-                />
-              ))}
-            </div>
-            <blockquote className="mt-2 text-[13px] leading-relaxed text-slate-300">
+            <blockquote className="text-[13px] leading-relaxed text-slate-300">
               &ldquo;{RAIL_QUOTE.text}&rdquo;
             </blockquote>
             <figcaption className="mt-1.5 text-xs font-medium text-slate-400">

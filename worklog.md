@@ -524,3 +524,36 @@ Stage Summary:
 - Budget ranges aligned to the new market pricing ($500–$5,000 ladder + Not sure yet).
 - Files touched: prisma/schema.prisma, src/components/common/lead-form.tsx, src/views/contact-view.tsx, src/app/api/leads/route.ts, worklog.md — nothing else.
 - For orchestrator: (1) restart the dev server so /api/leads loads the regenerated Prisma client (timeline persistence) — verified working in a fresh process; (2) service-detail-view.tsx + pricing-view.tsx still double-wrap LeadForm in their own cards — drop wrappers / adopt compact; (3) LeadForm full variant is now a self-contained card, so callers must not add another card-surface around it.
+
+---
+Task ID: 19-a
+Agent: orchestrator (Z.ai main)
+Task: Brand foundation — new DB logo + favicon, site-wide recolor to logo palette (blue/cyan on navy), featured-services helper
+
+Work Log:
+- Recreated public/logo.svg as a geometric "DB" monogram (blue gradient D + cyan gradient B on a dark-navy rounded tile, per client's reference image); copied to src/app/icon.svg (favicon).
+- Recolored the entire brand system from emerald/teal to blue (#2563eb) / cyan (#06b6d4) / deep navy (#050914): oklch tokens in globals.css (primary, ring, secondary, accent, muted, border, charts, sidebar), all utilities (section-dark-deep, section-tint, bg-grid-light, bg-dots-dark, text-gradient, gradient-frame, icon-tile, glass-chip-dark, divider-gradient, card-hover, custom-scrollbar).
+- Mechanical sweep across 30 tsx/ts files: emerald-* → blue-*, teal-* → cyan-*, #04100b → #050914; layout.tsx themeColor → #050914.
+- Body now has a fixed faint blue radial wash (professional tech-agency ambience).
+- Added featuredServiceSlugs/featuredServices (exactly 5) to src/data/index.ts for the mega menu.
+
+Stage Summary:
+- Brand now matches the client's DB logo; dark sections are deep navy, accents blue/cyan. tsc + lint clean.
+
+---
+Task ID: 20
+Agent: orchestrator (Z.ai main)
+Task: Integration verification + client feedback round (remove AI-looking chips & fake ratings, redesign header nav + heroes)
+
+Work Log:
+- Restarted dev server cleanly (platform holds .next/dev lock — only one instance allowed; killed stray :3999 test instance).
+- Verified lead-form E2E in browser: validation blocks empty submit; full submit persisted Lead row incl. new timeline column ("1–3 months"); success panel + toast shown; test row deleted afterwards.
+- REMOVED all decorative "AI chips" site-wide: home hero trust/rating chips + floating stat chips, pricing & contact trust-chip rows (+TRUST_CHIPS consts), service-hero keyword badge + rating pill, portfolio hero stat chips (+industryCount/averageRating memos), services-hub glass step strip (now bordered cards), blog card category pills (now solid mini-badges), lead-form rail response pill (plain text) + stars, legal last-updated pill, and ALL SectionHeading eyebrow pills (now plain uppercase cyan/blue labels) — plus hero eyebrow pills on services hub/portfolio/about/blog/pricing.
+- Removed fake "Rated 5/5" from home + service-detail heroes and lead-form rail. Testimonial stars (real review content) kept.
+- REDESIGNED header nav: h-16 editorial bar, plain text links with gradient underline active indicator (no pills), rotating chevron on Services, mobile sheet rows softened to accent-tinted rounded-lg; menus auto-close on route change (controlled DropdownMenu + effect on path).
+- Refined home hero: plain uppercase eyebrow, no chips/ratings, clean gradient-frame media.
+- Fixed a broken python-regex edit that truncated portfolio-view (restored from git HEAD, re-applied edits surgically).
+- Browser-verified: home hero + mega menu (desktop), portfolio + services-hub heroes, mobile 390x844 home + sheet nav, admin login gate → panel (Posts/Pricing/Site Content tabs), sticky footer on admin. dev.log clean; tsc + eslint clean.
+
+Stage Summary:
+- Site now has a coherent professional brand: DB logo palette everywhere, editorial header, chip-free heroes, working lead capture with timeline field, and a functioning admin panel (passcode developers3-admin, override via ADMIN_PASSCODE env). Pricing lowered to market rates with docs/PRICING-GUIDE.md.

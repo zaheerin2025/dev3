@@ -32,10 +32,10 @@ export function LegalView({ kind }: LegalViewProps) {
         <Reveal className="mt-6">
           <article className="card-surface rounded-[1.5rem] p-6 sm:p-10">
             <h1 className="text-3xl font-bold text-balance sm:text-4xl">{config.label}</h1>
-            <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-800 ring-1 ring-inset ring-blue-600/15">
+            <p className="mt-4 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
               <CalendarDays className="h-3.5 w-3.5 text-blue-600" aria-hidden="true" />
               Last updated: {legalLastUpdated}
-            </span>
+            </p>
 
             <div>
               {config.sections.map((section, index) => (

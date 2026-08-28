@@ -5,13 +5,11 @@ import {
   Check,
   Clock3,
   ShieldCheck,
-  Star,
   TrendingUp,
   Users,
   Zap,
   type LucideIcon,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Breadcrumbs } from '@/components/common/breadcrumbs';
 import { CaseStudyCard } from '@/components/common/case-study-card';
@@ -113,9 +111,9 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                 className="text-xs [&_ol]:text-xs"
                 items={[{ label: 'Services', href: '/services' }, { label: service.name }]}
               />
-              <Badge className="rounded-full border-none bg-blue-50 px-4 py-1.5 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/20">
-                {service.primaryKeyword}
-              </Badge>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-600">
+                {service.category === 'development' ? 'Development Service' : 'Growth Service'}
+              </p>
               <h1 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
                 {heroBefore}
                 <span className="text-gradient">{heroAccent}</span>
@@ -134,18 +132,6 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                   <Link href="/pricing">View Pricing</Link>
                 </Button>
               </div>
-              <span className="inline-flex items-center gap-2.5 rounded-full bg-white px-4 py-2 shadow-[0_1px_2px_rgb(5_19_14/0.05)] ring-1 ring-inset ring-blue-600/15">
-                <span
-                  className="flex items-center gap-0.5"
-                  role="img"
-                  aria-label="Rated 5 out of 5 stars"
-                >
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />
-                  ))}
-                </span>
-                <span className="text-sm text-muted-foreground">Rated 5/5 from 30+ clients</span>
-              </span>
             </div>
           </Reveal>
 
@@ -171,9 +157,9 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                   {service.offerings.slice(0, 3).map((offering) => (
                     <li
                       key={offering.title}
-                      className="glass-chip flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-sm font-medium text-foreground"
+                      className="flex items-center gap-2.5 rounded-xl bg-white/5 px-4 py-2.5 text-sm font-medium text-slate-100 ring-1 ring-inset ring-white/10"
                     >
-                      <Check className="h-4 w-4 shrink-0 text-blue-600" aria-hidden="true" />
+                      <Check className="h-4 w-4 shrink-0 text-cyan-300" aria-hidden="true" />
                       {offering.title}
                     </li>
                   ))}
@@ -311,12 +297,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
               />
               <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_auto]">
                 <div>
-                  <Badge
-                    variant="secondary"
-                    className="rounded-full border-none bg-blue-50 px-3.5 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700 ring-1 ring-inset ring-blue-600/15"
-                  >
-                    Pricing
-                  </Badge>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-blue-600">Pricing</p>
                   <h2 className="mt-4 text-2xl font-bold text-balance sm:text-3xl">{service.name} Pricing</h2>
                   <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <span className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">

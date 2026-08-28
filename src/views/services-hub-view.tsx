@@ -17,7 +17,7 @@ import { trackEvent } from '@/lib/analytics';
 const HUB_INTRO =
   'Developers3 is a full-service web development company covering every stage of your digital presence — from custom website development and WordPress builds to e-commerce development, custom software, and mobile apps. Alongside engineering, our designers deliver UI/UX design services, while our growth team drives results with SEO, Google Ads management, and social media marketing. Every service comes with the same promise: senior specialists doing the work, fixed and transparent pricing, and measurable outcomes reported against your business goals. Whether you need a five-page local business site, a national e-commerce platform, or ongoing website maintenance and support, you get one accountable team — and a free, itemized quote before anything starts. Explore each service below for deliverables, process, pricing, and case studies.';
 
-/** "How engagements work" mini strip (three glass-chip steps). */
+/** "How engagements work" mini strip. */
 const ENGAGEMENT_STEPS: { icon: LucideIcon; label: string; hint: string }[] = [
   { icon: CalendarCheck, label: 'Book a call', hint: 'Free 30-minute strategy session' },
   { icon: ReceiptText, label: 'Get a fixed quote', hint: 'Itemized — no surprises' },
@@ -56,13 +56,9 @@ function ServicesHubView() {
           />
           <Reveal className="mt-8 max-w-3xl">
             <div className="flex flex-col items-start gap-6">
-              <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/20">
-                <span
-                  className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-blue-500"
-                  aria-hidden="true"
-                />
+              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-blue-600">
                 Full-service digital agency
-              </span>
+              </p>
               <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
                 Our Web &amp; <span className="text-gradient">Digital Services</span>
               </h1>
@@ -150,7 +146,7 @@ function ServicesHubView() {
             {ENGAGEMENT_STEPS.map((step, index) => (
               <div
                 key={step.label}
-                className="glass-chip flex items-center gap-4 rounded-2xl px-5 py-5"
+                className="flex items-center gap-4 rounded-2xl border border-border/70 bg-white px-5 py-5 shadow-[0_1px_2px_rgb(2_8_23/0.04)]"
               >
                 <span className="icon-tile h-10 w-10 shrink-0">
                   <step.icon className="h-5 w-5" aria-hidden="true" />

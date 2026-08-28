@@ -3,13 +3,10 @@
 import Image from 'next/image';
 import {
   BadgeDollarSign,
-  Gauge,
   KeyRound,
   LifeBuoy,
   Search,
-  Star,
   Timer,
-  TrendingUp,
   Users,
   type LucideIcon,
 } from 'lucide-react';
@@ -72,13 +69,9 @@ function HomeView() {
         <div className="relative grid items-center gap-12 lg:grid-cols-2">
           <Reveal>
             <div className="flex flex-col items-start gap-6">
-              <span className="glass-chip-dark inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-white">
-                <span
-                  className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-cyan-300 text-cyan-300"
-                  aria-hidden="true"
-                />
-                Trusted by 30+ businesses
-              </span>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-cyan-300">
+                Web · App · Software Development
+              </p>
               <h1 className="text-balance text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-[4rem]">
                 {heroHeadline ? (
                   heroHeadline
@@ -110,22 +103,6 @@ function HomeView() {
                   <Link href="/pricing">View Pricing</Link>
                 </Button>
               </div>
-              <span className="glass-chip-dark inline-flex items-center gap-2.5 rounded-full px-4 py-2">
-                <span
-                  className="flex items-center gap-0.5"
-                  role="img"
-                  aria-label="Rated 5 out of 5 stars"
-                >
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className="h-4 w-4 fill-amber-400 text-amber-400"
-                      aria-hidden="true"
-                    />
-                  ))}
-                </span>
-                <span className="text-sm text-slate-300">Rated 5/5 from 30+ clients</span>
-              </span>
             </div>
           </Reveal>
           <Reveal delay={150} className="relative">
@@ -144,21 +121,6 @@ function HomeView() {
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="h-auto w-full rounded-[1.45rem] ring-1 ring-white/10"
               />
-              {/* Floating stat chips (decorative positioning, hidden on small screens) */}
-              <span className="glass-chip-dark absolute -left-3 top-10 hidden animate-float items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-white sm:flex">
-                <Gauge className="h-4 w-4 text-cyan-300" aria-hidden="true" />
-                <span>
-                  <span className="text-cyan-300">98/100</span>{" "}
-                  <span className="text-slate-300">Core Web Vitals</span>
-                </span>
-              </span>
-              <span className="glass-chip-dark absolute -right-3 bottom-10 hidden animate-float-slow items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-white sm:flex">
-                <TrendingUp className="h-4 w-4 text-cyan-300" aria-hidden="true" />
-                <span>
-                  <span className="text-cyan-300">+64%</span>{" "}
-                  <span className="text-slate-300">client revenue</span>
-                </span>
-              </span>
             </div>
           </Reveal>
         </div>

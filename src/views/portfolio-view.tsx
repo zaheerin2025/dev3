@@ -1,12 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { Building2, FolderKanban, Inbox, Star } from 'lucide-react';
+import { Inbox } from 'lucide-react';
 import { CaseStudyCard, CATEGORY_LABELS } from '@/components/common/case-study-card';
 import { CTABand } from '@/components/common/cta-band';
 import { Reveal } from '@/components/common/reveal';
 import { Section } from '@/components/common/section';
-import { caseStudies, testimonials } from '@/data';
+import { caseStudies } from '@/data';
 import { cn } from '@/lib/utils';
 import { trackEvent } from '@/lib/analytics';
 import type { CaseStudyCategory } from '@/lib/types';
@@ -39,18 +39,6 @@ export function PortfolioView() {
     return map;
   }, []);
 
-  // Honest, data-derived hero stats (no hard-coded marketing numbers).
-  const industryCount = React.useMemo(
-    () => new Set(caseStudies.map((study) => study.industry)).size,
-    []
-  );
-
-  const averageRating = React.useMemo(() => {
-    if (testimonials.length === 0) return null;
-    const total = testimonials.reduce((sum, testimonial) => sum + testimonial.rating, 0);
-    return total / testimonials.length;
-  }, []);
-
   const filtered =
     active === 'all' ? caseStudies : caseStudies.filter((study) => study.category === active);
 
@@ -73,13 +61,9 @@ export function PortfolioView() {
         />
         <Reveal className="relative mx-auto max-w-3xl text-center">
           <div className="flex flex-col items-center gap-5">
-            <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/20">
-              <span
-                className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-blue-500"
-                aria-hidden="true"
-              />
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-blue-600">
               Featured Work
-            </span>
+            </p>
             <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl">
               Our <span className="text-gradient">Portfolio</span>
             </h1>
@@ -88,22 +72,6 @@ export function PortfolioView() {
               full story behind them. Click any project to read the complete write-up, from challenge to
               solution to outcome.
             </p>
-            <div className="mt-1 flex flex-wrap items-center justify-center gap-3">
-              <span className="glass-chip inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-foreground">
-                <FolderKanban className="h-4 w-4 text-blue-600" aria-hidden="true" />
-                {caseStudies.length} featured projects
-              </span>
-              <span className="glass-chip inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-foreground">
-                <Building2 className="h-4 w-4 text-blue-600" aria-hidden="true" />
-                {industryCount} industries
-              </span>
-              {averageRating !== null ? (
-                <span className="glass-chip inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-foreground">
-                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />
-                  {averageRating.toFixed(1)} client rating
-                </span>
-              ) : null}
-            </div>
           </div>
         </Reveal>
 
