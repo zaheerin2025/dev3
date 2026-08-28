@@ -15,10 +15,12 @@ import { AboutView } from '@/views/about-view';
 import { ContactView } from '@/views/contact-view';
 import { BlogView } from '@/views/blog-view';
 import { BlogPostView } from '@/views/blog-post-view';
+import { AdminView } from '@/views/admin-view';
 import { LegalView } from '@/views/legal-view';
 import { blogPosts, caseStudies, services } from '@/data';
 import { pathFromLocation, useRouterStore } from '@/lib/router';
 import { getRouteSeo, resolveRoute } from '@/lib/routes';
+import { useSiteSettings } from '@/lib/use-site-settings';
 import { site } from '@/lib/site';
 
 const routeData = { services, caseStudies, blogPosts };
@@ -26,6 +28,13 @@ const routeData = { services, caseStudies, blogPosts };
 export function SiteApp() {
   const path = useRouterStore((s) => s.path);
   const setPath = useRouterStore((s) => s.setPath);
+  const loadSettings = useSiteSettings((s) => s.load);
+
+  // Load admin-editable site settings once (hero copy, contacts, pricing…).
+  // Failures are ignored — views fall back to the static defaults.
+  React.useEffect(() => {
+    void loadSettings();
+  }, [loadSettings]);
 
   // Hash → state sync (initial load + back/forward + link clicks)
   React.useEffect(() => {
@@ -53,6 +62,10 @@ export function SiteApp() {
     document
       .querySelector('link[rel="canonical"]')
       ?.setAttribute('href', `${site.url}${path === '/' ? '/' : path}`);
+    // The admin panel must never be indexed.
+    document
+      .querySelector('meta[name="robots"]')
+      ?.setAttribute('content', match.kind === 'admin' ? 'noindex, nofollow' : 'index, follow');
   }, [match, path]);
 
   let view: React.ReactNode;
@@ -86,6 +99,9 @@ export function SiteApp() {
       break;
     case 'blog-post':
       view = <BlogPostView slug={match.slug} />;
+      break;
+    case 'admin':
+      view = <AdminView />;
       break;
     case 'privacy':
       view = <LegalView kind="privacy" />;

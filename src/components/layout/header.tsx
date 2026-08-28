@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { ChevronDown, Clock, Mail, Menu, MessageCircle, Phone } from 'lucide-react';
+import { ArrowRight, ChevronDown, Clock, Mail, Menu, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,7 +11,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { site } from '@/lib/site';
-import { services } from '@/data';
+import { featuredServices, services } from '@/data';
 import { Link } from '@/components/common/link';
 import { ServiceIconGlyph } from '@/components/common/icon-map';
 
@@ -31,16 +31,21 @@ function isActive(path: string, href: string): boolean {
   if (href === '/') return path === '/';
   if (href === '/portfolio') return path.startsWith('/portfolio');
   if (href === '/blog') return path.startsWith('/blog');
+  // Services hub stays active on /services and on ANY service detail page.
   if (href === '/services') return path === '/services' || (services.some((s) => s.slug === path.slice(1)) && path !== '/');
   return path === href;
 }
 
-function Logo() {
+function Logo({ dark }: { dark?: boolean }) {
   return (
-    <Link href="/" className="flex items-center gap-2.5" ariaLabel="Developers3 — home">
+    <Link
+      href="/"
+      className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+      ariaLabel="Developers3 — home"
+    >
       <img src="/logo.svg" alt="" width={34} height={34} className="h-9 w-9" />
-      <span className="font-display text-lg font-bold tracking-tight text-foreground">
-        Developers<span className="text-emerald-600">3</span>
+      <span className={cn('font-display text-lg font-bold tracking-tight', dark ? 'text-white' : 'text-foreground')}>
+        Developers<span className="text-gradient">3</span>
       </span>
     </Link>
   );
@@ -48,51 +53,119 @@ function Logo() {
 
 export function Header({ path }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [megaOpen, setMegaOpen] = React.useState(false);
+  const servicesActive = isActive(path, '/services');
+
+  // Close menus whenever the route changes (hash navigation keeps the SPA alive).
+  React.useEffect(() => {
+    setMegaOpen(false);
+    setMobileOpen(false);
+  }, [path]);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/80 bg-background/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-blue-900/10 bg-background/85 backdrop-blur-xl">
+      <div className="mx-auto flex h-[4.5rem] w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Logo />
 
         {/* Desktop nav */}
         <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
-          <DropdownMenu modal={false}>
+          <DropdownMenu modal={false} open={megaOpen} onOpenChange={setMegaOpen}>
             <DropdownMenuTrigger asChild>
               <button
                 className={cn(
-                  'inline-flex h-10 items-center gap-1 rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                  isActive(path, '/services') ? 'text-emerald-700' : 'text-foreground/80'
+                  'group inline-flex h-10 items-center gap-1 rounded-full px-4 text-sm font-medium transition-colors hover:bg-blue-50 hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  servicesActive ? 'bg-blue-50 text-blue-800' : 'text-foreground/80'
                 )}
               >
                 Services
-                <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                <ChevronDown
+                  className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180"
+                  aria-hidden="true"
+                />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-[560px] p-2">
-              <div className="grid grid-cols-2 gap-1">
-                {services.map((service) => (
-                  <Link
-                    key={service.slug}
-                    href={`/${service.slug}`}
-                    className="flex items-start gap-3 rounded-lg p-2.5 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
-                      <ServiceIconGlyph icon={service.icon} className="h-4 w-4" />
-                    </span>
-                    <span>
-                      <span className="block text-sm font-semibold text-foreground">{service.name}</span>
-                      <span className="mt-0.5 block text-xs leading-snug text-muted-foreground">{service.tagline}</span>
-                    </span>
-                  </Link>
-                ))}
-              </div>
-              <div className="mt-2 border-t border-border pt-2">
+            <DropdownMenuContent
+              align="start"
+              sideOffset={10}
+              className="w-[560px] rounded-2xl border-border bg-popover p-2 shadow-2xl"
+            >
+              {/* Panel header row */}
+              <div className="flex items-center justify-between gap-3 px-3 pb-1 pt-2">
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+                  Featured services
+                </p>
                 <Link
                   href="/services"
-                  className="flex items-center justify-center rounded-lg p-2 text-sm font-semibold text-emerald-700 transition-colors hover:bg-accent"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  View all services →
+                  All services
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                 </Link>
+              </div>
+
+              {/* Featured service rows */}
+              <div className="flex flex-col">
+                {featuredServices.map((service) => {
+                  const href = `/${service.slug}`;
+                  const active = path === href;
+                  return (
+                    <Link
+                      key={service.slug}
+                      href={href}
+                      className={cn(
+                        'group flex min-h-[44px] items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-accent/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                        active && 'bg-accent text-accent-foreground'
+                      )}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      <span className="icon-tile h-10 w-10 shrink-0 !rounded-xl">
+                        <ServiceIconGlyph icon={service.icon} className="h-5 w-5" />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span
+                          className={cn(
+                            'block text-sm font-semibold text-foreground group-hover:text-blue-700',
+                            active && 'text-blue-700'
+                          )}
+                        >
+                          {service.name}
+                        </span>
+                        <span className="block text-xs text-muted-foreground line-clamp-1">
+                          {service.tagline}
+                        </span>
+                      </span>
+                      <ArrowRight
+                        className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 -translate-x-1 transition-all group-hover:translate-x-0 group-hover:opacity-100"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {/* Bottom action row */}
+              <div className="mt-1 border-t border-border">
+                <div className="flex flex-wrap items-center justify-between gap-3 px-3 py-2.5">
+                  <div className="flex items-center gap-3">
+                    <a
+                      href={site.phoneHref}
+                      className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg text-xs font-medium text-foreground transition-colors hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      aria-label={`Call us at ${site.phoneDisplay}`}
+                    >
+                      <Phone className="h-4 w-4 text-blue-600" aria-hidden="true" />
+                      {site.phoneDisplay}
+                    </a>
+                    <span className="text-[11px] text-muted-foreground">Mon–Fri, 9–6 PT</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href="/services">All services</Link>
+                    </Button>
+                    <Button size="sm" asChild>
+                      <Link href="/contact">Free quote</Link>
+                    </Button>
+                  </div>
+                </div>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -102,8 +175,8 @@ export function Header({ path }: HeaderProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                'inline-flex h-10 items-center rounded-md px-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                isActive(path, item.href) ? 'text-emerald-700' : 'text-foreground/80'
+                'inline-flex h-10 items-center rounded-full px-4 text-sm font-medium transition-colors hover:bg-blue-50 hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                isActive(path, item.href) ? 'bg-blue-50 text-blue-800' : 'text-foreground/80'
               )}
               aria-current={isActive(path, item.href) ? 'page' : undefined}
             >
@@ -136,36 +209,45 @@ export function Header({ path }: HeaderProps) {
                 href="/"
                 onClick={() => setMobileOpen(false)}
                 className={cn(
-                  'rounded-md px-3 py-3 text-base font-medium transition-colors hover:bg-accent',
-                  path === '/' ? 'text-emerald-700' : 'text-foreground'
+                  'rounded-xl px-3 py-3 text-base font-medium transition-colors hover:bg-blue-50',
+                  path === '/' ? 'bg-blue-50 text-blue-800' : 'text-foreground'
                 )}
               >
                 Home
               </Link>
-              <p className="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              <p className="px-3 pb-1 pt-3 text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
                 Services
               </p>
-              {services.map((service) => (
-                <Link
-                  key={service.slug}
-                  href={`/${service.slug}`}
-                  onClick={() => setMobileOpen(false)}
-                  className={cn(
-                    'rounded-md px-3 py-2.5 text-[15px] font-medium transition-colors hover:bg-accent',
-                    path === `/${service.slug}` ? 'text-emerald-700' : 'text-foreground/85'
-                  )}
-                >
-                  {service.name}
-                </Link>
-              ))}
+              {featuredServices.map((service) => {
+                const href = `/${service.slug}`;
+                const active = path === href;
+                return (
+                  <Link
+                    key={service.slug}
+                    href={href}
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      'flex min-h-[44px] items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-accent/70',
+                      active ? 'bg-accent text-accent-foreground' : 'text-foreground/85'
+                    )}
+                    aria-current={active ? 'page' : undefined}
+                  >
+                    <span className="icon-tile h-9 w-9 shrink-0 !rounded-lg">
+                      <ServiceIconGlyph icon={service.icon} className="h-4 w-4" />
+                    </span>
+                    <span className="text-[15px] font-medium">{service.name}</span>
+                  </Link>
+                );
+              })}
               <Link
                 href="/services"
                 onClick={() => setMobileOpen(false)}
-                className="rounded-md px-3 py-2.5 text-[15px] font-semibold text-emerald-700 transition-colors hover:bg-accent"
+                className="flex min-h-[44px] items-center gap-2 rounded-xl px-3 py-3 text-[15px] font-semibold text-blue-700 transition-colors hover:bg-blue-50"
               >
-                All services →
+                Browse all {services.length} services
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <p className="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              <p className="px-3 pb-1 pt-3 text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
                 Company
               </p>
               {MAIN_NAV.map((item) => (
@@ -174,8 +256,8 @@ export function Header({ path }: HeaderProps) {
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    'rounded-md px-3 py-2.5 text-[15px] font-medium transition-colors hover:bg-accent',
-                    isActive(path, item.href) ? 'text-emerald-700' : 'text-foreground/85'
+                    'rounded-xl px-3 py-2.5 text-[15px] font-medium transition-colors hover:bg-blue-50',
+                    isActive(path, item.href) ? 'bg-blue-50 text-blue-800' : 'text-foreground/85'
                   )}
                 >
                   {item.label}
@@ -189,20 +271,20 @@ export function Header({ path }: HeaderProps) {
               <a
                 href={site.phoneHref}
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-md px-3 text-sm font-medium text-foreground/85 transition-colors hover:bg-accent"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-xl px-3 text-sm font-medium text-foreground/85 transition-colors hover:bg-blue-50"
               >
-                <Phone className="h-4 w-4 text-emerald-600" aria-hidden="true" />
+                <Phone className="h-4 w-4 text-blue-600" aria-hidden="true" />
                 {site.phoneDisplay}
               </a>
               <a
                 href={`mailto:${site.email}`}
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-md px-3 text-sm font-medium text-foreground/85 transition-colors hover:bg-accent"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-xl px-3 text-sm font-medium text-foreground/85 transition-colors hover:bg-blue-50"
               >
-                <Mail className="h-4 w-4 text-emerald-600" aria-hidden="true" />
+                <Mail className="h-4 w-4 text-blue-600" aria-hidden="true" />
                 {site.email}
               </a>
               <span className="inline-flex items-center gap-2 px-3 text-xs text-muted-foreground">
-                <Clock className="h-4 w-4 text-emerald-600" aria-hidden="true" />
+                <Clock className="h-4 w-4 text-blue-600" aria-hidden="true" />
                 {site.hours}
               </span>
             </div>

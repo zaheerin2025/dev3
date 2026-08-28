@@ -4,7 +4,7 @@ export const homeFaqs: FAQ[] = [
   {
     question: 'How much does a new website cost?',
     answer:
-      'Most marketing websites we build range from $1,499 for a starter site to $6,000+ for custom, conversion-focused builds with e-commerce or booking functionality. Every quote is fixed-price and itemized, so you know exactly what you are paying for before we start. Visit our pricing page for a detailed breakdown.',
+      'Most marketing websites we build range from $699 for a starter site to $2,999+ for custom, conversion-focused builds with e-commerce or booking functionality. Every quote is fixed-price and itemized, so you know exactly what you are paying for before we start. Visit our pricing page for a detailed breakdown.',
   },
   {
     question: 'How long does it take to build a website?',
@@ -24,7 +24,7 @@ export const homeFaqs: FAQ[] = [
   {
     question: 'What happens after my website launches?',
     answer:
-      'You get 30 days of free post-launch support on every project. After that, most clients join our website maintenance plan (from $99/month) covering updates, backups, security monitoring, and small content changes. You always own your code, design files, and accounts.',
+      'You get 30 days of free post-launch support on every project. After that, most clients join our website maintenance plan (from $49/month) covering updates, backups, security monitoring, and small content changes. You always own your code, design files, and accounts.',
   },
   {
     question: 'Can you redesign or fix my existing website?',

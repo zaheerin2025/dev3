@@ -207,3 +207,320 @@ Work Log:
 
 Stage Summary:
 - Site verified interactive end-to-end on desktop + mobile; zero console errors; zero lint/type errors. Ready.
+
+---
+Task ID: 15
+Agent: orchestrator (Z.ai main)
+Task: UI/UX overhaul — design foundation (globals.css, Reveal, Section, SectionHeading, ServiceCard, CaseStudyCard, TestimonialCard, ProcessSteps, StatGrid, TechPills, CTABand, FAQSection, Button, Header, Footer)
+
+Work Log:
+- User reported: bland visuals, broken/invisible sections, garbled AI images, poor alignment. Full audit via Agent Browser confirmed.
+- Rewrote globals.css: new design system utilities (card-surface, card-hover, icon-tile, glass-chip/glass-chip-dark, glow-orb, gradient-frame, divider-gradient, text-gradient/text-gradient-soft, section-tint, richer section-dark-deep with radial glows, masked bg-grid-light, float/pulse-dot keyframes, richer shadows, radius 0.75rem).
+- Fixed CRITICAL reveal bug: .reveal no longer hides SSR content via CSS. Reveal now arms (hides) only below-fold elements after JS mount, reveals via IntersectionObserver, plus 3.2s failsafe force-reveal. Crawlers/screenshots/no-JS always see content; reduced-motion respected.
+- Section: added overflow-hidden + relative wrapper; dark/darkDeep unified to section-dark-deep; tinted → section-tint.
+- SectionHeading: eyebrow pill with dot + ring, larger display title (up to 2.75rem), supports **gradient** span markers in title.
+- ServiceCard: icon-tile gradient icon, hover top accent line, price chip ring style, arrow in circle with hover fill.
+- CaseStudyCard: image zoom on hover, bottom legibility gradient, glass category badge (solid colors for contrast), line-clamped summary, mt-auto link with circle arrow.
+- TestimonialCard: oversized decorative quote glyph, ringed avatars, footer divider, gradient initials fallback.
+- ProcessSteps: numbered gradient badges ON a connecting gradient line (horizontal desktop / vertical mobile), glowing dark variant.
+- StatGrid: gradient display numbers, softer tinted tiles, hover lift.
+- TechPills: larger chips with gradient dot + halo, hover lift + glow.
+- CTABand: rounded-[2rem] gradient panel (emerald-700→#04100b) with glow orbs + dot texture + glass eyebrow + white primary button.
+- FAQSection: card-style accordion items (rounded-2xl, border, open-state glow).
+- Button: default = emerald→teal gradient with brand shadow + hover lift; outline = emerald hover; lg = h-12 rounded-xl.
+- Header: h-[4.5rem], pill active states, mega menu (720px, 2-col grid + gradient CTA rail), rounded-xl mobile sheet items.
+- Footer: gradient top divider, ambient glow, ringed social tiles, emerald-300 column headings, gradient subscribe button.
+- Verified: tsc --noEmit clean (src only), eslint clean.
+
+Stage Summary:
+- All shared components now expose a rich, consistent design language. API/props unchanged → views compile untouched.
+- AVAILABLE UTILITIES FOR VIEW AGENTS: card-surface, card-hover, icon-tile, glass-chip, glass-chip-dark, glow-orb (absolute + blur, needs positioned parent), gradient-frame, divider-gradient, text-gradient, text-gradient-soft, section-tint, section-dark-deep, bg-grid-light, bg-dots-dark, animate-float, animate-float-slow, animate-pulse-dot, custom-scrollbar.
+- SectionHeading titles support **gradient** markers. Button default is gradient now; use variant="outline" for secondary; size="lg" for hero CTAs.
+
+---
+Task ID: 16-a
+Agent: home-view-redesigner
+Task: Home view visual redesign
+
+Work Log:
+- Read worklog Task 15 design system + all shared component APIs (Section, SectionHeading, Reveal, cards, StatGrid, ProcessSteps, TechPills, CTABand, FAQSection, Button, Badge, globals.css utilities, data index).
+- Rewrote src/views/home-view.tsx (only file edited) using the new design system; all text/SEO copy, H1 text, JsonLd, trackEvent calls, Link hrefs, aria labels and data imports preserved; 'use client' and both export shapes kept.
+- HERO: added 3 aria-hidden glow-orb spans behind content (emerald-300/25, teal-300/20, emerald-200/30); trust badge rebuilt as emerald-50 pill (ring-1 ring-inset ring-emerald-600/20) with animate-pulse-dot dot; H1 rescaled to text-4xl→xl:text-[4rem] tracking-tight with "Software Development" wrapped in text-gradient (&amp; entity intact); CTAs now size="lg" without h-11 override (gradient default + outline); rating row restyled as glass-chip rounded-full inline-flex.
+- HERO media: Image wrapped in gradient-frame (rounded-[1.45rem] inner, deep brand shadow) with glow-orb bg-emerald-400/30 behind; added 2 floating glass-chip badges (Gauge "98/100 Core Web Vitals" animate-float top-left; TrendingUp "+64% client revenue" animate-float-slow bottom-right; text-xs font-semibold px-3.5 py-2.5 rounded-xl, hidden sm:flex).
+- TRUST BAR: Section now tinted; client names converted to uniform h-11 wordmark chips (bg-white rounded-xl ring-inset ring-emerald-900/10, hover:text-foreground hover:ring-emerald-500/30); label line and StatGrid kept.
+- SERVICES: SectionHeading title "Web, Design & **Marketing Services**" (gradient markers); grid gap widened to gap-6; ServiceCard showPrice kept.
+- WHY CHOOSE US: replaced Card/CardContent with card-surface card-hover rounded-[1.25rem] p-6 divs; icons now icon-tile h-12 w-12; copy untouched.
+- PORTFOLIO: grid gap-6; "View All Projects" outline lg Button kept centered.
+- PROCESS: Section dark dots with added emerald-500/20 glow-orb; SectionHeading dark + relative; ProcessSteps dark kept.
+- TESTIMONIALS: gap-6; TestimonialCard + review JsonLd untouched.
+- TECHNOLOGIES: added description "The stack behind fast, scalable, easy-to-own products." to heading; TechPills kept.
+- FAQ: tinted Section kept as-is; CTABand default usage kept.
+- Removed now-unused imports (Badge, Card, CardContent); added Gauge, TrendingUp.
+- Verified: npx tsc --noEmit → zero errors under src/ (only pre-existing errors in examples/ and skills/); bun run lint → exit 0. Dev server not restarted, browser not run per instructions.
+
+Stage Summary:
+- Home view now fully uses the Task-15 design language: glow orbs, gradient-frame hero media with floating glass-chip metrics, pulse-dot badge, text-gradient H1 accent, tinted trust bar with wordmark chips + StatGrid, icon-tile USP cards, gradient-marked services heading, dark dotted process section, richer tech-stack description.
+- No component APIs changed outside src/views/home-view.tsx; content, schema, analytics and links identical to previous version.
+- For orchestrator: hero floaters hidden below sm to avoid crowding; all decorative layers aria-hidden; touch targets ≥44px (lg buttons h-12, chips h-11).
+
+---
+Task ID: 16-c
+Agent: case-portfolio-redesigner
+Task: Case study + portfolio visual redesign
+
+Work Log:
+- Read worklog Task 15 design system + APIs: Section, SectionHeading (**gradient** markers), Reveal, CaseStudyCard (+CATEGORY_LABELS/CATEGORY_STYLES), TestimonialCard, TechPills, CTABand, Breadcrumbs, JsonLd, Link, Button, globals.css utilities, types.ts, data/index.ts, case study + testimonial data, site.ts.
+- Confirmed CaseStudy type has NO image-gallery field: visual highlights are `showcase: {title, blurb, gradient}[]` and metrics are `results: {metric,label}[]`. Adapted requirement 5 accordingly (gradient showcase tiles with hover-zoom), preserving all copy/data wiring.
+- Rewrote src/views/case-study-view.tsx (only file edited). Preserved: 'use client', all copy (H1/H2s "The Challenge"/"Our Solution"/"The Numbers That Matter"/"Inside The Build"/"More Case Studies", eyebrows "Results"/"Project highlights", not-found text), JsonLd (buildCaseStudySchema + buildReviewSchema), all Link hrefs, data mapping (challenge/solution/techStack/results/showcase/testimonialId/services names), Breadcrumbs items.
+- HERO: Section dark+dots with 2 aria-hidden glow-orbs (emerald-400/20, teal-400/15); Breadcrumbs restyled for dark via arbitrary-variant overrides ([&_ol] emerald-200/70, page white, separator emerald-400/60); category chip = CATEGORY_STYLES solid + ring-inset ring-white/20, industry chip = emerald-400/10 ring-inset emerald-300/25 pill; H1 text-3xl→md:text-5xl white text-balance; summary emerald-100/80 max-w-3xl; Client/Industry/Services row restyled dark (links emerald-300); NEW metric highlight row: top 3 study.results as text-gradient-soft font-display text-3xl→4xl font-extrabold + uppercase 11px labels, divided by border-white/10.
+- COVER: Image kept (fill, priority, same sizes) inside gradient-frame (1px gradient hairline, deep black shadow) + glow-orb emerald-500/20 behind; inner rounded-[1.45rem] aspect-[16/9].
+- CHALLENGE/SOLUTION: single two-column Section (white), both headings get vertical gradient border accent bar (emerald-500→teal-300 / teal-500→emerald-300); paragraphs max-w-3xl; TechPills justify-start kept for techStack.
+- RESULTS: Section tinted; stat tiles = card-surface rounded-2xl p-6 text-center, number text-gradient font-display text-4xl font-extrabold, label text-sm muted; grid-cols-2 (2x2 mobile) → lg:grid-cols-4, Reveal stagger kept.
+- SHOWCASE ("gallery"): grid gap-4 → lg:gap-6, sm:grid-cols-2; each tile = rounded-2xl ring-1 ring-emerald-900/10 overflow-hidden min-h-[15rem]; item.gradient layer scales group-hover:scale-105 duration-500; dot texture + bottom legibility gradient + big "01/02…" numeral (aria-hidden); title/blurb copy untouched.
+- TESTIMONIAL: full-width quote panel per spec — rounded-[1.5rem] bg-gradient-to-br from-emerald-700 to-[#04100b] p-8/sm:p-12, 2 glow-orbs, decorative &rdquo; glyph (text-white/10 up to 12rem), star row (aria-label preserved pattern), quote text-xl→2xl font-medium white, author row with avatar ring-2 ring-emerald-300/50 (or gradient-free initials ring fallback), name/role. TestimonialCard import dropped here (not rendered as full-width panel anywhere); review data + schema unchanged.
+- RELATED: Section + CaseStudyCard grid gap-6 (md:2/lg:3) before CTABand (reordered per spec: related then CTABand "Want Results Like These?" with same props).
+- Rewrote src/views/portfolio-view.tsx (only file edited). Preserved: 'use client', all state/logic (useState/useMemo counts, filtered, aria-pressed, aria-live "Showing X projects", trackEvent('portfolio_filter'), role=group aria-label, FILTERS labels from CATEGORY_LABELS, counts), grid cols, CTABand title.
+- HERO: Section grid + 3 glow-orbs (matching home-view palette); eyebrow pill "Featured Work" with animate-pulse-dot dot; H1 "Our <span text-gradient>Portfolio</span>"; description copy untouched; NEW stats chips row of glass-chip rounded-full pills with lucide icons, honest data-derived numbers: "{caseStudies.length} featured projects" (10), "{unique industries} industries" (10), "{avg of testimonial ratings} client rating" (5.0) — computed from data, rating chip hidden if no testimonials.
+- FILTER BAR: plain <button>s (Button/Badge imports removed as unused): min-h-[44px] rounded-full px-4 py-2 text-sm font-semibold; active = bg-gradient-to-br from-emerald-600 to-teal-600 text-white + brand shadow; inactive = bg-white ring-1 ring-inset ring-emerald-900/10 text-foreground/70 hover:text-emerald-800; focus-visible ring added.
+- GRID: gap-6 (was gap-4); CaseStudyCard + Reveal stagger kept. Empty state upgraded to centered muted panel (dashed border, Inbox icon aria-hidden, copy "No projects in this category yet — check back soon." preserved) — unreachable with current data (every category has ≥1) but kept for safety.
+- Verified: npx tsc --noEmit → zero errors in src/ (only pre-existing examples/ + skills/ errors); bun run lint → exit 0. Dev server not restarted, browser not used per instructions.
+
+Stage Summary:
+- case-study-view + portfolio-view now fully on the Task-15 design language: dark dotted hero with glow orbs + gradient-soft key metrics + gradient-frame cover; tinted results stat tiles; hover-zoom showcase gallery; full-width brand-gradient quote panel; related grid gap-6 before CTABand; portfolio hero with eyebrow + text-gradient H1 + glass-chip stats + gradient filter pills (44px targets) + gap-6 grid + styled empty state.
+- Deviations for orchestrator: (1) CaseStudy type has no gallery images — showcase gradient tiles are styled as the "gallery" (copy preserved); (2) hero metric row uses results.slice(0,3) (all studies have 4 results); (3) portfolio stats are data-derived (10 projects / 10 industries / 5.0 avg rating), not the hard-coded "6/10+"/"5.0" examples; (4) dark-hero Breadcrumbs needed arbitrary-variant color overrides since ui/breadcrumb hardcodes light-theme foreground; (5) CTABand moved after Related per requirement order.
+- No files outside the two views were touched; all schema/analytics/link/copy wiring identical.
+
+---
+Task ID: 16-b
+Agent: service-views-redesigner
+Task: Service detail + services hub visual redesign
+
+Work Log:
+- Read worklog Task 15 design system + APIs of all shared components (Section, SectionHeading, Reveal, ServiceCard, CaseStudyCard, TestimonialCard, ProcessSteps, TechPills, StatGrid, CTABand, FAQSection, Breadcrumbs, Button, Badge, LeadForm, icon-map), globals.css utilities, lib/types, data/index + services data (categories/heroTitles/prices).
+- Rewrote ONLY src/views/service-detail-view.tsx and src/views/services-hub-view.tsx. All SEO copy/H1/H2 text, JsonLd blocks, trackEvent calls, Link hrefs + ariaLabels, data wiring, breadcrumbs, 'use client' preserved.
+- SERVICE DETAIL (11 blocks): (1) Hero: Section grid + 2 glow-orbs; subtle xs Breadcrumbs; primaryKeyword pill restyled (emerald-50, ring-inset, kept Badge); H1 text-3xl→lg:text-5xl tracking-tight with NEW splitHeroTitle() helper that wraps the service-name phrase (2-4 words) in text-gradient while keeping title text byte-identical (verified for all 10 services via script); CTAs gradient lg "Get Free Quote" + outline "View Pricing"; rating row rebuilt as ring-inset pill. Right: decorative panel = gradient-frame > section-dark-deep bg-dots-dark rounded-[1.45rem] with inner glow-orb, icon-tile h-16 w-16 + h2 service.name, 3 glass-chip offering rows (Check icons), "Starting at" label + text-gradient-soft display price. Duplicate TechPills moved out of hero panel (still rendered in Technologies section). (2) Offerings: SectionHeading + description, grid gap-6 sm:2 lg:3, card-surface card-hover p-6, icon-tile h-10 w-10 Check, muted font-display "01/02…" number chip top-right. (3) Why: tinted, flex lg two-col with SectionHeading align="left" (whyTitle as H2, whyIntro as description) lg:w-[38%] lg:sticky lg:top-28, benefits as flex gap-4 rounded-2xl bg-white ring-1 ring-inset ring-emerald-600/10 p-5 rows with rotating lucide icon-tile h-10 w-10 (TrendingUp/ShieldCheck/Clock3/BadgeCheck/Zap/Users). (4) Process: dark dots + glow-orb + ProcessSteps dark. (5) Technologies: added description line. (6) Portfolio: grid gap-6 + conditional description + "Browse All Projects" outline lg kept. (7) Pricing: gradient-frame wrapper card, "Starting at" prefix + text-gradient font-display text-4xl/5xl font-extrabold price, pricingNote, PRICING_GUARANTEES, both buttons + trackEvent kept. (8) Testimonials grid gap-6 (max 2 reviews/service). (9) FAQ now Section tinted. (10) Related services grid gap-6 with showPrice. (11) Lead form section upgraded (gradient span on shortName inside H2, ringed Check chips, card-surface rounded-[1.5rem] form panel, LeadForm source/defaultService unchanged).
+- SERVICES HUB: (1) Hero: Section grid bg-grid-light + 3 glow-orbs, subtle Breadcrumbs, pulse-dot eyebrow pill, H1 "Our Web & Digital Services" with text-gradient on "Digital Services", HUB_INTRO verbatim, NEW CTAs (Get Free Quote w/ trackEvent services_hub_hero + View Pricing), StatGrid stats strip (site.stats.projects, services.length=10, satisfaction, 90+ Lighthouse). (2) Services re-sectioned into "Build" (development+design = 6 ServiceCards) and "Grow" (marketing+support = 4) with two SectionHeadings using **gradient** markers; ServiceCard showPrice; per-card trackEvent('cta_click',{location:'services_hub',target:slug}) preserved via bubble-catcher wrapper div around each card. (3) NEW "How engagements work" tinted strip: 3 glass-chip steps (CalendarCheck Book a call / ReceiptText Get a fixed quote / Rocket Launch in weeks) with Step 1-3 labels + hints. (4) CTABand props unchanged. Kept sr-only h2 "All services", ids, dual export shapes.
+- Removed unused imports (Card, CheckCircle2; hub: Badge, Card, Check); added lucide icons. No new npm packages; all decorative layers aria-hidden; CTAs/buttons ≥44px (lg h-12); mobile-first stacking throughout.
+- Verified: npx tsc --noEmit → zero errors in src (only pre-existing errors under examples/ + skills/); bun run lint → exit 0, no findings. Dev server NOT restarted, browser NOT used, per instructions.
+
+Stage Summary:
+- Service detail (revenue template used by 10 pages) and services hub now fully express the Task-15 design system: glow orbs, gradient-frame hero panel + pricing card, glass-chip rows/steps, icon-tile treatments, text-gradient accents, sticky two-column "why" layout, sectioned Build/Grow hub with StatGrid.
+- For orchestrator: (a) task listed block 11 as "CTABand kept" but this template's block 11 is the LeadForm CTA section — kept and upgraded (no extra CTABand added to avoid duplicate CTA band); (b) hub per-service rows (idealFor + 3 offering bullets, previously h2 per service) were consolidated into ServiceCard grid per explicit spec — full per-service copy lives on the 10 detail pages; flagged in case SEO wants idealFor re-added to hub; (c) splitHeroTitle() in service-detail-view.tsx is data-driven and safe for future services (falls back to first 3 words).
+
+---
+Task ID: 16-d
+Agent: pricing-blog-redesigner
+Task: Pricing + blog views visual redesign
+
+Work Log:
+- Read worklog Task 15 design system (card-surface, card-hover, icon-tile, glass-chip, glow-orb, gradient-frame, divider-gradient, text-gradient, section-tint, bg-grid-light, bg-dots-dark, animate-float/pulse-dot, custom-scrollbar; Button default = gradient) + all shared component APIs (Section, SectionHeading **gradient** markers, Reveal, CTABand, FAQSection, LeadForm, Breadcrumbs, Link, Button, Badge, Table) + data contracts (PricingTier/PricingBlock/PricingComparisonRow, BlogPost with coverGradient/category/readTime/authorId/sections/keyTakeaways/relatedServiceSlug). Only src/views/{pricing-view,blog-view,blog-post-view}.tsx edited.
+- PRICING: hero rebuilt on Section grid with 2 aria-hidden glow orbs, pulse-dot eyebrow pill ("Transparent pricing"), H1 "Website & Digital Pricing" with text-gradient span, copy untouched, plus 3 glass-chip trust chips (ShieldCheck "No hidden fees", FileCheck2 "Fixed quotes", LifeBuoy "30-day support").
+- PRICING tiers: 3-col grid gap-6 items-stretch; card-surface rounded-[1.5rem] p-8 flex flex-col; POPULAR tier wrapped in gradient-frame + relative lg:scale-[1.04] + gradient "Most Popular" pill at -top-3.5 center (emerald-500→teal-500, uppercase, shadow-lg) + inner bg-gradient-to-b from-emerald-50/80; price now font-display text-4xl→5xl font-extrabold text-gradient with muted period; features = emerald Check in h-5 w-5 rounded-full bg-emerald-50 ring chip + text-sm; CTA size="lg" full width (popular = default gradient, others = outline), trackEvent('cta_click') + /contact links kept. Extracted shared TierContent component.
+- PRICING comparison: card-surface rounded-[1.5rem] overflow-hidden, custom-scrollbar overflow-x-auto, min-w-[640px] table, thead bg-emerald-50/70 uppercase emerald-900 heads, zebra even rows bg-emerald-50/40 + hover:bg-emerald-50/60, first col th font-medium, 'Included' cells get emerald Check + text, '—' muted/40, all cell copy identical (raw table markup replaces shadcn Table for scroll styling control).
+- PRICING other blocks: "Everything else" cards → card-surface card-hover rounded-[1.25rem] with icon-tile h-10 icons, font-display emerald price, min-h-11 Learn more links (hrefs kept); section rhythm now hero grid / packages tinted / services white / FAQ tinted (as required) / quote white. Quote section: H2 gradient span, LeadForm source="pricing" in card-surface rounded-[1.5rem] p-6 sm:p-8; QUOTE_PROMISES upgraded into 3 icon-tile mini cards (Clock/FileCheck2/Lock) acting as the guarantee strip — no new pricing claims.
+- BLOG LISTING: hero = Section grid + glow orbs + eyebrow pill ("Insights & guides") + H1 gradient span; category filter buttons upgraded to gradient active pill (same onClick/trackEvent/aria-pressed, min-h-11); Featured post = card-surface rounded-[1.5rem] lg:grid-cols-2 — media aspect-[16/10] (lg:auto-fill) with coverGradient zoom on hover, bg-dots-dark, glass category chip top-left, Quote glyph; content p-6 sm:p-8 with Featured pill + category/readTime chips, title text-2xl→3xl hover:text-emerald-800, excerpt, author row (ringed avatar + name + date), "Read article" arrow link in circle chip (mt-auto).
+- BLOG LISTING grid: gap-6 md:2 lg:3; card-surface card-hover rounded-[1.25rem] overflow-hidden flex flex-col; aspect-[16/9] gradient media with glass category chip + hover zoom; content p-6: date · readTime meta, line-clamp-2 title/excerpt, mt-auto row with ringed AuthorLine + "Read more" arrow link (min-h-11, aria-label). CTABand props untouched; all /blog/slug hrefs kept.
+- BLOG POST: header keeps Breadcrumbs + tinted section; category pill + readTime chip row (bg-white ring pills), H1 exact copy at text-3xl sm:text-4xl lg:text-[2.75rem] max-w-3xl, excerpt kept, author row = h-10 ring-2 ring-emerald-100 avatar + name + role + date; cover band now gradient-frame rounded-[1.5rem] with inner glow orb, dots texture, deep shadow.
+- BLOG POST body: lg:grid-cols-[1fr_280px] gap-10; article wrapped in card-surface rounded-[1.5rem] p-6 sm:p-10 with readable prose (sections gap-10, paragraphs space-y-5 leading-8 text-foreground/85, h2 text-2xl font-bold scroll-mt-28, bullets list-disc pl-5 marker:text-emerald-500 leading-7); ids/aria-labelledby/Reveal stagger preserved. TOC aside: hidden lg:sticky lg:top-24, card-surface rounded-2xl p-5, "On this page" + divider-gradient + numbered links (scroll-to-chip hovers emerald); TOC mechanism EXACTLY preserved (button + getElementById(slugify) + scrollIntoView — no hash hrefs); Key takeaways card restyled (border-emerald-600/10 bg-emerald-50).
+- BLOG POST extras: author box card-surface rounded-2xl p-6 with ringed photo + role/bio; related-service CTA rebuilt as rounded-[1.5rem] bg-gradient-to-br from-emerald-700 to-[#04100b] with glow orbs + dot texture + glass eyebrow, white Button (bg-white text-emerald-800 hover:bg-emerald-50, h-12, full-width mobile) keeping href + label; related posts → card-surface card-hover rounded-[1.25rem] small cards with h-32 gradient media + hover zoom; CTABand untouched. Removed unused imports (Badge, Card/CardContent, ui/table); added lucide icons per view.
+- Verified: npx tsc --noEmit → zero errors under src/ (only pre-existing examples/ + skills/ errors); bun run lint → exit 0. Grep confirmed no stale Card/Badge/Table references in the three views.
+
+Stage Summary:
+- Pricing, blog listing, and blog post views now fully speak the Task-15 design language: grid/glow heroes with pulse-dot eyebrows and gradient H1 spans, glass-chip trust chips, gradient-frame popular tier with scale + gradient "Most Popular" pill, emerald check-chip feature rows, premium zebra comparison table with emerald checks / muted dashes, icon-tile quote-promise strip, glass-chip category badges + zooming gradient covers on all blog cards, card-surface article with readable prose + numbered sticky TOC, dark gradient related-service panel with white CTA.
+- All copy (H1/H2/H3, excerpts, prices, features, dates, word counts), JsonLd blocks, trackEvent events, Link hrefs, LeadForm logic, 'use client' and export names preserved; decorative layers aria-hidden; interactive targets ≥44px; no new packages; only the three assigned view files touched.
+- For orchestrator: TOC + key-takeaways aside is desktop-only (hidden below lg per spec — takeaways copy stays in DOM); popular-tier scale is lg-only to avoid mobile overlap; comparison table needs the custom-scrollbar wrapper (shadcn Table container was bypassed with raw table markup for styling control). Suggest a browser pass on pricing + blog post (long-article TOC scroll) to confirm visuals.
+
+---
+Task ID: 16-e
+Agent: misc-views-finisher
+Task: Lead form + 404 + legal visual redesign (about/contact already done previously)
+
+Work Log:
+- Read worklog Task 15 design system (card-surface, icon-tile, glass-chip, glow-orb, gradient-frame, text-gradient, section-tint, bg-grid-light/bg-dots-dark, animate-float/pulse-dot; Button default = emerald→teal gradient, outline variant, lg = h-12) + APIs of Section, SectionHeading, Reveal, Link, CTABand, Button, Input, Textarea, Label, globals.css; read contact-view.tsx to match LeadForm framing (card-surface rounded-[1.5rem] panel). Confirmed LegalSection data = heading + string paragraphs (no lists) and LeadForm callers (contact/pricing/service-detail) pass no dark/compact.
+- Edited ONLY src/components/common/lead-form.tsx, src/views/not-found-view.tsx, src/views/legal-view.tsx. All logic preserved: 'use client', validate(), honeypot (name="website", tabIndex -1), /api/leads fetch + payload contract, field ids/names (`lead-*-source`), Select usage, trackEvent('generate_lead'), toasts, role="status", aria-invalid, setSubmitted(false) reset.
+- LEAD FORM: labels already text-sm font-medium (kept + dark variant); all three required asterisks now text-emerald-600 (message field was text-destructive); submit Button = size lg, min-h-[48px] w-full (was w-full sm:w-auto), Loader2 spinner untouched; microcopy line SKIPPED per spec — existing footnote already says "We reply within one business day and never share your details", restyled it to text-center text-xs text-muted-foreground (dark variant kept) instead of duplicating; success state now rounded-2xl bg-emerald-50/60 ring-1 ring-inset ring-emerald-600/15 p-8 text-center (dark branch kept as bg-white/5 ring-emerald-400/20 since prop is public API), icon-tile h-12 w-12 CheckCircle2 h-6 w-6, h3 font-bold "Thank you!", Clock reply chip kept, muted max-w-sm subline kept, outline "Send another request" kept.
+- 404: Section flex min-h-[calc(100svh-16rem)] items-center (footer stays pushed; content vertically centered on short pages), 2 aria-hidden glow-orbs (emerald-400/20 top-left, teal-400/20 bottom-right); "404" = font-display text-[6rem] sm:text-[8rem] leading-none font-black text-gradient; copy kept byte-identical ("Page Not Found", path code chip paragraph, "Still lost?… Contact us" line); primary gradient Button "Back to Home" (lg, min-h-[48px]) + outline lg "View Services"/"Browse Portfolio" (hrefs kept); popular-service Badge replaced by ring-inset pill Links (min-h-[44px], bg-white rounded-full ring-inset ring-emerald-600/15, hover lift + emerald ring, focus-visible ring) — same 5 hrefs /:slug; removed unused Badge import.
+- LEGAL: content wrapped in card-surface rounded-[1.5rem] p-6 sm:p-10 (max-w-3xl mx-auto container kept, Breadcrumbs kept above card); h1 text-3xl sm:text-4xl font-bold; last-updated converted to ring-inset pill chip (bg-emerald-50, text-xs, CalendarDays icon aria-hidden, exact "Last updated: {legalLastUpdated}" text); h2 = text-xl sm:text-2xl font-bold mt-10 mb-3 (ids/aria-labelledby preserved); paragraphs = text-base leading-8 text-foreground/85 space-y-4; ALL legal copy byte-identical (privacySections/termsSections untouched); ul styling per spec NOT applied — data contains no list nodes, only string paragraphs (noted for orchestrator).
+- Verified: npx tsc --noEmit → zero errors in src/ (only pre-existing errors under examples/ + skills/); bun run lint → exit 0, no findings. Dev server NOT restarted, browser NOT used per instructions.
+
+Stage Summary:
+- LeadForm, NotFoundView, and LegalView now speak the Task-15 design language: gradient success panel with icon-tile + bold heading, emerald asterisks + centered microcopy + 48px full-width gradient submit; 404 with glow orbs, giant gradient display "404", gradient primary CTA, ring-inset service chips (44px targets) and viewport-aware min-h; legal pages rendered as a readable card-surface prose article with last-updated chip and bold section headings.
+- API/visual-only changes: all form logic, validation, field names/ids, honeypot, fetch contract, analytics, aria attributes, and every word of 404/legal copy preserved. No new packages; decorative layers aria-hidden; interactive targets ≥44px (submit 48px); mobile-first stacking.
+- For orchestrator: (1) submit button is now full-width at all breakpoints per spec (was sm:w-auto); (2) the requested "No spam, no obligation…" microcopy was intentionally not duplicated — equivalent copy already existed directly under the submit row (now centered); (3) legal ul/marker styles have no render site because LegalSection.paragraphs are plain strings — if bullet lists are ever added to the data, use list-disc pl-5 space-y-2 marker:text-emerald-500; (4) LeadForm dark success variant kept (unused by current callers but part of the public API).
+---
+Task ID: 17
+Agent: image-regenerator
+Task: Regenerate all site images with consistent no-text art direction
+
+Work Log:
+- Inventoried all 19 images via `file` (originals were JPEG bytes in .png files, produced by the Task 13 pipeline): hero-dashboard.png 1344x768, og-image.png 1344x768, 10 portfolio covers 1344x768, 4 team portraits 864x1152, 3 testimonial avatars 1024x1024.
+- Size check vs both constraints (CLI whitelist + server rule: multiples of 32, <=2^22 px): ALL current dims are fully compliant (1344x768=1,032,192 px; 864x1152=995,328 px; 1024x1024=1,048,576 px) -> every image regenerated at EXACTLY its original dimensions, zero aspect-ratio drift. Note: og-image asked for 2:1; whitelist has 1440x720 (true 2:1) but 720 is NOT a multiple of 32 (720/32=22.5) so it fails the server rule; nearest fully compliant wide-landscape = 1344x768 (1.75:1), same as the existing file. Same reasoning applies to hero (~2:1 requested).
+- Loaded image-generation skill; used `z-ai image -p ... -o ... -s ...` CLI (SDK not needed for one-shot generation).
+- Every ILLUSTRATION prompt (hero, og, 10 covers) embedded the global style anchor: "Premium 3D isometric style illustration, glassmorphism UI panels, emerald green (#10b981) and teal (#0d9488) accent lighting on a deep dark green (#04100b) background, soft cinematic studio light, clean minimal composition, high detail, professional tech agency aesthetic".
+- Every prompt (all 19) embedded the negative: "strictly NO text, NO letters, NO numbers, NO words, NO typography, NO logos, NO watermarks, NO gibberish symbols".
+- Headshots (4 team + 3 testimonials) used a shared photorealistic base: "Photorealistic professional corporate headshot portrait, chest-up framing, studio lighting, soft emerald green rim light, dark green studio background, sharp focus, 85mm lens, shallow depth of field" + per-person description (no 3D/isometric anchor, as required for photorealistic portraits).
+- Per-image results (path | size | status):
+  - public/images/hero-dashboard.png | 1344x768 | OK (floating browser + analytics dashboard w/ charts + conversion funnel glass panels)
+  - public/images/og-image.png | 1344x768 | OK (brand collage: code brackets glyph, rising chart bars, browser + phone mockup panels; 2:1 approximated to 1.75:1 per constraint note above)
+  - public/images/portfolio/lumina-boutique.png | 1344x768 | OK (clothing rack + shopping bag + payment card glass panels)
+  - public/images/portfolio/northpay.png | 1344x768 | OK (fintech dashboard, line charts + bar graphs glass panels)
+  - public/images/portfolio/meridian-dental.png | 1344x768 | OK (3D tooth + appointment calendar grid panels)
+  - public/images/portfolio/vantage-realty.png | 1344x768 | OK (minimal houses/buildings cluster + glowing location pin)
+  - public/images/portfolio/atlas-logistics.png | 1344x768 | OK (delivery truck + route map with glowing path pins)
+  - public/images/portfolio/pulsefit.png | 1344x768 | OK (smartphone + heart-rate pulse ring + activity rings)
+  - public/images/portfolio/brewpoint.png | 1344x768 | OK (coffee cup + POS screen panels + coffee beans)
+  - public/images/portfolio/skillforge.png | 1344x768 | OK (laptop + graduation cap + progress rings)
+  - public/images/portfolio/urban-bloom.png | 1344x768 | OK (flower bouquet + delivery box + order card)
+  - public/images/portfolio/crema-coffee.png | 1344x768 | OK (espresso machine + coffee cup + loyalty card panels)
+  - public/images/team/alex-morgan.png | 864x1152 | OK (man late 30s, brown hair, stubble, navy blazer)
+  - public/images/team/priya-sharma.png | 864x1152 | OK (South Asian woman early 30s, long dark hair, teal blouse)
+  - public/images/team/daniel-reeves.png | 864x1152 | OK (Black man 40s, glasses, grey shirt)
+  - public/images/team/sofia-alvarez.png | 864x1152 | OK (Latina woman mid 30s, dark wavy hair, emerald blouse)
+  - public/images/testimonials/amara-okafor.png | 1024x1024 | OK (Black woman 30s, warm smile, blazer)
+  - public/images/testimonials/david-chen.png | 1024x1024 | OK (East Asian man 40s, glasses, shirt)
+  - public/images/testimonials/sarah-mitchell.png | 1024x1024 | OK (woman 50s, blonde bob, blouse)
+- Verified with ls -la (all 19 files non-zero, 64KB-160KB, fresh timestamps) and `file` re-check (dimensions match originals exactly). Each CLI output overwrote its target path in place.
+- Rules respected: no .tsx/.ts/.css files touched; dev server NOT restarted (Next.js serves public/ statically, no restart needed).
+
+Stage Summary:
+- 19/19 images regenerated successfully, 0 failures, 0 size fallbacks needed (all at exact original dimensions; all satisfy whitelist + multiples-of-32 + <=2^22 px).
+- Unified brand art direction: all illustrations share the emerald/teal 3D isometric glassmorphism look on #04100b; all 7 people photos share photorealistic studio headshot treatment with emerald rim light on dark green background. No-text negative applied to every prompt to eliminate the garbled/Chinese text issue.
+- Filenames/paths/dimensions unchanged -> zero code changes required anywhere in the site. Note for future agents: the z-ai CLI writes JPEG bytes regardless of .png extension (same as Task 13); harmless in browsers but could be normalized to real PNGs later if desired.
+
+---
+Task ID: 18
+Agent: orchestrator (Z.ai main)
+Task: Integration verification + fixes after full UI/UX overhaul (15, 16-a..e, 17)
+
+Work Log:
+- tsc --noEmit (src): 0 errors; eslint: clean.
+- FIXED stale-CSS issue: dev server served old compiled CSS (plain .reveal{opacity:0}) after foundation edit → killed server, removed .next, restarted clean via setsid; new CSS with .reveal.is-armed confirmed served.
+- FIXED mask bug: bg-grid-light (radial mask) was applied directly to the Section element, fading ALL hero content near edges → moved grid to a dedicated absolute decorative <span> layer inside Section.
+- Re-verified Agent Browser E2E:
+  - Home full-page render: ALL sections visible (reveal failsafe works) — hero w/ gradient H1 + floating chips, tinted trust bar + wordmark chips + gradient stats, services grid, why-us cards, case studies w/ new covers, dark connected-timeline process, testimonials, tech pills, FAQ cards, gradient CTA panel, footer.
+  - Service detail (custom-website-development): all 11 blocks render (dark hero panel w/ price, numbered offerings, 2-col why, dark process, tech, related studies, gradient pricing teaser, testimonials, FAQ, related services, lead form).
+  - Case study (northpay + lumina): dark hero w/ metric highlight row, gradient-frame cover, challenge/solution, results tiles, showcase, quote panel, related, CTA.
+  - Services hub (Build/Grow sections + stats + engagement strip), Pricing (popular tier gradient frame + zebra comparison table + guarantee cards + form), Blog (featured card + grid), Blog post (TOC aside + prose card + author box + service CTA), About (stats, drop-cap story, values, timeline, team headshots), Contact (method cards + form panel + FAQ), 404 (gradient 404 + chips + sticky footer).
+  - Interactions: mobile hamburger → sheet nav → Pricing OK; lead form full E2E (select option → submit → success panel + toast + Prisma row) → test row deleted; portfolio E-commerce filter → exactly 2 projects; zero console errors; dev.log clean.
+  - Mobile 390x844: hero stacks, full-width CTAs, stats 2x2, cards single-col, no overflow.
+- 19/19 regenerated images served (200 OK), consistent no-text emerald/teal art direction.
+
+Stage Summary:
+- Site-wide visual overhaul complete and browser-verified on desktop + mobile. Content/SEO/analytics/APIs unchanged; only presentation layer touched. Two integration bugs found and fixed (stale CSS cache, grid mask). Ready.
+
+---
+Task ID: 19-b
+Agent: header-redesign sub-agent (Z.ai)
+Task: Redesign header mega menu (desktop dropdown + mobile sheet) around 5 featured services; recolor to blue/cyan brand.
+
+Work Log:
+- Read worklog (Tasks 17/18) + current header.tsx to understand prior overhaul; confirmed `featuredServices` (5 slugs) in src/data/index.ts, `ServiceIconGlyph` in common/icon-map, site.phoneDisplay/phoneHref, and 10 total services for the catalogue label.
+- Rewrote src/components/layout/header.tsx ONLY (no other files touched):
+  - Desktop mega menu now imports `featuredServices` (exactly 5: custom-website-development, ecommerce-development, mobile-app-development, seo-services, ui-ux-design) — all-10 grid + CTA rail removed; full catalogue delegated to /services.
+  - Trigger: "Services" pill with `group` + ChevronDown `group-data-[state=open]:rotate-180` (180° flip, 200ms).
+  - Panel: w-[560px] rounded-2xl border-border bg-popover shadow-2xl p-2, sideOffset 10 (was 720px w/ CTA rail, sideOffset 12).
+  - Panel header row: uppercase "FEATURED SERVICES" label (text-[11px] font-bold tracking-[0.14em] text-muted-foreground) left, "All services →" (text-xs font-semibold text-blue-600 hover:underline) right → /services.
+  - 5 single-column rows: icon-tile h-10 w-10 !rounded-xl + glyph h-5 w-5, name (group-hover:text-blue-700) + one-line tagline (line-clamp-1), ArrowRight revealed on hover (opacity-0 -translate-x-1 → group-hover:opacity-100 translate-x-0); active route row gets bg-accent text-accent-foreground + name text-blue-700; min-h-[44px], focus-visible rings, aria-current.
+  - Bottom action row below border-t: phone link (Phone icon blue-600 + phoneDisplay, aria-label) + "Mon–Fri, 9–6 PT" microcopy left; right = "All services" (outline sm → /services) + "Free quote" (sm → /contact) compact Buttons.
+  - Wordmark: "3" upgraded text-blue-500 → text-gradient; Link gets transition-opacity hover:opacity-80. Logo img h-9 w-9 kept.
+  - Mobile sheet Services section: only the 5 featured rows (icon-tile h-9 w-9 !rounded-lg + glyph h-4 w-4, name text-[15px] font-medium, px-3 py-3, active bg-accent text-accent-foreground) + prominent "Browse all 10 services →" link (text-blue-700 font-semibold, px-3 py-3); Company links + bottom contact block untouched; all targets ≥44px.
+  - isActive helper unchanged in behavior: /services hub still highlights on /services and any of the 10 service detail pages (uses full `services` list for hub detection — rendering stays 5 featured only).
+- Verified: `npx tsc --noEmit` (filtered) → 0 errors; `bun run lint` → clean. Dev server not started/stopped.
+
+Stage Summary:
+- Header mega menu redesigned per spec: 5-item featured dropdown (560px, single column, accent hover/active states, gradient-aware wordmark, phone + dual-CTA footer row) and a slimmer 5-item mobile Services list with "Browse all 10 services" escape hatch. Radix DropdownMenu (modal={false}) and all existing behaviors preserved; only header.tsx modified. tsc + eslint clean.
+
+---
+Task ID: 19-f
+Agent: home-hero (sub-agent)
+Task: Dark-navy tech-agency home hero + regenerate hero-dashboard.png / og-image.png for new blue/cyan palette.
+
+Work Log:
+- Read worklog tail (Tasks 13/17/18) + src/views/home-view.tsx in full; verified all needed utilities exist in globals.css (section-dark-deep, bg-dots-dark, bg-grid-light, glass-chip-dark, glow-orb, text-gradient-soft, animate-pulse-dot, gradient-frame) and that cn() uses tailwind-merge (so outline Button overrides win).
+- HERO (only edit in src/views/home-view.tsx; rest of file untouched):
+  - Section hero: `grid` → `darkDeep grid`; added decorative `<span class="bg-dots-dark absolute -inset-24 opacity-40">` layer (clipped by Section overflow-hidden).
+  - Replaced 3 legacy orbs with exactly 2 spec orbs: bg-blue-500/25 h-[30rem] top-right, bg-cyan-400/15 h-96 bottom-left; media-frame glow recolored to bg-cyan-400/15.
+  - Eyebrow chip → glass-chip-dark text-white with animate-pulse-dot bg-cyan-300 dot; rating chip → glass-chip-dark, text-slate-300 label (amber stars kept).
+  - H1 → text-white, marker span text-gradient → text-gradient-soft; sub-copy → max-w-2xl text-slate-300/85.
+  - Secondary CTA: outline variant + border-white/25 bg-white/5 text-white hover:bg-white/15 hover:text-white, relabeled "View Pricing" → /pricing (primary "Get Free Quote" → /contact kept w/ trackEvent).
+  - Floating chips → glass-chip-dark (text-white, labels text-slate-300, values/icons text-cyan-300); kept 98/100 Core Web Vitals + +64% client revenue.
+  - Media: gradient-frame + img kept; img gets ring-1 ring-white/10; frame shadow recolored from emerald-era rgb(4_16_11) → navy rgb(2_8_23/0.6).
+  - Trust bar (tinted): deliberate dark→light transition — `relative z-10 -mt-8 md:-mt-10 rounded-t-[2.5rem]` overlap card over the navy hero. Verified no leftover emerald/teal/light-chip classes in the hero area; Reveal system untouched (no bare opacity-0).
+- IMAGES: checked dims via `file` (both 1344x768) → regenerated in place at 1344x768 with z-ai CLI using the mandated navy/blue/cyan glassmorphism prompts + strict no-text negatives.
+  - og-image.png: clean on first pass (VLM verified: no text/letters/numbers, navy bg, cyan/blue accents, wide balanced composition).
+  - hero-dashboard.png: VLM flagged lorem-ipsum-style fake text in panels → retried with stronger negatives, then once more with a structurally reworked prompt (code-editor wording replaced by "rows of thin straight colored bars / pure rectangles, no glyphs"). Final take is fully abstract except tiny blurry axis digits on one chart (texture-scale, invisible at 50vw render size) — accepted as best result.
+- Confirmed paths unchanged: /images/hero-dashboard.png (home-view.tsx), /images/og-image.png (layout.tsx metadata + lib/schema.ts) — no code changes needed for images. Files valid non-zero (note: z-ai writes JPEG bytes under .png name — same pre-existing quirk as all 19 site images from Tasks 13/17).
+- VERIFY: `npx tsc --noEmit` filtered for examples/|skills/ → empty (0 project errors); `bun run lint` → clean. Dev server NOT started/stopped.
+
+Stage Summary:
+- Home hero is now the signature dark-navy tech-agency moment (#050914 deep section + grid + dots + blue/cyan orbs, glass-chip-dark chips, text-gradient-soft headline, dark-styled secondary CTA → /pricing); page below stays light with a deliberate rounded overlap into the tinted trust bar. Only home-view.tsx touched; other views/components untouched for parallel agents.
+- public/images/hero-dashboard.png + og-image.png regenerated in place, same 1344x768 aspect, navy/blue/cyan art direction, no readable text (og fully clean; hero has only micro axis digits). All references path-identical → zero code changes for images.
+---
+Task ID: 19-c
+Agent: pricing-overhaul
+Task: Market-rate pricing overhaul — canonical prices in data, visual pricing page restructure, internal PRICING-GUIDE.md
+
+Work Log:
+- Read worklog (Task 16-e/17/18) + scoped files; grepped all price mentions across src/data, src/views, src/lib.
+- src/data/pricing.ts: new canonical prices — websiteTiers Starter $1,499→$699, Business $2,999→$1,499 (highlighted kept), E-commerce/Custom $5,999+→$2,999+; servicePricingBlocks startingAt WordPress $1,200→$649, Software $15,000→$8,500, Mobile $8,000→$4,500, UI/UX $1,800→$950, SEO $600→$350, Ads $450→$299, Social $500→$299, Maintenance $99→$49 (units unchanged). pricingFaqs rewritten: market answer now "$500–$1,500 small site / $1,500–$3,000 e-commerce / $8,000+ custom apps; our packages start at $699"; payment plans kept 40/40/20 (installment threshold $5,000→$2,500 to fit new tiers); monthly-fees answer $99→$49/mo; after-launch answer $99/mo→$49/mo and $65/hour→$55/hour. comparisonTable rows kept (no price contradictions).
+- services-priority.ts: startingPrice + FAQ money answers updated per mapping — custom-website $1,499 ("most custom builds start at $1,499… range to $8,500+"), wordpress $649 (Woo range $4,000–$12,000→$2,000–$6,000), ecommerce $1,999 (typical $6,000–$20,000→$2,500–$8,000), software $8,500 (SaaS year range $40k–$150k→$25k–$80k), mobile $4,500 (custom-backend range $15,000-$60,000→$8,000-$30,000).
+- services-extended.ts: ui-ux $950 (web-app redesign range $6,000–$18,000→$3,000–$9,000), seo $350 (retainer range $1,200–$4,000→$700–$2,000), ads $299 (client media-spend range $2k–$15k kept — that's ad budget, not our fee), social $299 (paid-social packages $900–$2,500→$600–$1,800), maintenance $49 (plan ladder $249/$499 rescaled to $129/$249; heroSub "$99"→"$49"). Salary-comparison copy untouched.
+- Cross-file consistency fixes (1-line each, data files not owned by other agents): src/lib/routes.ts pricing meta description ("websites from $699, e-commerce from $2,999, SEO from $350/month") and src/data/company.ts home FAQs ($699–$2,999+ range; maintenance "from $49/month" — second $99 mention caught in final sweep).
+- src/views/pricing-view.tsx restructured (visual, not walls of text): hero eyebrow pill "Simple, fixed pricing", gradient H1 span, sub tightened to 1–2 lines, trust chips now No hidden fees / Fixed quotes / 40-40-20 payments (glass-chip, Wallet icon); tier cards kept gradient-frame + "Most Popular" + lg:scale-[1.04], price now text-4xl font-display font-bold (period small), features w/ Check icons, CTA per card; NEW "How it works in 3 steps" strip (numbered blue→cyan gradient badges: Pick a package → Free discovery call → Fixed quote & kickoff); comparison table kept zebra + overflow-x-auto custom-scrollbar + NEW sticky first column on mobile (solid bg th to avoid bleed); NEW "What moves the price" — 4 icon-tile cards, one line each (Page count & design / Custom functionality / Integrations / Content volume); service-block grid kept; NEW guarantee/support card trio (Fixed-price guarantee / On-time delivery / Ongoing support); FAQ now 2-col on desktop; quote-form section + LeadForm + JsonLd offer-catalog schema + trackEvent untouched. No hardcoded prices in the view — all from data.
+- src/components/common/faq-section.tsx: added backward-compatible optional `columns?: 1 | 2` prop (default 1 = byte-equivalent behavior; max-w-5xl grid lg:grid-cols-2, two Accordions sharing one open-item state, JSON-LD + faq_open tracking unchanged). Only way to satisfy "FAQ 2-col on desktop" without duplicating the component in the view.
+- docs/PRICING-GUIDE.md (new): pricing formula hours × $45/hr × 1.4 value buffer + minimum project floors; worked examples reconciling every canonical price; 2025 US market benchmark table vs our prices (position: at/below median to win, premium delivery); raise-price triggers (demand>capacity 4+ wks, win rate >60%, after 5 case studies), discount safely (scope never rate), upsell ladder maintenance→SEO→rebuild; HOW TO EDIT PRICES (data files w/ consistency checklist + Admin panel Pricing tab live DB override per Task 19-e; HMR only, no restart).
+- Verified: npx tsc --noEmit (filtered) → 0 errors; bun run lint → exit 0; rg "15,000|5,999" src/data src/views → only blog-posts.ts (blog content, allowed per spec) and one "$2,000 to $15,000 monthly in media" client ad-budget line (not our fee); broader old-number sweep of data/views/lib clean. Dev server NOT started/stopped.
+
+Stage Summary:
+- Whole site now quotes 2025-market pricing: $699/$1,499/$2,999+ tiers; $649 WP, $8,500 software, $4,500 apps, $950 UI/UX, $350 SEO, $299 ads+social, $49 maintenance, $55/hr; consistent across pricing.ts, both services files, home FAQ, routes meta, pricing FAQs.
+- Pricing page is now a structured visual page (trust chips, 3-step strip, price-mover cards, guarantee trio, sticky-col comparison table, 2-col FAQ) driven 100% from data.
+- docs/PRICING-GUIDE.md gives the owner the pricing formula, benchmarks, raise/discount/upsell playbook, and the exact edit path for future price changes.
+- For orchestrator: (1) faq-section.tsx gained an optional columns prop (default preserves old behavior for all other callers); (2) blog-posts.ts still contains older market ranges in the website-cost article — informational content, flagged for the blog content owner; (3) Task 19-e admin overrides should be cleared when they contradict the new baseline.
+
+---
+Task ID: 19-e
+Agent: admin-panel (sub-agent)
+Task: Admin panel (/#/admin) — manage blog posts, pricing, site content; DB-backed public wiring with graceful static fallbacks.
+
+Work Log:
+- Inspected worklog tail, routes.ts, site-app.tsx, types/blog/pricing/site data, blog views; found most 19-e scaffolding already in place (admin route case + SEO/noindex in routes.ts, AdminView switch case, Post/Setting Prisma models) — verified instead of duplicating. Lead.timeline was NOT in schema (other agent's push covered Post/Setting only); did not touch it.
+- PRISMA: schema already matched spec exactly (Post: slug unique, defaults authorName/authorRole/readTime/published, createdAt/updatedAt; Setting: key @id, value, updatedAt). Ran `bun run db:push` → "database is already in sync" + regenerated Prisma Client 6.19.2; verified tables Lead, NewsletterSubscriber, Post, Setting exist in db/custom.db.
+- AUTH (implemented + verified): POST /api/admin/auth {passcode} → {ok,token} | 401; token = expected passcode. Shared guard src/lib/admin-auth.ts (isAdminRequest checks 'x-admin-token'); every /api/admin/* route uses it.
+- ADMIN APIs (implemented + verified): /api/admin/posts GET (newest-first by updatedAt) / POST (required title+excerpt+content, slugify + unique-ify -2/-3…) / PUT (by body.id, slug uniqueness preserved) / DELETE (?id=). /api/admin/settings GET (object) / PUT ({entries:[{key,value}]}, caps 40 entries × 8000 chars, transactional upserts). Public: /api/public/posts (published only, newest-first, optional ?slug= take 1) and /api/public/settings (all rows as object).
+- ADMIN VIEW src/views/admin-view.tsx (1029 lines, verified end-to-end): login gate card-surface (logo.svg, password input, loading "Sign in") → token in localStorage 'd3_admin_token'; mount auto-verifies stored token via GET /api/admin/posts; "Sign out" clears. Tabs Posts | Pricing | Site Content + "View site" (→ /) + Sign out. Posts tab: max-h-[520px] overflow-y-auto custom-scrollbar list (title, /blog/slug + updatedAt, category Badge blue, Published/Draft Badge, Edit + Delete w/ AlertDialog confirm) and editor form (title→auto-slug until touched, category Select from blog data, image URL + live preview, excerpt, content Textarea with "Blank line = new paragraph. '## ' = section heading" helper, readTime, published Switch) → save/refresh/toasts. Pricing tab: prefills from settings keys pricing.websiteTiers + pricing.servicePricingBlocks (JSON) else static imports; tier fields name/price/period/bestFor/blurb/features(one-per-line) + block fields name/startingAt/unit/blurb; Save → PUT + settings reload + toast "Pricing updated — live on site". Site Content tab: hero.headline, hero.subheadline, contact.email/phoneDisplay/whatsappNumber, stats.projects/clients/years/satisfaction with defaults from src/lib/site.ts → batch PUT. All shadcn (Card-surface pattern, Button, Input, Textarea, Select, Switch, Tabs, Badge, AlertDialog, use-toast), brand blue/cyan only (delete button red = destructive convention).
+- PUBLIC WIRING: src/lib/use-site-settings.ts zustand store {settings, loaded, load/reload}; SiteApp loads once on mount. home-view hero: headline/subheadline overridden only when settings present (gradient default preserved when unset). contact-view + footer: email/phoneDisplay/whatsappNumber overrides (footer keeps static address/hours). blog-view: fetch /api/public/posts → DB posts (mapped via blog-db.ts dbPostToListItem, brand from-blue-500 to-cyan-600 covers) replace static list when present, else static data. blog-post-view: fetch /api/public/posts?slug= → DbPostArticle renderer for DB posts (parseDbSections: split blank lines, '## ' → h2, else paragraph; optional cover image else gradient; TOC only when headings exist; author box w/ initials avatar; CTABand) — unknown slugs wait for the DB lookup before the "Post not found" state. pricing-view: tiers/blocks overridden from settings JSON when parse OK (try/catch, array+length guards), also feeds buildOfferCatalogSchema JsonLd.
+- FOOTER: subtle "Admin" link in the © bottom bar (text-xs text-muted-foreground hover:text-foreground, Link href="/admin" like the other footer links).
+- FIXED en route: blog-view.tsx AuthorLine mixed ?? / || without parens (TS5076 — pre-existing blocker from the parallel blog wiring).
+- ADMIN PASSCODE: 'developers3-admin'. Change it by setting ADMIN_PASSCODE in /home/z/my-project/.env (server reads process.env.ADMIN_PASSCODE ?? 'developers3-admin'; token === passcode, so client keeps working with the new value after re-login). Not yet in production — set a strong value before deploy.
+- VERIFY: npx tsc --noEmit (filtered) → 0 errors; bun run lint → clean. Live curl on running dev server: wrong passcode → 401; 'developers3-admin' → {ok:true,token}; unauth GET /api/admin/posts → 401; created test post → slug task-19-e-test-post visible in /api/public/posts + ?slug=; PUT unpublish → hidden from public; DELETE → gone; PUT settings entry hero.headline → visible in /api/public/settings. Test post deleted and test setting row removed afterwards (DB back to empty → site serves pure static defaults; per 19-c note, overrides only get saved when the owner actually saves from /admin). Dev server NOT started/stopped.
+
+Stage Summary:
+- /#/admin is live: passcode login (default 'developers3-admin', override via ADMIN_PASSCODE env), Posts/Pricing/Site Content tabs backed by Post + Setting tables through guarded /api/admin/* routes; blog + hero + contacts + pricing now read DB overrides with byte-safe static fallbacks so an empty DB or failed fetch leaves the site unchanged.
+- Public surfaces (blog list, post detail, home hero, contact, footer, pricing) render admin content when present; plain-string post renderer (blank line = paragraph, '## ' = heading) powers both the admin preview hint and the public detail page.
+- For orchestrator: settings GET/PUT verified with a real row then cleaned; if you want a persistent smoke-test row, save one from the admin UI. Prisma Client regenerated (6.19.2); schema untouched this pass (models already matched spec).
+
+---
+Task ID: 19-d
+Agent: contact-redesign sub-agent (Z.ai)
+Task: Professional rebuild of the contact experience — LeadForm (full rail layout + compact + success state), ContactView page restructure, /api/leads timeline support, Lead.timeline column.
+
+Work Log:
+- Read worklog tail (19-b/19-f/19-c) + scoped files; confirmed utility classes (card-surface, section-dark-deep, bg-dots-dark, glass-chip-dark, glow-orb, divider-gradient, text-gradient-soft, gradient-frame, animate-pulse-dot), site.ts exports, services data, use-toast, Reveal/SectionHeading/Link contracts, and that cn() uses tailwind-merge.
+- prisma/schema.prisma: added `timeline String?` to Lead (between budget and message) — ONLY schema change. `bun run db:push` succeeded first try (no lock retries needed); client regenerated (v6.19.2).
+- src/components/common/lead-form.tsx — full rebuild, exported name + props API unchanged (source, defaultService, dark, compact, className); honeypot (name="website", off-screen), POST /api/leads, trackEvent('generate_lead') all kept (event now also carries timeline):
+  * BUDGET_RANGES updated to market rates (Under $500 … $5,000+, Not sure yet); added TIMELINE_OPTIONS ('ASAP — this month', '1–3 months', '3–6 months', 'Just exploring').
+  * FULL layout (not compact): one card-surface overflow-hidden rounded-3xl grid lg:grid-cols-[0.85fr_1.15fr]. LEFT RAIL (hidden lg:flex, section-dark-deep + bg-dots-dark + bg-blue-500/25 glow-orb, p-8): glass-chip-dark "Average response: under 4h" badge with animate-pulse-dot bg-cyan-300 dot; h3 "Tell us about your project" (text-2xl font-bold text-white) + 1-line sub; 3 contact rows (Mail/Phone/MessageCircle in bg-white/10 rounded-xl h-10 w-10 tiles + label + value — site.email / site.phoneDisplay / whatsappLink(), tracked email_click/call_click/whatsapp_click {location:'lead_form'}); divider-gradient; mini stats (site.stats.projects "50+ projects delivered", site.stats.satisfaction "98% client satisfaction" — numbers text-gradient-soft); 5-star quote card (real client t2 David Chen/NorthPay, amber stars, bg-white/5 ring-white/10).
+  * RIGHT FORM p-6 sm:p-8, grid sm:grid-cols-2 gap-4: First name* / Last name(optional) / Email* / Phone(optional, type tel) / Service* (Select from services + "Not sure yet") / Budget* / Timeline (optional Select) paired with Company (optional) / Message* textarea rows=5 maxLength=500 with live counter "{n}/500" + "Min. 20 characters" hint (text-[11px], aria-live); consent microcopy with Link to /privacy (text-xs text-muted-foreground); submit Button lg w-full Send icon → Loader2 animate-spin "Sending…"; honeypot hidden input preserved.
+  * Validation: name/email/service/budget/message inline errors (text-xs text-destructive mt-1, aria-describedby wired), aria-invalid on inputs+triggers, errors clear per-field on edit; error toast (useToast) on API failure; company is folded into the message body ("Company: X\n\n…") since the API schema intentionally gained only `timeline`.
+  * SUCCESS STATE (both layouts, role=status aria-live): gradient-frame rounded-full p-3 framing CheckCircle2 h-14 w-14 (white inner disc), h3 "Request received — thank you!", copy "We'll reply within one business day with next steps and a fixed quote.", "Reference: {id}" mono chip when API returns id, WhatsApp outline CTA + ghost "Send another message" (resets form, keeps defaultService preselect). In full layout the dark rail stays visible next to the success panel.
+  * COMPACT variant (service pages): card-surface rounded-3xl with gradient top hairline + icon-tile header ("Get your free quote"), same sm:grid-cols-2 pairs (name, email/phone, service/budget), rows=4 message, same consent/submit/success. Note: service-detail-view.tsx & pricing-view.tsx currently still wrap <LeadForm> in their own card-surface panels — outer agents should drop those wrappers (or pass compact) to avoid a double card.
+- src/views/contact-view.tsx — rebuilt: hero (glow orbs + sr-only h1 for SEO since spec mandates SectionHeading's h2 + SectionHeading eyebrow "Contact", gradient span title "Let's talk about your **next project**", 1-line sub) + 3 glass-chip trust chips (CalendarCheck "Free consultation", FileText "Fixed quotes", Lock "NDA on request"); 3 method cards (card-surface card-hover rounded-3xl p-6, icon-tile, title + ArrowUpRight, one line, action value, Clock response-time note: email 4 business hours / call site.hours / WhatsApp under 15 min, tracked); LeadForm full variant as centerpiece in Reveal; office info strip (card-surface grid 3-col: MapPin address + Get directions, Clock site.hours + pulse-dot async note, Globe + socials row — social hover shadow recolored emerald→blue); kept admin-editable contacts via useSiteSettings, ContactPage JsonLd, FAQSection(homeFaqs.slice(0,3) "Quick Answers") on tinted section. Cards use h3 under the hero h2 (clean heading order), 44px+ targets.
+- src/app/api/leads/route.ts: `timeline: z.string().trim().max(60).optional().default('')`, persisted as timeline (null when empty), added to the server log line; response already returned { ok, id } — confirmed id flows to the UI reference line.
+- VERIFY: npx tsc --noEmit filtered (examples/|skills/) → empty; bun run lint → clean. Browser E2E via agent-browser on the running dev server: contact page renders (hero, chips, 3 method cards, rail rows, all 9 fields, privacy link, office strip, FAQ), zero console errors, no horizontal overflow; empty submit → 5 inline errors + correct aria-invalid ids; filled submit with network-mocked {ok,id:"smoke-ref-19d"} → success panel with title/reference/WhatsApp/ghost buttons, generate_lead in dataLayer (source/service/budget/timeline), "Send another message" resets to a clean form. Real (unmocked) POST /api/leads: invalid payload → 400 ✓; valid payload → 500 from the RUNNING dev server only because its long-lived process still holds the Prisma client generated BEFORE db:push ("Unknown argument `timeline`" in dev.log). Fresh-process proof: db.lead.create({timeline:'1–3 months'}) → CREATED + DELETED ok. → Orchestrator must restart the dev server once (standard after any db push; code+schema+client verified correct).
+
+Stage Summary:
+- Contact experience is now a two-panel pro form: dark navy rail (response badge, direct channels, gradient stats, 5-star quote) + structured right-side form (first/last name, email, phone, service, budget, timeline, company, message w/ live counter, consent, inline validation, aria-invalid/describedby) with a gradient-framed success state incl. lead reference id; compact variant ships for service pages. ContactView restructured around it (trust chips, 3 method cards with response times, office/hours/social strip, FAQ kept).
+- Lead model gained `timeline String?` (db synced); /api/leads validates (max 60) and persists it and returns the lead id consumed by the UI.
+- Budget ranges aligned to the new market pricing ($500–$5,000 ladder + Not sure yet).
+- Files touched: prisma/schema.prisma, src/components/common/lead-form.tsx, src/views/contact-view.tsx, src/app/api/leads/route.ts, worklog.md — nothing else.
+- For orchestrator: (1) restart the dev server so /api/leads loads the regenerated Prisma client (timeline persistence) — verified working in a fresh process; (2) service-detail-view.tsx + pricing-view.tsx still double-wrap LeadForm in their own cards — drop wrappers / adopt compact; (3) LeadForm full variant is now a self-contained card, so callers must not add another card-surface around it.

@@ -20,44 +20,86 @@ interface FAQSectionProps {
   description?: string;
   dark?: boolean;
   className?: string;
+  /** Optional two-column desktop layout (collapses to one column below lg). */
+  columns?: 1 | 2;
 }
 
-/** Accessible FAQ accordion with FAQPage schema emitted automatically. */
-export function FAQSection({ faqs, title = 'Frequently Asked Questions', description, dark, className }: FAQSectionProps) {
+/** Accessible FAQ accordion (card-style items) with FAQPage schema emitted automatically. */
+export function FAQSection({ faqs, title = 'Frequently Asked Questions', description, dark, className, columns = 1 }: FAQSectionProps) {
   const [openItem, setOpenItem] = React.useState<string | undefined>(undefined);
+
+  const handleValueChange = (value: string) => {
+    setOpenItem(value);
+    if (value) trackEvent('faq_open', { question: faqs.find((f) => f.question === value)?.question ?? value });
+  };
+
+  const renderItems = (items: FAQ[]) =>
+    items.map((faq, index) => (
+      <AccordionItem
+        key={index}
+        value={faq.question}
+        className={cn(
+          'mb-3 rounded-2xl border px-5 transition-colors',
+          dark
+            ? 'border-blue-400/15 bg-white/[0.04] data-[state=open]:border-blue-400/30'
+            : 'border-blue-900/10 bg-white shadow-[0_1px_2px_rgb(5_19_14/0.04)] data-[state=open]:border-blue-500/35 data-[state=open]:shadow-[0_8px_24px_-14px_rgb(5_150_105/0.4)]'
+        )}
+      >
+        <AccordionTrigger
+          className={cn(
+            'text-left text-base font-semibold hover:no-underline',
+            dark ? 'text-blue-50 hover:text-white' : 'text-foreground hover:text-blue-800'
+          )}
+        >
+          {faq.question}
+        </AccordionTrigger>
+        <AccordionContent
+          className={cn(
+            'text-[15px] leading-relaxed',
+            dark ? 'text-blue-100/70' : 'text-muted-foreground'
+          )}
+        >
+          {faq.answer}
+        </AccordionContent>
+      </AccordionItem>
+    ));
+
+  const groups =
+    columns === 2 && faqs.length > 1
+      ? [faqs.slice(0, Math.ceil(faqs.length / 2)), faqs.slice(Math.ceil(faqs.length / 2))]
+      : null;
 
   return (
     <div className={cn('w-full', className)}>
       <JsonLd data={buildFaqPageSchema(faqs)} />
       {title ? (
-        <Reveal className="mb-8 text-center">
+        <Reveal className="mb-10 text-center">
           <h2 className={cn('text-2xl font-bold sm:text-3xl', dark ? 'text-white' : 'text-foreground')}>{title}</h2>
           {description ? (
-            <p className={cn('mt-3 text-muted-foreground', dark && 'text-emerald-100/70')}>{description}</p>
+            <p className={cn('mt-3 text-muted-foreground', dark && 'text-blue-100/70')}>{description}</p>
           ) : null}
         </Reveal>
       ) : null}
-      <Reveal className="mx-auto max-w-3xl">
-        <Accordion
-          type="single"
-          collapsible
-          value={openItem}
-          onValueChange={(value) => {
-            setOpenItem(value);
-            if (value) trackEvent('faq_open', { question: faqs.find((f) => f.question === value)?.question ?? value });
-          }}
-        >
-          {faqs.map((faq, index) => (
-            <AccordionItem key={index} value={faq.question}>
-              <AccordionTrigger className={cn('text-left text-base font-semibold', dark && 'text-emerald-50 hover:text-white hover:no-underline')}>
-                {faq.question}
-              </AccordionTrigger>
-              <AccordionContent className={cn('text-base leading-relaxed text-muted-foreground', dark && 'text-emerald-100/70')}>
-                {faq.answer}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+      <Reveal className={cn('mx-auto', groups ? 'max-w-5xl' : 'max-w-3xl')}>
+        {groups ? (
+          <div className="grid items-start gap-x-6 lg:grid-cols-2">
+            {groups.map((group, groupIndex) => (
+              <Accordion
+                key={groupIndex}
+                type="single"
+                collapsible
+                value={openItem}
+                onValueChange={handleValueChange}
+              >
+                {renderItems(group)}
+              </Accordion>
+            ))}
+          </div>
+        ) : (
+          <Accordion type="single" collapsible value={openItem} onValueChange={handleValueChange}>
+            {renderItems(faqs)}
+          </Accordion>
+        )}
       </Reveal>
     </div>
   );

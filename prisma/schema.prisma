@@ -15,6 +15,7 @@ model Lead {
   phone     String?
   service   String?
   budget    String?
+  timeline  String?
   message   String
   source    String   @default("contact")
   createdAt DateTime @default(now())
@@ -25,5 +26,29 @@ model NewsletterSubscriber {
   id        String   @id @default(cuid())
   email     String   @unique
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Blog posts managed from the admin panel (/admin). Rendered on /blog when present.
+model Post {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  title      String
+  excerpt    String
+  category   String
+  image      String?
+  authorName String   @default("Developers3 Team")
+  authorRole String   @default("Contributor")
+  content    String
+  readTime   Int      @default(5)
+  published  Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// Simple key/value site content overrides (hero copy, contacts, stats, pricing JSON).
+model Setting {
+  key       String   @id
+  value     String
   updatedAt DateTime @updatedAt
 }

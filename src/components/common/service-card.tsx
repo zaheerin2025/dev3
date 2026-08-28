@@ -1,8 +1,6 @@
 'use client';
 
 import { ArrowRight } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { Service } from '@/lib/types';
 import { Link } from './link';
@@ -20,26 +18,40 @@ export function ServiceCard({ service, showPrice = false, className }: ServiceCa
     <Link
       href={`/${service.slug}`}
       ariaLabel={`Learn more about ${service.name}`}
-      className={cn('group block h-full focus-visible:outline-none', className)}
+      className={cn('group block h-full rounded-[1.25rem] focus-visible:outline-none', className)}
     >
-      <Card className="h-full transition-all duration-300 group-hover:-translate-y-1 group-hover:border-emerald-300 group-hover:shadow-lg group-hover:shadow-emerald-600/10 group-focus-visible:ring-2 group-focus-visible:ring-ring">
-        <CardContent className="flex h-full flex-col gap-3 p-6">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 transition-colors group-hover:bg-emerald-600 group-hover:text-white">
-            <ServiceIconGlyph icon={service.icon} />
-          </div>
+      <article className="card-surface card-hover relative flex h-full flex-col gap-4 overflow-hidden p-6 group-focus-visible:ring-2 group-focus-visible:ring-ring">
+        {/* Top accent line that brightens on hover */}
+        <span
+          className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          aria-hidden="true"
+        />
+        <span className="icon-tile h-12 w-12 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
+          <ServiceIconGlyph icon={service.icon} />
+        </span>
+        <div className="flex h-full flex-col gap-2">
           <h3 className="text-lg font-semibold text-foreground">{service.name}</h3>
           <p className="text-sm leading-relaxed text-muted-foreground">{service.tagline}</p>
+        </div>
+        <div className="mt-auto flex items-center justify-between pt-1">
           {showPrice ? (
-            <Badge variant="secondary" className="w-fit">
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/15">
               From {service.startingPrice}
-            </Badge>
-          ) : null}
-          <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-semibold text-emerald-700">
+            </span>
+          ) : (
+            <span />
+          )}
+          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700">
             Learn more
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+            <span
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-50 transition-all duration-300 group-hover:bg-blue-600 group-hover:text-white"
+              aria-hidden="true"
+            >
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+            </span>
           </span>
-        </CardContent>
-      </Card>
+        </div>
+      </article>
     </Link>
   );
 }

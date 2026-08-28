@@ -77,7 +77,7 @@ export interface CaseStudyResult {
 export interface CaseStudyShowcase {
   title: string;
   blurb: string;
-  /** Tailwind gradient classes, e.g. "from-emerald-500 to-teal-600". */
+  /** Tailwind gradient classes, e.g. "from-blue-500 to-cyan-600". */
   gradient: string;
 }
 
@@ -130,7 +130,7 @@ export interface BlogPost {
   /** ISO date, e.g. "2025-01-20". */
   date: string;
   readTime: string;
-  /** Tailwind gradient classes for the cover, e.g. "from-emerald-500 to-teal-600". */
+  /** Tailwind gradient classes for the cover, e.g. "from-blue-500 to-cyan-600". */
   coverGradient: string;
   sections: BlogSection[];
   keyTakeaways: string[];

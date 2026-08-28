@@ -1,34 +1,46 @@
 'use client';
 
 import * as React from 'react';
-import { CalendarDays, Clock, Newspaper, Quote } from 'lucide-react';
+import { ArrowRight, CalendarDays, Clock, Newspaper, Quote } from 'lucide-react';
 import { format } from 'date-fns';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Section } from '@/components/common/section';
-import { SectionHeading } from '@/components/common/section-heading';
 import { Reveal } from '@/components/common/reveal';
 import { Link } from '@/components/common/link';
 import { Breadcrumbs } from '@/components/common/breadcrumbs';
 import { CTABand } from '@/components/common/cta-band';
 import { blogPosts, getTeamMember } from '@/data';
+import {
+  dbPostToListItem,
+  fetchPublicDbPosts,
+  staticPostToListItem,
+  type BlogListItem,
+  type DbPost,
+} from '@/lib/blog-db';
 import { trackEvent } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 
-function AuthorLine({ authorId, className }: { authorId: string; className?: string }) {
-  const member = getTeamMember(authorId);
+/** Author chip that works for both team-authored (static) and DB posts. */
+function AuthorLine({ item, className }: { item: BlogListItem; className?: string }) {
+  const member = item.authorId ? getTeamMember(item.authorId) : undefined;
+  const name = item.authorName ?? member?.name ?? 'Developers3 Team';
+  const initials = (
+    member?.initials ??
+    name
+      .split(/\s+/)
+      .map((word) => word[0] ?? '')
+      .join('')
+      .slice(0, 2)
+      .toUpperCase()
+  ) || 'D3';
   return (
     <span className={cn('flex items-center gap-2', className)}>
-      <Avatar className="h-8 w-8">
-        <AvatarFallback className="bg-emerald-100 text-xs font-bold text-emerald-700">
-          {member?.initials ?? 'D3'}
+      <Avatar className="h-8 w-8 ring-2 ring-blue-100">
+        <AvatarFallback className="bg-blue-100 text-xs font-bold text-blue-700">
+          {initials}
         </AvatarFallback>
       </Avatar>
-      <span className="text-xs text-muted-foreground">
-        {member?.name ?? 'Developers3 Team'}
-      </span>
+      <span className="text-xs font-medium text-foreground/80">{name}</span>
     </span>
   );
 }
@@ -36,14 +48,31 @@ function AuthorLine({ authorId, className }: { authorId: string; className?: str
 /** /blog — article hub with category filter and featured post. */
 export function BlogView() {
   const [category, setCategory] = React.useState<string>('all');
+  // DB posts (admin-created) replace the static list when present.
+  const [dbPosts, setDbPosts] = React.useState<DbPost[] | null>(null);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    fetchPublicDbPosts().then((posts) => {
+      if (!cancelled) setDbPosts(posts);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const listItems = React.useMemo<BlogListItem[]>(
+    () => (dbPosts ? dbPosts.map(dbPostToListItem) : blogPosts.map(staticPostToListItem)),
+    [dbPosts]
+  );
 
   const categories = React.useMemo(
-    () => Array.from(new Set(blogPosts.map((post) => post.category))),
-    []
+    () => Array.from(new Set(listItems.map((post) => post.category))),
+    [listItems]
   );
   const filtered = React.useMemo(
-    () => (category === 'all' ? blogPosts : blogPosts.filter((post) => post.category === category)),
-    [category]
+    () => (category === 'all' ? listItems : listItems.filter((post) => post.category === category)),
+    [category, listItems]
   );
   const featured = category === 'all' ? filtered[0] : undefined;
   const rest = featured ? filtered.slice(1) : filtered;
@@ -56,10 +85,28 @@ export function BlogView() {
   return (
     <>
       {/* Hero */}
-      <Section tinted>
-        <div className="mx-auto max-w-3xl">
+      <Section grid className="lg:py-20">
+        {/* Ambient glow orbs (decorative) */}
+        <span
+          className="glow-orb left-[-10rem] top-[-9rem] h-[26rem] w-[26rem] bg-blue-300/25"
+          aria-hidden="true"
+        />
+        <span
+          className="glow-orb right-[-11rem] top-1/3 h-96 w-96 bg-cyan-300/20"
+          aria-hidden="true"
+        />
+        <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'Blog' }]} />
-          <h1 className="mt-6 text-3xl font-bold text-balance sm:text-5xl">The Developers3 Blog</h1>
+          <span className="mt-6 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-blue-700 ring-1 ring-inset ring-blue-600/20">
+            <span
+              className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-blue-500"
+              aria-hidden="true"
+            />
+            Insights &amp; guides
+          </span>
+          <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
+            The Developers3 <span className="text-gradient">Blog</span>
+          </h1>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
             Practical guides on website costs, platforms, SEO, and app development — written by the
             people who build and ship for a living.
@@ -77,10 +124,10 @@ export function BlogView() {
                 onClick={() => selectCategory('all')}
                 aria-pressed={category === 'all'}
                 className={cn(
-                  'inline-flex min-h-11 items-center rounded-full px-5 text-sm font-medium transition-colors',
+                  'inline-flex min-h-11 items-center rounded-full px-5 text-sm font-medium transition-all',
                   category === 'all'
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-white text-foreground ring-1 ring-inset ring-emerald-600/15 hover:bg-emerald-50'
+                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-[0_8px_20px_-8px_rgb(13_148_136/0.65)]'
+                    : 'bg-white text-foreground ring-1 ring-inset ring-blue-900/10 hover:bg-blue-50 hover:ring-blue-500/30'
                 )}
               >
                 All
@@ -92,10 +139,10 @@ export function BlogView() {
                   onClick={() => selectCategory(cat)}
                   aria-pressed={category === cat}
                   className={cn(
-                    'inline-flex min-h-11 items-center rounded-full px-5 text-sm font-medium capitalize transition-colors',
+                    'inline-flex min-h-11 items-center rounded-full px-5 text-sm font-medium capitalize transition-all',
                     category === cat
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-white text-foreground ring-1 ring-inset ring-emerald-600/15 hover:bg-emerald-50'
+                      ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-[0_8px_20px_-8px_rgb(13_148_136/0.65)]'
+                      : 'bg-white text-foreground ring-1 ring-inset ring-blue-900/10 hover:bg-blue-50 hover:ring-blue-500/30'
                   )}
                 >
                   {cat}
@@ -105,29 +152,49 @@ export function BlogView() {
           </Reveal>
         ) : null}
 
-        {blogPosts.length === 0 ? (
+        {listItems.length === 0 ? (
           <p className="text-center text-muted-foreground">New articles are on the way — check back soon.</p>
         ) : null}
 
         {/* Featured post */}
         {featured ? (
           <Reveal className="mb-10">
-            <Card className="grid overflow-hidden rounded-2xl p-0 md:grid-cols-2">
-              <div
-                className={cn(
-                  'relative flex h-48 items-center justify-center bg-gradient-to-br md:h-full md:min-h-56',
-                  featured.coverGradient
-                )}
+            <div className="card-surface group overflow-hidden rounded-[1.5rem] lg:grid lg:grid-cols-2">
+              <Link
+                href={`/blog/${featured.slug}`}
+                aria-label={`Read article: ${featured.title}`}
+                className="relative block aspect-[16/10] overflow-hidden lg:aspect-auto"
               >
-                <Badge className="absolute left-4 top-4 bg-white/90 text-emerald-800">
+                <div
+                  className={cn(
+                    'absolute inset-0 bg-gradient-to-br transition-transform duration-500 group-hover:scale-105',
+                    featured.coverGradient
+                  )}
+                >
+                  <div className="bg-dots-dark absolute inset-0 opacity-30" aria-hidden="true" />
+                  <span className="flex h-full items-center justify-center">
+                    <Quote className="h-16 w-16 text-white/40" aria-hidden="true" />
+                  </span>
+                </div>
+                <span className="glass-chip absolute left-4 top-4 z-10 rounded-full px-3.5 py-1.5 text-xs font-semibold text-blue-800">
                   {featured.category}
-                </Badge>
-                <Quote className="h-16 w-16 text-white/40" aria-hidden="true" />
-              </div>
-              <CardContent className="flex flex-col gap-4 p-6 lg:p-8">
-                <Badge className="w-fit bg-amber-400 text-emerald-950">Featured</Badge>
-                <h2 className="text-2xl font-bold text-balance">
-                  <Link href={`/blog/${featured.slug}`} className="hover:text-emerald-700">
+                </span>
+              </Link>
+              <div className="flex flex-col gap-4 p-6 sm:p-8">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-amber-400 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-blue-950">
+                    Featured
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/15">
+                    {featured.category}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-blue-900/10">
+                    <Clock className="h-3.5 w-3.5 text-blue-600" aria-hidden="true" />
+                    {featured.readTime}
+                  </span>
+                </div>
+                <h2 className="text-2xl font-bold text-balance sm:text-3xl">
+                  <Link href={`/blog/${featured.slug}`} className="transition-colors hover:text-blue-800">
                     {featured.title}
                   </Link>
                 </h2>
@@ -135,61 +202,76 @@ export function BlogView() {
                   {featured.excerpt}
                 </p>
                 <div className="flex flex-wrap items-center gap-3">
-                  <AuthorLine authorId={featured.authorId} />
-                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <AuthorLine item={featured} />
+                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
                     {format(new Date(featured.date), 'MMMM d, yyyy')}
                   </span>
-                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                    {featured.readTime}
-                  </span>
                 </div>
-                <Button asChild variant="outline" size="lg" className="mt-auto h-11 w-fit">
-                  <Link href={`/blog/${featured.slug}`}>Read article</Link>
-                </Button>
-              </CardContent>
-            </Card>
+                <Link
+                  href={`/blog/${featured.slug}`}
+                  className="group/link mt-auto inline-flex min-h-11 w-fit items-center gap-2.5 text-sm font-semibold text-blue-700 transition-colors hover:text-blue-800"
+                >
+                  Read article
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition-colors group-hover/link:bg-blue-600 group-hover/link:text-white">
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                </Link>
+              </div>
+            </div>
           </Reveal>
         ) : null}
 
         {/* Post grid */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {rest.map((post, index) => (
             <Reveal key={post.slug} delay={index * 60} className="h-full">
-              <Card className="group h-full overflow-hidden rounded-2xl">
+              <div className="card-surface card-hover group flex h-full flex-col overflow-hidden rounded-[1.25rem]">
                 <Link
                   href={`/blog/${post.slug}`}
                   aria-label={`Read article: ${post.title}`}
                   className="block"
                 >
-                  <div
-                    className={cn(
-                      'relative flex h-36 items-center justify-center bg-gradient-to-br transition-transform duration-300 group-hover:scale-[1.02]',
-                      post.coverGradient
-                    )}
-                  >
-                    <Badge className="absolute left-3 top-3 bg-white/90 text-emerald-800">
+                  <div className="relative aspect-[16/9] overflow-hidden">
+                    <div
+                      className={cn(
+                        'absolute inset-0 bg-gradient-to-br transition-transform duration-500 group-hover:scale-105',
+                        post.coverGradient
+                      )}
+                    >
+                      <div className="bg-dots-dark absolute inset-0 opacity-30" aria-hidden="true" />
+                      <span className="flex h-full items-center justify-center">
+                        <Newspaper className="h-10 w-10 text-white/40" aria-hidden="true" />
+                      </span>
+                    </div>
+                    <span className="glass-chip absolute left-3 top-3 z-10 rounded-full px-3 py-1 text-xs font-semibold text-blue-800">
                       {post.category}
-                    </Badge>
-                    <Newspaper className="h-10 w-10 text-white/40" aria-hidden="true" />
+                    </span>
                   </div>
                 </Link>
-                <CardContent className="flex h-[calc(100%-9rem)] flex-col gap-3 p-5">
-                  <h3 className="font-semibold leading-snug">
-                    <Link href={`/blog/${post.slug}`} className="group-hover:text-emerald-700">
+                <div className="flex flex-1 flex-col gap-3 p-6">
+                  <p className="text-xs text-muted-foreground">
+                    {format(new Date(post.date), 'MMM d, yyyy')} · {post.readTime}
+                  </p>
+                  <h3 className="line-clamp-2 font-semibold leading-snug">
+                    <Link href={`/blog/${post.slug}`} className="transition-colors group-hover:text-blue-800">
                       {post.title}
                     </Link>
                   </h3>
                   <p className="line-clamp-2 text-sm text-muted-foreground">{post.excerpt}</p>
-                  <div className="mt-auto flex flex-wrap items-center gap-3">
-                    <AuthorLine authorId={post.authorId} />
-                    <span className="text-xs text-muted-foreground">
-                      {format(new Date(post.date), 'MMM d, yyyy')} · {post.readTime}
-                    </span>
+                  <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-2">
+                    <AuthorLine item={post} />
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      aria-label={`Read more: ${post.title}`}
+                      className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-blue-700 transition-colors hover:text-blue-800"
+                    >
+                      Read more
+                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    </Link>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </Reveal>
           ))}
         </div>

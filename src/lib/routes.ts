@@ -12,6 +12,7 @@ export type RouteMatch =
   | { kind: 'contact' }
   | { kind: 'blog' }
   | { kind: 'blog-post'; slug: string }
+  | { kind: 'admin' }
   | { kind: 'privacy' }
   | { kind: 'terms' }
   | { kind: 'not-found'; path: string };
@@ -55,12 +56,18 @@ export function resolveRoute(path: string, data: RouteData): RouteMatch {
     }
   }
 
+  // Admin panel — exact match only, kept out of public navigation.
+  if (clean === '/admin') {
+    return { kind: 'admin' };
+  }
+
+  // Any /blog/{slug} resolves to the post view: static posts come from data,
+  // admin-created posts are fetched from /api/public/posts by the view itself
+  // (unknown slugs render the view's own "Post not found" state).
   if (clean.startsWith('/blog/')) {
     const slug = clean.slice('/blog/'.length);
     if (slug && !slug.includes('/')) {
-      return data.blogPosts.some((p) => p.slug === slug)
-        ? { kind: 'blog-post', slug }
-        : { kind: 'not-found', path };
+      return { kind: 'blog-post', slug };
     }
   }
 
@@ -112,7 +119,7 @@ export function getRouteSeo(match: RouteMatch, data: RouteData): RouteSeo {
       return {
         title: 'Website & Digital Services Pricing | Developers3',
         description:
-          'Transparent, fixed pricing: websites from $1,499, e-commerce from $5,999, SEO from $600/month. Compare packages, see what is included, and get a free custom quote.',
+          'Transparent, fixed pricing: websites from $699, e-commerce from $2,999, SEO from $350/month. Compare packages, see what is included, and get a free custom quote.',
       };
     case 'about':
       return {
@@ -138,6 +145,11 @@ export function getRouteSeo(match: RouteMatch, data: RouteData): RouteSeo {
         ? { title: post.metaTitle, description: post.metaDescription }
         : { title: `Blog | ${site.name}`, description: site.description };
     }
+    case 'admin':
+      return {
+        title: 'Admin — Developers3',
+        description: 'Developers3 admin panel — manage blog posts, pricing, and site content.',
+      };
     case 'privacy':
       return {
         title: 'Privacy Policy | Developers3',

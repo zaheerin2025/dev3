@@ -45,38 +45,38 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.75rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.19 0.02 170);
+  --foreground: oklch(0.2 0.032 265);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.19 0.02 170);
+  --card-foreground: oklch(0.2 0.032 265);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.19 0.02 170);
-  --primary: oklch(0.596 0.145 163.2);
+  --popover-foreground: oklch(0.2 0.032 265);
+  --primary: oklch(0.546 0.215 262.9);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.962 0.02 166);
-  --secondary-foreground: oklch(0.32 0.07 168);
-  --muted: oklch(0.968 0.006 170);
-  --muted-foreground: oklch(0.5 0.02 170);
-  --accent: oklch(0.945 0.045 168);
-  --accent-foreground: oklch(0.31 0.08 170);
+  --secondary: oklch(0.961 0.014 250);
+  --secondary-foreground: oklch(0.33 0.06 262);
+  --muted: oklch(0.968 0.006 250);
+  --muted-foreground: oklch(0.51 0.023 264);
+  --accent: oklch(0.945 0.033 245);
+  --accent-foreground: oklch(0.35 0.08 262);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.918 0.012 170);
-  --input: oklch(0.918 0.012 170);
-  --ring: oklch(0.696 0.17 162.48);
-  --chart-1: oklch(0.696 0.17 162.48);
-  --chart-2: oklch(0.828 0.189 84.429);
-  --chart-3: oklch(0.508 0.118 165);
-  --chart-4: oklch(0.77 0.16 70);
-  --chart-5: oklch(0.596 0.145 163.2);
+  --border: oklch(0.92 0.012 255);
+  --input: oklch(0.92 0.012 255);
+  --ring: oklch(0.623 0.214 259.8);
+  --chart-1: oklch(0.623 0.214 259.8);
+  --chart-2: oklch(0.715 0.143 215.2);
+  --chart-3: oklch(0.455 0.236 264.4);
+  --chart-4: oklch(0.769 0.188 70.08);
+  --chart-5: oklch(0.516 0.108 222.5);
   --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.19 0.02 170);
-  --sidebar-primary: oklch(0.596 0.145 163.2);
+  --sidebar-foreground: oklch(0.2 0.032 265);
+  --sidebar-primary: oklch(0.546 0.215 262.9);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.962 0.02 166);
-  --sidebar-accent-foreground: oklch(0.32 0.07 168);
-  --sidebar-border: oklch(0.918 0.012 170);
-  --sidebar-ring: oklch(0.696 0.17 162.48);
+  --sidebar-accent: oklch(0.961 0.014 250);
+  --sidebar-accent-foreground: oklch(0.33 0.06 262);
+  --sidebar-border: oklch(0.92 0.012 255);
+  --sidebar-ring: oklch(0.623 0.214 259.8);
 }
 
 .dark {
@@ -86,7 +86,7 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.696 0.17 162.48);
+  --primary: oklch(0.623 0.214 259.8);
   --primary-foreground: oklch(0.145 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -97,20 +97,20 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.696 0.17 162.48);
-  --chart-1: oklch(0.696 0.17 162.48);
-  --chart-2: oklch(0.828 0.189 84.429);
-  --chart-3: oklch(0.508 0.118 165);
-  --chart-4: oklch(0.77 0.16 70);
-  --chart-5: oklch(0.596 0.145 163.2);
+  --ring: oklch(0.623 0.214 259.8);
+  --chart-1: oklch(0.623 0.214 259.8);
+  --chart-2: oklch(0.715 0.143 215.2);
+  --chart-3: oklch(0.455 0.236 264.4);
+  --chart-4: oklch(0.769 0.188 70.08);
+  --chart-5: oklch(0.516 0.108 222.5);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.696 0.17 162.48);
+  --sidebar-primary: oklch(0.623 0.214 259.8);
   --sidebar-primary-foreground: oklch(0.145 0 0);
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.696 0.17 162.48);
+  --sidebar-ring: oklch(0.623 0.214 259.8);
 }
 
 @layer base {
@@ -122,76 +122,224 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    text-rendering: optimizeLegibility;
+    /* Professional tech-agency page wash: faint electric-blue ambience */
+    background-image:
+      radial-gradient(56rem 30rem at 88% -6%, rgb(37 99 235 / 0.05), transparent 62%),
+      radial-gradient(44rem 26rem at -10% 14%, rgb(8 145 178 / 0.04), transparent 60%);
+    background-attachment: fixed;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-display;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   }
   ::selection {
-    background: oklch(0.596 0.145 163.2);
+    background: oklch(0.546 0.215 262.9);
     color: #fff;
   }
 }
 
 @layer utilities {
-  /* Dark brand section used across the site */
+  /* =============================================
+     BRAND SECTION BACKGROUNDS
+     ============================================= */
+
+  /* Deep ink-navy brand section (flat) */
   .section-dark {
-    background-color: #05130e;
-    color: #e7f6ef;
+    background-color: #050914;
+    color: #eaf1fb;
   }
+  /* Deep ink-navy brand section with layered gradient + vignette */
   .section-dark-deep {
-    background-color: #05130e;
-    background-image: linear-gradient(160deg, #05130e 0%, #07231a 60%, #05130e 100%);
-    color: #e7f6ef;
+    background-color: #050914;
+    background-image:
+      radial-gradient(52rem 30rem at 85% -10%, rgb(59 130 246 / 0.16), transparent 60%),
+      radial-gradient(40rem 26rem at 8% 110%, rgb(8 145 178 / 0.12), transparent 60%),
+      linear-gradient(165deg, #050914 0%, #0a1834 55%, #050914 100%);
+    color: #eaf1fb;
   }
-  /* Subtle brand patterns */
+  /* Light cool wash used to alternate white sections */
+  .section-tint {
+    background-color: #f5f8ff;
+    background-image: radial-gradient(46rem 24rem at 90% 0%, rgb(37 99 235 / 0.06), transparent 62%);
+  }
+
+  /* =============================================
+     PATTERNS
+     ============================================= */
   .bg-grid-light {
     background-image:
-      linear-gradient(to right, rgb(5 150 105 / 0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(5 150 105 / 0.06) 1px, transparent 1px);
-    background-size: 42px 42px;
+      linear-gradient(to right, rgb(37 99 235 / 0.055) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(37 99 235 / 0.055) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(72rem 36rem at 50% 0%, black 55%, transparent 100%);
+    mask-image: radial-gradient(72rem 36rem at 50% 0%, black 55%, transparent 100%);
   }
   .bg-dots-dark {
-    background-image: radial-gradient(rgb(16 185 129 / 0.14) 1px, transparent 1px);
+    background-image: radial-gradient(rgb(96 165 250 / 0.13) 1px, transparent 1px);
     background-size: 24px 24px;
   }
-  /* Gradient + dots layered correctly on dark deep sections */
   .section-dark-deep.bg-dots-dark {
-    background-color: #05130e;
+    background-color: #050914;
     background-image:
-      radial-gradient(rgb(16 185 129 / 0.14) 1px, transparent 1px),
-      linear-gradient(160deg, #05130e 0%, #07231a 60%, #05130e 100%);
-    background-size: 24px 24px, 100% 100%;
+      radial-gradient(rgb(96 165 250 / 0.13) 1px, transparent 1px),
+      radial-gradient(52rem 30rem at 85% -10%, rgb(59 130 246 / 0.16), transparent 60%),
+      linear-gradient(165deg, #050914 0%, #0a1834 55%, #050914 100%);
+    background-size: 24px 24px, 100% 100%, 100% 100%;
   }
+
+  /* Ambient blurred glow orbs — absolutely-positioned decorative divs */
+  .glow-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(72px);
+    pointer-events: none;
+  }
+
+  /* =============================================
+     TYPOGRAPHY ACCENTS
+     ============================================= */
   .text-balance {
     text-wrap: balance;
   }
-  /* Scroll-reveal (performance-safe, respects reduced motion) */
-  .reveal {
-    opacity: 0;
-    transform: translateY(16px);
+  .text-gradient {
+    background-image: linear-gradient(100deg, #2563eb 10%, #0891b2 55%, #06b6d4 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-soft {
+    background-image: linear-gradient(100deg, #60a5fa, #67e8f9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* =============================================
+     SURFACES / CARDS
+     ============================================= */
+  /* Standard elevated card */
+  .card-surface {
+    background-color: #fff;
+    border-radius: 1.25rem;
+    border: 1px solid rgb(2 8 23 / 0.07);
+    box-shadow:
+      0 1px 2px rgb(2 8 23 / 0.05),
+      0 12px 32px -16px rgb(2 8 23 / 0.14);
+  }
+  /* Hover lift shared by clickable cards */
+  .card-hover {
     transition:
-      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.35s;
+  }
+  .card-hover:hover {
+    transform: translateY(-5px);
+    border-color: rgb(59 130 246 / 0.35);
+    box-shadow:
+      0 2px 4px rgb(2 8 23 / 0.05),
+      0 20px 44px -18px rgb(37 99 235 / 0.32);
+  }
+  /* Frosted glass chip (hero floaters, badges on media) */
+  .glass-chip {
+    background: rgb(255 255 255 / 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgb(255 255 255 / 0.65);
+    box-shadow: 0 8px 24px -10px rgb(2 8 23 / 0.25);
+  }
+  .glass-chip-dark {
+    background: rgb(8 20 45 / 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgb(56 189 248 / 0.25);
+    box-shadow: 0 8px 24px -10px rgb(0 0 0 / 0.5);
+  }
+  /* Gradient hairline frame (hero media, highlighted pricing) */
+  .gradient-frame {
+    position: relative;
+    background: linear-gradient(135deg, rgb(59 130 246 / 0.55), rgb(34 211 238 / 0.22) 40%, rgb(37 99 235 / 0.45));
+    padding: 1px;
+    border-radius: 1.5rem;
+  }
+  /* Icon tile with gradient + top gloss */
+  .icon-tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.9rem;
+    background-image: linear-gradient(140deg, #3b82f6, #2563eb 55%, #0891b2);
+    color: #fff;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.35),
+      0 8px 18px -8px rgb(37 99 235 / 0.55);
+  }
+  /* Gradient horizontal rule */
+  .divider-gradient {
+    height: 1px;
+    border: 0;
+    background-image: linear-gradient(to right, transparent, rgb(59 130 246 / 0.45), transparent);
+  }
+
+  /* =============================================
+     MOTION
+     ============================================= */
+  @keyframes float-y {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .animate-float {
+    animation: float-y 5.5s ease-in-out infinite;
+  }
+  .animate-float-slow {
+    animation: float-y 7.5s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.8); }
+  }
+  .animate-pulse-dot {
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  /* =============================================
+     SCROLL-REVEAL — SEO/JS SAFE
+     Hidden state only applies once JS arms the
+     element (is-armed); SSR/crawlers/no-JS always
+     see full content. A JS failsafe force-reveals
+     everything after a few seconds.
+     ============================================= */
+  .reveal.is-armed {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: opacity, transform;
   }
-  .reveal.is-visible {
+  .reveal.is-armed.is-visible {
     opacity: 1;
     transform: translateY(0);
   }
   @media (prefers-reduced-motion: reduce) {
-    .reveal {
+    .reveal.is-armed {
       transition: none;
       opacity: 1;
       transform: none;
+    }
+    .animate-float,
+    .animate-float-slow {
+      animation: none;
     }
     html {
       scroll-behavior: auto;
     }
   }
+
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgb(5 150 105 / 0.4) transparent;
+    scrollbar-color: rgb(37 99 235 / 0.4) transparent;
   }
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
@@ -201,10 +349,10 @@
     background: transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgb(5 150 105 / 0.4);
+    background: rgb(37 99 235 / 0.4);
     border-radius: 9999px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgb(5 150 105 / 0.6);
+    background: rgb(37 99 235 / 0.6);
   }
 }

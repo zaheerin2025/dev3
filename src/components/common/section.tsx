@@ -5,16 +5,16 @@ interface SectionProps {
   children: React.ReactNode;
   className?: string;
   id?: string;
-  /** Dark brand section (#05130e). */
+  /** Deep ink-green brand section with gradient + glow. */
   dark?: boolean;
-  /** Deep dark gradient variant. */
+  /** Kept for API compatibility — renders the same deep dark variant. */
   darkDeep?: boolean;
-  /** Light emerald tint background. */
-  tinted?: boolean;
-  /** Subtle grid pattern background (light sections). */
-  grid?: boolean;
-  /** Dot pattern for dark sections. */
+  /** Dark variant with dot pattern layered. */
   dots?: boolean;
+  /** Light emerald wash background. */
+  tinted?: boolean;
+  /** Subtle fading grid pattern background (light sections). */
+  grid?: boolean;
   /** Remove default vertical padding. */
   noPad?: boolean;
 }
@@ -35,17 +35,19 @@ export function Section({
     <section
       id={id}
       className={cn(
-        'relative w-full',
+        'relative w-full overflow-hidden',
         !noPad && 'py-16 md:py-24',
-        dark && 'section-dark',
-        darkDeep && 'section-dark-deep',
-        tinted && 'bg-emerald-50/50',
-        grid && 'bg-grid-light',
+        (dark || darkDeep) && 'section-dark-deep',
+        tinted && 'section-tint',
         dots && 'bg-dots-dark',
         className
       )}
     >
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
+      {/* Decorative grid layer — separate element so its mask never fades content */}
+      {grid ? (
+        <span className="bg-grid-light pointer-events-none absolute inset-0" aria-hidden="true" />
+      ) : null}
+      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
     </section>
   );
 }

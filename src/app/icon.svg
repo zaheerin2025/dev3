@@ -1,12 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Developers3 DB monogram">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#10b981"/>
-      <stop offset="1" stop-color="#0d9488"/>
+    <linearGradient id="tile" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#101d42"/>
+      <stop offset="1" stop-color="#060b1a"/>
+    </linearGradient>
+    <linearGradient id="dBlue" x1="12" y1="17" x2="36" y2="47" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4f8dfd"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="bCyan" x1="38" y1="17" x2="53" y2="47" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4fe0f9"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
     </linearGradient>
   </defs>
-  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#g)"/>
-  <path d="M26 22 L16 32 L26 42" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <path d="M38 22 L48 32 L38 42" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <path d="M35 18 L29 46" stroke="#fbbf24" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#tile)"/>
+  <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="13.25" fill="none" stroke="#60a5fa" stroke-opacity="0.22" stroke-width="1.5"/>
+  <!-- D -->
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="url(#dBlue)" d="M12 17 H21 A15 15 0 0 1 21 47 H12 Z M19 23.5 H21.5 A8.5 8.5 0 0 1 21.5 40.5 H19 Z"/>
+  <!-- B -->
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="url(#bCyan)" d="M38 17 H45 A7.5 7.5 0 0 1 45 32 H43 A7.5 7.5 0 0 1 43 47 H38 Z M42.5 21.5 H45 A3 3 0 0 1 45 27.5 H42.5 Z M42.5 36.5 H44 A3 3 0 0 1 44 42.5 H42.5 Z"/>
 </svg>

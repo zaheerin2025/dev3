@@ -10,7 +10,7 @@ export const blogPosts: BlogPost[] = [
     authorId: 'alex-morgan',
     date: '2025-01-20',
     readTime: '9 min read',
-    coverGradient: 'from-emerald-500 to-teal-600',
+    coverGradient: 'from-blue-500 to-cyan-600',
     sections: [
       {
         heading: 'The short answer: what websites actually cost in 2025',
@@ -181,7 +181,7 @@ export const blogPosts: BlogPost[] = [
     authorId: 'sofia-alvarez',
     date: '2025-02-17',
     readTime: '10 min read',
-    coverGradient: 'from-teal-500 to-emerald-700',
+    coverGradient: 'from-cyan-500 to-blue-700',
     sections: [
       {
         heading: 'Pricing compared: real totals, not sticker prices',
@@ -257,7 +257,7 @@ export const blogPosts: BlogPost[] = [
     authorId: 'priya-sharma',
     date: '2025-03-03',
     readTime: '8 min read',
-    coverGradient: 'from-lime-400 to-emerald-500',
+    coverGradient: 'from-lime-400 to-blue-500',
     sections: [
       {
         heading: 'Why this decision matters for budgets',

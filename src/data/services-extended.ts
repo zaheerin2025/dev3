@@ -117,15 +117,15 @@ export const servicesExtended: Service[] = [
     ],
     technologies: ['Figma', 'FigJam', 'Maze', 'Hotjar', 'Adobe Creative Cloud', 'Zeplin', 'Framer'],
     caseStudySlugs: ['northpay', 'pulsefit'],
-    startingPrice: '$1,800',
+    startingPrice: '$950',
     pricingNote:
-      'Starting at $1,800, this covers a focused UX audit and key-screen redesign for smaller products, while the full pricing page details scoped packages for complete design systems and multi-flow projects.',
+      'Starting at $950, this covers a focused UX audit and key-screen redesign for smaller products, while the full pricing page details scoped packages for complete design systems and multi-flow projects.',
     testimonialIds: ['t8'],
     faqs: [
       {
         question: 'How much do your UI/UX design services cost?',
         answer:
-          'Projects start at $1,800, which covers a focused audit and redesign of key screens for a smaller product. A complete web app redesign with research, prototyping and a design system typically lands between $6,000 and $18,000 depending on screen count and complexity. After a short discovery call we provide a fixed quote with a defined deliverable list, so you always know exactly what the budget buys before work starts.',
+          'Projects start at $950, which covers a focused audit and redesign of key screens for a smaller product. A complete web app redesign with research, prototyping and a design system typically lands between $3,000 and $9,000 depending on screen count and complexity. After a short discovery call we provide a fixed quote with a defined deliverable list, so you always know exactly what the budget buys before work starts.',
       },
       {
         question: 'How long does a typical UI/UX project take?',
@@ -264,15 +264,15 @@ export const servicesExtended: Service[] = [
     ],
     technologies: ['Ahrefs', 'SEMrush', 'Google Search Console', 'GA4', 'Screaming Frog', 'Surfer SEO'],
     caseStudySlugs: ['meridian-dental', 'urban-bloom'],
-    startingPrice: '$600',
+    startingPrice: '$350',
     pricingNote:
-      'Starting at $600 per month, this covers local SEO or a single-focus campaign with monthly reporting; the pricing page outlines full-service retainers scaled to your market and competition.',
+      'Starting at $350 per month, this covers local SEO or a single-focus campaign with monthly reporting; the pricing page outlines full-service retainers scaled to your market and competition.',
     testimonialIds: ['t7', 't3'],
     faqs: [
       {
         question: 'How much do SEO services cost?',
         answer:
-          'Retainers start at $600 per month for local campaigns and typically range from $1,200 to $4,000 per month for competitive national markets. The price reflects the number of pages, competitors’ strength and how much content production is required. After the audit we quote a fixed monthly fee with a defined scope of deliverables, and that price does not change without your written approval.',
+          'Retainers start at $350 per month for local campaigns and typically range from $700 to $2,000 per month for competitive national markets. The price reflects the number of pages, competitors’ strength and how much content production is required. After the audit we quote a fixed monthly fee with a defined scope of deliverables, and that price does not change without your written approval.',
       },
       {
         question: 'How long until we see results?',
@@ -411,15 +411,15 @@ export const servicesExtended: Service[] = [
     ],
     technologies: ['Google Ads', 'GA4', 'Google Tag Manager', 'Looker Studio', 'Merchant Center', 'CallRail'],
     caseStudySlugs: ['urban-bloom'],
-    startingPrice: '$450',
+    startingPrice: '$299',
     pricingNote:
-      'Starting at $450 per month plus ad spend, this covers management of up to two campaign types with weekly optimization; the pricing page details retainers for larger, multi-channel accounts.',
+      'Starting at $299 per month plus ad spend, this covers management of up to two campaign types with weekly optimization; the pricing page details retainers for larger, multi-channel accounts.',
     testimonialIds: ['t7'],
     faqs: [
       {
         question: 'How much do your Google Ads management services cost?',
         answer:
-          'Management starts at $450 per month plus your ad spend, which goes directly to Google — we never mark it up. Most clients invest $2,000 to $15,000 monthly in media depending on their market. After the audit we quote a fixed management fee based on campaign complexity, so the total cost of advertising is transparent from the first invoice.',
+          'Management starts at $299 per month plus your ad spend, which goes directly to Google — we never mark it up. Most clients invest $2,000 to $15,000 monthly in media depending on their market. After the audit we quote a fixed management fee based on campaign complexity, so the total cost of advertising is transparent from the first invoice.',
       },
       {
         question: 'How quickly will we see results?',
@@ -558,15 +558,15 @@ export const servicesExtended: Service[] = [
     ],
     technologies: ['Meta Business Suite', 'Instagram', 'TikTok', 'LinkedIn', 'Buffer', 'Canva'],
     caseStudySlugs: ['urban-bloom', 'lumina-boutique'],
-    startingPrice: '$500',
+    startingPrice: '$299',
     pricingNote:
-      'Starting at $500 per month, this covers strategy and management of two platforms with a full content calendar; the pricing page details packages that add paid social and video.',
+      'Starting at $299 per month, this covers strategy and management of two platforms with a full content calendar; the pricing page details packages that add paid social and video.',
     testimonialIds: ['t1'],
     faqs: [
       {
         question: 'How much do social media marketing services cost?',
         answer:
-          'Management starts at $500 per month for two platforms, covering strategy, a full content calendar, design and community management. Packages with paid social advertising and short-form video production typically run $900 to $2,500 per month. After a discovery call we quote a fixed monthly fee with the deliverables listed line by line, so you know precisely what each dollar buys.',
+          'Management starts at $299 per month for two platforms, covering strategy, a full content calendar, design and community management. Packages with paid social advertising and short-form video production typically run $600 to $1,800 per month. After a discovery call we quote a fixed monthly fee with the deliverables listed line by line, so you know precisely what each dollar buys.',
       },
       {
         question: 'Which platforms should my business focus on?',
@@ -616,7 +616,7 @@ export const servicesExtended: Service[] = [
       'Website maintenance services with 24/7 uptime monitoring, security patching, daily backups and monthly updates — plus same-day support when things break.',
     heroTitle: 'Website Maintenance Services That Keep Your Site Fast, Secure and Online',
     heroSub:
-      'Plans start at $99 per month and cover updates, security, backups and uptime monitoring — with same-day response on urgent issues. Your site stays fast, safe and selling while you focus on running the business.',
+      'Plans start at $49 per month and cover updates, security, backups and uptime monitoring — with same-day response on urgent issues. Your site stays fast, safe and selling while you focus on running the business.',
     idealFor:
       'Ideal for businesses whose website generates leads or sales and cannot afford downtime, broken forms or a security breach — but lack the in-house developer to prevent them.',
     offerings: [
@@ -705,15 +705,15 @@ export const servicesExtended: Service[] = [
     ],
     technologies: ['Cloudflare', 'UptimeRobot', 'ManageWP', 'Git', 'PageSpeed Insights', 'Sucuri'],
     caseStudySlugs: ['meridian-dental', 'atlas-logistics'],
-    startingPrice: '$99',
+    startingPrice: '$49',
     pricingNote:
-      'Starting at $99 per month, this covers updates, daily backups, monitoring and one change request; the pricing page compares all plan tiers, response times and included hours.',
+      'Starting at $49 per month, this covers updates, daily backups, monitoring and one change request; the pricing page compares all plan tiers, response times and included hours.',
     testimonialIds: ['t3', 't4'],
     faqs: [
       {
         question: 'How much do website maintenance services cost?',
         answer:
-          'Plans start at $99 per month for essential care: updates, daily backups, uptime monitoring and security scanning. The $249 plan adds priority same-day response and monthly change requests, while the $499 tier covers e-commerce and larger sites with four hours of developer time monthly. There are no setup fees, and you can upgrade, downgrade or cancel with 30 days’ notice.',
+          'Plans start at $49 per month for essential care: updates, daily backups, uptime monitoring and security scanning. The $129 plan adds priority same-day response and monthly change requests, while the $249 tier covers e-commerce and larger sites with four hours of developer time monthly. There are no setup fees, and you can upgrade, downgrade or cancel with 30 days’ notice.',
       },
       {
         question: 'What exactly is covered — and what is not?',

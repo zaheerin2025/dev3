@@ -47,6 +47,23 @@ export function getService(slug: string): Service | undefined {
   return services.find((s) => s.slug === slug);
 }
 
+/**
+ * Services surfaced in the header mega menu + mobile nav.
+ * Kept to exactly 5 so the menu stays scannable on every device —
+ * the full catalogue lives on /services ("View all services").
+ */
+export const featuredServiceSlugs = [
+  'custom-website-development',
+  'ecommerce-development',
+  'mobile-app-development',
+  'seo-services',
+  'ui-ux-design',
+] as const;
+
+export const featuredServices: Service[] = featuredServiceSlugs
+  .map(getService)
+  .filter((s): s is Service => Boolean(s));
+
 export function getCaseStudy(slug: string): CaseStudy | undefined {
   return caseStudies.find((c) => c.slug === slug);
 }

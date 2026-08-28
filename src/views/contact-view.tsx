@@ -1,29 +1,106 @@
 'use client';
 
-import * as React from 'react';
-import { Check, Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import {
+  ArrowUpRight,
+  CalendarCheck,
+  Clock,
+  Facebook,
+  FileText,
+  Github,
+  Globe,
+  Instagram,
+  Linkedin,
+  Lock,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Twitter,
+  type LucideIcon,
+} from 'lucide-react';
 import { Section } from '@/components/common/section';
+import { SectionHeading } from '@/components/common/section-heading';
 import { Reveal } from '@/components/common/reveal';
-import { Breadcrumbs } from '@/components/common/breadcrumbs';
 import { FAQSection } from '@/components/common/faq-section';
 import { LeadForm } from '@/components/common/lead-form';
 import { JsonLd } from '@/components/common/json-ld';
 import { homeFaqs } from '@/data';
-import { site, whatsappLink } from '@/lib/site';
+import { site } from '@/lib/site';
+import { useSiteSettings } from '@/lib/use-site-settings';
 import { trackEvent } from '@/lib/analytics';
 
-const TRUST_POINTS = [
-  `${site.stats.satisfaction} client satisfaction rating`,
-  'Replies within 1 business day',
-  'Fixed quotes, no surprises',
+const TRUST_CHIPS: { icon: LucideIcon; label: string }[] = [
+  { icon: CalendarCheck, label: 'Free consultation' },
+  { icon: FileText, label: 'Fixed quotes' },
+  { icon: Lock, label: 'NDA on request' },
+];
+
+const SOCIAL_LINKS: { label: string; href: string; icon: LucideIcon }[] = [
+  { label: 'LinkedIn', href: site.socials.linkedin, icon: Linkedin },
+  { label: 'X (Twitter)', href: site.socials.twitter, icon: Twitter },
+  { label: 'Instagram', href: site.socials.instagram, icon: Instagram },
+  { label: 'Facebook', href: site.socials.facebook, icon: Facebook },
+  { label: 'GitHub', href: site.socials.github, icon: Github },
 ];
 
 /** /contact — inquiry form plus every way to reach the team. */
 export function ContactView() {
+  // Admin-editable contact details (fall back to the static site config).
+  const settings = useSiteSettings((s) => s.settings);
+  const phoneDisplay = settings['contact.phoneDisplay'] || site.phoneDisplay;
+  const phoneHref = `tel:${phoneDisplay.replace(/[^+\d]/g, '')}`;
+  const email = settings['contact.email'] || site.email;
+  const whatsappNumber = (settings['contact.whatsappNumber'] || site.whatsappNumber).replace(
+    /\D/g,
+    ''
+  );
+  const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+    site.whatsappMessage
+  )}`;
+
   const directionsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     `${site.address.street}, ${site.address.city} ${site.address.state}`
   )}`;
+
+  const METHODS: {
+    icon: LucideIcon;
+    title: string;
+    description: string;
+    action: string;
+    href: string;
+    note: string;
+    event: 'email_click' | 'call_click' | 'whatsapp_click';
+    external?: boolean;
+  }[] = [
+    {
+      icon: Mail,
+      title: 'Email us',
+      description: 'Best for briefs, RFPs and documents.',
+      action: email,
+      href: `mailto:${email}`,
+      note: 'Replies within 4 business hours',
+      event: 'email_click',
+    },
+    {
+      icon: Phone,
+      title: 'Call us',
+      description: 'Talk directly with a senior engineer.',
+      action: phoneDisplay,
+      href: phoneHref,
+      note: site.hours,
+      event: 'call_click',
+    },
+    {
+      icon: MessageCircle,
+      title: 'WhatsApp',
+      description: 'Share links, screenshots and questions.',
+      action: 'Start a chat',
+      href: whatsappHref,
+      note: 'Typical reply: under 15 minutes',
+      event: 'whatsapp_click',
+      external: true,
+    },
+  ];
 
   return (
     <>
@@ -38,139 +115,149 @@ export function ContactView() {
       />
 
       {/* Hero */}
-      <Section tinted>
-        <div className="mx-auto max-w-3xl">
-          <Breadcrumbs items={[{ label: 'Contact' }]} />
-          <h1 className="mt-6 text-3xl font-bold text-balance sm:text-5xl">Contact Us</h1>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Tell us about your project and get a free, itemized quote within one business day.
-            Prefer to talk first? Call, WhatsApp, or email — a senior team member (not a
-            salesperson) will reply.
-          </p>
+      <Section grid className="lg:py-20">
+        <span
+          className="glow-orb left-[-9rem] top-[-7rem] h-72 w-72 bg-blue-400/25"
+          aria-hidden="true"
+        />
+        <span
+          className="glow-orb right-[-7rem] top-16 h-64 w-64 bg-cyan-400/20"
+          aria-hidden="true"
+        />
+        <h1 className="sr-only">
+          Contact Developers3 — Web, App &amp; Software Development Company
+        </h1>
+        <div className="relative mx-auto max-w-3xl">
+          <SectionHeading
+            eyebrow="Contact"
+            title="Let's talk about your **next project**"
+            description="Tell us what you're building and get a free, itemized quote within one business day. Prefer to talk first? Call, WhatsApp or email — a senior engineer replies, not a salesperson."
+            className="mb-6 md:mb-8"
+          />
+          <Reveal delay={80}>
+            <div className="flex flex-wrap items-center justify-center gap-2.5">
+              {TRUST_CHIPS.map((chip) => (
+                <span
+                  key={chip.label}
+                  className="glass-chip inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-foreground"
+                >
+                  <chip.icon className="h-4 w-4 text-blue-600" aria-hidden="true" />
+                  {chip.label}
+                </span>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </Section>
 
-      {/* Form + contact channels */}
+      {/* Contact methods + form + office strip */}
       <Section>
-        <div className="grid items-start gap-10 lg:grid-cols-[1.2fr_1fr]">
-          <Reveal>
-            <Card className="rounded-2xl p-6 lg:p-8">
-              <LeadForm source="contact" />
-            </Card>
-          </Reveal>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {METHODS.map((method, index) => (
+            <Reveal key={method.title} delay={index * 80}>
+              <a
+                href={method.href}
+                target={method.external ? '_blank' : undefined}
+                rel={method.external ? 'noopener noreferrer' : undefined}
+                onClick={() => trackEvent(method.event, { location: 'contact' })}
+                className="card-surface card-hover group flex h-full flex-col gap-3 rounded-3xl p-6"
+              >
+                <span className="icon-tile h-12 w-12" aria-hidden="true">
+                  <method.icon className="h-5 w-5" />
+                </span>
+                <span className="flex items-center justify-between gap-2">
+                  <h3 className="font-semibold">{method.title}</h3>
+                  <ArrowUpRight
+                    className="h-5 w-5 shrink-0 text-blue-600 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    aria-hidden="true"
+                  />
+                </span>
+                <p className="text-sm text-muted-foreground">{method.description}</p>
+                <span className="truncate text-sm font-semibold text-blue-700">
+                  {method.action}
+                </span>
+                <span className="mt-auto inline-flex items-center gap-1.5 border-t border-border/70 pt-3 text-xs text-muted-foreground">
+                  <Clock className="h-3.5 w-3.5 shrink-0 text-blue-600" aria-hidden="true" />
+                  {method.note}
+                </span>
+              </a>
+            </Reveal>
+          ))}
+        </div>
 
-          <Reveal delay={100} className="flex flex-col gap-4">
-            {/* Talk to us */}
-            <Card className="rounded-2xl p-6">
-              <CardContent className="flex flex-col gap-4 p-0">
-                <h2 className="text-lg font-semibold">Talk to us</h2>
-                <a
-                  href={site.phoneHref}
-                  onClick={() => trackEvent('call_click', { location: 'contact' })}
-                  className="flex min-h-11 items-center gap-4 rounded-lg p-1 transition-colors hover:bg-accent"
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
-                    <Phone className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span>
-                    <span className="block text-xs text-muted-foreground">Phone</span>
-                    <span className="block font-semibold">{site.phoneDisplay}</span>
-                  </span>
-                </a>
-                <a
-                  href={whatsappLink()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => trackEvent('whatsapp_click', { location: 'contact' })}
-                  className="flex min-h-11 items-center gap-4 rounded-lg p-1 transition-colors hover:bg-accent"
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
-                    <MessageCircle className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span>
-                    <span className="block text-xs text-muted-foreground">Instant chat</span>
-                    <span className="block font-semibold">WhatsApp chat</span>
-                  </span>
-                </a>
-                <a
-                  href={`mailto:${site.email}`}
-                  onClick={() => trackEvent('email_click', { location: 'contact' })}
-                  className="flex min-h-11 items-center gap-4 rounded-lg p-1 transition-colors hover:bg-accent"
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
-                    <Mail className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span>
-                    <span className="block text-xs text-muted-foreground">Email</span>
-                    <span className="block font-semibold">{site.email}</span>
-                  </span>
-                </a>
-              </CardContent>
-            </Card>
+        {/* Inquiry form — the centerpiece */}
+        <Reveal className="mt-12 md:mt-16">
+          <LeadForm source="contact" />
+        </Reveal>
 
-            {/* Visit us */}
-            <Card className="rounded-2xl p-6">
-              <CardContent className="flex flex-col gap-4 p-0">
-                <h2 className="text-lg font-semibold">Visit us</h2>
-                <div className="flex items-start gap-4">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
-                    <MapPin className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span className="text-sm">
-                    <span className="block font-semibold">{site.address.street}</span>
-                    <span className="block text-muted-foreground">
-                      {site.address.city}, {site.address.state} {site.address.zip}
-                    </span>
-                  </span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
-                    <Clock className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <span className="text-sm font-semibold">{site.hours}</span>
-                </div>
+        {/* Office info strip */}
+        <Reveal className="mt-12 md:mt-16">
+          <div className="card-surface grid gap-8 rounded-3xl p-6 sm:grid-cols-2 sm:p-8 lg:grid-cols-3">
+            <div className="flex items-start gap-4">
+              <span className="icon-tile h-11 w-11 shrink-0" aria-hidden="true">
+                <MapPin className="h-5 w-5" />
+              </span>
+              <div>
+                <h3 className="font-semibold">Visit our office</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  <span className="block font-medium text-foreground">{site.address.street}</span>
+                  {site.address.city}, {site.address.state} {site.address.zip}
+                </p>
                 <a
                   href={directionsHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center text-sm font-semibold text-emerald-700 hover:underline"
+                  className="inline-flex min-h-[44px] items-center text-sm font-semibold text-blue-700 hover:underline"
                 >
                   Get directions →
                 </a>
-              </CardContent>
-            </Card>
-
-            {/* Map placeholder — instant load, no third-party embed */}
-            <div
-              className="relative flex h-48 items-center justify-center rounded-2xl bg-grid-light ring-1 ring-emerald-600/10"
-              role="img"
-              aria-label={`Map placeholder showing the Developers3 office at ${site.address.street}, ${site.address.city}, ${site.address.state}`}
-            >
-              <div className="flex flex-col items-center gap-2 text-center">
-                <MapPin className="h-8 w-8 text-emerald-600" aria-hidden="true" />
-                <p className="text-sm font-medium">
-                  {site.address.street}, {site.address.city}, {site.address.state} {site.address.zip}
-                </p>
-                <p className="text-xs text-muted-foreground">Serving clients worldwide from San Francisco</p>
               </div>
             </div>
 
-            {/* Trust */}
-            <Card className="rounded-2xl p-6">
-              <CardContent className="flex flex-col gap-3 p-0">
-                <h2 className="text-lg font-semibold">Why clients trust us</h2>
-                <ul className="flex flex-col gap-2.5">
-                  {TRUST_POINTS.map((point) => (
-                    <li key={point} className="flex items-center gap-2.5 text-sm">
-                      <Check className="h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" />
-                      <span>{point}</span>
-                    </li>
+            <div className="flex items-start gap-4">
+              <span className="icon-tile h-11 w-11 shrink-0" aria-hidden="true">
+                <Clock className="h-5 w-5" />
+              </span>
+              <div>
+                <h3 className="font-semibold">Business hours</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  <span className="block font-medium text-foreground">{site.hours}</span>
+                  San Francisco time (PT)
+                </p>
+                <p className="mt-2 inline-flex items-center gap-2 text-xs text-muted-foreground">
+                  <span
+                    className="h-2 w-2 shrink-0 animate-pulse-dot rounded-full bg-blue-500"
+                    aria-hidden="true"
+                  />
+                  Async-friendly — we reply across time zones
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <span className="icon-tile h-11 w-11 shrink-0" aria-hidden="true">
+                <Globe className="h-5 w-5" />
+              </span>
+              <div>
+                <h3 className="font-semibold">Follow us</h3>
+                <div className="mt-2.5 flex flex-wrap items-center gap-2.5">
+                  {SOCIAL_LINKS.map((social) => (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Developers3 on ${social.label}`}
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-gradient-to-br hover:from-blue-500 hover:to-cyan-600 hover:text-white hover:shadow-[0_8px_18px_-8px_rgb(37_99_235/0.55)]"
+                    >
+                      <social.icon className="h-4 w-4" aria-hidden="true" />
+                    </a>
                   ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </Reveal>
-        </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
       </Section>
 
       {/* FAQ teaser */}

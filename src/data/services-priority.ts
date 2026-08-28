@@ -95,13 +95,13 @@ export const servicesPriority: Service[] = [
     ],
     technologies: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Vercel', 'Figma'],
     caseStudySlugs: ['meridian-dental', 'vantage-realty', 'skillforge'],
-    startingPrice: '$2,999',
+    startingPrice: '$1,499',
     pricingNote: 'Starting prices cover a five-page bespoke design and build with CMS, on-page SEO and analytics; visit our pricing page for full package inclusions, tiers and monthly care plans.',
     testimonialIds: ['t2', 't8'],
     faqs: [
       {
         question: 'How much does a custom website cost?',
-        answer: 'Most custom builds at Developers3 start at $2,999 for a focused marketing site and range to $15,000+ for large, integration-heavy platforms. The price is fixed after a discovery workshop and covers design, development, CMS, on-page SEO and launch support. You approve the number before we write a line of code, and mid-project invoices never change — that is the point of a fixed quote.',
+        answer: 'Most custom builds at Developers3 start at $1,499 for a focused marketing site and range to $8,500+ for large, integration-heavy platforms. The price is fixed after a discovery workshop and covers design, development, CMS, on-page SEO and launch support. You approve the number before we write a line of code, and mid-project invoices never change — that is the point of a fixed quote.',
       },
       {
         question: 'How long does a custom website take to build?',
@@ -216,13 +216,13 @@ export const servicesPriority: Service[] = [
     ],
     technologies: ['WordPress', 'WooCommerce', 'ACF Pro', 'PHP', 'MySQL', 'Cloudflare', 'Yoast SEO', 'Elementor'],
     caseStudySlugs: ['vantage-realty', 'crema-coffee'],
-    startingPrice: '$1,200',
+    startingPrice: '$649',
     pricingNote: 'Starting prices cover a lean custom WordPress build with up to five templates, core SEO setup and editor training; see the pricing page for WooCommerce, care-plan and migration package details.',
     testimonialIds: ['t3'],
     faqs: [
       {
         question: 'How much does a custom WordPress website cost?',
-        answer: 'Custom WordPress builds start at $1,200 for a lean marketing site with up to five templates. WooCommerce stores and headless builds typically range from $4,000 to $12,000 depending on catalogue size and integrations. Every quote is fixed after a scoping call and includes design, development, SEO setup and editor training — no hourly meter running in the background.',
+        answer: 'Custom WordPress builds start at $649 for a lean marketing site with up to five templates. WooCommerce stores and headless builds typically range from $2,000 to $6,000 depending on catalogue size and integrations. Every quote is fixed after a scoping call and includes design, development, SEO setup and editor training — no hourly meter running in the background.',
       },
       {
         question: 'How long does a WordPress build take?',
@@ -337,13 +337,13 @@ export const servicesPriority: Service[] = [
     ],
     technologies: ['Shopify', 'WooCommerce', 'Stripe', 'PayPal', 'Klaviyo', 'Next.js', 'Algolia', 'ShipStation'],
     caseStudySlugs: ['lumina-boutique', 'crema-coffee'],
-    startingPrice: '$5,999',
+    startingPrice: '$1,999',
     pricingNote: 'Starting prices cover a complete storefront build with design, product catalogue setup, payment and shipping integrations; see the pricing page for platform options, migration packages and growth sprint details.',
     testimonialIds: ['t1'],
     faqs: [
       {
         question: 'How much does an ecommerce website cost?',
-        answer: 'Complete stores start at $5,999 on Shopify or WooCommerce. The biggest price drivers are catalogue size, migration complexity, custom checkout logic and integrations with ERP, 3PL or subscription tools. Most projects land between $6,000 and $20,000, and every quote is fixed after an audit — including design, build, migration, QA and launch, with no per-hour surprises afterwards.',
+        answer: 'Complete stores start at $1,999 on Shopify or WooCommerce. The biggest price drivers are catalogue size, migration complexity, custom checkout logic and integrations with ERP, 3PL or subscription tools. Most projects land between $2,500 and $8,000, and every quote is fixed after an audit — including design, build, migration, QA and launch, with no per-hour surprises afterwards.',
       },
       {
         question: 'Should I choose Shopify, WooCommerce or a custom build?',
@@ -458,13 +458,13 @@ export const servicesPriority: Service[] = [
     ],
     technologies: ['Node.js', 'React', 'TypeScript', 'PostgreSQL', 'Prisma', 'Redis', 'Docker', 'AWS'],
     caseStudySlugs: ['northpay', 'atlas-logistics'],
-    startingPrice: '$15,000',
+    startingPrice: '$8,500',
     pricingNote: 'Starting prices cover a discovery workshop, architecture blueprint and the first build phase of a scoped web application; visit the pricing page for phase structures, retainers and support plan details.',
     testimonialIds: ['t2', 't4'],
     faqs: [
       {
         question: 'How much does custom software development cost?',
-        answer: 'Scoped web applications and portals start at $15,000; multi-phase SaaS platforms typically range from $40,000 to $150,000 across a year. We price phase one as a fixed sum after a paid discovery week, then plan subsequent phases against what the first release taught us. You always know the cost of the next step before approving it — no open-ended hourly billing.',
+        answer: 'Scoped web applications and portals start at $8,500; multi-phase SaaS platforms typically range from $25,000 to $80,000 across a year. We price phase one as a fixed sum after a paid discovery week, then plan subsequent phases against what the first release taught us. You always know the cost of the next step before approving it — no open-ended hourly billing.',
       },
       {
         question: 'How long does a custom software project take?',
@@ -579,13 +579,13 @@ export const servicesPriority: Service[] = [
     ],
     technologies: ['Flutter', 'Firebase', 'Swift', 'Kotlin', 'GraphQL', 'Stripe', 'OneSignal', 'App Store & Google Play'],
     caseStudySlugs: ['pulsefit', 'brewpoint'],
-    startingPrice: '$8,000',
+    startingPrice: '$4,500',
     pricingNote: 'Starting prices cover a scoped MVP with design, Flutter build for iOS and Android, backend integration and both store submissions; see the pricing page for native, scale-up and retainer options.',
     testimonialIds: ['t5', 't6'],
     faqs: [
       {
         question: 'How much does mobile app development cost?',
-        answer: 'A focused MVP for both platforms starts at $8,000; apps with custom backends, payments or hardware integrations typically run $15,000-$60,000. The price is fixed per phase after scoping, and it includes UX design, development, QA on real devices and full store submission — the number you approve is the number you pay, in writing.',
+        answer: 'A focused MVP for both platforms starts at $4,500; apps with custom backends, payments or hardware integrations typically run $8,000-$30,000. The price is fixed per phase after scoping, and it includes UX design, development, QA on real devices and full store submission — the number you approve is the number you pay, in writing.',
       },
       {
         question: 'How long until my app is live on the stores?',

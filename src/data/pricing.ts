@@ -3,7 +3,7 @@ import type { FAQ, PricingBlock, PricingComparisonRow, PricingTier } from '@/lib
 export const websiteTiers: PricingTier[] = [
   {
     name: 'Starter Website',
-    price: '$1,499',
+    price: '$699',
     period: 'one-time',
     bestFor: 'Small businesses that need a polished online presence, fast',
     blurb:
@@ -22,7 +22,7 @@ export const websiteTiers: PricingTier[] = [
   },
   {
     name: 'Business Website',
-    price: '$2,999',
+    price: '$1,499',
     period: 'one-time',
     bestFor: 'Growing companies that need to rank on Google and convert',
     blurb:
@@ -42,7 +42,7 @@ export const websiteTiers: PricingTier[] = [
   },
   {
     name: 'E-commerce / Custom',
-    price: '$5,999+',
+    price: '$2,999+',
     period: 'one-time',
     bestFor: 'Online stores and products that need custom functionality',
     blurb:
@@ -78,7 +78,7 @@ export const servicePricingBlocks: PricingBlock[] = [
     serviceSlug: 'wordpress-development',
     name: 'WordPress Development',
     icon: 'wordpress',
-    startingAt: '$1,200',
+    startingAt: '$649',
     unit: 'one-time',
     blurb: 'Custom themes, WooCommerce, speed optimization, and migrations.',
   },
@@ -86,7 +86,7 @@ export const servicePricingBlocks: PricingBlock[] = [
     serviceSlug: 'software-development',
     name: 'Custom Software',
     icon: 'cpu',
-    startingAt: '$15,000',
+    startingAt: '$8,500',
     unit: 'per project',
     blurb: 'Dashboards, portals, APIs, and internal tools built to spec.',
   },
@@ -94,7 +94,7 @@ export const servicePricingBlocks: PricingBlock[] = [
     serviceSlug: 'mobile-app-development',
     name: 'Mobile Apps',
     icon: 'smartphone',
-    startingAt: '$8,000',
+    startingAt: '$4,500',
     unit: 'per platform',
     blurb: 'iOS & Android apps with Flutter — one codebase, both stores.',
   },
@@ -102,7 +102,7 @@ export const servicePricingBlocks: PricingBlock[] = [
     serviceSlug: 'ui-ux-design',
     name: 'UI/UX Design',
     icon: 'pen-tool',
-    startingAt: '$1,800',
+    startingAt: '$950',
     unit: 'per project',
     blurb: 'Research, wireframes, and pixel-perfect design systems.',
   },
@@ -110,7 +110,7 @@ export const servicePricingBlocks: PricingBlock[] = [
     serviceSlug: 'seo-services',
     name: 'SEO Services',
     icon: 'trending-up',
-    startingAt: '$600',
+    startingAt: '$350',
     unit: 'per month',
     blurb: 'Technical audits, content strategy, links, and reporting.',
   },
@@ -118,7 +118,7 @@ export const servicePricingBlocks: PricingBlock[] = [
     serviceSlug: 'google-ads-management',
     name: 'Google Ads',
     icon: 'target',
-    startingAt: '$450',
+    startingAt: '$299',
     unit: 'per month + ad spend',
     blurb: 'Campaign build-out, optimization, and conversion tracking.',
   },
@@ -126,7 +126,7 @@ export const servicePricingBlocks: PricingBlock[] = [
     serviceSlug: 'social-media-marketing',
     name: 'Social Media',
     icon: 'megaphone',
-    startingAt: '$500',
+    startingAt: '$299',
     unit: 'per month',
     blurb: 'Content calendars, design, scheduling, and engagement.',
   },
@@ -134,7 +134,7 @@ export const servicePricingBlocks: PricingBlock[] = [
     serviceSlug: 'website-maintenance',
     name: 'Maintenance',
     icon: 'wrench',
-    startingAt: '$99',
+    startingAt: '$49',
     unit: 'per month',
     blurb: 'Updates, backups, security monitoring, and small edits.',
   },
@@ -144,12 +144,12 @@ export const pricingFaqs: FAQ[] = [
   {
     question: 'How much does a website cost in 2025?',
     answer:
-      'For a small business, expect $1,500–$3,000 for a professional marketing site, $4,000–$8,000 for e-commerce, and $15,000+ for custom web applications. The main drivers are design customization, number of pages, integrations, and content volume. Our packages start at $1,499 with fixed, itemized pricing.',
+      'In the 2025 US market, small sites typically run $500–$1,500, e-commerce builds $1,500–$3,000, and custom web applications $8,000+. The main drivers are design customization, number of pages, integrations, and content volume. Our packages start at $699 with fixed, itemized pricing.',
   },
   {
     question: 'Do you offer payment plans?',
     answer:
-      'Yes — standard terms are 40% to start, 40% at design approval, and 20% at launch. Projects over $5,000 can be split into monthly installments at no extra cost, and retainer services (SEO, ads, maintenance) are billed monthly.',
+      'Yes — standard terms are 40% to start, 40% at design approval, and 20% at launch. Projects over $2,500 can be split into monthly installments at no extra cost, and retainer services (SEO, ads, maintenance) are billed monthly.',
   },
   {
     question: 'What is included in the price?',
@@ -159,7 +159,7 @@ export const pricingFaqs: FAQ[] = [
   {
     question: 'Are there any monthly fees?',
     answer:
-      'Only if you want them: hosting from $10/month, maintenance from $99/month, and marketing retainers for SEO or ads. A website from us has zero mandatory recurring fees — you own it outright and can host it anywhere.',
+      'Only if you want them: hosting from $10/month, maintenance from $49/month, and marketing retainers for SEO or ads. A website from us has zero mandatory recurring fees — you own it outright and can host it anywhere.',
   },
   {
     question: 'Why are you more affordable than larger agencies?',
@@ -169,6 +169,6 @@ export const pricingFaqs: FAQ[] = [
   {
     question: 'What if I need changes after launch?',
     answer:
-      'Every package includes 30–90 days of free post-launch support. After that, small edits are covered by maintenance plans from $99/month, or billed at $65/hour with an upfront estimate. You will never get a surprise invoice.',
+      'Every package includes 30–90 days of free post-launch support. After that, small edits are covered by maintenance plans from $49/month, or billed at $55/hour with an upfront estimate. You will never get a surprise invoice.',
   },
 ];

@@ -10,6 +10,7 @@ const leadSchema = z.object({
   phone: z.string().trim().max(40).optional().default(''),
   service: z.string().trim().max(120).optional().default(''),
   budget: z.string().trim().max(60).optional().default(''),
+  timeline: z.string().trim().max(60, 'Timeline is too long').optional().default(''),
   message: z.string().trim().min(10, 'Please add some detail').max(5000),
   source: z.string().trim().max(120).optional().default('contact'),
   website: z.string().optional().default(''), // honeypot — must stay empty
@@ -41,13 +42,14 @@ export async function POST(request: NextRequest) {
         phone: data.phone || null,
         service: data.service || null,
         budget: data.budget || null,
+        timeline: data.timeline || null,
         message: data.message,
         source: data.source || 'contact',
       },
     });
 
     // Server-side log so leads are visible even without an inbox hookup.
-    console.log(`[lead] #${lead.id} "${data.name}" <${data.email}> service=${data.service || '—'} source=${data.source}`);
+    console.log(`[lead] #${lead.id} "${data.name}" <${data.email}> service=${data.service || '—'} budget=${data.budget || '—'} timeline=${data.timeline || '—'} source=${data.source}`);
 
     return NextResponse.json({ ok: true, id: lead.id });
   } catch (error) {

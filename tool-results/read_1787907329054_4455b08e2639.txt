@@ -1,0 +1,265 @@
+     1→# Developers3 Website — Shared Worklog
+     2→
+     3→Project: Multi-page SEO-optimized agency website (Next.js 16, TypeScript, Tailwind 4, shadcn/ui, Prisma/SQLite).
+     4→IMPORTANT: All agents append (never overwrite) their section below using the template:
+     5→
+     6→---
+     7→Task ID: <id>
+     8→Agent: <name>
+     9→Task: <task>
+    10→
+    11→Work Log:
+    12→- <steps>
+    13→
+    14→Stage Summary:
+    15→- <results/decisions/artifacts>
+    16→
+    17→---
+    18→Task ID: 1
+    19→Agent: orchestrator (Z.ai main)
+    20→Task: Project foundation — architecture, types, site config, brand data, plan.
+    21→
+    22→Work Log:
+    23→- Inspected scaffold: Next.js 16 App Router, Tailwind 4, shadcn/ui components in src/components/ui, Prisma + SQLite (db/custom.db), sonner + radix toaster available.
+    24→- Architecture decision: the sandbox exposes only the `/` route, so the whole multi-page site is delivered as ONE route with a hash-based client router (`#/services`, `#/portfolio/slug`, ...). Content is data-driven (src/data/*) and every "page" is a view component in src/views — trivially splittable into real routes for production SEO.
+    25→- Wrote src/lib/types.ts (Service, CaseStudy, Testimonial, BlogPost, TeamMember, Pricing*, LegalSection types) — THE contract for all data files.
+    26→- Wrote src/lib/site.ts (brand, contact, socials, stats, whatsapp helper).
+    27→- Wrote src/data/company.ts (home FAQs, USPs, process, clients, values, timeline, about story, privacy/terms copy).
+    28→- Wrote src/data/pricing.ts (3 website tiers, comparison table, per-service pricing blocks, pricing FAQs).
+    29→- Brand system: emerald primary + amber accent, dark sections #05130e, Poppins headings / Inter body, logo = emerald `</>` mark with amber slash (public/logo.svg + src/app/icon.svg).
+    30→- Image pipeline: scripts/gen-images.sh generates all portfolio/team/testimonial/hero images via `z-ai image` CLI into public/images.
+    31→
+    32→Stage Summary:
+    33→- Data contracts fixed: all src/data files MUST satisfy src/lib/types.ts exactly.
+    34→- Cross-reference contract agreed for content agents:
+    35→  * Testimonials ids t1..t8 (t1 Sarah Mitchell/Lumina, t2 David Chen/NorthPay, t3 Emily Carter/Meridian, t4 James Rodriguez/Atlas, t5 Amara Okafor/PulseFit, t6 Liam O'Connor/BrewPoint, t7 Rachel Kim/Urban Bloom, t8 Michael Torres/SkillForge).
+    36→  * Case studies (10): lumina-boutique(ecommerce), northpay(web), meridian-dental(web), vantage-realty(web), atlas-logistics(web), pulsefit(apps), brewpoint(apps), skillforge(web), crema-coffee(ecommerce), urban-bloom(marketing). Covers in /images/portfolio/<slug>.png.
+    37→  * Team ids: alex-morgan, priya-sharma, daniel-reeves, sofia-alvarez (photos /images/team/<id>.png).
+    38→  * Blog posts (4): how-much-does-a-website-cost, custom-website-vs-wordpress, shopify-vs-woocommerce, flutter-vs-react-native.
+    39→- Next: content data agents (2-a..2-e) → common components → view agents (3-a..3-c) → integration → browser verification.
+    40→---
+    41→Task ID: 3-a
+    42→Agent: frontend-home-hub
+    43→Task: HomeView + ServicesHubView
+    44→
+    45→Work Log:
+    46→- Read worklog.md, src/lib/types.ts, src/lib/site.ts; skimmed all common components (link, section, section-heading, reveal, service-card, case-study-card, testimonial-card, stat-grid, tech-pills, process-steps, cta-band, faq-section, breadcrumbs, json-ld, icon-map), ui/button, ui/badge, ui/card, data/index.ts, lib/schema.ts, lib/analytics.ts, and components/site-app.tsx to match contracts exactly.
+    47→- Created src/views/home-view.tsx (default + named export): hero (grid, 2-col, exact H1, Badge, dual CTA with trackEvent('cta_click',{location:'hero'}), 5 amber stars trust row, priority next/image hero-dashboard.png 1440x720 sizes="(max-width: 1024px) 100vw, 50vw"), border-y trust bar (clientNames wordmarks + StatGrid from site.stats), services overview (all 10 ServiceCard showPrice), why-us tinted grid (6 cards, lucide icons Users/Search/BadgeDollarSign/Timer/KeyRound/LifeBuoy in emerald-100 tiles), featured portfolio (caseStudies.slice(0,6) + View All Projects), dark dots process (homeProcess), testimonials (slice(0,6) + Review JSON-LD array), tech pills (12 items), FAQSection (homeFaqs, auto FAQPage schema), CTABand defaults.
+    48→- Created src/views/services-hub-view.tsx (default + named export): tinted hero band with Breadcrumbs [{label:'Services'}], exact H1 + verbatim ~150-word intro; 10 rich service cards (Reveal > Card p-6 lg:p-8 rounded-2xl, grid lg:grid-cols-[auto_1fr_auto]: emerald-600 icon tile h-14 w-14, name/tagline/idealFor/first-3 offerings with Check list, right column Badge secondary "From {price}" + h-11 Button "View service" -> /{slug} with cta_click tracking); custom CTABand.
+    49→- Verified with scoped `tsc --noEmit` (temp tsconfig in /tmp, deleted after): 0 errors in both view files.
+    50→
+    51→Stage Summary:
+    52→- Files created: src/views/home-view.tsx, src/views/services-hub-view.tsx (nothing else created/edited).
+    53→- Decision: site-app.tsx imports { HomeView } / { ServicesHubView } as NAMED exports while the task spec mandates default export — both views ship `export default X` + `export { X }` so both import shapes compile without touching SiteApp.
+    54→- Decision: Link component has no `ariaLabel` prop (only aria-label via anchor attrs); my views use `aria-label`, which works.
+    55→- API mismatches noticed (pre-existing, owned by common-components agent, NOT edited): (1) src/components/common/cta-band.tsx uses cn() but never imports it — TS2304, breaks any view importing CTABand until `import { cn } from '@/lib/utils'` is added; (2) service-card.tsx + case-study-card.tsx pass `ariaLabel` to Link, which LinkProps doesn't declare — either add `ariaLabel?: string` to Link and map to aria-label, or switch those cards to aria-label; (3) /images/hero-dashboard.png not yet in public/images (image pipeline task) — hero <Image> will 404 until generated.
+    56→- A11y: exactly one h1 per view, semantic sections with ids, aria-label on star rating (role="img"), aria-hidden on decorative icons, authored buttons h-11 (44px touch targets), alt text on hero image.
+    57→---
+    58→Task ID: 3-c
+    59→Agent: frontend-pages
+    60→Task: Pricing/About/Contact/Blog/BlogPost/Legal/NotFound views
+    61→
+    62→Work Log:
+    63→- Read worklog.md contracts (types, cross-reference ids, router architecture) + src/lib/{types,site,schema,analytics}.ts, src/data/{pricing,company,index,team,blog-posts,testimonials,services-priority}.ts, all common components and ui primitives before writing any code.
+    64→- Created src/views/pricing-view.tsx: tinted hero w/ Breadcrumbs + "website development cost" intro; 3 tier cards (highlighted ring-2 ring-emerald-600 + absolute amber "Most Popular" Badge, Check features, CTA → /contact w/ trackEvent cta_click {location:'pricing',tier}); shadcn comparison Table in custom-scrollbar Card; 8 servicePricingBlocks grid w/ ServiceIconGlyph + "From X" + Learn more → /{serviceSlug}; FAQSection(pricingFaqs); buildOfferCatalogSchema JsonLd; tinted quote section (promises list + LeadForm source='pricing').
+    65→- Created src/views/about-view.tsx: hero, aboutStory + emerald-600 mission card (Quote icon), StatGrid from site.stats, 4 companyValues, dark+dots timeline (border-l-2 emerald-400/20, dots, year Badges, Reveal per item), team grid w/ next/image fill aspect-[3/4] object-cover + alt "Portrait of {name}", testimonials.slice(0,3) credibility strip, CTABand w/ secondaryHref='/portfolio'.
+    66→- Created src/views/contact-view.tsx: 1.2fr/1fr grid; LeadForm source='contact' in Card; Talk-to-us card w/ tel/WhatsApp/mailto rows (44px+ targets, trackEvent call_click/whatsapp_click/email_click), Visit-us card w/ address+hours+Google-Maps directions <a>, bg-grid-light map placeholder (role=img + aria-label), trust card; ContactPage JsonLd; FAQSection(homeFaqs.slice(0,3)) title='Quick Answers'.
+    67→- Created src/views/blog-view.tsx: category filter useState('all') w/ unique categories pills (aria-pressed, h-11 targets, trackEvent portfolio_filter), featured card (gradient cover + category Badge + Quote glyph, author Avatar initials, date-fns format, Read article → /blog/{slug}), remaining-posts grid w/ gradient h-36 covers + line-clamp-2 excerpts, CTABand newsletter variant (secondaryHref='' + showWhatsapp={false} to hide both).
+    68→- Created src/views/blog-post-view.tsx: getBlogPost(slug) w/ inline not-found fallback (own h1); hero (Breadcrumbs w/ /blog back-link, category Badge, h1, meta row w/ author avatar/role/date/readTime); gradient cover band w/ bg-dots-dark opacity-30 overlay; buildArticleSchema(post, author) JsonLd; body grid 1fr/260px — sections w/ local deterministic slugify() ids + Check bullets in Reveal, sticky top-24 TOC (buttons scrollIntoView smooth, no # anchors) + emerald-50 Key takeaways card (ListChecks); author box (next/image 64px round photo or Avatar fallback); related-service CTA card (bg-emerald-600, white Button → /{relatedServiceSlug} "Explore {shortName}"); Keep Reading related grid (≤2); CTABand.
+    69→- Created src/views/legal-view.tsx: kind:'privacy'|'terms' → privacySections/termsSections, max-w-3xl, h1 + legalLastUpdated, h2 sections w/ text-base/relaxed paragraphs, aria-labelledby ids.
+    70→- Created src/views/not-found-view.tsx: 404 display (font-display text-7xl/8xl emerald-600), h1 'Page Not Found', {path ?? '/'} in <code>, 3 CTA buttons (h-11) → /, /services, /portfolio, popular-services Badges asChild Link → /{slug} (services.slice(0,5)), contact link.
+    71→- Verified with `npx tsc --noEmit`: zero errors in src/views/* (remaining errors belong to other agents' in-flight files: cta-band missing cn import, ariaLabel prop misuse in case-study-card/service-card/footer/header, missing portfolio-view/case-study-view, scaffold examples/skills).
+    72→
+    73→Stage Summary:
+    74→- Files created (exactly 7, nothing else touched): src/views/pricing-view.tsx, about-view.tsx, contact-view.tsx, blog-view.tsx, blog-post-view.tsx, legal-view.tsx, not-found-view.tsx — named exports PricingView/AboutView/ContactView/BlogView/BlogPostView({slug})/LegalView({kind})/NotFoundView({path?}), all 'use client', one rendered h1 each, no metadata, no # anchors, emerald/amber palette, rounded-2xl cards, mobile-first.
+    75→- Decisions: empty-data guards for in-flight content agents (blogPosts empty → "articles coming soon" note; getTeamMember/getService undefined → initials 'D3', 'Developers3 Team' fallback, generic CTA labels) so views render safely until Task 2 agents land; TOC uses button+scrollIntoView per router contract; date formatting via date-fns format().
+    76→- API mismatches noticed (for integrator, NOT fixed by me): src/components/common/cta-band.tsx uses cn() without importing it (build-breaking, 1-line fix); case-study-card.tsx, service-card.tsx, footer.tsx, header.tsx pass ariaLabel prop to Link which only accepts standard aria-label (Link spreads rest — rename to aria-label); site-app.tsx still expects portfolio-view/case-study-view from parallel agent 3-b.
+    77→- Next: integrator to drop views into SiteApp (already wired), content agents 2-a..2-e to fill placeholder data arrays.
+    78→
+    79→---
+    80→Task ID: 2-d
+    81→Agent: content-writer-cases-2
+    82→Task: Case studies batch 2 (pulsefit, brewpoint, skillforge, crema-coffee, urban-bloom)
+    83→
+    84→Work Log:
+    85→- Read worklog.md Task 1 Stage Summary (cross-reference contracts: testimonials t5/t6/t7/t8, slugs, cover paths) and src/lib/types.ts (CaseStudy, CaseStudyResult, CaseStudyShowcase contracts).
+    86→- Fully replaced src/data/case-studies-2.ts with caseStudiesBatch2: 5 CaseStudy objects (pulsefit, brewpoint, skillforge, crema-coffee, urban-bloom), exact slugs/categories/services/techStack/results per spec; crema-coffee has no testimonialId (optional field omitted).
+    87→- Wrote outcome-driven titles, one-line summaries (19-21 words), keyword-rich coverAlt for /images/portfolio/<slug>.png covers, 2-paragraph challenge/solution stories (60-90 words each) with typographic apostrophes and no markdown.
+    88→- Added 4 showcase items per study (blurbs 20-26 words) using only approved gradients; metaTitles follow '[Project Name] — [Service] Case Study | Developers3'.
+    89→- Verified with a throwaway node script (no lint/build/test run): metaDescription lengths pulsefit=154, brewpoint=155, skillforge=153, crema-coffee=155, urban-bloom=147 (all within 145-158 incl. spaces); all 20 paragraphs 60-90 words; all gradients whitelisted; 0 ASCII apostrophes inside words.
+    90→
+    91→Stage Summary:
+    92→- Slugs written: pulsefit, brewpoint, skillforge, crema-coffee, urban-bloom (export const caseStudiesBatch2: CaseStudy[], imports type from @/lib/types).
+    93→- Testimonials referenced: t5 (pulsefit), t6 (brewpoint), t8 (skillforge), t7 (urban-bloom); crema-coffee intentionally has none.
+    94→- Only src/data/case-studies-2.ts modified; no other files touched.
+    95→
+    96→---
+    97→Task ID: 3-b
+    98→Agent: frontend-service-portfolio
+    99→Task: ServiceDetailView + PortfolioView + CaseStudyView
+   100→
+   101→Work Log:
+   102→- Read worklog contracts (Task 1), types.ts, site.ts, schema.ts, all src/components/common/* and ui/button|card|badge|table signatures before writing.
+   103→- Created src/views/service-detail-view.tsx: full 11-section SEO template (hero w/ breadcrumbs+badge+trust stars+dark gradient tech panel → offerings grid → why tinted 2-col → dark process → technologies → related case studies → pricing card w/ guarantees → testimonials → FAQ (auto FAQPage JSON-LD) → related services → lead form tinted w/ promise checklist). JsonLd = buildServiceSchema + all service review schemas. Fallback inline "Service not found" Section (no NotFoundView import). cta_click tracked from hero + pricing CTAs.
+   104→- Created src/views/portfolio-view.tsx: h1 + 2-sentence intro, category filter pills (all/web/ecommerce/apps/marketing via CATEGORY_LABELS, counts computed, aria-pressed, ≥44px height via h-11 sm:h-9, trackEvent portfolio_filter), live result count, Reveal-staggered CaseStudyCard grid, empty-state copy, CTABand "Your Project Could Be Next".
+   105→- Created src/views/case-study-view.tsx: breadcrumbs+category/industry badges+meta chips (client/industry/service links via getService), next/image cover (16/9, priority, sizes 100vw/80vw), JsonLd = buildCaseStudySchema + optional review schema (guarded against missing testimonial), tinted challenge/solution 2-col with tech pills justify-start, dark results metric cards, gradient showcase grid, optional testimonial, CTABand, related studies (same category first, backfilled from other categories, max 3). Fallback inline "Case study not found".
+   106→- Verified with `npx tsc --noEmit`: 0 errors in src/views/* (only pre-existing errors in other agents' files — see notes).
+   107→
+   108→Stage Summary:
+   109→- Files created (ONLY these 3): src/views/service-detail-view.tsx, src/views/portfolio-view.tsx, src/views/case-study-view.tsx. No existing files edited.
+   110→- Named exports match app contract: { ServiceDetailView }, { PortfolioView }, { CaseStudyView }; 'use client' first line; no metadata exports; one h1 per view; all internal links via common Link (no raw # anchors); TestimonialCard/CaseStudyCard/ServiceCard reused, LeadForm used with source=`service:<slug>` + defaultService.
+   111→- Decisions: hero trust stars use role="img" aria-label; empty guards for case studies/testimonials/related lists; portfolio pills keep size="sm" but h-11 on mobile for touch targets; case-study testimonial review schema omitted when getTestimonial returns undefined.
+   112→- PRE-EXISTING TYPE ERRORS NOTICED (not mine to fix — flagging for owners): (1) src/components/common/link.tsx LinkProps lacks `ariaLabel` but case-study-card.tsx:35, service-card.tsx:22, layout/header.tsx:40, layout/footer.tsx:97 pass it → either add `ariaLabel?: string` to LinkProps (map to aria-label) or change call sites; (2) src/components/common/cta-band.tsx:32 uses cn without importing it; (3) tsc also flags sandbox examples/ + skills/ dirs (tsconfig include **/*) — unrelated to app code.
+   113→
+   114→---
+   115→Task ID: 2-c
+   116→Agent: content-writer-cases-1
+   117→Task: Testimonials (t1-t8) + case studies batch 1 (5)
+   118→
+   119→Work Log:
+   120→- Read worklog.md Task 1 Stage Summary (cross-reference contracts: t1..t8 identities, case study slugs/categories, cover paths) and src/lib/types.ts (CaseStudy, CaseStudyResult, CaseStudyShowcase, Testimonial).
+   121→- Wrote src/data/testimonials.ts: 8 objects (t1-t8) with exact ids/names/roles/companies/initials, rating 5 for all; quotes 79-82 words each citing concrete results (64% revenue, 45k MAU/99.98% uptime, +210% traffic/#1 map pack, -41% dispatch/$1.2M savings, 4.8-star app/120k downloads, 61% app orders/+34% AOV, -46% CPL/tripled pipeline, 31%→58% completion); avatars for t1/t2/t5; t6 name 'Liam O'Connor' uses typographic apostrophe.
+   122→- Wrote src/data/case-studies-1.ts: 5 objects with exact slugs/categories/industries/services/testimonialId (vantage-realty has none); results arrays carry the mandated 4 metric/label pairs each; challenge & solution are 2 paragraphs of ~68-79 words each; summaries 15-25 words with headline result; coverImage '/images/portfolio/<slug>.png' with keyword-rich coverAlt; 4 showcase items each with blurbs 20-35 words and gradients only from the approved 6-value list; metaTitle follows '[Project Name] — [Service] Case Study | Developers3'.
+   123→- Verified programmatically (python char/word count + regex sanity): metaDescription lengths 153/148/148/146/148 (all within 145-158 incl. spaces); no ASCII apostrophes inside string content (all intra-word apostrophes typographic); string delimiters balanced; all gradient values whitelisted; no other files touched, no lint/build run.
+   124→
+   125→Stage Summary:
+   126→- src/data/testimonials.ts → testimonials: Testimonial[] with ids t1 (Sarah Mitchell, Lumina Boutique, avatar), t2 (David Chen, NorthPay, avatar), t3 (Dr. Emily Carter, Meridian Dental), t4 (James Rodriguez, Atlas Logistics), t5 (Amara Okafor, PulseFit, avatar), t6 (Liam O'Connor, BrewPoint Coffee), t7 (Rachel Kim, Urban Bloom), t8 (Michael Torres, SkillForge Academy). All rating 5.
+   127→- src/data/case-studies-1.ts → caseStudiesBatch1: CaseStudy[] with slugs lumina-boutique (ecommerce, t1), northpay (web, t2), meridian-dental (web, t3), vantage-realty (web, no testimonial), atlas-logistics (web, t4). Each: 4 results, 4 showcase items, 2+2 challenge/solution paragraphs, techStack per contract, metaDescriptions 145-158 chars.
+   128→- Cross-refs ready for view agents: t5-t8 available for batch 2 studies (pulsefit, brewpoint, skillforge, urban-bloom); testimonials keyed by id; covers point to /images/portfolio/<slug>.png.
+   129→---
+   130→Task ID: 2-b
+   131→Agent: content-writer-extended-services
+   132→Task: Services batch 2 — 5 remaining service page contents
+   133→
+   134→Work Log:
+   135→- Read worklog.md (Task 1 contracts) and src/lib/types.ts; verified Service/ServiceOffering/ProcessStep/FAQ/ServiceBenefit shapes.
+   136→- Wrote src/data/services-extended.ts from scratch: exactly `export const servicesExtended: Service[]` with 5 objects in mandated order (ui-ux-design, seo-services, google-ads-management, social-media-marketing, website-maintenance).
+   137→- Used EXACT contract values: slugs, metaTitles, icons (pen-tool/trending-up/target/megaphone/wrench), categories, startingPrices, testimonialIds, caseStudySlugs, mandated technology lists; relatedServiceSlugs limited to canonical slugs, never self.
+   138→- Verified via a throwaway node QA script (no lint/build run): metaDescription lengths 150/155/156/154/153 chars (145-158 target); heroSub 25-35 words; whyIntro 70-90; 5 offerings 30-45 words each; 5 benefits 45-60; 4-5 process steps 30-45 (one step trimmed from 47 to 43 words); 6 FAQs 45-80 words each; typographic apostrophes only (0 straight apostrophes in strings); no markdown in strings.
+   139→- Only file touched: src/data/services-extended.ts.
+   140→
+   141→Stage Summary:
+   142→- Slugs written + rendered word counts: ui-ux-design (~1404), seo-services (~1405), google-ads-management (~1449), social-media-marketing (~1442), website-maintenance (~1460) — all well above the 900-word quality bar.
+   143→- SEO per service: primary keyword in heroTitle (H1) and metaDescription; 5 secondaryKeywords each (e.g. seo-services: technical seo audit, local seo services, on page seo optimization); pricingNote sentences state monthly units (Google Ads = per month + ad spend) and point to the pricing page.
+   144→- FAQ coverage: cost + timeline + contract terms on every service; response times & covered/not-covered scope for website-maintenance.
+   145→- Cross-refs ready for view agents: testimonials t8 / t7+t3 / t7 / t1 / t3+t4; case studies northpay+pulsefit / meridian-dental+urban-bloom / urban-bloom / urban-bloom+lumina-boutique / meridian-dental+atlas-logistics.
+   146→
+   147→---
+   148→Task ID: 2-e
+   149→Agent: content-writer-blog-team
+   150→Task: 4 launch blog posts + 4 team member profiles
+   151→
+   152→Work Log:
+   153→- Read worklog.md (Task 1 Stage Summary contracts) and src/lib/types.ts (BlogPost, BlogSection, TeamMember) before writing.
+   154→- Wrote src/data/team.ts: 4 TeamMember objects with exact ids/names/roles/photos/initials from the contract; bios 81-86 words, senior + human; one light funFact sentence each.
+   155→- Wrote src/data/blog-posts.ts: 4 BlogPost objects in contract order, each with 6 sections, 5 key takeaways, 5-7 paragraphs per section of 3-6 sentences, 3-5 comparison bullets, concrete 2025 prices (Shopify $39/$105 tiers, WooCommerce $1,200-$2,500 year-one totals, React Native 0.76 New Architecture, Impeller, Yoast/Rank Math/WP Rocket/Gravity Forms, Xero/HubSpot/ShipStation) and final sections pointing to the related service.
+   156→- Verified with read-only node/python checks: 0 straight apostrophes/double quotes inside strings (typographic ' " " only), metaDescriptions 149/156/155/152 chars, metaTitles 51/54/53/56 chars, excerpts 28-30 words, section word counts 1,019-1,221 per post, 4x all required fields, balanced brackets, correct authorIds/dates/coverGradients/relatedServiceSlugs.
+   157→- Fixed content gap found during review: restored post 1's "How to budget smart" core paragraphs and moved the hidden-costs closing paragraph into its proper section.
+   158→- Did NOT edit any other files, run lint/build/dev/tests, or install anything.
+   159→
+   160→Stage Summary:
+   161→- Files written: src/data/team.ts, src/data/blog-posts.ts (both fully replace placeholders and satisfy @/lib/types).
+   162→- Team ids: alex-morgan, priya-sharma, daniel-reeves, sofia-alvarez (photos /images/team/<id>.png, initials AM/PS/DR/SA).
+   163→- Blog slugs + section word counts: how-much-does-a-website-cost (~1,220, alex-morgan, 2025-01-20), custom-website-vs-wordpress (~1,020, priya-sharma, 2025-02-03), shopify-vs-woocommerce (~1,030, sofia-alvarez, 2025-02-17), flutter-vs-react-native (~1,030, priya-sharma, 2025-03-03).
+   164→- All posts link to relatedServiceSlug: custom-website-development, wordpress-development, ecommerce-development, mobile-app-development respectively; CTA copy is set up in each final section.
+   165→---
+   166→Task ID: 2-a
+   167→Agent: content-writer-priority-services
+   168→Task: Services batch 1 — 5 priority service page contents
+   169→
+   170→Work Log:
+   171→- Read worklog.md (Task 1 contracts) and src/lib/types.ts (Service/ServiceOffering/ProcessStep/FAQ/ServiceBenefit contracts).
+   172→- Fully replaced src/data/services-priority.ts with 5 Service objects, category 'development', in required order with exact slugs, metaTitles, icons, primary/secondary keywords.
+   173→- Applied cross-reference contracts verbatim: testimonialIds, caseStudySlugs, startingPrice, technologies (8 each, exact lists from Task 1), relatedServiceSlugs (2-3, never self, only from the allowed slug list).
+   174→- Wrote SEO copy per spec: keyword-bearing H1s (6-12 words), hero subs (25-35 words), 5 offerings (30-45 words each), whyIntro (70-90 words), 5 whyBenefits (45-60 words with concrete outcome metrics), 4-5 process steps (30-45 words), 6 buyer FAQs (45-80 words), pricingNote one sentence (20-35 words) pointing to pricing page.
+   175→- metaDescriptions hand-tuned to 145-158 chars including spaces, each containing the primary keyword + benefit + CTA hint.
+   176→- Used typographic apostrophes throughout string content; no markdown, no filler, no escape sequences.
+   177→- Verified programmatically (temp JS in /tmp, node script): 5 services, exact contract values, all field word-count ranges, metaDescription lengths, related-slug whitelist, per-service totals. ALL CHECKS PASSED; temp files removed. No other project files touched; no lint/build/tests run.
+   178→
+   179→Stage Summary:
+   180→- Slugs written to src/data/services-priority.ts (order fixed): custom-website-development (~1,348 words; metaDescription 149 chars), wordpress-development (~1,331 words; 147 chars), ecommerce-development (~1,336 words; 155 chars), software-development (~1,320 words; 152 chars), mobile-app-development (~1,349 words; 155 chars). All ≥900 words/service; ecommerce H1 uses mandated 'E-commerce' brand form of the keyword.
+   181→- Downstream agents can rely on: servicesPriority export satisfies @/lib/types exactly; testimonial ids t1-t8, case-study slugs and pricing-page references are consistent with Task 1 contracts.
+   182→---
+   183→Task ID: 13
+   184→Agent: orchestrator (Z.ai main)
+   185→Task: Integration — fixes, API/backend wiring, SEO endpoints, QA
+   186→
+   187→Work Log:
+   188→- Fixed agent-flagged issues: added `ariaLabel` prop to Link component; added missing `cn` import to cta-band.tsx; removed 2 unused eslint-disable directives.
+   189→- Fixed CSS bug: `.section-dark-deep` used the `background:` shorthand so `.bg-dots-dark` (later in cascade) wiped its gradient + left background transparent → rewrote as `background-color` + `background-image` and added combined `.section-dark-deep.bg-dots-dark` rule layering dots over gradient.
+   190→- Diagnosed stale-CSS/Turbopack issue after globals edit: restarted dev server clean (had to daemonize via start-stop-daemon — plain nohup background jobs were reaped by the sandbox ~60s after the shell exits).
+   191→- Image pipeline: fixed two size constraints (CLI whitelist AND server rule: multiples of 32, ≤2^22px) → all 19 images generated (hero, OG, 10 portfolio covers, 4 team, 3 avatars).
+   192→- Verified: tsc --noEmit 0 errors; eslint 0 errors/warnings; / 200; sitemap.xml 33 URLs; robots.txt correct; icon.svg + og-image 200.
+   193→
+   194→Stage Summary:
+   195→- Full stack verified working: hash router navigates all 33 "pages", dynamic per-view titles, 7 JSON-LD blocks on service pages, GA4 dataLayer events firing (whatsapp_click verified), lead form stores to SQLite via /api/leads (verified end-to-end in browser + DB row), newsletter stores via /api/newsletter (verified).
+   196→---
+   197→Task ID: 14
+   198→Agent: orchestrator (Z.ai main)
+   199→Task: Agent Browser E2E verification
+   200→
+   201→Work Log:
+   202→- Desktop 1440x900: home (all 11 sections), service detail (all 11 template sections), case study (challenge/solution/results/showcase/testimonial/related), pricing (tiers + comparison table + blocks + FAQs + form), blog listing + post (TOC/author box/service CTA), services hub (10 rich cards), about (story/values/timeline/team), contact, custom 404 with popular-service links.
+   203→- Interactions: header Services dropdown, service card nav, portfolio category filter (E-commerce → exactly 2 projects), Radix Select in lead form (human-style click), lead form submit → success state + DB row, newsletter submit → DB row, WhatsApp button click → dataLayer event, mobile menu (Sheet) nav to Pricing.
+   204→- Mobile 390x844 (iPhone 14): hero stacks, CTAs full-width, hamburger menu works, WhatsApp float visible, no overflow.
+   205→- Footer: sticky at bottom on short (404) pages; pushed naturally on long pages. Back/forward + deep links work via location.hash.
+   206→- Cleaned test lead + test subscriber rows from DB.
+   207→
+   208→Stage Summary:
+   209→- Site verified interactive end-to-end on desktop + mobile; zero console errors; zero lint/type errors. Ready.
+   210→
+   211→---
+   212→Task ID: 15
+   213→Agent: orchestrator (Z.ai main)
+   214→Task: UI/UX overhaul — design foundation (globals.css, Reveal, Section, SectionHeading, ServiceCard, CaseStudyCard, TestimonialCard, ProcessSteps, StatGrid, TechPills, CTABand, FAQSection, Button, Header, Footer)
+   215→
+   216→Work Log:
+   217→- User reported: bland visuals, broken/invisible sections, garbled AI images, poor alignment. Full audit via Agent Browser confirmed.
+   218→- Rewrote globals.css: new design system utilities (card-surface, card-hover, icon-tile, glass-chip/glass-chip-dark, glow-orb, gradient-frame, divider-gradient, text-gradient/text-gradient-soft, section-tint, richer section-dark-deep with radial glows, masked bg-grid-light, float/pulse-dot keyframes, richer shadows, radius 0.75rem).
+   219→- Fixed CRITICAL reveal bug: .reveal no longer hides SSR content via CSS. Reveal now arms (hides) only below-fold elements after JS mount, reveals via IntersectionObserver, plus 3.2s failsafe force-reveal. Crawlers/screenshots/no-JS always see content; reduced-motion respected.
+   220→- Section: added overflow-hidden + relative wrapper; dark/darkDeep unified to section-dark-deep; tinted → section-tint.
+   221→- SectionHeading: eyebrow pill with dot + ring, larger display title (up to 2.75rem), supports **gradient** span markers in title.
+   222→- ServiceCard: icon-tile gradient icon, hover top accent line, price chip ring style, arrow in circle with hover fill.
+   223→- CaseStudyCard: image zoom on hover, bottom legibility gradient, glass category badge (solid colors for contrast), line-clamped summary, mt-auto link with circle arrow.
+   224→- TestimonialCard: oversized decorative quote glyph, ringed avatars, footer divider, gradient initials fallback.
+   225→- ProcessSteps: numbered gradient badges ON a connecting gradient line (horizontal desktop / vertical mobile), glowing dark variant.
+   226→- StatGrid: gradient display numbers, softer tinted tiles, hover lift.
+   227→- TechPills: larger chips with gradient dot + halo, hover lift + glow.
+   228→- CTABand: rounded-[2rem] gradient panel (emerald-700→#04100b) with glow orbs + dot texture + glass eyebrow + white primary button.
+   229→- FAQSection: card-style accordion items (rounded-2xl, border, open-state glow).
+   230→- Button: default = emerald→teal gradient with brand shadow + hover lift; outline = emerald hover; lg = h-12 rounded-xl.
+   231→- Header: h-[4.5rem], pill active states, mega menu (720px, 2-col grid + gradient CTA rail), rounded-xl mobile sheet items.
+   232→- Footer: gradient top divider, ambient glow, ringed social tiles, emerald-300 column headings, gradient subscribe button.
+   233→- Verified: tsc --noEmit clean (src only), eslint clean.
+   234→
+   235→Stage Summary:
+   236→- All shared components now expose a rich, consistent design language. API/props unchanged → views compile untouched.
+   237→- AVAILABLE UTILITIES FOR VIEW AGENTS: card-surface, card-hover, icon-tile, glass-chip, glass-chip-dark, glow-orb (absolute + blur, needs positioned parent), gradient-frame, divider-gradient, text-gradient, text-gradient-soft, section-tint, section-dark-deep, bg-grid-light, bg-dots-dark, animate-float, animate-float-slow, animate-pulse-dot, custom-scrollbar.
+   238→- SectionHeading titles support **gradient** markers. Button default is gradient now; use variant="outline" for secondary; size="lg" for hero CTAs.
+   239→
+   240→---
+   241→Task ID: 16-a
+   242→Agent: home-view-redesigner
+   243→Task: Home view visual redesign
+   244→
+   245→Work Log:
+   246→- Read worklog Task 15 design system + all shared component APIs (Section, SectionHeading, Reveal, cards, StatGrid, ProcessSteps, TechPills, CTABand, FAQSection, Button, Badge, globals.css utilities, data index).
+   247→- Rewrote src/views/home-view.tsx (only file edited) using the new design system; all text/SEO copy, H1 text, JsonLd, trackEvent calls, Link hrefs, aria labels and data imports preserved; 'use client' and both export shapes kept.
+   248→- HERO: added 3 aria-hidden glow-orb spans behind content (emerald-300/25, teal-300/20, emerald-200/30); trust badge rebuilt as emerald-50 pill (ring-1 ring-inset ring-emerald-600/20) with animate-pulse-dot dot; H1 rescaled to text-4xl→xl:text-[4rem] tracking-tight with "Software Development" wrapped in text-gradient (&amp; entity intact); CTAs now size="lg" without h-11 override (gradient default + outline); rating row restyled as glass-chip rounded-full inline-flex.
+   249→- HERO media: Image wrapped in gradient-frame (rounded-[1.45rem] inner, deep brand shadow) with glow-orb bg-emerald-400/30 behind; added 2 floating glass-chip badges (Gauge "98/100 Core Web Vitals" animate-float top-left; TrendingUp "+64% client revenue" animate-float-slow bottom-right; text-xs font-semibold px-3.5 py-2.5 rounded-xl, hidden sm:flex).
+   250→- TRUST BAR: Section now tinted; client names converted to uniform h-11 wordmark chips (bg-white rounded-xl ring-inset ring-emerald-900/10, hover:text-foreground hover:ring-emerald-500/30); label line and StatGrid kept.
+   251→- SERVICES: SectionHeading title "Web, Design & **Marketing Services**" (gradient markers); grid gap widened to gap-6; ServiceCard showPrice kept.
+   252→- WHY CHOOSE US: replaced Card/CardContent with card-surface card-hover rounded-[1.25rem] p-6 divs; icons now icon-tile h-12 w-12; copy untouched.
+   253→- PORTFOLIO: grid gap-6; "View All Projects" outline lg Button kept centered.
+   254→- PROCESS: Section dark dots with added emerald-500/20 glow-orb; SectionHeading dark + relative; ProcessSteps dark kept.
+   255→- TESTIMONIALS: gap-6; TestimonialCard + review JsonLd untouched.
+   256→- TECHNOLOGIES: added description "The stack behind fast, scalable, easy-to-own products." to heading; TechPills kept.
+   257→- FAQ: tinted Section kept as-is; CTABand default usage kept.
+   258→- Removed now-unused imports (Badge, Card, CardContent); added Gauge, TrendingUp.
+   259→- Verified: npx tsc --noEmit → zero errors under src/ (only pre-existing errors in examples/ and skills/); bun run lint → exit 0. Dev server not restarted, browser not run per instructions.
+   260→
+   261→Stage Summary:
+   262→- Home view now fully uses the Task-15 design language: glow orbs, gradient-frame hero media with floating glass-chip metrics, pulse-dot badge, text-gradient H1 accent, tinted trust bar with wordmark chips + StatGrid, icon-tile USP cards, gradient-marked services heading, dark dotted process section, richer tech-stack description.
+   263→- No component APIs changed outside src/views/home-view.tsx; content, schema, analytics and links identical to previous version.
+   264→- For orchestrator: hero floaters hidden below sm to avoid crowding; all decorative layers aria-hidden; touch targets ≥44px (lg buttons h-12, chips h-11).
+   265→
