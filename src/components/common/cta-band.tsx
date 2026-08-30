@@ -19,8 +19,9 @@ interface CTABandProps {
 }
 
 /**
- * Call-to-action panel used before footers — a rounded brand-gradient panel
- * with ambient glow orbs, pattern, and strong contrast.
+ * Call-to-action panel used before footers — flat ink canvas, hairline
+ * frame, serif headline and paper pill. Solid colors only, zero paint
+ * effects (no glows, no dot textures, no backdrop blur).
  */
 export function CTABand({
   title = 'Start Your Project Today',
@@ -35,38 +36,20 @@ export function CTABand({
   return (
     <section className={cn('relative w-full px-4 pb-16 pt-4 sm:px-6 md:pb-24 lg:px-8', className)}>
       <div className="relative mx-auto max-w-7xl">
-        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-gray-800 via-gray-900 to-[#0a0a0a] px-6 py-16 text-center shadow-[0_32px_64px_-32px_rgb(4_16_11/0.6)] sm:px-12 md:py-20">
-          {/* Ambient glows */}
-          <span
-            className="glow-orb left-[-6rem] top-[-8rem] h-72 w-72 bg-gray-400/30"
-            aria-hidden="true"
-          />
-          <span
-            className="glow-orb bottom-[-9rem] right-[-4rem] h-80 w-80 bg-gray-400/25"
-            aria-hidden="true"
-          />
-          {/* Dot texture */}
-          <span
-            className="absolute inset-0 opacity-40"
-            style={{
-              backgroundImage: 'radial-gradient(rgb(255 255 255 / 0.09) 1px, transparent 1px)',
-              backgroundSize: '22px 22px',
-            }}
-            aria-hidden="true"
-          />
+        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#131316] px-6 py-16 text-center sm:px-12 md:py-20">
           <div className="relative flex flex-col items-center gap-7">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-gray-100 ring-1 ring-inset ring-white/20">
-              <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-gray-300" aria-hidden="true" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-white/70">
+              <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-green-500" aria-hidden="true" />
               Free consultation
             </span>
-            <h2 className="max-w-3xl text-3xl font-bold text-balance text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
+            <h2 className="max-w-3xl text-balance font-display text-3xl font-medium leading-[1.1] tracking-[-0.01em] text-white sm:text-4xl lg:text-5xl">
               {title}
             </h2>
-            <p className="max-w-2xl text-base leading-relaxed text-gray-100/85 sm:text-lg">{description}</p>
+            <p className="max-w-2xl text-base leading-relaxed text-white/60 sm:text-lg">{description}</p>
             <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
               <Button
                 size="lg"
-                className="h-12 bg-white px-7 text-gray-900 shadow-lg shadow-black/25 hover:bg-gray-100"
+                className="h-12 rounded-full bg-[#fafaf7] px-7 text-[#161613] shadow-none hover:bg-white"
                 asChild
                 onClick={() => trackEvent('cta_click', { location: 'cta_band', target: primaryHref })}
               >
@@ -78,7 +61,7 @@ export function CTABand({
               {secondaryHref ? (
                 <Button
                   size="lg"
-                  className="h-12 border border-white/30 bg-white/10 px-7 text-white shadow-none backdrop-blur-sm hover:bg-white/20"
+                  className="h-12 rounded-full border border-white/25 bg-transparent px-7 text-white shadow-none hover:bg-white/10"
                   variant="ghost"
                   asChild
                 >
@@ -88,7 +71,7 @@ export function CTABand({
               {showWhatsapp ? (
                 <Button
                   size="lg"
-                  className="h-12 border border-white/30 bg-transparent px-7 text-white shadow-none hover:bg-white/10"
+                  className="h-12 rounded-full border border-white/25 bg-transparent px-7 text-white shadow-none hover:bg-white/10"
                   variant="ghost"
                   asChild
                 >

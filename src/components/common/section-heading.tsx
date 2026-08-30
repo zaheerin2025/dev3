@@ -11,29 +11,33 @@ interface SectionHeadingProps {
 }
 
 /**
- * Eyebrow label + display title + description block used at the top of sections.
- * Supports **gradient span** markup: pass `**words**` inside the title to render
- * those words with the brand gradient.
+ * Supports **italic accent** markup: pass `**words**` inside the title to
+ * render those words as serif italics (the editorial accent — zero paint).
  */
 function renderTitle(title: string) {
   const parts = title.split('**');
   if (parts.length === 1) return title;
   return parts.map((part, index) =>
     index % 2 === 1 ? (
-      <span key={index} className="text-gradient">
+      <em key={index} className="italic">
         {part}
-      </span>
+      </em>
     ) : (
       <span key={index}>{part}</span>
     )
   );
 }
 
+/**
+ * Editorial section heading: mono eyebrow with a signal dot, oversized
+ * serif display title and a muted description. Left-aligned by default;
+ * pass `align="center"` for the centered variant.
+ */
 export function SectionHeading({
   eyebrow,
   title,
   description,
-  align = 'center',
+  align = 'left',
   dark,
   className,
 }: SectionHeadingProps) {
@@ -48,17 +52,18 @@ export function SectionHeading({
       {eyebrow ? (
         <p
           className={cn(
-            'mb-4 text-[11px] font-bold uppercase tracking-[0.22em]',
-            dark ? 'text-gray-300' : 'text-gray-800'
+            'eyebrow mb-5 inline-flex items-center gap-2.5',
+            align === 'center' && 'justify-center'
           )}
         >
+          <span className="size-1.5 rounded-full bg-[#ff4d00]" aria-hidden="true" />
           {eyebrow}
         </p>
       ) : null}
       <h2
         className={cn(
-          'text-3xl font-bold text-balance sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]',
-          dark ? 'text-white' : 'text-foreground'
+          'font-display text-3xl font-medium leading-[1.1] tracking-[-0.01em] text-balance sm:text-4xl lg:text-5xl',
+          dark ? 'text-white' : 'text-[#161613]'
         )}
       >
         {renderTitle(title)}
@@ -67,7 +72,7 @@ export function SectionHeading({
         <p
           className={cn(
             'mt-4 text-base leading-relaxed sm:text-lg',
-            dark ? 'text-gray-100/70' : 'text-muted-foreground'
+            dark ? 'text-white/60' : 'text-[#6f6e66]'
           )}
         >
           {description}

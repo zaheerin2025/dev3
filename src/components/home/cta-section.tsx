@@ -8,9 +8,8 @@ import { useSiteSettings } from '@/lib/use-site-settings';
 import { effectiveValue } from '@/lib/content-schema';
 
 /**
- * FINAL CTA — white section with three drifting gradient blobs and an
- * oversized two-line headline with highlighter accent. The supporting
- * line and the WhatsApp link are admin-editable / auto-hidden.
+ * FINAL CTA — full ink canvas, oversized serif headline with an italic
+ * accent and a paper pill. No decorative paint; typography carries it.
  */
 export function CtaSection() {
   const settings = useSiteSettings((s) => s.settings);
@@ -18,40 +17,31 @@ export function CtaSection() {
   const whatsapp = whatsappLink();
 
   return (
-    <section id="cta" className="section-white relative overflow-hidden py-24 md:py-32">
-      {/* Decorative blurred blobs */}
-      <div
-        aria-hidden="true"
-        className="blob animate-blob top-[-8rem] left-[-8rem] size-96 bg-gradient-to-br from-gray-500 to-gray-400"
-      />
-      <div
-        aria-hidden="true"
-        className="blob animate-blob-alt right-[-6rem] bottom-[-6rem] size-72 bg-gradient-to-br from-gray-500 to-gray-400"
-      />
-      <div
-        aria-hidden="true"
-        className="blob animate-blob right-[18%] bottom-[10%] size-72 bg-gradient-to-br from-gray-500 to-gray-400 [animation-delay:-4s]"
-      />
-
+    <section id="cta" className="section-black relative overflow-hidden py-24 md:py-32">
       <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
-        <h2 className="text-4xl font-bold tracking-tight text-[#0a0a0a] sm:text-5xl md:text-7xl">
-          Have a <span className="text-gradient">Project</span>
+        <p className="eyebrow inline-flex items-center gap-2.5 text-white/50">
+          <span className="size-1.5 rounded-full bg-[#ff4d00]" aria-hidden="true" />
+          Free Quote Within One Business Day
+        </p>
+
+        <h2 className="mt-6 font-display text-5xl font-medium leading-[1.05] tracking-[-0.01em] text-white sm:text-6xl md:text-7xl">
+          Have a project
           <span className="block">
-            <span className="highlighter">In Mind?</span>
+            <em className="italic">in mind?</em>
           </span>
         </h2>
 
         <Editable id="cta.body">
-          <p className="mx-auto mt-6 max-w-xl text-lg text-[#4b5563]">{body}</p>
+          <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/60">{body}</p>
         </Editable>
 
         <div className="mt-10">
           <Link
             href="/contact"
-            className="btn-primary-pill px-10! py-5! text-lg!"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-[#fafaf7] px-10 py-5 text-lg font-bold text-[#161613] transition-colors duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#131316]"
             onClick={() => trackEvent('cta_click', { location: 'home_final_cta' })}
           >
-            🚀 Get a Free Quote
+            Get a Free Quote
           </Link>
         </div>
 
@@ -61,9 +51,9 @@ export function CtaSection() {
               href={whatsapp}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 font-bold text-[#0a0a0a] transition-colors hover:text-gray-800"
+              className="inline-flex items-center gap-2 font-bold text-white/70 transition-colors hover:text-white"
             >
-              📞 Or WhatsApp us directly
+              Or WhatsApp us directly
             </a>
           </div>
         ) : null}

@@ -46,20 +46,25 @@ export function Logo({ className }: { className?: string }) {
     >
       <span
         aria-hidden="true"
-        className="flex size-9 items-center justify-center rounded-lg bg-zinc-900"
+        className="flex size-8 items-center justify-center rounded-md bg-[#161613]"
       >
-        <Sparkle className="size-5 text-white" />
+        <Sparkle className="size-4 text-[#ff4d00]" fill="currentColor" />
       </span>
-      <span className="font-display text-lg font-bold tracking-tight text-zinc-900">
+      <span className="font-display text-xl font-semibold tracking-tight text-[#161613]">
         Developers3
       </span>
     </Link>
   );
 }
 
+/** Mono micro-label nav link styling — shared by every desktop item. */
+const NAV_LINK_CLASS =
+  'relative inline-flex h-16 items-center font-mono text-xs uppercase tracking-[0.14em] transition-colors hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]';
+
 /**
- * HEADER — clean white bar, plain ink links, simple services dropdown,
- * solid CTA pill and the full-screen mobile menu overlay.
+ * HEADER — editorial paper bar: solid background (no backdrop blur —
+ * cheaper paint), mono uppercase nav, serif logotype, hairline bottom
+ * rule. Services opens the featured-services dropdown.
  */
 export function Header({ path }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -74,28 +79,28 @@ export function Header({ path }: HeaderProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white/95 backdrop-blur">
+      <header className="sticky top-0 z-50 w-full border-b border-[#e6e5de] bg-[#fafaf7]">
         <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <Logo />
 
           {/* Desktop nav */}
-          <nav aria-label="Main navigation" className="hidden items-center gap-7 lg:flex">
+          <nav aria-label="Main navigation" className="hidden items-center gap-8 lg:flex">
             <DropdownMenu modal={false} open={megaOpen} onOpenChange={setMegaOpen}>
               <DropdownMenuTrigger asChild>
                 <button
                   className={cn(
-                    'group relative inline-flex h-16 items-center gap-1 text-[15px] font-bold transition-colors hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400',
-                    servicesActive || megaOpen ? 'text-zinc-900' : 'text-zinc-600',
+                    'group relative inline-flex h-16 items-center gap-1.5 font-mono text-xs uppercase tracking-[0.14em] transition-colors hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]',
+                    servicesActive || megaOpen ? 'text-[#161613]' : 'text-[#6f6e66]',
                   )}
                 >
                   Services
                   <ChevronDown
-                    className="size-4 text-zinc-400 transition-transform duration-200 group-data-[state=open]:rotate-180"
+                    className="size-3.5 text-[#b3b2a8] transition-transform duration-200 group-data-[state=open]:rotate-180"
                     aria-hidden="true"
                   />
                   {(servicesActive || megaOpen) && (
                     <span
-                      className="absolute inset-x-0 bottom-3 mx-auto h-0.5 w-6 rounded-full bg-zinc-900"
+                      className="absolute inset-x-0 bottom-4 mx-auto h-px w-4 bg-[#ff4d00]"
                       aria-hidden="true"
                     />
                   )}
@@ -105,18 +110,18 @@ export function Header({ path }: HeaderProps) {
               {/* Services panel */}
               <DropdownMenuContent
                 align="start"
-                sideOffset={12}
-                className="w-[540px] rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl"
+                sideOffset={10}
+                className="w-[540px] rounded-xl border border-[#e6e5de] bg-white p-2 shadow-[0_16px_40px_-24px_rgba(22,22,19,0.35)]"
               >
                 {/* Panel header row */}
                 <div className="flex items-center justify-between gap-3 px-3 pb-1.5 pt-2">
-                  <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-zinc-500">
-                    <Sparkle className="size-3.5 text-zinc-400" aria-hidden="true" />
+                  <span className="eyebrow inline-flex items-center gap-2">
+                    <Sparkle className="size-3 text-[#ff4d00]" fill="currentColor" aria-hidden="true" />
                     Featured services
                   </span>
                   <Link
                     href="/services"
-                    className="inline-flex items-center gap-1 text-xs font-bold text-zinc-900 transition-colors hover:text-zinc-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
+                    className="inline-flex items-center gap-1 text-xs font-bold text-[#161613] transition-colors hover:text-[#ff4d00] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]"
                   >
                     All services
                     <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -133,27 +138,22 @@ export function Header({ path }: HeaderProps) {
                         key={service.slug}
                         href={href}
                         className={cn(
-                          'group flex min-h-[52px] items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400',
-                          active && 'bg-zinc-50',
+                          'group flex min-h-[52px] items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-[#f4f3ed] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]',
+                          active && 'bg-[#f4f3ed]',
                         )}
                         aria-current={active ? 'page' : undefined}
                       >
-                        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-zinc-900 text-white">
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-[#161613] text-[#fafaf7]">
                           <ServiceIconGlyph icon={service.icon} className="size-5" />
                         </span>
                         <span className="min-w-0 flex-1">
-                          <span
-                            className={cn(
-                              'block text-sm font-bold text-zinc-900',
-                              active && 'text-zinc-900',
-                            )}
-                          >
+                          <span className="block font-display text-base font-semibold text-[#161613]">
                             {service.name}
                           </span>
-                          <span className="block truncate text-xs text-zinc-500">{service.tagline}</span>
+                          <span className="block truncate text-xs text-[#6f6e66]">{service.tagline}</span>
                         </span>
                         <ArrowRight
-                          className="size-4 shrink-0 -translate-x-1 text-zinc-400 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
+                          className="size-4 shrink-0 -translate-x-1 text-[#ff4d00] opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
                           aria-hidden="true"
                         />
                       </Link>
@@ -162,7 +162,7 @@ export function Header({ path }: HeaderProps) {
                 </div>
 
                 {/* Bottom action row */}
-                <div className="mt-1 border-t border-dashed border-zinc-200 px-3 py-3">
+                <div className="mt-1 border-t border-[#e6e5de] px-3 py-3">
                   <div className="flex items-center justify-end gap-2">
                     <Link href="/services" className="btn-secondary-pill-sm">
                       All services
@@ -182,15 +182,15 @@ export function Header({ path }: HeaderProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'relative inline-flex h-16 items-center text-[15px] font-bold transition-colors hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400',
-                    active ? 'text-zinc-900' : 'text-zinc-600',
+                    NAV_LINK_CLASS,
+                    active ? 'text-[#161613]' : 'text-[#6f6e66]',
                   )}
                   aria-current={active ? 'page' : undefined}
                 >
                   {item.label}
                   {active && (
                     <span
-                      className="absolute inset-x-0 bottom-3 mx-auto h-0.5 w-6 rounded-full bg-zinc-900"
+                      className="absolute inset-x-0 bottom-4 mx-auto h-px w-4 bg-[#ff4d00]"
                       aria-hidden="true"
                     />
                   )}
@@ -212,7 +212,7 @@ export function Header({ path }: HeaderProps) {
             onClick={() => setMobileOpen(true)}
             aria-label="Open menu"
             aria-expanded={mobileOpen}
-            className="flex size-11 items-center justify-center rounded-full border border-zinc-200 text-zinc-900 transition-colors duration-200 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 lg:hidden"
+            className="flex size-11 items-center justify-center rounded-md border border-[#d6d5cc] text-[#161613] transition-colors duration-200 hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8] lg:hidden"
           >
             <Menu className="size-5" aria-hidden="true" />
           </button>
@@ -220,8 +220,7 @@ export function Header({ path }: HeaderProps) {
       </header>
 
       {/* Full-screen mobile navigation overlay — rendered OUTSIDE the sticky
-          header because its backdrop-filter would otherwise become the
-          containing block for this fixed-position overlay. */}
+          header so the fixed overlay is not clipped by the sticky bar. */}
       <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
     </>
   );

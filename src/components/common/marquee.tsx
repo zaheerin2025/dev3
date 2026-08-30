@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 interface MarqueeProps {
   items: string[];
-  /** dark = dark band, gradient = dark band (neutralized) */
+  /** dark = ink band (only variant) */
   variant?: 'dark' | 'gradient';
   reverse?: boolean;
   speed?: 'normal' | 'slow';
@@ -13,9 +13,10 @@ interface MarqueeProps {
 }
 
 /**
- * Infinite scrolling marquee strip used as a section separator.
+ * Infinite scrolling marquee strip used as a section separator — ink
+ * band, serif display items, sparkle separators, hairline rules.
  * Content is duplicated exactly twice inside a w-max track that
- * translates -50%, producing a seamless loop. Neutral colors.
+ * translates -50%, producing a seamless loop.
  */
 export function Marquee({
   items,
@@ -31,16 +32,16 @@ export function Marquee({
         <span key={`${item}-${i}`} className="flex items-center">
           <span
             className={cn(
-              'px-5 font-display text-lg font-bold uppercase tracking-[0.06em] md:px-7 md:text-2xl',
-              variant === 'dark' && accentIndexes.includes(i) && 'text-white',
+              'px-5 font-display text-lg font-medium tracking-[-0.01em] md:px-7 md:text-2xl',
+              variant === 'dark' && accentIndexes.includes(i) && 'italic text-white',
             )}
           >
             {item}
           </span>
           <Sparkle
             className={cn(
-              'size-4 shrink-0 md:size-5',
-              variant === 'dark' ? 'fill-white/25 text-white/25' : 'fill-white/60 text-white/60',
+              'size-3.5 shrink-0 md:size-4',
+              variant === 'dark' ? 'fill-[#ff4d00] text-[#ff4d00]' : 'fill-white/60 text-white/60',
             )}
           />
         </span>
@@ -51,7 +52,7 @@ export function Marquee({
   return (
     <div
       className={cn(
-        'marquee-hover-pause relative overflow-hidden py-4 md:py-5',
+        'marquee-hover-pause relative overflow-hidden border-y border-white/10 py-4 md:py-5',
         'bg-[#131316] text-white',
         className,
       )}

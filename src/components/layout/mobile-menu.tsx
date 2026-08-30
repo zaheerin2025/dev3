@@ -20,8 +20,9 @@ interface MobileMenuProps {
 }
 
 /**
- * Full-screen mobile navigation overlay. Rendered conditionally by the header;
- * staggered fade-in via the `.menu-fade` utility (see globals.css).
+ * Full-screen mobile navigation overlay — editorial paper sheet with
+ * serif display links, mono index numbers and hairline rules. Rendered
+ * conditionally by the header; staggered fade-in via `.menu-fade`.
  */
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
   // Lock body scroll while the menu is open.
@@ -51,7 +52,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
       role="dialog"
       aria-modal="true"
       aria-label="Mobile navigation menu"
-      className="menu-fade fixed inset-0 z-[60] flex flex-col overflow-y-auto bg-white"
+      className="menu-fade fixed inset-0 z-[60] flex flex-col overflow-y-auto bg-[#fafaf7]"
     >
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 pb-10 pt-4">
         {/* Top row — logo + close */}
@@ -60,15 +61,15 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             href="/"
             ariaLabel="Developers3 — home"
             onClick={onClose}
-            className="flex items-center gap-2.5 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
+            className="flex items-center gap-2.5 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]"
           >
             <span
               aria-hidden="true"
-              className="flex size-9 items-center justify-center rounded-lg bg-zinc-900"
+              className="flex size-8 items-center justify-center rounded-md bg-[#161613]"
             >
-              <span className="text-base" aria-hidden="true">✦</span>
+              <span className="text-sm text-[#ff4d00]" aria-hidden="true">✦</span>
             </span>
-            <span className="font-display text-lg font-bold tracking-tight text-zinc-900">
+            <span className="font-display text-xl font-semibold tracking-tight text-[#161613]">
               Developers3
             </span>
           </Link>
@@ -76,26 +77,26 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             type="button"
             onClick={onClose}
             aria-label="Close menu"
-            className="flex size-11 items-center justify-center rounded-full border border-zinc-200 text-zinc-900 transition-colors duration-200 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
+            className="flex size-11 items-center justify-center rounded-md border border-[#d6d5cc] text-[#161613] transition-colors duration-200 hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]"
           >
             <X className="size-5" aria-hidden="true" />
           </button>
         </div>
 
-        {/* Big staggered links */}
-        <nav aria-label="Mobile navigation" className="mt-12 flex flex-col gap-5">
+        {/* Big staggered serif links with hairline rules */}
+        <nav aria-label="Mobile navigation" className="mt-10 flex flex-col">
           {MENU_LINKS.map((item, index) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className="menu-fade group inline-flex items-baseline gap-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
+              className="menu-fade group flex items-baseline gap-4 border-t border-[#e6e5de] py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]"
               style={{ animationDelay: `${index * 70}ms` }}
             >
-              <span className="text-sm font-bold text-zinc-400" aria-hidden="true">
+              <span className="font-mono text-xs text-[#ff4d00]" aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <span className="font-display text-4xl font-bold text-zinc-900 transition-colors duration-200 group-hover:text-zinc-600">
+              <span className="font-display text-4xl font-medium text-[#161613] transition-colors duration-200 group-hover:italic group-hover:text-[#ff4d00]">
                 {item.label}
               </span>
             </Link>
@@ -111,22 +112,22 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             Start Your Project
           </Link>
           {site.phoneDisplay || site.email ? (
-            <div className="flex flex-col gap-3 text-sm font-medium text-zinc-500">
+            <div className="flex flex-col gap-3 text-sm font-medium text-[#6f6e66]">
               {site.phoneDisplay ? (
                 <a
                   href={site.phoneHref}
-                  className="inline-flex items-center gap-2.5 transition-colors hover:text-zinc-900"
+                  className="inline-flex items-center gap-2.5 transition-colors hover:text-[#161613]"
                 >
-                  <Phone className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
+                  <Phone className="size-4 shrink-0 text-[#b3b2a8]" aria-hidden="true" />
                   {site.phoneDisplay}
                 </a>
               ) : null}
               {site.email ? (
                 <a
                   href={`mailto:${site.email}`}
-                  className="inline-flex items-center gap-2.5 transition-colors hover:text-zinc-900"
+                  className="inline-flex items-center gap-2.5 transition-colors hover:text-[#161613]"
                 >
-                  <Mail className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
+                  <Mail className="size-4 shrink-0 text-[#b3b2a8]" aria-hidden="true" />
                   {site.email}
                 </a>
               ) : null}

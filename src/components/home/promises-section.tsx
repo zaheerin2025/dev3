@@ -32,53 +32,40 @@ const PROMISES = [
 ];
 
 /**
- * HOW WE WORK — white section, three promise cards; the middle one is
- * gradient-bordered, elevated, and sticker-tagged like the old featured card.
+ * HOW WE WORK — tinted paper band, three promise cards with ink icon
+ * tiles; the middle card carries the in-writing sticker on an ink rule.
  */
 export function PromisesSection() {
   return (
-    <section id="how-we-work" className="section-white py-20 md:py-24">
+    <section id="how-we-work" className="section-tint py-20 md:py-24">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="HOW WE WORK"
+          eyebrow="How We Work"
           title="Three Promises **We Put In Writing**"
           description="Instead of cherry-picked quotes, here is exactly what working with us is like — the same rules on every project, small or large."
         />
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {PROMISES.map((promise, i) => {
-            const card = (
-              <article className="card-soft flex h-full flex-col p-8">
+        <div className="grid gap-4 md:grid-cols-3">
+          {PROMISES.map((promise, i) => (
+            <Reveal key={promise.title} delay={i * 90} className="h-full">
+              <article className="card-soft relative flex h-full flex-col p-8">
+                {i === 1 && (
+                  <Sticker className="absolute -top-3 right-6 bg-[#161613] text-[#fafaf7]">
+                    In writing
+                  </Sticker>
+                )}
                 <span className="icon-tile size-11">
                   <promise.icon className="size-5" aria-hidden="true" />
                 </span>
-                <h3 className="mt-5 text-lg font-bold text-[#0a0a0a]">{promise.title}</h3>
-                <p className="mt-3 text-[#4b5563] leading-relaxed">{promise.body}</p>
-                <p className="mt-auto pt-6 text-sm font-semibold text-gray-800">
+                <h3 className="mt-6 font-display text-2xl font-medium text-[#161613]">{promise.title}</h3>
+                <p className="mt-3 leading-relaxed text-[#6f6e66]">{promise.body}</p>
+                <p className="mt-auto inline-flex items-center gap-2 pt-6 font-mono text-xs uppercase tracking-[0.14em] text-[#6f6e66]">
+                  <span className="size-1 rounded-full bg-[#ff4d00]" aria-hidden="true" />
                   {promise.sticker}
                 </p>
               </article>
-            );
-
-            if (i === 1) {
-              return (
-                <Reveal key={promise.title} delay={i * 90} className="h-full">
-                  <div className="gradient-border relative h-full p-1 lg:-translate-y-3">
-                    <Sticker rotate={6} className="absolute -top-4 right-6">
-                      ⭐ In writing
-                    </Sticker>
-                    {card}
-                  </div>
-                </Reveal>
-              );
-            }
-
-            return (
-              <Reveal key={promise.title} delay={i * 90} className="h-full">
-                {card}
-              </Reveal>
-            );
-          })}
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>

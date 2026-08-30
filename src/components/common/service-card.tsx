@@ -18,33 +18,28 @@ export function ServiceCard({ service, showPrice = false, className }: ServiceCa
     <Link
       href={`/${service.slug}`}
       ariaLabel={`Learn more about ${service.name}`}
-      className={cn('group block h-full rounded-[1.25rem] focus-visible:outline-none', className)}
+      className={cn('group block h-full focus-visible:outline-none', className)}
     >
       <article className="card-surface card-hover relative flex h-full flex-col gap-4 overflow-hidden p-6 group-focus-visible:ring-2 group-focus-visible:ring-ring">
-        {/* Top accent line that brightens on hover */}
-        <span
-          className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-gray-500 via-gray-400 to-gray-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-          aria-hidden="true"
-        />
-        <span className="icon-tile h-12 w-12 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
+        <span className="icon-tile size-12">
           <ServiceIconGlyph icon={service.icon} />
         </span>
         <div className="flex h-full flex-col gap-2">
-          <h3 className="text-lg font-semibold text-foreground">{service.name}</h3>
+          <h3 className="font-display text-xl font-medium text-foreground">{service.name}</h3>
           <p className="text-sm leading-relaxed text-muted-foreground">{service.tagline}</p>
         </div>
         <div className="mt-auto flex items-center justify-between pt-1">
           {showPrice ? (
-            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-800 ring-1 ring-inset ring-gray-800/15">
+            <span className="inline-flex items-center rounded-full border border-[#d6d5cc] px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.08em] text-[#161613]">
               From {service.startingPrice}
             </span>
           ) : (
             <span />
           )}
-          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-800">
+          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#161613]">
             Learn more
             <span
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 transition-all duration-300 group-hover:bg-gray-800 group-hover:text-white"
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-[#f1f0ea] transition-colors duration-300 group-hover:bg-[#161613] group-hover:text-[#fafaf7]"
               aria-hidden="true"
             >
               <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />

@@ -7,8 +7,9 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-poppins), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-signal: var(--signal);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -45,79 +46,82 @@
 }
 
 /* ============================================================
-   BASE — CLEAN NEUTRAL.
-   Styling intentionally removed for now: plain white surfaces,
-   near-black ink, gray hairlines, solid black primary buttons.
-   All legacy utility class names are kept as harmless neutral
-   equivalents so existing components render consistently.
+   PAPER & INK — editorial studio design system.
+   Typography-led: Fraunces serif display + Inter text + mono
+   micro-labels. Warm paper surfaces, ink sections, hairline
+   rules, one micro accent (--signal). Performance budget:
+   solid colors and 1px borders only — no blur, no gradients,
+   no large shadows, no paint-heavy animation.
    ============================================================ */
 :root {
-  --radius: 0.75rem;
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  --radius: 0.5rem;
+  --background: #fafaf7;
+  --foreground: #161613;
+  --signal: #ff4d00;
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --card-foreground: #161613;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #0a0a0a;
-  --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --accent: #f4f4f5;
-  --accent-foreground: #18181b;
+  --popover-foreground: #161613;
+  --primary: #161613;
+  --primary-foreground: #fafaf7;
+  --secondary: #f1f0ea;
+  --secondary-foreground: #1f1f1b;
+  --muted: #f1f0ea;
+  --muted-foreground: #6f6e66;
+  --accent: #f1f0ea;
+  --accent-foreground: #1f1f1b;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #e4e4e7;
-  --input: #e4e4e7;
-  --ring: #a1a1aa;
+  --border: #e6e5de;
+  --input: #e6e5de;
+  --ring: #b3b2a8;
   --chart-1: #27272a;
   --chart-2: #52525b;
   --chart-3: #71717a;
   --chart-4: #a1a1aa;
   --chart-5: #d4d4d8;
   --sidebar: #ffffff;
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #0a0a0a;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f4f4f5;
-  --sidebar-accent-foreground: #18181b;
-  --sidebar-border: #e4e4e7;
-  --sidebar-ring: #a1a1aa;
+  --sidebar-foreground: #161613;
+  --sidebar-primary: #161613;
+  --sidebar-primary-foreground: #fafaf7;
+  --sidebar-accent: #f1f0ea;
+  --sidebar-accent-foreground: #1f1f1b;
+  --sidebar-border: #e6e5de;
+  --sidebar-ring: #b3b2a8;
 }
 
 .dark {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  --background: #fafaf7;
+  --foreground: #161613;
+  --signal: #ff4d00;
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --card-foreground: #161613;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #0a0a0a;
-  --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --accent: #f4f4f5;
-  --accent-foreground: #18181b;
+  --popover-foreground: #161613;
+  --primary: #161613;
+  --primary-foreground: #fafaf7;
+  --secondary: #f1f0ea;
+  --secondary-foreground: #1f1f1b;
+  --muted: #f1f0ea;
+  --muted-foreground: #6f6e66;
+  --accent: #f1f0ea;
+  --accent-foreground: #1f1f1b;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #e4e4e7;
-  --input: #e4e4e7;
-  --ring: #a1a1aa;
+  --border: #e6e5de;
+  --input: #e6e5de;
+  --ring: #b3b2a8;
   --chart-1: #27272a;
   --chart-2: #52525b;
   --chart-3: #71717a;
   --chart-4: #a1a1aa;
   --chart-5: #d4d4d8;
   --sidebar: #ffffff;
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #0a0a0a;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f4f4f5;
-  --sidebar-accent-foreground: #18181b;
-  --sidebar-border: #e4e4e7;
-  --sidebar-ring: #a1a1aa;
+  --sidebar-foreground: #161613;
+  --sidebar-primary: #161613;
+  --sidebar-primary-foreground: #fafaf7;
+  --sidebar-accent: #f1f0ea;
+  --sidebar-accent-foreground: #1f1f1b;
+  --sidebar-border: #e6e5de;
+  --sidebar-ring: #b3b2a8;
 }
 
 @layer base {
@@ -134,38 +138,39 @@
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-display;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.01em;
+    font-weight: 500;
   }
   ::selection {
-    background: #27272a;
-    color: #fff;
+    background: #ff4d00;
+    color: #ffffff;
   }
 }
 
 @layer utilities {
   /* =============================================
-     SECTION BACKGROUNDS — plain surfaces
+     SECTION BACKGROUNDS — paper / ink / tint
      ============================================= */
   .section-dark {
     background-color: #131316;
-    color: #f4f4f5;
+    color: #f4f4f1;
   }
   .section-dark-deep {
     background-color: #131316;
-    color: #f4f4f5;
+    color: #f4f4f1;
   }
   .section-tint {
-    background-color: #fafafa;
+    background-color: #f4f3ed;
   }
   .section-cream {
-    background-color: #fafafa;
+    background-color: #f4f3ed;
   }
   .section-white {
-    background-color: #ffffff;
+    background-color: #fafaf7;
   }
   .section-black {
     background-color: #131316;
-    color: #f4f4f5;
+    color: #f4f4f1;
   }
 
   /* Patterns disabled */
@@ -180,103 +185,105 @@
   }
 
   .glow-orb {
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(72px);
-    pointer-events: none;
+    display: none;
   }
 
   /* =============================================
-     TYPOGRAPHY ACCENTS — neutralized
+     TYPOGRAPHY ACCENTS — editorial italics
      ============================================= */
   .text-balance {
     text-wrap: balance;
   }
-  /* Used on light surfaces → plain ink */
+  /* Accent words on light surfaces → serif italic (same ink) */
   .text-gradient {
     color: inherit;
+    font-style: italic;
   }
-  /* Used on dark surfaces → plain white */
+  /* Accent words on dark surfaces → italic white */
   .text-gradient-soft {
     color: #ffffff;
+    font-style: italic;
   }
   .text-gradient-animate {
     color: inherit;
+    font-style: italic;
   }
   .text-glow {
     text-shadow: none;
   }
 
+  /* Mono micro-label — the editorial eyebrow */
+  .eyebrow {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #6f6e66;
+  }
+
   /* =============================================
-     SURFACES / CARDS — plain
+     SURFACES / CARDS — flat paper + hairline
      ============================================= */
   .card-surface {
     background-color: #ffffff;
-    border-radius: 1.25rem;
-    border: 1px solid #e4e4e7;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+    border-radius: 0.75rem;
+    border: 1px solid #e6e5de;
   }
   .card-hover {
     transition:
       transform 0.25s ease,
-      box-shadow 0.25s ease,
-      border-color 0.25s ease;
+      border-color 0.25s ease,
+      background-color 0.25s ease;
   }
   .card-hover:hover {
     transform: translateY(-2px);
-    border-color: #d4d4d8;
-    box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.12);
+    border-color: #161613;
   }
   .card-3d {
     transition:
       transform 0.25s ease,
-      box-shadow 0.25s ease,
-      border-color 0.25s ease;
+      border-color 0.25s ease,
+      background-color 0.25s ease;
   }
   .card-3d:hover {
     transform: translateY(-2px);
-    border-color: #d4d4d8;
-    box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.12);
+    border-color: #161613;
   }
   .glass-chip {
-    background: rgb(255 255 255 / 0.92);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid #e4e4e7;
-    box-shadow: 0 4px 14px -6px rgb(0 0 0 / 0.1);
+    background: #ffffff;
+    border: 1px solid #e6e5de;
   }
   .glass {
-    background: rgb(255 255 255 / 0.92);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid #e4e4e7;
+    background: #ffffff;
+    border: 1px solid #e6e5de;
   }
   .gradient-frame {
     position: relative;
-    background: #e4e4e7;
+    background: #e6e5de;
     padding: 1px;
-    border-radius: 1.5rem;
+    border-radius: 0.75rem;
   }
   .icon-tile {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 0.9rem;
-    background-color: #18181b;
-    color: #ffffff;
+    border-radius: 0.5rem;
+    background-color: #161613;
+    color: #fafaf7;
   }
   .divider-gradient {
     height: 1px;
     border: 0;
-    background-color: #e4e4e7;
+    background-color: #e6e5de;
   }
   .aurora-panel {
     background-color: #ffffff;
-    border: 1px solid #e4e4e7;
+    border: 1px solid #e6e5de;
   }
 
   /* =============================================
-     MOTION — minimal
+     MOTION — cheap transform/opacity only
      ============================================= */
   @keyframes float-y {
     0%, 100% { transform: translateY(0); }
@@ -319,7 +326,7 @@
 
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: #d4d4d8 transparent;
+    scrollbar-color: #cfcec4 transparent;
   }
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
@@ -329,47 +336,49 @@
     background: transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #d4d4d8;
+    background: #cfcec4;
     border-radius: 9999px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #a1a1aa;
+    background: #b3b2a8;
   }
 }
 
 /* ============================================================
-   CREATIVE LAYER — neutralized equivalents (same class names)
+   CREATIVE LAYER — editorial equivalents (same class names)
    ============================================================ */
 
 .btn-primary-pill {
-  @apply inline-flex items-center justify-center gap-2 rounded-full bg-zinc-900 px-7 py-3.5 text-sm font-bold text-white transition-colors duration-200 hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-[#161613] px-7 py-3.5 text-sm font-bold text-[#fafaf7] transition-colors duration-200 hover:bg-[#3a3a35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8] focus-visible:ring-offset-2;
 }
 .btn-primary-pill-sm {
-  @apply inline-flex items-center justify-center gap-2 rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-bold text-white transition-colors duration-200 hover:bg-zinc-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-[#161613] px-5 py-2.5 text-sm font-bold text-[#fafaf7] transition-colors duration-200 hover:bg-[#3a3a35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8] focus-visible:ring-offset-2;
 }
 .btn-secondary-pill {
-  @apply inline-flex items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white px-7 py-3.5 text-sm font-bold text-zinc-900 transition-colors duration-200 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full border border-[#d6d5cc] bg-transparent px-7 py-3.5 text-sm font-bold text-[#161613] transition-colors duration-200 hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8] focus-visible:ring-offset-2;
 }
 .btn-secondary-pill-sm {
-  @apply inline-flex items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white px-5 py-2 text-sm font-bold text-zinc-900 transition-colors duration-200 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full border border-[#d6d5cc] bg-transparent px-5 py-2 text-sm font-bold text-[#161613] transition-colors duration-200 hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8] focus-visible:ring-offset-2;
 }
 .btn-ghost-dark {
-  @apply inline-flex items-center justify-center gap-2 rounded-full bg-white/10 px-6 py-3 text-sm font-bold text-white ring-1 ring-white/25 transition-colors duration-200 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white;
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-transparent px-6 py-3 text-sm font-bold text-white ring-1 ring-white/25 transition-colors duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white;
 }
 
 .card-soft {
-  @apply rounded-3xl border border-zinc-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)];
+  @apply rounded-xl border border-[#e6e5de] bg-white;
 }
 
 .gradient-border {
-  background: #e4e4e7;
+  background: #e6e5de;
   padding: 2px;
-  border-radius: 1.75rem;
+  border-radius: 0.75rem;
 }
 
-/* Sticker pill — plain badge */
+/* Sticker pill — mono editorial badge */
 .sticker {
-  @apply inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wide text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.05)];
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  @apply inline-flex items-center gap-1.5 rounded-full border border-[#161613] bg-[#fafaf7] px-3.5 py-1.5 text-[10px] uppercase text-[#161613];
+  letter-spacing: 0.14em;
 }
 
 /* Tilts disabled */
@@ -378,27 +387,27 @@
   transform: none;
 }
 .tilt-hover {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.25s ease, border-color 0.25s ease;
 }
 .tilt-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.12);
 }
 
-/* Highlighter removed */
+/* Highlighter removed → editorial italic */
 .highlighter {
   background-image: none;
+  font-style: italic;
 }
 
-/* Dashed divider */
+/* Dashed divider — warm hairline */
 .dashed-divider {
-  background-image: linear-gradient(to right, #e4e4e7 50%, transparent 50%);
+  background-image: linear-gradient(to right, #d6d5cc 50%, transparent 50%);
   background-size: 14px 2px;
   background-repeat: repeat-x;
   height: 2px;
 }
 
-/* Blobs are decorative — disabled while styling is removed */
+/* Blobs are decorative — disabled */
 .blob {
   display: none;
 }
@@ -418,7 +427,7 @@
   animation: none;
 }
 
-/* Marquee (kept — functional separator, neutral colors) */
+/* Marquee (kept — functional separator, ink band with serif items) */
 @keyframes marquee-x {
   from {
     transform: translateX(0);
@@ -458,12 +467,10 @@
   animation-delay: var(--rise-delay, 0ms);
 }
 
-/* Hero rotating headline slot — kept unlayered AFTER .word-rise so its
-   inline-grid display wins the cascade (both are unlayered here; later
-   rule with equal specificity wins, so order matters). Words stack in
-   one grid cell so the width is fixed to the widest word (zero layout
-   shift); each child fades up, holds ~2.4s, fades away on a 9.6s loop
-   with per-word inline animation-delay. */
+/* Hero rotating headline slot — inline-grid keeps width fixed to the
+   widest word (zero layout shift); each child fades up, holds ~2.4s,
+   fades away on a 9.6s loop with per-word inline animation-delay.
+   Transform/opacity only — compositor-cheap. */
 .hero-rotator {
   display: inline-grid;
   vertical-align: bottom;
@@ -502,6 +509,7 @@
   .animate-marquee-slow,
   .animate-float,
   .animate-float-slow,
+  .animate-pulse-dot,
   .word-rise,
   .menu-fade {
     animation: none;

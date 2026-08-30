@@ -63,7 +63,7 @@ export function Footer() {
   const hasContact = Boolean(phoneDisplay || email);
 
   return (
-    <footer className="relative mt-auto overflow-hidden bg-[#0b0b0d] text-zinc-300">
+    <footer className="relative mt-auto overflow-hidden bg-[#131316] text-zinc-300">
       <div className="mx-auto w-full max-w-7xl px-4 pb-6 pt-14 sm:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr]">
           {/* Brand */}
@@ -71,7 +71,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-2.5" ariaLabel="Developers3 — home">
               <span
                 aria-hidden="true"
-                className="flex size-9 items-center justify-center rounded-lg bg-white text-base text-zinc-900"
+                className="flex size-9 items-center justify-center rounded-lg bg-white text-base text-[#ff4d00]"
               >
                 ✦
               </span>

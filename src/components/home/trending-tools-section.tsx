@@ -2,7 +2,6 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import { SectionHeading } from '@/components/common/section-heading';
 import { Reveal } from '@/components/common/reveal';
 import { Link } from '@/components/common/link';
-import { FloatingShapesDark } from '@/components/common/floating-shapes';
 import { ToolCard } from '@/components/tools/tool-card';
 import { getToolMeta } from '@/data/tools/registry';
 import type { ToolMeta } from '@/data/tools/types';
@@ -23,9 +22,9 @@ const TRENDING_TOOL_SLUGS = [
 ] as const;
 
 /**
- * TRENDING TOOLS — black band between Stats and Testimonials.
- * White tool cards pop against the dark background and mirror the
- * Work section's look, keeping the page rhythm cream → black → white.
+ * TRENDING TOOLS — paper section of hairline tool cards between the two
+ * ink canvases (Work above, Process below), keeping the page rhythm
+ * paper → ink → paper.
  */
 export function TrendingToolsSection() {
   const tools = TRENDING_TOOL_SLUGS.map((slug) => getToolMeta(slug)).filter(
@@ -33,12 +32,9 @@ export function TrendingToolsSection() {
   );
 
   return (
-    <section id="free-tools" className="section-black relative overflow-hidden py-20 md:py-24">
-      <FloatingShapesDark />
-
-      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="free-tools" className="section-white py-20 md:py-24">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
-          dark
           eyebrow="Tools Mania — Free Forever"
           title="The **Free Tools** People Keep Coming Back To"
           description="We built these for our own projects, then figured — why keep them to ourselves? They run right in your browser, nothing gets uploaded, and there are 94 more where these came from."
@@ -59,7 +55,7 @@ export function TrendingToolsSection() {
               Browse All 100 Tools
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
-            <p className="text-xs font-medium text-white/40">
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-[#6f6e66]">
               No signup. No watermarks. No &ldquo;free trial&rdquo; that expires in 7 days.
             </p>
           </div>

@@ -1,54 +1,37 @@
-import { Sparkle } from 'lucide-react';
 import { SectionHeading } from '@/components/common/section-heading';
 import { Reveal } from '@/components/common/reveal';
 import { homeProcess } from '@/data';
 
 /**
- * PROCESS — cream section, four numbered steps connected by a dashed
- * gradient line with small floating sparkles between them.
+ * PROCESS — ink canvas with four hairline-ruled rows: giant serif index,
+ * serif step title and a muted description. Pure typography and 1px
+ * borders — the most editorial section on the page.
  */
 export function ProcessSection() {
   return (
-    <section id="process" className="section-cream py-20 md:py-24">
+    <section id="process" className="section-black py-20 md:py-24">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="PROCESS"
+          dark
+          eyebrow="Process"
           title="How We **Work**"
           description="Four clear steps from first hello to launch day — fixed scope, fixed quote, zero surprises."
         />
 
-        <div className="relative">
-          {/* Dashed connector line behind the step numbers (desktop only) */}
-          <span
-            aria-hidden="true"
-            className="absolute top-10 right-[12%] left-[12%] hidden border-t-2 border-dashed border-gray-300 lg:block"
-          />
-
-          {/* Floating sparkles between steps (desktop only) */}
-          <Sparkle
-            aria-hidden="true"
-            className="animate-float absolute top-2 left-[31%] hidden size-5 fill-gray-300 text-gray-300 lg:block"
-          />
-          <Sparkle
-            aria-hidden="true"
-            className="animate-float-slow absolute top-14 left-[56%] hidden size-4 fill-gray-400 text-gray-400 lg:block"
-          />
-          <Sparkle
-            aria-hidden="true"
-            className="animate-float absolute top-4 left-[80%] hidden size-4 fill-gray-300 text-gray-300 [animation-delay:-2s] lg:block"
-          />
-
-          <div className="relative grid gap-10 lg:grid-cols-4">
-            {homeProcess.map((step, i) => (
-              <Reveal key={step.title} delay={i * 100}>
-                <p className="text-gradient font-display text-6xl font-bold">
+        <div className="flex flex-col">
+          {homeProcess.map((step, i) => (
+            <Reveal key={step.title} delay={i * 80}>
+              <div className="grid items-baseline gap-2 border-t border-white/10 py-7 md:grid-cols-[110px_minmax(0,1fr)_minmax(0,2fr)] md:gap-8 md:py-9">
+                <p className="font-display text-5xl font-medium text-white/20 md:text-6xl" aria-hidden="true">
                   {String(i + 1).padStart(2, '0')}
                 </p>
-                <h3 className="mt-3 text-xl font-bold text-[#0a0a0a]">{step.title}</h3>
-                <p className="mt-2 line-clamp-3 text-[#4b5563]">{step.description}</p>
-              </Reveal>
-            ))}
-          </div>
+                <h3 className="font-display text-2xl font-medium text-white md:text-3xl">{step.title}</h3>
+                <p className="max-w-2xl leading-relaxed text-white/55 md:justify-self-end">
+                  {step.description}
+                </p>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>

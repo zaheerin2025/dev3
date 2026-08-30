@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { Youtube } from 'lucide-react';
 import { Editable } from '@/components/admin/editable';
-import { Sticker } from '@/components/common/sticker';
 import { useSiteSettings } from '@/lib/use-site-settings';
 import { effectiveValue } from '@/lib/content-schema';
 import { trackEvent } from '@/lib/analytics';
@@ -39,7 +38,7 @@ export function VideoSection() {
 
   if (!videoId) return null;
 
-  // Last two words get the gradient — but only when there are enough words.
+  // Last two words get the italic accent — but only when there are enough words.
   const words = title.split(' ');
   const head = words.length > 2 ? words.slice(0, -2).join(' ') : '';
   const tail = words.length > 2 ? words.slice(-2).join(' ') : title;
@@ -47,20 +46,23 @@ export function VideoSection() {
   return (
     <section aria-labelledby="latest-video-heading" className="section-white py-16 md:py-24">
       <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center gap-4 text-center">
-          <Sticker>▶ Latest Video</Sticker>
+        <div className="flex flex-col items-start gap-4">
+          <p className="eyebrow inline-flex items-center gap-2.5">
+            <span className="size-1.5 rounded-full bg-[#ff4d00]" aria-hidden="true" />
+            Latest Video
+          </p>
           <Editable id="video.title">
             <h2
               id="latest-video-heading"
-              className="text-balance font-display text-3xl font-bold tracking-tight text-[#0a0a0a] sm:text-4xl lg:text-5xl"
+              className="text-balance font-display text-3xl font-medium tracking-[-0.01em] text-[#161613] sm:text-4xl lg:text-5xl"
             >
               {head ? `${head} ` : ''}
-              <span className="text-gradient">{tail}</span>
+              <em className="italic">{tail}</em>
             </h2>
           </Editable>
         </div>
 
-        <div className="gradient-border mt-10 overflow-hidden rounded-[24px] bg-[#0a0a0a] shadow-[0_32px_64px_-32px_rgb(0_0_0/0.35)]">
+        <div className="mt-10 overflow-hidden rounded-xl border border-[#e6e5de] bg-[#131316]">
           <div className="aspect-video w-full">
             <iframe
               src={`https://www.youtube.com/embed/${videoId}?rel=0`}
@@ -74,13 +76,13 @@ export function VideoSection() {
           </div>
         </div>
 
-        <div className="mt-5 flex justify-center">
+        <div className="mt-5 flex justify-start">
           <a
             href="https://www.youtube.com/results?search_query=developers3"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackEvent('youtube_click', { location: 'video_section' })}
-            className="inline-flex min-h-[44px] items-center gap-2 rounded-full border-2 border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-gray-600 transition-colors hover:border-zinc-200 hover:text-[#0a0a0a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[#d6d5cc] bg-white px-5 py-2.5 text-sm font-bold text-[#161613] transition-colors hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]"
           >
             <Youtube className="size-4.5 text-red-600" aria-hidden="true" />
             Watch on YouTube
