@@ -35,14 +35,14 @@ export function CTABand({
   return (
     <section className={cn('relative w-full px-4 pb-16 pt-4 sm:px-6 md:pb-24 lg:px-8', className)}>
       <div className="relative mx-auto max-w-7xl">
-        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-purple-700 via-purple-800 to-[#0a0a0a] px-6 py-16 text-center shadow-[0_32px_64px_-32px_rgb(4_16_11/0.6)] sm:px-12 md:py-20">
+        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-blue-700 via-blue-800 to-[#050914] px-6 py-16 text-center shadow-[0_32px_64px_-32px_rgb(4_16_11/0.6)] sm:px-12 md:py-20">
           {/* Ambient glows */}
           <span
-            className="glow-orb left-[-6rem] top-[-8rem] h-72 w-72 bg-purple-400/30"
+            className="glow-orb left-[-6rem] top-[-8rem] h-72 w-72 bg-blue-400/30"
             aria-hidden="true"
           />
           <span
-            className="glow-orb bottom-[-9rem] right-[-4rem] h-80 w-80 bg-pink-400/25"
+            className="glow-orb bottom-[-9rem] right-[-4rem] h-80 w-80 bg-cyan-400/25"
             aria-hidden="true"
           />
           {/* Dot texture */}
@@ -55,18 +55,18 @@ export function CTABand({
             aria-hidden="true"
           />
           <div className="relative flex flex-col items-center gap-7">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-purple-100 ring-1 ring-inset ring-white/20">
-              <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-purple-300" aria-hidden="true" />
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-blue-100 ring-1 ring-inset ring-white/20">
+              <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-blue-300" aria-hidden="true" />
               Free consultation
             </span>
             <h2 className="max-w-3xl text-3xl font-bold text-balance text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
               {title}
             </h2>
-            <p className="max-w-2xl text-base leading-relaxed text-purple-50/85 sm:text-lg">{description}</p>
+            <p className="max-w-2xl text-base leading-relaxed text-blue-50/85 sm:text-lg">{description}</p>
             <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
               <Button
                 size="lg"
-                className="h-12 bg-white px-7 text-purple-800 shadow-lg shadow-black/25 hover:bg-purple-50"
+                className="h-12 bg-white px-7 text-blue-800 shadow-lg shadow-black/25 hover:bg-blue-50"
                 asChild
                 onClick={() => trackEvent('cta_click', { location: 'cta_band', target: primaryHref })}
               >

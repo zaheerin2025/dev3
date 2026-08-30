@@ -1024,7 +1024,7 @@ const MockupGeneratorTool = () => {
           }}
         />
       ) : (
-        <div className="grid gap-5 lg-split-1fr-320">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="flex items-center justify-center rounded-2xl border border-gray-200 bg-gray-50 p-4">
             <canvas ref={canvasRef} className="h-auto max-h-[480px] w-auto max-w-full rounded-2xl" aria-label="Phone mockup preview" />
           </div>
@@ -1191,7 +1191,7 @@ const ReelStoryResizerTool = () => {
           }}
         />
       ) : (
-        <div className="grid gap-5 lg-split-1fr-340">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
           <div className="flex items-center justify-center rounded-2xl border border-gray-200 bg-gray-900 p-3">
             <canvas
               ref={canvasRef}
@@ -1353,7 +1353,7 @@ const ProfilePictureResizerTool = () => {
           }}
         />
       ) : (
-        <div className="grid gap-5 lg-split-1fr-340">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
           <div className="flex items-center justify-center rounded-2xl border border-gray-200 bg-gray-50 p-6">
             <canvas
               ref={canvasRef}
@@ -2513,7 +2513,7 @@ const ColorConverterTool = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="grid gap-4 lg-split-340-1fr">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,340px)_1fr]">
         <div
           className="flex min-h-44 flex-col items-center justify-center rounded-2xl border border-gray-200 shadow-inner"
           style={{ backgroundColor: hex }}
@@ -3390,7 +3390,7 @@ const GiveawayWinnerPickerTool = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="grid gap-4 lg-split-1fr-300">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
         <TextAreaInput
           label="Entrants — one per line"
           value={text}
@@ -3734,7 +3734,7 @@ const InvoiceGeneratorTool = () => {
           )
         : null}
 
-      <div className="grid items-start gap-5 xl-split-430-1fr">
+      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,430px)_minmax(0,1fr)]">
         <div className="flex flex-col gap-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <TextInput label="Your business" value={business.name} onChange={(v) => setBusiness((p) => ({ ...p, name: v }))} placeholder="Studio Nova Design" />
@@ -4049,7 +4049,7 @@ const QuoteEstimateGeneratorTool = () => {
           )
         : null}
 
-      <div className="grid items-start gap-5 xl-split-430-1fr">
+      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,430px)_minmax(0,1fr)]">
         <div className="flex flex-col gap-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <TextInput label="Your business" value={business.name} onChange={(v) => setBusiness((p) => ({ ...p, name: v }))} placeholder="Studio Nova Design" />
@@ -4238,7 +4238,7 @@ const PushNotificationTesterTool = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="grid gap-4 lg-split-380-1fr">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)]">
         <div className="flex flex-col gap-3">
           <div>
             <FieldShell label="Title">

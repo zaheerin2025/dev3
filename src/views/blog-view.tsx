@@ -35,8 +35,8 @@ function AuthorLine({ item, className }: { item: BlogListItem; className?: strin
   ) || 'D3';
   return (
     <span className={cn('flex items-center gap-2', className)}>
-      <Avatar className="h-8 w-8 ring-2 ring-purple-100">
-        <AvatarFallback className="bg-purple-100 text-xs font-bold text-purple-700">
+      <Avatar className="h-8 w-8 ring-2 ring-blue-100">
+        <AvatarFallback className="bg-blue-100 text-xs font-bold text-blue-700">
           {initials}
         </AvatarFallback>
       </Avatar>
@@ -88,16 +88,16 @@ export function BlogView() {
       <Section grid className="lg:py-20">
         {/* Ambient glow orbs (decorative) */}
         <span
-          className="glow-orb left-[-10rem] top-[-9rem] h-[26rem] w-[26rem] bg-purple-300/25"
+          className="glow-orb left-[-10rem] top-[-9rem] h-[26rem] w-[26rem] bg-blue-300/25"
           aria-hidden="true"
         />
         <span
-          className="glow-orb right-[-11rem] top-1/3 h-96 w-96 bg-pink-300/20"
+          className="glow-orb right-[-11rem] top-1/3 h-96 w-96 bg-cyan-300/20"
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'Blog' }]} />
-          <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.22em] text-purple-600">
+          <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.22em] text-blue-600">
             Insights &amp; guides
           </p>
           <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
@@ -122,8 +122,8 @@ export function BlogView() {
                 className={cn(
                   'inline-flex min-h-11 items-center rounded-full px-5 text-sm font-medium transition-all',
                   category === 'all'
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-[0_8px_20px_-8px_rgb(124_58_237/0.65)]'
-                    : 'bg-white text-foreground ring-1 ring-inset ring-purple-900/10 hover:bg-purple-50 hover:ring-purple-500/30'
+                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-[0_8px_20px_-8px_rgb(13_148_136/0.65)]'
+                    : 'bg-white text-foreground ring-1 ring-inset ring-blue-900/10 hover:bg-blue-50 hover:ring-blue-500/30'
                 )}
               >
                 All
@@ -137,8 +137,8 @@ export function BlogView() {
                   className={cn(
                     'inline-flex min-h-11 items-center rounded-full px-5 text-sm font-medium capitalize transition-all',
                     category === cat
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-[0_8px_20px_-8px_rgb(124_58_237/0.65)]'
-                      : 'bg-white text-foreground ring-1 ring-inset ring-purple-900/10 hover:bg-purple-50 hover:ring-purple-500/30'
+                      ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-[0_8px_20px_-8px_rgb(13_148_136/0.65)]'
+                      : 'bg-white text-foreground ring-1 ring-inset ring-blue-900/10 hover:bg-blue-50 hover:ring-blue-500/30'
                   )}
                 >
                   {cat}
@@ -172,25 +172,25 @@ export function BlogView() {
                     <Quote className="h-16 w-16 text-white/40" aria-hidden="true" />
                   </span>
                 </div>
-                <span className="absolute left-4 top-4 z-10 rounded-md bg-white px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-purple-700 shadow-sm">
+                <span className="absolute left-4 top-4 z-10 rounded-md bg-white px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-700 shadow-sm">
                   {featured.category}
                 </span>
               </Link>
               <div className="flex flex-col gap-4 p-6 sm:p-8">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-amber-400 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0a0a0a]">
+                  <span className="rounded-full bg-amber-400 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-blue-950">
                     Featured
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700 ring-1 ring-inset ring-purple-600/15">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-600/15">
                     {featured.category}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-purple-900/10">
-                    <Clock className="h-3.5 w-3.5 text-purple-600" aria-hidden="true" />
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-blue-900/10">
+                    <Clock className="h-3.5 w-3.5 text-blue-600" aria-hidden="true" />
                     {featured.readTime}
                   </span>
                 </div>
                 <h2 className="text-2xl font-bold text-balance sm:text-3xl">
-                  <Link href={`/blog/${featured.slug}`} className="transition-colors hover:text-purple-800">
+                  <Link href={`/blog/${featured.slug}`} className="transition-colors hover:text-blue-800">
                     {featured.title}
                   </Link>
                 </h2>
@@ -206,10 +206,10 @@ export function BlogView() {
                 </div>
                 <Link
                   href={`/blog/${featured.slug}`}
-                  className="group/link mt-auto inline-flex min-h-11 w-fit items-center gap-2.5 text-sm font-semibold text-purple-700 transition-colors hover:text-purple-800"
+                  className="group/link mt-auto inline-flex min-h-11 w-fit items-center gap-2.5 text-sm font-semibold text-blue-700 transition-colors hover:text-blue-800"
                 >
                   Read article
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-50 text-purple-600 transition-colors group-hover/link:bg-purple-600 group-hover/link:text-white">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition-colors group-hover/link:bg-blue-600 group-hover/link:text-white">
                     <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </span>
                 </Link>
@@ -240,7 +240,7 @@ export function BlogView() {
                         <Newspaper className="h-10 w-10 text-white/40" aria-hidden="true" />
                       </span>
                     </div>
-                    <span className="absolute left-3 top-3 z-10 rounded-md bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-purple-700 shadow-sm">
+                    <span className="absolute left-3 top-3 z-10 rounded-md bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-700 shadow-sm">
                       {post.category}
                     </span>
                   </div>
@@ -250,7 +250,7 @@ export function BlogView() {
                     {format(new Date(post.date), 'MMM d, yyyy')} · {post.readTime}
                   </p>
                   <h3 className="line-clamp-2 font-semibold leading-snug">
-                    <Link href={`/blog/${post.slug}`} className="transition-colors group-hover:text-purple-800">
+                    <Link href={`/blog/${post.slug}`} className="transition-colors group-hover:text-blue-800">
                       {post.title}
                     </Link>
                   </h3>
@@ -260,7 +260,7 @@ export function BlogView() {
                     <Link
                       href={`/blog/${post.slug}`}
                       aria-label={`Read more: ${post.title}`}
-                      className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-purple-700 transition-colors hover:text-purple-800"
+                      className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-blue-700 transition-colors hover:text-blue-800"
                     >
                       Read more
                       <ArrowRight className="h-4 w-4" aria-hidden="true" />

@@ -20,8 +20,8 @@ export function ProcessSteps({ steps, dark, className }: ProcessStepsProps) {
         className={cn(
           'absolute left-0 right-0 top-6 hidden h-px lg:block',
           dark
-            ? 'bg-gradient-to-r from-transparent via-purple-400/40 to-transparent'
-            : 'bg-gradient-to-r from-transparent via-purple-500/35 to-transparent'
+            ? 'bg-gradient-to-r from-transparent via-blue-400/40 to-transparent'
+            : 'bg-gradient-to-r from-transparent via-blue-500/35 to-transparent'
         )}
         aria-hidden="true"
       />
@@ -30,8 +30,8 @@ export function ProcessSteps({ steps, dark, className }: ProcessStepsProps) {
         className={cn(
           'absolute bottom-6 left-6 top-6 w-px lg:hidden',
           dark
-            ? 'bg-gradient-to-b from-transparent via-purple-400/40 to-transparent'
-            : 'bg-gradient-to-b from-transparent via-purple-500/35 to-transparent'
+            ? 'bg-gradient-to-b from-transparent via-blue-400/40 to-transparent'
+            : 'bg-gradient-to-b from-transparent via-blue-500/35 to-transparent'
         )}
         aria-hidden="true"
       />
@@ -48,8 +48,8 @@ export function ProcessSteps({ steps, dark, className }: ProcessStepsProps) {
                 className={cn(
                   'relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl font-display text-sm font-bold',
                   dark
-                    ? 'bg-gradient-to-br from-purple-400 to-pink-500 text-[#0a0a0a] shadow-[0_0_24px_-4px_rgb(236_72_153/0.6)]'
-                    : 'bg-gradient-to-br from-purple-500 to-pink-600 text-white shadow-[0_8px_20px_-8px_rgb(124_58_237/0.7)]'
+                    ? 'bg-gradient-to-br from-blue-400 to-cyan-500 text-[#050914] shadow-[0_0_24px_-4px_rgb(52_211_153/0.6)]'
+                    : 'bg-gradient-to-br from-blue-500 to-cyan-600 text-white shadow-[0_8px_20px_-8px_rgb(13_148_136/0.7)]'
                 )}
                 aria-hidden="true"
               >
@@ -66,7 +66,7 @@ export function ProcessSteps({ steps, dark, className }: ProcessStepsProps) {
                 <p
                   className={cn(
                     'text-sm leading-relaxed',
-                    dark ? 'text-purple-100/70' : 'text-muted-foreground'
+                    dark ? 'text-blue-100/70' : 'text-muted-foreground'
                   )}
                 >
                   {step.description}

@@ -14,9 +14,9 @@ const CATEGORY_LABELS: Record<CaseStudyCategory, string> = {
 };
 
 const CATEGORY_STYLES: Record<CaseStudyCategory, string> = {
-  web: 'bg-purple-600/90 text-white',
+  web: 'bg-blue-600/90 text-white',
   ecommerce: 'bg-amber-500/90 text-amber-950',
-  apps: 'bg-pink-600/90 text-white',
+  apps: 'bg-cyan-600/90 text-white',
   marketing: 'bg-rose-500/90 text-white',
 };
 
@@ -34,7 +34,7 @@ export function CaseStudyCard({ study, className }: CaseStudyCardProps) {
       className={cn('group block h-full rounded-[1.25rem] focus-visible:outline-none', className)}
     >
       <article className="card-surface card-hover flex h-full flex-col overflow-hidden group-focus-visible:ring-2 group-focus-visible:ring-ring">
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-gradient-to-br from-purple-100 to-pink-50">
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-gradient-to-br from-blue-100 to-cyan-50">
           <Image
             src={study.coverImage}
             alt={study.coverAlt}
@@ -44,7 +44,7 @@ export function CaseStudyCard({ study, className }: CaseStudyCardProps) {
           />
           {/* Bottom legibility gradient */}
           <span
-            className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0a0a0a]/45 to-transparent"
+            className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#050914]/45 to-transparent"
             aria-hidden="true"
           />
           <span
@@ -57,15 +57,15 @@ export function CaseStudyCard({ study, className }: CaseStudyCardProps) {
           </span>
         </div>
         <div className="flex h-full flex-col gap-2.5 p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.12em] text-purple-700">{study.industry}</p>
-          <h3 className="text-lg font-semibold leading-snug text-foreground transition-colors group-hover:text-purple-800">
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-cyan-700">{study.industry}</p>
+          <h3 className="text-lg font-semibold leading-snug text-foreground transition-colors group-hover:text-blue-800">
             {study.title}
           </h3>
           <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{study.summary}</p>
-          <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-semibold text-purple-700">
+          <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-semibold text-blue-700">
             View case study
             <span
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-50 transition-all duration-300 group-hover:bg-purple-600 group-hover:text-white"
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-50 transition-all duration-300 group-hover:bg-blue-600 group-hover:text-white"
               aria-hidden="true"
             >
               <ArrowUpRight className="h-3.5 w-3.5" />
