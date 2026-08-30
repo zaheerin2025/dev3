@@ -596,3 +596,21 @@ Stage Summary:
 - The user's full-featured site is BACK and MORE complete than the archive: 100-tool portal, colorful Awwwards home, DB-backed portfolio with the 5 real client sites, dynamic per-service quote builder on all conversion pages, leads inbox + dashboard + portfolio CRUD in admin, YouTube video section (admin-configurable, hidden until set), business-email field, AdSense live in head with ad slots in tools.
 - Backup of the intermediate snapshot kept at /home/z/backup-old-snapshot (can be deleted once user confirms).
 - Admin passcode still 'developers3-admin' (ADMIN_PASSCODE env) — user should set a strong one before going live; contacts remain placeholders editable in /#/admin → Site Content.
+
+---
+Task ID: 23
+Agent: orchestrator (Z.ai main)
+Task: DESIGN RESTORE — user reported site no longer matched pre-crash design (header, footer, hero "Yellow Word background", missing contact details). Full recovery of the liked design.
+
+Work Log:
+- DIAGNOSIS: The crashed session (quote-form task) had committed e1c05bb — a full brand rebrand blue/cyan → purple/pink across 29 files (globals.css oklch tokens, header.tsx → Sparkle purple neo-brutalist + new MobileMenu, footer.tsx recolor, ~25 views/components recolored). That state did NOT match the design the user approved after Task 22 (commit 6e78dce). Checked every recovery source: /tmp/my-project archive (identical to current — no newer copy), /home/z/backup-old-snapshot (older blue era), all 8 git commits, DB Setting tables (empty in every version), .next cache (no traces) — the "yellow highlighter + real contacts" the user remembers was uncommitted work from the crashed session and is unrecoverable from disk.
+- SANDBOX QUIRK NOTE: bash readers (sed/grep/git diff output) strip contiguous "[m" byte sequences from OUTPUT ONLY (e.g. shows "const obileOpen" / "inmax(") — `od -c` proves files on disk are intact ("const [mobileOpen" / "[minmax("). Do NOT "fix" these display artifacts; tsc/eslint/next see clean files.
+- RESTORE: backup branch `backup-purple-era` created at e1c05bb; then `git checkout 6e78dce -- src/` (29 files — verified `git diff 6e78dce -- src/` = 0). DB kept as-is (5 seeded portfolios intact).
+- YELLOW HIGHLIGHTER: user explicitly remembers "Yellow Word background" in the hero — `.highlighter` in globals.css changed from pink/purple gradient to sunshine-yellow marker (rgba(253,230,138,.75) → rgba(253,224,71,.65), same 42% bar geometry, + border-radius 0.15em). Hero "Grow" now carries the yellow pen stroke.
+- CONTACT DETAILS: site currently shows the standard placeholders (hello@developers3.com, +1 (555) 013-4567, SF address) consistently in footer contact block, header mega-menu phone row, contact page, lead-form rail and WhatsApp button — wired to site.ts + admin Site Content overrides. REAL values must be re-supplied by the user (lost with the crash) — via chat or /#/admin → Site Content.
+- VERIFY: rm -rf .next + clean restart via .zscripts/dev.sh (direct nohup/setsid launches get reaped — only the platform launcher survives); bun lint 0/0; tsc 0 errors; agent-browser E2E: home hero (DB logo header, blue "Win Clients" gradient, YELLOW highlighter on "Grow", cream + blobs), full home scroll (marquees/services/stats/work/testimonials/FAQ/CTA), footer contact block + newsletter, mega menu (5 featured + phone row + dual CTA), #/seo-services quote builder E2E (SEO preselected, National SEO +$150 click → estimate $300–$450 → $450–$650 live), #/contact, mobile 390x844 (no overflow, Sheet menu with services list), 404 + admin footer flush (gap 0); dev.log clean; zero console errors. Committed as 9485db8.
+
+Stage Summary:
+- The pre-crash design is BACK and committed (9485db8): DB-logo editorial header + mega menu with phone row, blue footer with contact/newsletter block, colorful Awwwards home with YELLOW marker highlighter in the hero, blue/cyan brand everywhere. Purple era preserved on branch `backup-purple-era`.
+- Quote builder (dynamic per-service, live estimate), 100-tool portal, admin panel, portfolio DB — all intact (restored with 6e78dce; none of that functionality was lost).
+- OPEN ITEM for user: real contact details (phone/WhatsApp/email/address) were lost in the crash — awaiting values from user; editable at /#/admin → Site Content or provide in chat to hardcode into src/lib/site.ts.
