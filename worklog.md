@@ -908,3 +908,21 @@ Work Log:
 
 Stage Summary:
 - Verified via agent-browser (fresh browser, 0 console errors): hero rotator cycles one word at a time (opacity 1/0 verified), fits 390px with zero horizontal overflow; mega menu opens with ramp tiles; quote builder "Custom Websites" -> "$1,400 – $1,900"; work band + footer links carry wa.me/923110671019; footer sticky on desktop (9224px doc) and mobile (844px viewport); mobile menu renders 32 links with email; admin sign-in loads; all 8 inner pages share the left-aligned hero pattern; ESLint + tsc clean (examples/ pre-existing only).
+
+---
+Task ID: 28
+Agent: orchestrator (Z.ai main)
+Task: 4-point refinement round — hero badge relocation, new rotating headline structure, mobile-stack callout copy, footer single-line 5-service menu.
+
+Work Log:
+- Hero (src/components/home/hero.tsx): removed the "Available for new projects" pill from the hero column (hero now fits 1440x900 viewport with ~65px margin, measured hero bottom 835px). Rebuilt H1 as static "Your Business Needs" + rotating phrase + static "We Make It Happen"; ROTATOR_ITEMS now 7 business needs (A Better Website, More Customers, A Mobile App, Google Ads, Meta Ads, AI Automation, Better Visibility), ROTATOR_SLOT 2.6s => 18.2s cycle. Rotator sizes text-[1.9rem]/sm:text-5xl/lg:text-[4.4rem] chosen so the widest phrase ("Better Visibility", measured 480-525px) never overflows the column with nowrap. Replaced Flutter speciality sticker copy with "Mobile App Technologies & Deployment:-" + "Flutter • Dart • Kotlin • Java • Firebase • Supabase • Play Store • App Store" (MOBILE_STACK const); updated both sr-only fallbacks.
+- globals.css: .hero-rotator justify-items center -> start (phrases share the left edge with static lines); timing comment updated (N=7 checked: 16.5% < 3%+14.3%, keep N<=7 for this curve).
+- Header (src/components/layout/header.tsx): availability badge relocated to top nav as a subtle xl-only chip (green pulse dot + 13px label) grouped with the Logo; header height unchanged (h-20), verified display:flex at 1280 / display:none at 1279. Footer pill keeps the second, less prominent placement.
+- Footer (src/components/layout/footer.tsx): services menu reduced from 10 items in a wrapping 2-col grid to exactly 5 core services (custom-website-development, mobile-app-development, software-development, ecommerce-development, google-ads-management) in a single column with whitespace-nowrap; measured li heights all 26px = single line. NOTE: software slug is 'software-development' (first attempt 'custom-software-development' silently filtered out by getService — caught in browser E2E, fixed). Marketing contact label shortened to "Marketing & Partnerships" to stay single-line.
+- content-schema.ts: admin default for hero.headline updated to "Your Business Needs A Better Website — We Make It Happen" (saved overrides still replace the animation; DB Setting table confirmed empty).
+- Verification: Turbopack served stale CSS after editing globals.css (chunk kept justify-items:center) -> restarted dev server with setsid (plain nohup got reaped). E2E via agent-browser: justify-items:start + rotX=32 aligned with static lines; ZERO layout shift measured across a full 18.2s cycle (h1 height constant 251.7px, CTA y constant 573.7 while all 7 phrases rotate); no horizontal overflow at 390/768/1440; footer 5 services single-line; header chip breakpoint exact; inner pages (#/services, #/contact, #/about) render; zero console errors; ESLint clean; dev.log clean (the "1 Issue" overlay badge remains the known pre-existing Radix accordion hydration warning).
+
+Stage Summary:
+- Commit d974944 (5 files: hero.tsx, header.tsx, footer.tsx, globals.css, content-schema.ts).
+- Hero now reads "Your Business Needs [rotating] We Make It Happen" with zero layout shift; badge lives in top nav (xl+) and footer; mobile app technologies & deployment callout ships the user's exact list; footer services menu is 5 professional single-line links.
+- Ops learnings: use `setsid nohup bash .zscripts/dev.sh > /tmp/devsh.log 2>&1 < /dev/null &` (bare nohup+& gets killed with the tool session); after editing globals.css, confirm the served chunk actually changed (curl the CSS href) before debugging markup.
