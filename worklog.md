@@ -557,3 +557,20 @@ Work Log:
 
 Stage Summary:
 - Site now has a coherent professional brand: DB logo palette everywhere, editorial header, chip-free heroes, working lead capture with timeline field, and a functioning admin panel (passcode developers3-admin, override via ADMIN_PASSCODE env). Pricing lowered to market rates with docs/PRICING-GUIDE.md.
+
+---
+Task ID: 21
+Agent: orchestrator (Z.ai main)
+Task: Full-site verification pass ("is entire website working?") — every route, key interactions, APIs, mobile, console/log health.
+
+Work Log:
+- Dev server: 200 on / ; dev.log clean (only EADDRINUSE from an old duplicate-start attempt; all runtime requests 200, intentional 401/400 on guarded/invalid API calls).
+- Desktop 1440x900 browser pass: home (hero, services grid w/ new prices, case studies, CTA band, footer+newsletter, sticky footer), /services, all 10 service detail pages (unique titles verified), /portfolio, all 10 case studies (unique titles), /pricing (new $699/$1,499/$2,999 tiers + 3-step strip), /about, /contact, /blog (category filters + featured card), blog post (TOC + key takeaways), /#/privacy-policy, /#/terms, 404 page with recovery links, /#/admin.
+- Interactions E2E: Services mega menu (5 featured + CTAs), mobile 390x844 (home, contact, pricing, hamburger sheet with services submenu — zero horizontal overflow), LeadForm empty-submit → 5 inline errors + aria-invalid; full submit → success panel with reference id + toast; DB check: Lead row persisted with matching id/service/budget, then test row deleted (DB clean).
+- Admin: login (passcode) → Posts (0 posts empty state + New post), Pricing (tiers/blocks prefilled editable), Site Content (hero/contacts/stats with defaults) tabs all render; Sign out works; unauth /api/admin/posts → 401.
+- APIs: /api/public/posts 200, /api/public/settings 200, /api/leads invalid → 400 (zod guard working), WhatsApp button → wa.me link with prefilled text.
+- ESLint clean; tsc clean (only pre-existing examples/|skills/ errors outside project).
+
+Stage Summary:
+- ENTIRE SITE VERIFIED WORKING: 14 route kinds, 10/10 service pages, 10/10 case studies, 4 blog posts, admin panel (3 tabs), lead pipeline end-to-end, newsletter UI, WhatsApp CTA, 404 handling, mobile responsive, zero console errors on every page checked.
+- Observation for owner: contact identity is still placeholder (hello@developers3.com, +1 (555) 013-4567, SF address) BY DESIGN — editable in /#/admin → Site Content tab (contact.email, phoneDisplay, whatsappNumber) which flows to contact page, footer, lead-form rail, WhatsApp button. No code change needed to go live with real contacts.
