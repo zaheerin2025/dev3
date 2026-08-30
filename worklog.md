@@ -943,3 +943,25 @@ Stage Summary:
 - Commit (6 files): hero spacing + chips card, seo-content-section.tsx (new), home-view wiring, schema.ts areaServed, quote-builder.tsx rewrite.
 - Quote lead flow now: 3 easy sections → fixed quote promise; estimate machinery fully gone from UI (quote-config.ts data still hosts GENERIC_BUDGETS/GENERIC_TIMELINES/NOT_SURE_SLUG; describeSelection/computeEstimate remain exported but unused by UI — admin QUOTE_CONFIG_LABELS untouched).
 - SEO: visible international copy above footer + matching Organization.areaServed; region list centralized in SERVED_REGIONS.
+
+---
+Task ID: 30
+Agent: orchestrator (Z.ai main)
+Task: Quote system redesign round 3 — "Free Quote is still useless" → rebuild as a guided, dynamic wizard.
+
+Work Log:
+- Diagnosed why v2 (single long 3-section form) felt useless: 10 pills + 4 selects + 5 inputs + textarea all visible at once = a static wall, no guidance, no sense of progress.
+- REWROTE src/components/common/quote-builder.tsx (~430→~590 lines) as a 3-step wizard, one question per screen:
+  * Step 1 "What do you need?": 11 big service cards (10 services with icon+tagline + dashed "Not sure yet"); tapping a card shows the selected state for ~300ms then AUTO-ADVANCES to step 2.
+  * Step 2 "A few quick details": DYNAMIC per service — Project type + Project size chip groups driven by the existing per-service config (getQuoteConfig types/sizes, first option preselected); Budget range + Start timeline optional chip groups (GENERIC_BUDGETS/GENERIC_TIMELINES); black service chip "For: X ✏" jumps back to step 1; Continue button. "Not sure yet" → step 2 shows only budget/timeline with adapted hint.
+  * Step 3 "Where should we send it?": review chips (service/type/size/budget/timeline) each clickable → jumps back to its step to edit; name*, email*, phone optional, note OPTIONAL (message synthesized from selections so API min-10 contract holds); submit → success panel (reference + WhatsApp cross-sell + reset) kept.
+- Chrome: sticky-feel progress header (back arrow when step>1, "Step X of 3 · label", tangerine progress bar width transition, "Takes about a minute"); per-step heading auto-focused on step change (skips first paint); intro title now "Get a fixed quote in 3 quick steps".
+- Props contract unchanged (source/defaultService/variant) — service pages with defaultService now START at step 2 (service already known); inline variant (contact) and full variant (pricing/service) share the same wizard.
+- globals.css: added quote-step-in keyframes (translateY+opacity, 0.3s, one-shot per step change — no loops, no paint-heavy effects) + added .quote-step-in to the prefers-reduced-motion kill list.
+- API contract untouched: POST /api/leads same fields; message = "Service — Type · Size · Budget: X · Start: Y" + optional note; honeypot, generate_lead event, toasts all kept.
+- Verification (agent-browser E2E): step1→2 auto-advance; step2 chips preselect + continue; step3 submit → success panel + Prisma Lead row with service/budget/timeline/message correct ("Custom Website Development — New website from scratch · 1–5 pages · Budget: $2,500 – $5,000 · Start: 1–3 months\n\nNeed a 6-page site..."); review-chip edit jump 3→1 works; back button preserves selection; #/seo-services starts at step 2 preselected; "Not sure yet" hides type/size; zero horizontal overflow at 390px; console clean (only Fast Refresh logs); dev.log clean; ESLint + tsc clean (examples/ errors pre-existing).
+
+Stage Summary:
+- Commit 7c109a2 (2 files: quote-builder.tsx, globals.css).
+- Quote lead flow is now a ~60s guided wizard: pick service (1 tap) → tap a few chips → name+email → done. Selections persist across back/forward; every pick lands in the DB lead row.
+- quote-config.ts per-service types/sizes are back in active use (dynamic questions) — estimates/prices still fully absent from the UI per user's earlier instruction.
