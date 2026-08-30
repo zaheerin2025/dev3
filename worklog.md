@@ -965,3 +965,19 @@ Stage Summary:
 - Commit 7c109a2 (2 files: quote-builder.tsx, globals.css).
 - Quote lead flow is now a ~60s guided wizard: pick service (1 tap) → tap a few chips → name+email → done. Selections persist across back/forward; every pick lands in the DB lead row.
 - quote-config.ts per-service types/sizes are back in active use (dynamic questions) — estimates/prices still fully absent from the UI per user's earlier instruction.
+
+---
+Task ID: 31
+Agent: orchestrator (Z.ai main)
+Task: Make the Free Quote form column clearly wider than the left text column on split layouts.
+
+Work Log:
+- Located the 50/50 splits: pricing-view.tsx and service-detail-view.tsx both used `lg:grid-cols-2` for "left text + right QuoteBuilder".
+- globals.css: repurposed the (previously unused) semantic class .lg-split-quote → `minmax(0, 0.75fr) minmax(0, 1.25fr)` (37.5% text / 62.5% form), sandbox-safe (no arbitrary Tailwind minmax in class names).
+- pricing-view.tsx: quote section grid → `grid items-start gap-10 lg:gap-14 lg-split-quote`.
+- service-detail-view.tsx: lead section grid → `grid items-start gap-10 lg:gap-16 lg-split-quote`.
+- quote-builder.tsx: step-1 service-card grid now `sm:grid-cols-2` + `lg:grid-cols-3` ONLY for the full-width contact variant (variant==='inline'); split pages get 2 spacious ~340px cards instead of 3 cramped ~220px ones.
+- Verified (agent-browser): pricing 435px/725px split applied; service page 432px/720px; contact unchanged (1216px full-width, 3-col cards); 1024px → 339/565 no overflow; 768px stacked single col; 390px no horizontal overflow; console only shows the known pre-existing Radix accordion hydration warning; dev.log clean; ESLint clean.
+
+Stage Summary:
+- Commit (4 files): quote form is now the visually dominant column on pricing + all service pages; text column compact; wizard cards readable. Contact page flow untouched.
