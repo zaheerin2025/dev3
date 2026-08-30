@@ -17,11 +17,11 @@ export function NotFoundView({ path }: NotFoundViewProps) {
     <Section className="flex min-h-[calc(100svh-16rem)] items-center py-20 text-center md:py-24">
       {/* Ambient glows */}
       <span
-        className="glow-orb left-[-8rem] top-[-6rem] h-72 w-72 bg-blue-400/20"
+        className="glow-orb left-[-8rem] top-[-6rem] h-72 w-72 bg-purple-400/20"
         aria-hidden="true"
       />
       <span
-        className="glow-orb bottom-[-8rem] right-[-6rem] h-80 w-80 bg-cyan-400/20"
+        className="glow-orb bottom-[-8rem] right-[-6rem] h-80 w-80 bg-pink-400/20"
         aria-hidden="true"
       />
       <Reveal className="relative mx-auto max-w-2xl">
@@ -56,7 +56,7 @@ export function NotFoundView({ path }: NotFoundViewProps) {
                 <Link
                   key={service.slug}
                   href={`/${service.slug}`}
-                  className="inline-flex min-h-[44px] items-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-blue-800 ring-1 ring-inset ring-blue-600/15 transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-50 hover:ring-blue-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+                  className="inline-flex min-h-[44px] items-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-purple-800 ring-1 ring-inset ring-purple-600/15 transition-all duration-300 hover:-translate-y-0.5 hover:bg-purple-50 hover:ring-purple-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
                 >
                   {service.shortName}
                 </Link>
@@ -67,7 +67,7 @@ export function NotFoundView({ path }: NotFoundViewProps) {
 
         <p className="mt-8 text-sm text-muted-foreground">
           Still lost?{' '}
-          <Link href="/contact" className="font-semibold text-blue-700 hover:underline">
+          <Link href="/contact" className="font-semibold text-purple-700 hover:underline">
             Contact us
           </Link>{' '}
           and we will point you in the right direction.

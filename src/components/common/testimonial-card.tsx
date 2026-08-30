@@ -18,7 +18,7 @@ export function TestimonialCard({ testimonial, dark, className }: TestimonialCar
       className={cn(
         'relative flex h-full flex-col gap-4 overflow-hidden rounded-[1.25rem] p-6 transition-shadow',
         dark
-          ? 'border border-blue-400/15 bg-white/[0.05] backdrop-blur-sm'
+          ? 'border border-purple-400/15 bg-white/[0.05] backdrop-blur-sm'
           : 'card-surface',
         className
       )}
@@ -27,7 +27,7 @@ export function TestimonialCard({ testimonial, dark, className }: TestimonialCar
       <span
         className={cn(
           'pointer-events-none absolute -right-2 -top-5 select-none font-display text-[7rem] font-black leading-none',
-          dark ? 'text-blue-400/10' : 'text-blue-500/10'
+          dark ? 'text-purple-400/10' : 'text-purple-500/10'
         )}
         aria-hidden="true"
       >
@@ -52,7 +52,7 @@ export function TestimonialCard({ testimonial, dark, className }: TestimonialCar
       <blockquote
         className={cn(
           'relative text-[15px] leading-7',
-          dark ? 'text-blue-50/90' : 'text-foreground/90'
+          dark ? 'text-purple-50/90' : 'text-foreground/90'
         )}
       >
         &ldquo;{testimonial.quote}&rdquo;
@@ -60,7 +60,7 @@ export function TestimonialCard({ testimonial, dark, className }: TestimonialCar
       <figcaption
         className={cn(
           'mt-auto flex items-center gap-3 border-t pt-4',
-          dark ? 'border-blue-400/15' : 'border-blue-900/10'
+          dark ? 'border-purple-400/15' : 'border-purple-900/10'
         )}
       >
         {testimonial.avatar ? (
@@ -69,15 +69,15 @@ export function TestimonialCard({ testimonial, dark, className }: TestimonialCar
             alt={`Portrait of ${testimonial.name}`}
             width={44}
             height={44}
-            className="h-11 w-11 rounded-full object-cover ring-2 ring-blue-100"
+            className="h-11 w-11 rounded-full object-cover ring-2 ring-purple-100"
           />
         ) : (
           <span
             className={cn(
               'flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold',
               dark
-                ? 'bg-blue-400/15 text-blue-300 ring-1 ring-blue-400/25'
-                : 'bg-gradient-to-br from-blue-500 to-cyan-600 text-white'
+                ? 'bg-purple-400/15 text-purple-300 ring-1 ring-purple-400/25'
+                : 'bg-gradient-to-br from-purple-500 to-pink-600 text-white'
             )}
             aria-hidden="true"
           >
@@ -88,7 +88,7 @@ export function TestimonialCard({ testimonial, dark, className }: TestimonialCar
           <span className={cn('block text-sm font-semibold', dark ? 'text-white' : 'text-foreground')}>
             {testimonial.name}
           </span>
-          <span className={cn('block text-xs', dark ? 'text-blue-100/60' : 'text-muted-foreground')}>
+          <span className={cn('block text-xs', dark ? 'text-purple-100/60' : 'text-muted-foreground')}>
             {testimonial.role}, {testimonial.company}
           </span>
         </span>

@@ -28,17 +28,17 @@ export function AboutView() {
       {/* Hero */}
       <Section grid className="lg:py-20">
         <span
-          className="glow-orb left-[-10rem] top-[-8rem] h-80 w-80 bg-blue-400/25"
+          className="glow-orb left-[-10rem] top-[-8rem] h-80 w-80 bg-purple-400/25"
           aria-hidden="true"
         />
         <span
-          className="glow-orb right-[-8rem] top-24 h-72 w-72 bg-cyan-400/20"
+          className="glow-orb right-[-8rem] top-24 h-72 w-72 bg-pink-400/20"
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'About Us' }]} />
           <Reveal className="mt-6">
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-blue-600">
+            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-purple-600">
               About us
             </p>
             <h1 className="text-4xl font-bold text-balance sm:text-5xl lg:text-[3.25rem] lg:leading-[1.12]">
@@ -60,7 +60,7 @@ export function AboutView() {
         <div className="grid items-start gap-10 lg:grid-cols-[1.5fr_1fr]">
           <Reveal className="relative pl-6 sm:pl-8">
             <span
-              className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-gradient-to-b from-blue-500 via-cyan-400/60 to-transparent"
+              className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-gradient-to-b from-purple-500 via-pink-400/60 to-transparent"
               aria-hidden="true"
             />
             <div className="space-y-5">
@@ -69,7 +69,7 @@ export function AboutView() {
                   key={index}
                   className={
                     index === 0
-                      ? 'text-base/relaxed text-foreground/85 first-letter:float-left first-letter:mr-3 first-letter:font-display first-letter:text-6xl first-letter:font-bold first-letter:leading-[0.85] first-letter:text-blue-600 sm:text-[17px] sm:leading-8'
+                      ? 'text-base/relaxed text-foreground/85 first-letter:float-left first-letter:mr-3 first-letter:font-display first-letter:text-6xl first-letter:font-bold first-letter:leading-[0.85] first-letter:text-purple-600 sm:text-[17px] sm:leading-8'
                       : 'text-base/relaxed text-muted-foreground sm:text-[17px] sm:leading-8'
                   }
                 >
@@ -79,9 +79,9 @@ export function AboutView() {
             </div>
           </Reveal>
           <Reveal delay={100}>
-            <div className="card-surface relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800 p-7 text-white sm:p-8">
+            <div className="card-surface relative overflow-hidden bg-gradient-to-br from-purple-600 via-purple-700 to-pink-800 p-7 text-white sm:p-8">
               <span
-                className="glow-orb right-[-4rem] top-[-5rem] h-48 w-48 bg-cyan-300/30"
+                className="glow-orb right-[-4rem] top-[-5rem] h-48 w-48 bg-pink-300/30"
                 aria-hidden="true"
               />
               <Quote
@@ -92,7 +92,7 @@ export function AboutView() {
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 text-white ring-1 ring-inset ring-white/25">
                   <Quote className="h-5 w-5" aria-hidden="true" />
                 </span>
-                <h2 className="text-sm font-semibold uppercase tracking-widest text-blue-100">
+                <h2 className="text-sm font-semibold uppercase tracking-widest text-purple-100">
                   Our mission
                 </h2>
                 <p className="text-lg font-medium leading-relaxed">
@@ -140,17 +140,17 @@ export function AboutView() {
         />
         <div className="relative mx-auto max-w-2xl">
           <span
-            className="absolute bottom-3 left-[7px] top-3 w-px bg-gradient-to-b from-blue-500/60 via-cyan-400/40 to-transparent"
+            className="absolute bottom-3 left-[7px] top-3 w-px bg-gradient-to-b from-purple-500/60 via-pink-400/40 to-transparent"
             aria-hidden="true"
           />
           <ol className="space-y-10">
             {timeline.map((entry, index) => (
               <Reveal as="li" key={entry.year} delay={index * 80} className="relative pl-10">
                 <span
-                  className="absolute left-0 top-1.5 h-3.5 w-3.5 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 ring-4 ring-blue-100"
+                  className="absolute left-0 top-1.5 h-3.5 w-3.5 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 ring-4 ring-purple-100"
                   aria-hidden="true"
                 />
-                <p className="font-display text-sm font-bold tracking-wide text-blue-700">
+                <p className="font-display text-sm font-bold tracking-wide text-purple-700">
                   {entry.year}
                 </p>
                 <h3 className="mt-3 text-lg font-semibold">{entry.title}</h3>
@@ -184,14 +184,14 @@ export function AboutView() {
                   />
                   {/* Legibility gradient at the photo base */}
                   <span
-                    className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#050914]/70 via-[#050914]/25 to-transparent"
+                    className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0a0a0a]/70 via-[#0a0a0a]/25 to-transparent"
                     aria-hidden="true"
                   />
                 </div>
                 <div className="flex flex-1 flex-col gap-3 p-5">
                   <div className="flex items-center gap-3">
                     <span
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 text-xs font-bold text-white ring-2 ring-blue-100"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-600 text-xs font-bold text-white ring-2 ring-purple-100"
                       aria-hidden="true"
                     >
                       {member.initials}
