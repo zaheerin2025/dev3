@@ -2,9 +2,14 @@
 
 import * as React from 'react';
 import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
   CheckCircle2,
+  HelpCircle,
   Loader2,
   MessageCircle,
+  Pencil,
   Send,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,20 +17,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Link } from '@/components/common/link';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { ServiceIconGlyph } from '@/components/common/icon-map';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { trackEvent } from '@/lib/analytics';
 import { services } from '@/data';
 import { whatsappLink } from '@/lib/site';
-import { NOT_SURE_SLUG, GENERIC_BUDGETS, GENERIC_TIMELINES } from '@/data/quote-config';
+import {
+  NOT_SURE_SLUG,
+  GENERIC_BUDGETS,
+  GENERIC_TIMELINES,
+  getQuoteConfig,
+} from '@/data/quote-config';
 
 /* ------------------------------------------------------------------ */
 /*  Types & constants                                                  */
@@ -34,89 +37,155 @@ import { NOT_SURE_SLUG, GENERIC_BUDGETS, GENERIC_TIMELINES } from '@/data/quote-
 export interface QuoteBuilderProps {
   /** Lead source stored with the submission, e.g. "service:seo-services". */
   source?: string;
-  /** Service (slug) preselected on load — service pages pass their slug. */
+  /** Service (slug) preselected on load — service pages pass their slug
+   *  and the wizard then STARTS AT STEP 2 (the service is already known). */
   defaultService?: string;
   /**
    * Kept for backward compatibility with existing pages — both variants
-   * now render the same simple single-column form; "full" just adds the
-   * outer card chrome.
+   * render the same 3-step wizard; "full" just adds the outer card chrome.
    */
   variant?: 'full' | 'inline';
   className?: string;
 }
 
 interface FormState {
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   phone: string;
   notes: string;
 }
 
-const EMPTY_FORM: FormState = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  notes: '',
-};
+const EMPTY_FORM: FormState = { name: '', email: '', phone: '', notes: '' };
 
-type Errors = Partial<Record<'name' | 'email' | 'notes', string>>;
+type StepId = 1 | 2 | 3;
+
+const STEP_META: Record<StepId, string> = {
+  1: 'What you need',
+  2: 'Quick details',
+  3: 'Your details',
+};
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const NOTES_MAX = 800;
-const NOTES_MIN = 10;
+
+type Errors = { name?: string; email?: string };
 
 /* ------------------------------------------------------------------ */
 /*  Small building blocks                                              */
 /* ------------------------------------------------------------------ */
 
-/** Round choice pill — black when selected, hairline when not. */
-function ServicePill({
+/** Big tappable service card — step 1. Black when selected. */
+function ServiceCard({
   selected,
   label,
+  tagline,
   icon,
+  dashed,
   onSelect,
-  idPrefix,
-  value,
 }: {
   selected: boolean;
   label: string;
+  tagline?: string;
   icon?: React.ReactNode;
+  dashed?: boolean;
   onSelect: () => void;
-  idPrefix: string;
-  value: string;
 }) {
   return (
     <button
       type="button"
       role="radio"
       aria-checked={selected}
-      id={`${idPrefix}-${value}`}
       onClick={onSelect}
       className={cn(
-        'group flex min-h-[44px] w-full items-center gap-2.5 rounded-full border-2 px-4 py-2 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00] focus-visible:ring-offset-2',
+        'group flex min-h-[44px] flex-col gap-2 rounded-2xl border-2 p-4 text-left transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00] focus-visible:ring-offset-2',
         selected
           ? 'border-[#161613] bg-[#161613] text-white'
-          : 'border-[#e6e5de] bg-white text-[#161613] hover:border-[#b3b2a8]'
+          : dashed
+            ? 'border-dashed border-[#c9c8bd] bg-transparent text-[#161613] hover:border-[#161613]'
+            : 'border-[#e6e5de] bg-white text-[#161613] hover:border-[#b3b2a8]'
       )}
     >
-      {icon ? (
+      <span className="flex items-center justify-between gap-2">
         <span
           className={cn(
-            'flex size-7 shrink-0 items-center justify-center rounded-lg',
+            'flex size-9 items-center justify-center rounded-lg',
             selected ? 'bg-white/15 text-white' : 'bg-[#f1f0ea] text-[#161613]'
           )}
           aria-hidden="true"
         >
           {icon}
         </span>
-      ) : null}
-      <span className="min-w-0 truncate text-sm font-semibold leading-snug">{label}</span>
-      {selected ? (
-        <CheckCircle2 className="ml-auto size-4 shrink-0 text-[#FFD84D]" aria-hidden="true" />
+        {selected ? <Check className="size-4 shrink-0 text-[#FFD84D]" aria-hidden="true" /> : null}
+      </span>
+      <span className="font-display text-[15px] font-bold leading-tight">{label}</span>
+      {tagline ? (
+        <span className={cn('text-[13px] leading-snug', selected ? 'text-white/70' : 'text-[#6f6e66]')}>
+          {tagline}
+        </span>
       ) : null}
     </button>
+  );
+}
+
+/** Round choice chip — one answer, one tap. */
+function Chip({ selected, label, onSelect }: { selected: boolean; label: string; onSelect: () => void }) {
+  return (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={selected}
+      onClick={onSelect}
+      className={cn(
+        'inline-flex min-h-[44px] items-center gap-1.5 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00] focus-visible:ring-offset-2',
+        selected
+          ? 'border-[#161613] bg-[#161613] text-white'
+          : 'border-[#e6e5de] bg-white text-[#161613] hover:border-[#b3b2a8]'
+      )}
+    >
+      {label}
+      {selected ? <Check className="size-3.5 text-[#FFD84D]" aria-hidden="true" /> : null}
+    </button>
+  );
+}
+
+/** One question = one chip group (fieldset + radio chips). */
+function ChipGroup({
+  legend,
+  hint,
+  optional,
+  options,
+  value,
+  onChange,
+}: {
+  legend: string;
+  hint?: string;
+  optional?: boolean;
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <fieldset className="min-w-0">
+      <legend className="mb-1 flex flex-wrap items-center gap-2 font-display text-[15px] font-bold text-[#161613]">
+        {legend}
+        {optional ? (
+          <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[#6f6e66]">
+            Optional
+          </span>
+        ) : null}
+      </legend>
+      {hint ? <p className="mb-3 text-sm leading-snug text-[#6f6e66]">{hint}</p> : <div className="mb-3" />}
+      <div role="radiogroup" aria-label={legend} className="flex flex-wrap gap-2">
+        {options.map((option) => (
+          <Chip
+            key={option.value}
+            label={option.label}
+            selected={value === option.value}
+            onSelect={() => onChange(option.value)}
+          />
+        ))}
+      </div>
+    </fieldset>
   );
 }
 
@@ -157,30 +226,31 @@ function Field({
   );
 }
 
-/** Simple section heading inside the form. */
-function FormSection({
-  title,
-  hint,
-  children,
-}: {
-  title: string;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="min-w-0">
-        <h3 className="font-display text-lg font-bold text-[#161613]">{title}</h3>
-        {hint ? <p className="text-sm leading-relaxed text-[#6f6e66]">{hint}</p> : null}
+/** Per-step question heading — focused automatically on step change. */
+const StepHeading = React.forwardRef<HTMLHeadingElement, { title: string; hint: string }>(
+  function StepHeading({ title, hint }, ref) {
+    return (
+      <div className="flex flex-col gap-1">
+        <h3
+          ref={ref}
+          tabIndex={-1}
+          className="font-display text-xl font-bold tracking-[-0.01em] text-[#161613] outline-none sm:text-2xl"
+        >
+          {title}
+        </h3>
+        <p className="text-[15px] leading-relaxed text-[#6f6e66]">{hint}</p>
       </div>
-      {children}
-    </div>
-  );
-}
+    );
+  }
+);
 
 function SuccessPanel({ leadId, onReset }: { leadId: string | null; onReset: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 p-8 text-center sm:p-12" role="status" aria-live="polite">
+    <div
+      className="flex flex-col items-center justify-center gap-4 p-8 text-center sm:p-12"
+      role="status"
+      aria-live="polite"
+    >
       <span className="flex rounded-full bg-[#E3F5EC] p-3" aria-hidden="true">
         <span className="flex h-20 w-20 items-center justify-center rounded-full bg-white">
           <CheckCircle2 className="h-14 w-14 text-[#0E8A59]" />
@@ -218,16 +288,18 @@ function SuccessPanel({ leadId, onReset }: { leadId: string | null; onReset: () 
 }
 
 /* ------------------------------------------------------------------ */
-/*  QuoteBuilder — one simple, friendly, dynamic form                  */
+/*  QuoteBuilder — guided 3-step wizard                                */
 /* ------------------------------------------------------------------ */
 
 /**
- * The global quote-request form — deliberately SIMPLE:
- * 1. What do you need?  (service pills — the form adapts to the choice)
- * 2. Budget & timeline  (optional selects — a rough idea is enough)
- * 3. Your details       (name, email, phone and a short project note)
- * No estimate math, no price badges, no dark rails — just three easy
- * sections and a fixed quote back within one business day.
+ * The global quote-request flow — deliberately SIMPLE and DYNAMIC:
+ *   Step 1  "What do you need?"      → one tap on a service card (auto-advances)
+ *   Step 2  "A few quick details"    → chips ADAPT to the chosen service
+ *                                      (type & scope from the per-service config,
+ *                                      budget & timeline optional)
+ *   Step 3  "Where should we send it?" → review picks, name + email, done.
+ * One question per screen, big tap targets, ~60 seconds end to end.
+ * No estimate math, no price badges — a fixed quote comes back by email.
  */
 export function QuoteBuilder({
   source = 'contact',
@@ -238,7 +310,10 @@ export function QuoteBuilder({
   const { toast } = useToast();
   const idPrefix = `qb-${source.replace(/[^a-z0-9]+/gi, '-')}`;
 
+  const [step, setStep] = React.useState<StepId>(defaultService ? 2 : 1);
   const [serviceSlug, setServiceSlug] = React.useState(defaultService ?? NOT_SURE_SLUG);
+  const [typeValue, setTypeValue] = React.useState('');
+  const [sizeValue, setSizeValue] = React.useState('');
   const [budget, setBudget] = React.useState('');
   const [timeline, setTimeline] = React.useState('');
   const [form, setForm] = React.useState<FormState>(EMPTY_FORM);
@@ -248,18 +323,48 @@ export function QuoteBuilder({
   const [submitted, setSubmitted] = React.useState(false);
   const [leadId, setLeadId] = React.useState<string | null>(null);
 
+  const config = getQuoteConfig(serviceSlug);
   const selectedService = services.find((service) => service.slug === serviceSlug);
+  const typeLabel = config?.types.find((type) => type.value === typeValue)?.label;
+  const sizeLabel = config?.sizes.find((size) => size.value === sizeValue)?.label;
 
   /* ------------------------- interactions ------------------------- */
 
+  // Auto-advance timer — cleared if the wizard unmounts mid-flight.
+  const advanceTimer = React.useRef<number | null>(null);
+  React.useEffect(
+    () => () => {
+      if (advanceTimer.current) window.clearTimeout(advanceTimer.current);
+    },
+    []
+  );
+
+  // Move focus to the step question whenever the step changes (a11y),
+  // skipping the very first paint so page load never steals focus.
+  const headingRef = React.useRef<HTMLHeadingElement | null>(null);
+  const mounted = React.useRef(false);
+  React.useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    headingRef.current?.focus();
+  }, [step]);
+
   const pickService = (slug: string) => {
     setServiceSlug(slug);
-    setErrors({});
+    const nextConfig = getQuoteConfig(slug);
+    setTypeValue(nextConfig?.types[0]?.value ?? '');
+    setSizeValue(nextConfig?.sizes[0]?.value ?? '');
+    // A short beat so the selected state is visible, then slide on.
+    advanceTimer.current = window.setTimeout(() => setStep(2), 300);
   };
+
+  const goBack = () => setStep(step === 3 ? 2 : 1);
 
   const setFormValue = (key: keyof FormState) => (value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
-    const errorKey = key === 'firstName' ? 'name' : key === 'notes' ? 'notes' : key === 'email' ? 'email' : null;
+    const errorKey = key === 'name' ? 'name' : key === 'email' ? 'email' : null;
     if (errorKey) {
       setErrors((prev) => (prev[errorKey] ? { ...prev, [errorKey]: undefined } : prev));
     }
@@ -267,11 +372,8 @@ export function QuoteBuilder({
 
   const validate = (): boolean => {
     const next: Errors = {};
-    if (form.firstName.trim().length < 2) next.name = 'Please enter your first name.';
+    if (form.name.trim().length < 2) next.name = 'Please enter your name.';
     if (!EMAIL_REGEX.test(form.email.trim())) next.email = 'Please enter a valid email address.';
-    if (form.notes.trim().length < NOTES_MIN) {
-      next.notes = 'Please add a few details about what you need (at least 10 characters).';
-    }
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -281,21 +383,30 @@ export function QuoteBuilder({
     if (!validate()) return;
     setSubmitting(true);
     try {
-      const fullName = [form.firstName.trim(), form.lastName.trim()].filter(Boolean).join(' ');
       const serviceName = selectedService?.name ?? 'Not sure yet / something else';
-      const message = form.notes.trim();
+      const summary = [
+        typeLabel,
+        sizeLabel,
+        budget ? `Budget: ${budget}` : '',
+        timeline ? `Start: ${timeline}` : '',
+      ]
+        .filter(Boolean)
+        .join(' · ');
+      const message = [`${serviceName}${summary ? ` — ${summary}` : ''}`, form.notes.trim()]
+        .filter(Boolean)
+        .join('\n\n');
 
       const response = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: fullName,
+          name: form.name.trim(),
           email: form.email.trim(),
           phone: form.phone.trim(),
           service: serviceSlug === NOT_SURE_SLUG ? 'not-sure' : serviceSlug,
           budget,
           timeline,
-          message: `${serviceName}\n\n${message}`,
+          message,
           source,
           website: honeypot,
         }),
@@ -327,6 +438,12 @@ export function QuoteBuilder({
     setLeadId(null);
     setErrors({});
     setForm(EMPTY_FORM);
+    setServiceSlug(NOT_SURE_SLUG);
+    setTypeValue('');
+    setSizeValue('');
+    setBudget('');
+    setTimeline('');
+    setStep(1);
   };
 
   /* --------------------------- styles ----------------------------- */
@@ -334,12 +451,166 @@ export function QuoteBuilder({
   const inputClass =
     'h-11 rounded-xl border-[#e6e5de] bg-white text-[#161613] placeholder:text-[#b3b2a8] focus-visible:border-[#FF4D00] focus-visible:ring-[#FF4D00]';
 
-  /* ---------------------------- render ---------------------------- */
+  /* ------------------------ progress header ----------------------- */
 
-  const formBody = submitted ? (
-    <SuccessPanel leadId={leadId} onReset={resetToForm} />
-  ) : (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8" aria-label="Quote request form">
+  const progressHeader = (
+    <div className="mb-6 flex items-center gap-3">
+      {step > 1 ? (
+        <button
+          type="button"
+          onClick={goBack}
+          aria-label="Go back one step"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-[#e6e5de] bg-white text-[#161613] transition-colors hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00] focus-visible:ring-offset-2"
+        >
+          <ArrowLeft className="size-4" aria-hidden="true" />
+        </button>
+      ) : null}
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline justify-between gap-3">
+          <p className="text-sm font-bold text-[#161613]">
+            Step {step} of 3
+            <span className="font-medium text-[#6f6e66]"> · {STEP_META[step]}</span>
+          </p>
+          <p className="hidden text-xs text-[#6f6e66] sm:block">Takes about a minute</p>
+        </div>
+        <div
+          className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#efeee7]"
+          role="progressbar"
+          aria-valuemin={1}
+          aria-valuemax={3}
+          aria-valuenow={step}
+          aria-label="Quote form progress"
+        >
+          <div
+            className="h-full rounded-full bg-[#FF4D00] transition-[width] duration-300 ease-out"
+            style={{ width: `${(step / 3) * 100}%` }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+  /* --------------------------- step 1 ----------------------------- */
+
+  const stepOne = (
+    <div key="s1" className="quote-step-in flex flex-col gap-5">
+      <StepHeading
+        ref={headingRef}
+        title="What do you need?"
+        hint="Pick one — we scope the rest together on a free call."
+      />
+      <div role="radiogroup" aria-label="Service needed" className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+        {services.map((service) => (
+          <ServiceCard
+            key={service.slug}
+            selected={serviceSlug === service.slug}
+            onSelect={() => pickService(service.slug)}
+            label={service.shortName}
+            tagline={service.tagline}
+            icon={<ServiceIconGlyph icon={service.icon} className="size-4" />}
+          />
+        ))}
+        <ServiceCard
+          dashed
+          selected={serviceSlug === NOT_SURE_SLUG}
+          onSelect={() => pickService(NOT_SURE_SLUG)}
+          label="Not sure yet"
+          tagline="Pick this and we'll scope it together."
+          icon={<HelpCircle className="size-4" aria-hidden="true" />}
+        />
+      </div>
+    </div>
+  );
+
+  /* --------------------------- step 2 ----------------------------- */
+
+  const stepTwo = (
+    <div key="s2" className="quote-step-in flex flex-col gap-6">
+      <StepHeading
+        ref={headingRef}
+        title="A few quick details"
+        hint={
+          config
+            ? 'Rough sizes are perfect — we confirm everything before quoting.'
+            : 'No problem — answer what you can, we scope it together.'
+        }
+      />
+
+      {/* Selected service + change shortcut */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-sm text-[#6f6e66]">For:</span>
+        <button
+          type="button"
+          onClick={() => setStep(1)}
+          className="inline-flex items-center gap-1.5 rounded-full bg-[#161613] px-3.5 py-1.5 text-sm font-semibold text-white transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00] focus-visible:ring-offset-2"
+        >
+          {selectedService?.shortName ?? 'Not sure yet'}
+          <Pencil className="size-3" aria-hidden="true" />
+          <span className="sr-only"> — change service</span>
+        </button>
+      </div>
+
+      {config ? (
+        <ChipGroup
+          legend="Project type"
+          options={config.types}
+          value={typeValue}
+          onChange={setTypeValue}
+        />
+      ) : null}
+      {config ? (
+        <ChipGroup
+          legend="Project size"
+          options={config.sizes}
+          value={sizeValue}
+          onChange={setSizeValue}
+        />
+      ) : null}
+      <ChipGroup
+        legend="Budget range"
+        optional
+        hint="A rough idea is enough — the quote stays fixed either way."
+        options={GENERIC_BUDGETS.map((range) => ({ value: range, label: range }))}
+        value={budget}
+        onChange={setBudget}
+      />
+      <ChipGroup
+        legend="Start timeline"
+        optional
+        options={GENERIC_TIMELINES.map((option) => ({ value: option, label: option }))}
+        value={timeline}
+        onChange={setTimeline}
+      />
+
+      <button
+        type="button"
+        onClick={() => setStep(3)}
+        className="btn-primary-pill w-full sm:w-auto sm:self-start"
+      >
+        Continue
+        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      </button>
+    </div>
+  );
+
+  /* --------------------------- step 3 ----------------------------- */
+
+  const reviewChips: { label: string; target: StepId }[] = [
+    { label: selectedService?.shortName ?? 'Not sure yet', target: 1 },
+    ...(typeLabel ? [{ label: typeLabel, target: 2 as StepId }] : []),
+    ...(sizeLabel ? [{ label: sizeLabel, target: 2 as StepId }] : []),
+    ...(budget ? [{ label: budget, target: 2 as StepId }] : []),
+    ...(timeline ? [{ label: timeline, target: 2 as StepId }] : []),
+  ];
+
+  const stepThree = (
+    <form
+      key="s3"
+      onSubmit={handleSubmit}
+      noValidate
+      aria-label="Quote request form"
+      className="quote-step-in flex flex-col gap-6"
+    >
       {/* Honeypot — invisible to humans, catnip for bots */}
       <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
         <label>
@@ -355,141 +626,93 @@ export function QuoteBuilder({
         </label>
       </div>
 
-      <FormSection
-        title="What do you need?"
-        hint={
-          selectedService
-            ? selectedService.tagline
-            : 'Not sure yet? Pick this and we will scope it together on a free call.'
-        }
-      >
-        <div role="radiogroup" aria-label="Service needed" className="grid gap-2 sm:grid-cols-2">
-          {services.map((service) => (
-            <ServicePill
-              key={service.slug}
-              value={service.slug}
-              idPrefix={`${idPrefix}-svc`}
-              selected={serviceSlug === service.slug}
-              onSelect={() => pickService(service.slug)}
-              label={service.shortName}
-              icon={<ServiceIconGlyph icon={service.icon} className="size-4" />}
-            />
+      <StepHeading
+        ref={headingRef}
+        title="Where should we send it?"
+        hint="One business day, one fixed quote — no spam, ever."
+      />
+
+      {/* Review picks — tap any chip to jump back and edit */}
+      <div className="rounded-2xl border border-[#e6e5de] bg-[#faf9f4] p-4">
+        <p className="eyebrow">Your picks</p>
+        <div className="mt-2.5 flex flex-wrap gap-2">
+          {reviewChips.map((chip, index) => (
+            <button
+              key={`${chip.label}-${index}`}
+              type="button"
+              onClick={() => setStep(chip.target)}
+              aria-label={`Edit ${chip.label}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#e6e5de] bg-white px-3 py-1.5 text-[13px] font-semibold text-[#161613] transition-colors hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00] focus-visible:ring-offset-2"
+            >
+              {chip.label}
+              <Pencil className="size-3 text-[#6f6e66]" aria-hidden="true" />
+            </button>
           ))}
-          <ServicePill
-            value={NOT_SURE_SLUG}
-            idPrefix={`${idPrefix}-svc`}
-            selected={serviceSlug === NOT_SURE_SLUG}
-            onSelect={() => pickService(NOT_SURE_SLUG)}
-            label="Not sure yet"
-          />
         </div>
-      </FormSection>
+      </div>
 
-      <FormSection title="Budget & timeline" hint="A rough idea is enough — we scope the details together.">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field id={`${idPrefix}-budget`} label="Budget" optional>
-            <Select value={budget} onValueChange={setBudget}>
-              <SelectTrigger id={`${idPrefix}-budget`} className={cn(inputClass, 'w-full')} aria-label="Budget range">
-                <SelectValue placeholder="Select a range" />
-              </SelectTrigger>
-              <SelectContent>
-                {GENERIC_BUDGETS.map((range) => (
-                  <SelectItem key={range} value={range}>
-                    {range}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field id={`${idPrefix}-timeline`} label="Timeline" optional>
-            <Select value={timeline} onValueChange={setTimeline}>
-              <SelectTrigger id={`${idPrefix}-timeline`} className={cn(inputClass, 'w-full')} aria-label="Project timeline">
-                <SelectValue placeholder="When do you want to start?" />
-              </SelectTrigger>
-              <SelectContent>
-                {GENERIC_TIMELINES.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-        </div>
-      </FormSection>
-
-      <FormSection title="Your details" hint="One business day, one fixed quote — no spam, ever.">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field id={`${idPrefix}-first`} label="First name" required error={errors.name}>
-            <Input
-              id={`${idPrefix}-first`}
-              value={form.firstName}
-              onChange={(e) => setFormValue('firstName')(e.target.value)}
-              placeholder="Jane"
-              autoComplete="given-name"
-              required
-              aria-invalid={Boolean(errors.name)}
-              aria-describedby={errors.name ? `${idPrefix}-first-error` : undefined}
-              className={inputClass}
-            />
-          </Field>
-          <Field id={`${idPrefix}-last`} label="Last name" optional>
-            <Input
-              id={`${idPrefix}-last`}
-              value={form.lastName}
-              onChange={(e) => setFormValue('lastName')(e.target.value)}
-              placeholder="Smith"
-              autoComplete="family-name"
-              className={inputClass}
-            />
-          </Field>
-          <Field id={`${idPrefix}-email`} label="Email" required error={errors.email}>
-            <Input
-              id={`${idPrefix}-email`}
-              type="email"
-              value={form.email}
-              onChange={(e) => setFormValue('email')(e.target.value)}
-              placeholder="jane@company.com"
-              autoComplete="email"
-              required
-              aria-invalid={Boolean(errors.email)}
-              aria-describedby={errors.email ? `${idPrefix}-email-error` : undefined}
-              className={inputClass}
-            />
-          </Field>
-          <Field id={`${idPrefix}-phone`} label="Phone / WhatsApp" optional>
-            <Input
-              id={`${idPrefix}-phone`}
-              type="tel"
-              value={form.phone}
-              onChange={(e) => setFormValue('phone')(e.target.value)}
-              placeholder="+1 (555) 000-0000"
-              autoComplete="tel"
-              className={inputClass}
-            />
-          </Field>
-        </div>
-        <Field id={`${idPrefix}-notes`} label="Tell us about your project" required error={errors.notes}>
-          <Textarea
-            id={`${idPrefix}-notes`}
-            value={form.notes}
-            onChange={(e) => setFormValue('notes')(e.target.value)}
-            placeholder="Goals, links, deadlines, references — anything that helps us quote accurately…"
-            rows={4}
-            maxLength={NOTES_MAX}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field id={`${idPrefix}-name`} label="Your name" required error={errors.name}>
+          <Input
+            id={`${idPrefix}-name`}
+            value={form.name}
+            onChange={(e) => setFormValue('name')(e.target.value)}
+            placeholder="Jane Smith"
+            autoComplete="name"
             required
-            aria-invalid={Boolean(errors.notes)}
-            aria-describedby={errors.notes ? `${idPrefix}-notes-error` : `${idPrefix}-notes-hint`}
-            className={cn(inputClass, 'h-auto min-h-[110px] py-3')}
+            aria-invalid={Boolean(errors.name)}
+            aria-describedby={errors.name ? `${idPrefix}-name-error` : undefined}
+            className={inputClass}
           />
-          <div id={`${idPrefix}-notes-hint`} className="flex items-center justify-between text-xs text-[#6f6e66]">
-            <span>Goals, scope, links all help.</span>
-            <span className={cn('tabular-nums', form.notes.length >= NOTES_MAX - 40 && 'text-destructive')} aria-live="polite">
-              {form.notes.length}/{NOTES_MAX}
-            </span>
-          </div>
         </Field>
-      </FormSection>
+        <Field id={`${idPrefix}-email`} label="Email" required error={errors.email}>
+          <Input
+            id={`${idPrefix}-email`}
+            type="email"
+            value={form.email}
+            onChange={(e) => setFormValue('email')(e.target.value)}
+            placeholder="jane@company.com"
+            autoComplete="email"
+            required
+            aria-invalid={Boolean(errors.email)}
+            aria-describedby={errors.email ? `${idPrefix}-email-error` : undefined}
+            className={inputClass}
+          />
+        </Field>
+        <Field id={`${idPrefix}-phone`} label="Phone / WhatsApp" optional>
+          <Input
+            id={`${idPrefix}-phone`}
+            type="tel"
+            value={form.phone}
+            onChange={(e) => setFormValue('phone')(e.target.value)}
+            placeholder="+1 (555) 000-0000"
+            autoComplete="tel"
+            className={inputClass}
+          />
+        </Field>
+      </div>
+
+      <Field id={`${idPrefix}-notes`} label="Anything else?" optional>
+        <Textarea
+          id={`${idPrefix}-notes`}
+          value={form.notes}
+          onChange={(e) => setFormValue('notes')(e.target.value)}
+          placeholder="Goals, links, deadlines, references — anything that helps us quote accurately…"
+          rows={3}
+          maxLength={NOTES_MAX}
+          aria-describedby={`${idPrefix}-notes-hint`}
+          className={cn(inputClass, 'h-auto min-h-[92px] py-3')}
+        />
+        <div id={`${idPrefix}-notes-hint`} className="flex items-center justify-between text-xs text-[#6f6e66]">
+          <span>Optional — but details help us quote accurately.</span>
+          <span
+            className={cn('tabular-nums', form.notes.length >= NOTES_MAX - 40 && 'text-destructive')}
+            aria-live="polite"
+          >
+            {form.notes.length}/{NOTES_MAX}
+          </span>
+        </div>
+      </Field>
 
       <div className="flex flex-col gap-4">
         <button
@@ -523,31 +746,39 @@ export function QuoteBuilder({
     </form>
   );
 
-  /* --------------------------- variants --------------------------- */
+  /* --------------------------- render ----------------------------- */
 
-  // Both variants share the same simple single-column form. "full" adds
-  // the outer card chrome; "inline" lets the parent supply it (contact
-  // page wraps this in its own card).
+  // `inner` swaps to the SuccessPanel when submitted — the wizard body
+  // below only renders while the flow is active.
+  const body = (
+    <div className="flex flex-col">
+      {progressHeader}
+      {step === 1 ? stepOne : step === 2 ? stepTwo : stepThree}
+    </div>
+  );
+
+  // Both variants share the same wizard. "full" adds the outer card
+  // chrome; "inline" lets the parent supply it (contact page wraps this).
   const inner = (
     <div className="relative overflow-hidden rounded-[20px] bg-white" data-slot="quote-builder">
       {submitted ? (
         <SuccessPanel leadId={leadId} onReset={resetToForm} />
       ) : (
         <div className={cn('flex flex-col', variant === 'full' ? 'p-6 sm:p-8 lg:p-10' : 'p-6 sm:p-7')}>
-          {/* Compact form intro */}
-          <div className="mb-7 flex flex-col gap-1.5">
+          {/* Compact wizard intro */}
+          <div className="mb-6 flex flex-col gap-1.5">
             <p className="eyebrow inline-flex items-center gap-2">
               <span className="size-2 rounded-full bg-[#FF4D00]" aria-hidden="true" />
               Free Quote
             </p>
             <h2 className="font-display text-2xl font-bold tracking-[-0.02em] text-[#161613] sm:text-[1.7rem]">
-              Tell us what you need
+              Get a fixed quote in 3 quick steps
             </h2>
             <p className="text-[15px] leading-relaxed text-[#6f6e66]">
-              Three quick sections — we reply with a fixed, itemized quote within one business day.
+              One question at a time — the number we agree on is the number you pay.
             </p>
           </div>
-          {formBody}
+          {body}
         </div>
       )}
     </div>
