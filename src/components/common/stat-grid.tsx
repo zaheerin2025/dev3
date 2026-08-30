@@ -23,8 +23,8 @@ export function StatGrid({ items, dark, className }: StatGridProps) {
           className={cn(
             'group flex flex-col items-center gap-1.5 rounded-2xl px-4 py-7 text-center transition-transform duration-300 hover:-translate-y-1',
             dark
-              ? 'bg-white/[0.05] ring-1 ring-inset ring-purple-400/20'
-              : 'bg-gradient-to-b from-white to-purple-50/60 ring-1 ring-inset ring-purple-600/12 shadow-[0_1px_2px_rgb(5_19_14/0.04)]'
+              ? 'bg-white/[0.05] ring-1 ring-inset ring-pink-400/20'
+              : 'bg-gradient-to-b from-white to-pink-50/60 ring-1 ring-inset ring-pink-600/12 shadow-[0_1px_2px_rgb(5_19_14/0.04)]'
           )}
         >
           <span
@@ -38,7 +38,7 @@ export function StatGrid({ items, dark, className }: StatGridProps) {
           <span
             className={cn(
               'text-[13px] font-medium',
-              dark ? 'text-purple-100/70' : 'text-muted-foreground'
+              dark ? 'text-pink-100/70' : 'text-muted-foreground'
             )}
           >
             {item.label}

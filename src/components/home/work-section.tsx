@@ -9,9 +9,9 @@ import type { CaseStudy, CaseStudyCategory } from '@/lib/types';
 
 /** Category pill colours for the dark showcase (spec palette). */
 const CATEGORY_PILLS: Record<CaseStudyCategory, string> = {
-  web: 'bg-blue-500/20 text-blue-300',
+  web: 'bg-pink-500/20 text-pink-300',
   ecommerce: 'bg-pink-500/20 text-pink-300',
-  apps: 'bg-lime-500/20 text-lime-300',
+  apps: 'bg-amber-400/20 text-amber-300',
   marketing: 'bg-orange-500/20 text-orange-300',
 };
 
@@ -49,7 +49,7 @@ export function WorkSection() {
               <Link
                 href={`/portfolio/${study.slug}`}
                 ariaLabel={`Read the ${study.title} case study`}
-                className={`group block tilt-hover rounded-2xl bg-white/5 ring-1 ring-white/10 p-3 hover:ring-purple-500/50 ${
+                className={`group block tilt-hover rounded-2xl bg-white/5 ring-1 ring-white/10 p-3 hover:ring-pink-500/50 ${
                   i % 2 === 0 ? 'tilt-l' : 'tilt-r'
                 }`}
               >

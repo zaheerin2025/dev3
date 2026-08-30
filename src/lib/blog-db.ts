@@ -63,13 +63,13 @@ export function dbPostToListItem(post: DbPost): BlogListItem {
     authorRole: post.authorRole,
     date: post.createdAt,
     readTime: `${post.readTime} min read`,
-    coverGradient: 'from-blue-500 to-cyan-600',
+    coverGradient: 'from-pink-500 to-amber-600',
     image: post.image,
   };
 }
 
 /** Default cover gradient for DB posts (brand blue → cyan). */
-export const DB_POST_GRADIENT = 'from-blue-500 to-cyan-600';
+export const DB_POST_GRADIENT = 'from-pink-500 to-amber-600';
 
 /**
  * Parse plain-string post content into sections for the blog-post TOC.

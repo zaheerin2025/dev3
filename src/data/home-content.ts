@@ -21,7 +21,7 @@ export const homeServiceCards: HomeServiceCard[] = [
     title: 'Website Design',
     tagline: 'Conversion-focused custom websites built to win clients and rank on Google.',
     icon: 'pen-tool',
-    gradient: 'from-purple-600 to-pink-500',
+    gradient: 'from-pink-600 to-rose-500',
     num: '01',
   },
   {
@@ -37,7 +37,7 @@ export const homeServiceCards: HomeServiceCard[] = [
     title: 'E-Commerce',
     tagline: 'Online stores engineered for speed, trust and repeat purchases.',
     icon: 'cart',
-    gradient: 'from-blue-500 to-cyan-400',
+    gradient: 'from-pink-500 to-amber-400',
     num: '03',
   },
   {
@@ -53,7 +53,7 @@ export const homeServiceCards: HomeServiceCard[] = [
     title: 'SEO & Speed',
     tagline: 'Higher rankings and sub-second loads that keep you ahead of competitors.',
     icon: 'trending-up',
-    gradient: 'from-lime-500 to-emerald-400',
+    gradient: 'from-yellow-400 to-orange-400',
     num: '05',
   },
   {
@@ -61,7 +61,7 @@ export const homeServiceCards: HomeServiceCard[] = [
     title: 'Maintenance & Support',
     tagline: 'Updates, backups and monitoring so your site never skips a beat.',
     icon: 'wrench',
-    gradient: 'from-fuchsia-500 to-purple-600',
+    gradient: 'from-rose-500 to-pink-600',
     num: '06',
   },
 ];

@@ -37,7 +37,7 @@ function TestimonialFooter({ testimonial }: { testimonial: Testimonial }) {
       ) : (
         <span
           aria-hidden="true"
-          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-sm font-bold text-white"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-orange-400 text-sm font-bold text-white"
         >
           {testimonial.initials}
         </span>

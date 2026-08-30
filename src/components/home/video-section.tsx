@@ -60,7 +60,7 @@ export function VideoSection() {
           </Editable>
         </div>
 
-        <div className="gradient-border mt-10 overflow-hidden rounded-[24px] bg-[#0a0a0a] shadow-[0_32px_64px_-32px_rgb(124_58_237/0.35)]">
+        <div className="gradient-border mt-10 overflow-hidden rounded-[24px] bg-[#0a0a0a] shadow-[0_32px_64px_-32px_rgb(236_72_153/0.35)]">
           <div className="aspect-video w-full">
             <iframe
               src={`https://www.youtube.com/embed/${videoId}?rel=0`}
@@ -80,7 +80,7 @@ export function VideoSection() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackEvent('youtube_click', { location: 'video_section' })}
-            className="inline-flex min-h-[44px] items-center gap-2 rounded-full border-2 border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-gray-600 transition-colors hover:border-[#0a0a0a] hover:text-[#0a0a0a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-full border-2 border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-gray-600 transition-colors hover:border-[#0a0a0a] hover:text-[#0a0a0a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
           >
             <Youtube className="size-4.5 text-red-600" aria-hidden="true" />
             Watch on YouTube

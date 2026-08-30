@@ -630,3 +630,25 @@ Stage Summary:
 - Site is back on the COLORFUL brand (user's real original): colorful header/footer/globals + yellow hero highlighter, committed d2d3cd4. Blue era preserved on `backup-blue-era`, purple e1c05bb state on `backup-purple-era`.
 - Dev-server survival rule documented (wait for launcher completion within the spawning tool call).
 - STILL OPEN: real contact details lost in the crash — placeholders shown everywhere (footer/header menu/contact/forms wired consistently); awaiting real values from user (chat or /#/admin → Site Content).
+
+---
+Task ID: 24
+Agent: orchestrator (Z.ai main)
+Task: User directive — "do not disturb anything else; redesign animated hero like a real human developer; keep only pink+yellow color grading; remove blue/redundant styles."
+
+Work Log:
+- Blanket recolor across 59 ts/tsx files: blue/cyan/sky/violet/fuchsia/purple → pink/amber/yellow/rose (incl. data cover gradients, header tiles, footer, views, admin, tools chrome). Kept functional colors: tool success greens, browser traffic-light dots, gradient-tool preset palettes (user-facing functionality).
+- Fixed sed-degenerate gradients (from-pink-500 to-pink-500 etc.) across views/buttons/blobs; deliberate warm cycles now.
+- Rewrote floating-shapes.tsx — pink/yellow/amber/orange only (default + subtle + dark variants).
+- REDESIGNED HERO (src/components/home/hero.tsx): pulsing availability sticker badge; headline "We Build [rotating word]" with CSS-only word cycle (Websites/Stores/Apps/Brands, inline-grid stacked = zero layout shift, per-word yellow marker highlight, sr-only static word for a11y); "Win Clients" pink→orange→yellow gradient; staggered word-rise on sub/CTAs/chips; shine-sweep primary CTA; arrow-nudge secondary; tilted browser-mockup collage (amber/yellow dashboard, pink/orange store, rose/pink landing) with floating glass capability tags (Next.js+React / SEO-ready / Stores & bookings); infinite tech marquee band (ink border, pause on hover); all admin Editable + settings-override paths preserved.
+- globals.css: brand tokens re-tinted to pink primary + warm neutrals (light+dark), body wash pink/yellow, text-gradient pink→orange→yellow, icon-tile/pill buttons/gradient-frame/scrollbars/card-hover/dividers all warm; REMOVED unused glass-chip-dark; added .hero-rotator + @keyframes hero-word-cycle (unlayered, ordered after .word-rise to win display cascade) + .btn-shine; reduced-motion: freeze rotator on first word, disable shine/marquee/floats.
+- Rebranded src/app/icon.svg + public/logo.svg: pink→orange gradient tile, white sparkle, yellow accent dots (was BLUE monogram — the favicon was the last blue artifact).
+- Header polish: logo tile pink-600→orange-400, nav active dots pink-500→yellow-400, service tile gradients = warm cycle (rose/amber-yellow/pink-orange/rose-pink/orange-amber); mobile-menu logo tile matched.
+- Tooling battles: Turbopack served STALE css chunks with identical filenames after HMR/stash round-trips → fixed by kill + rm -rf .next + fresh .zscripts/dev.sh; browser HTTP cache on same chunk URL also needed fresh session; deleted stray tool-results/ dir that Tailwind v4 was scanning (generated dead from-purple-* utilities).
+- E2E verified (agent-browser): desktop 1440x900 hero (rotator inline-grid, 1 word visible, cycles 0→1→2→3), marquee running, mega menu warm tiles, work badges pink/amber, footer contact block + sticky gap 0, pricing gradient badges, tools hub gradient+highlighter, contact quote builder live estimate updates on service click ($300–450/mo after SEO select), mobile 390x844 no overflow + mobile menu overlay + rotator same-line cycling; zero console issues after fresh compile (one transient hydration warning traced to Turbopack HMR module drift, not reproducible on clean builds).
+
+Stage Summary:
+- Site brand is now strictly PINK + YELLOW (+ warm orange bridges); zero blue/purple in any served stylesheet.
+- New animated hero is the centerpiece: rotating gradient slot, marker highlight, shine CTA, floating tags, tech marquee — all CSS-only, SEO-safe SSR, reduced-motion safe, zero layout shift.
+- Favicon/logo rebranded; stale tool artifacts removed; Turbopack stale-chunk workaround documented (restart with rm -rf .next when CSS edits don't appear).
+- Contact details remain placeholders (hello@developers3.com / +1 555) — awaiting user's real details; editable via /#/admin → Site Content.

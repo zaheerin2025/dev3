@@ -49,7 +49,7 @@ export function ServicesSection() {
                 <h3 className="mt-5 text-xl font-bold text-[#0a0a0a]">{card.title}</h3>
                 <p className="mt-2 text-[#4b5563]">{card.tagline}</p>
 
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-purple-600">
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-pink-600">
                   Learn more
                   <ArrowRight
                     className="size-4 transition-transform group-hover:translate-x-1"

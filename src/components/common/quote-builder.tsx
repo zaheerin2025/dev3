@@ -132,10 +132,10 @@ function PillChoice({
       id={`${idPrefix}-${value}`}
       onClick={onSelect}
       className={cn(
-        'group relative flex min-h-[44px] w-full items-center justify-between gap-2 rounded-full border-2 px-4 py-2 text-left text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2',
+        'group relative flex min-h-[44px] w-full items-center justify-between gap-2 rounded-full border-2 px-4 py-2 text-left text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2',
         selected
           ? 'border-[#0a0a0a] bg-[#0a0a0a] text-white shadow-[0_8px_20px_-10px_rgb(10_10_10/0.6)]'
-          : 'border-gray-200 bg-white text-[#0a0a0a] hover:-translate-y-0.5 hover:border-purple-400'
+          : 'border-gray-200 bg-white text-[#0a0a0a] hover:-translate-y-0.5 hover:border-pink-400'
       )}
     >
       <span className="flex min-w-0 items-center gap-2.5">
@@ -143,7 +143,7 @@ function PillChoice({
           <span
             className={cn(
               'flex size-7 shrink-0 items-center justify-center rounded-lg transition-colors',
-              selected ? 'bg-white/15 text-white' : 'bg-purple-50 text-purple-600'
+              selected ? 'bg-white/15 text-white' : 'bg-pink-50 text-pink-600'
             )}
             aria-hidden="true"
           >
@@ -168,7 +168,7 @@ function PillChoice({
         <span
           className={cn(
             'shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold',
-            selected ? 'bg-white/15 text-white' : 'bg-purple-50 text-purple-700'
+            selected ? 'bg-white/15 text-white' : 'bg-pink-50 text-pink-700'
           )}
         >
           {badge}
@@ -194,12 +194,12 @@ function ChoiceGroup({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-start gap-3">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-pink-500 text-white shadow-[0_8px_18px_-8px_rgb(124_58_237/0.5)]" aria-hidden="true">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-pink-600 to-pink-500 text-white shadow-[0_8px_18px_-8px_rgb(236_72_153/0.5)]" aria-hidden="true">
           <Icon className="size-4" />
         </span>
         <div className="min-w-0">
           <h3 className="font-display text-base font-bold text-[#0a0a0a]">
-            <span className="mr-2 text-xs font-bold uppercase tracking-[0.18em] text-purple-600" aria-hidden="true">
+            <span className="mr-2 text-xs font-bold uppercase tracking-[0.18em] text-pink-600" aria-hidden="true">
               {step}
             </span>
             {title}
@@ -232,16 +232,16 @@ function AddonChip({
       id={`${idPrefix}-${addon.value}`}
       onClick={onToggle}
       className={cn(
-        'flex min-h-[44px] items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2',
+        'flex min-h-[44px] items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2',
         selected
-          ? 'border-purple-600 bg-purple-600 text-white shadow-[0_8px_20px_-10px_rgb(124_58_237/0.7)]'
-          : 'border-gray-200 bg-white text-[#0a0a0a] hover:-translate-y-0.5 hover:border-purple-400'
+          ? 'border-pink-600 bg-pink-600 text-white shadow-[0_8px_20px_-10px_rgb(236_72_153/0.7)]'
+          : 'border-gray-200 bg-white text-[#0a0a0a] hover:-translate-y-0.5 hover:border-pink-400'
       )}
     >
       <span
         className={cn(
           'flex size-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
-          selected ? 'border-white bg-white text-purple-600' : 'border-gray-300 text-transparent'
+          selected ? 'border-white bg-white text-pink-600' : 'border-gray-300 text-transparent'
         )}
         aria-hidden="true"
       >
@@ -251,7 +251,7 @@ function AddonChip({
       <span
         className={cn(
           'shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold',
-          selected ? 'bg-white/20 text-white' : 'bg-purple-50 text-purple-700'
+          selected ? 'bg-white/20 text-white' : 'bg-pink-50 text-pink-700'
         )}
       >
         {priceLabel}
@@ -280,7 +280,7 @@ function Field({
       <Label htmlFor={id} className="text-sm font-bold text-[#0a0a0a]">
         {label}
         {required ? (
-          <span className="ml-0.5 text-purple-600" aria-hidden="true">
+          <span className="ml-0.5 text-pink-600" aria-hidden="true">
             *
           </span>
         ) : null}
@@ -301,7 +301,7 @@ function SuccessPanel({ leadId, onReset }: { leadId: string | null; onReset: () 
     <div className="flex flex-col items-center justify-center gap-4 p-8 text-center sm:p-12" role="status" aria-live="polite">
       <span className="gradient-frame flex rounded-full p-3" aria-hidden="true">
         <span className="flex h-20 w-20 items-center justify-center rounded-full bg-white">
-          <CheckCircle2 className="h-14 w-14 text-purple-600" />
+          <CheckCircle2 className="h-14 w-14 text-pink-600" />
         </span>
       </span>
       <h3 className="font-display text-2xl font-bold text-[#0a0a0a]">Quote request received!</h3>
@@ -311,7 +311,7 @@ function SuccessPanel({ leadId, onReset }: { leadId: string | null; onReset: () 
       </p>
       {leadId ? (
         <p className="text-xs text-muted-foreground">
-          Reference: <span className="font-mono font-semibold text-purple-700">{leadId}</span>
+          Reference: <span className="font-mono font-semibold text-pink-700">{leadId}</span>
         </p>
       ) : null}
       <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
@@ -533,7 +533,7 @@ export function QuoteBuilder({
   /* --------------------------- styles ----------------------------- */
 
   const inputClass =
-    'h-11 rounded-xl border-gray-200 bg-white text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-purple-500 focus-visible:ring-purple-500';
+    'h-11 rounded-xl border-gray-200 bg-white text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-pink-500 focus-visible:ring-pink-500';
 
   /* -------------------------- sub-blocks -------------------------- */
 
@@ -817,7 +817,7 @@ export function QuoteBuilder({
       By submitting, you agree to our{' '}
       <Link
         href="/privacy-policy"
-        className="font-medium text-purple-700 underline decoration-purple-300 underline-offset-2 hover:text-purple-800"
+        className="font-medium text-pink-700 underline decoration-pink-300 underline-offset-2 hover:text-pink-800"
       >
         Privacy Policy
       </Link>
@@ -852,8 +852,8 @@ export function QuoteBuilder({
           <div className="flex flex-col">
             <div className="bg-[#0a0a0a] p-6 sm:p-7">
               <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-purple-300" aria-hidden="true" />
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-purple-200">Instant estimate</p>
+                <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-pink-300" aria-hidden="true" />
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-pink-200">Instant estimate</p>
               </div>
               <div className="mt-3">
                 <EstimateContent estimate={estimate} compact />
@@ -873,10 +873,10 @@ export function QuoteBuilder({
     <div className={cn('card-soft grid grid-cols-1 lg-split-quote', className)} data-slot="quote-builder">
       {/* Estimate rail — dark, sticky on desktop, stacks above the form on mobile */}
       <aside className="relative flex flex-col gap-6 overflow-hidden rounded-t-[24px] bg-[#0a0a0a] p-6 text-white sm:p-8 lg:sticky lg:top-28 lg:self-start lg:rounded-b-none lg:rounded-l-[24px]">
-        <span className="blob -right-16 top-6 size-56 bg-gradient-to-br from-purple-600 to-pink-500" aria-hidden="true" />
+        <span className="blob -right-16 top-6 size-56 bg-gradient-to-br from-pink-600 to-pink-500" aria-hidden="true" />
         <div className="relative z-10 flex flex-col gap-5">
-          <p className="flex w-fit items-center gap-2 text-xs font-semibold text-purple-200">
-            <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-purple-300" aria-hidden="true" />
+          <p className="flex w-fit items-center gap-2 text-xs font-semibold text-pink-200">
+            <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-pink-300" aria-hidden="true" />
             Instant estimate · updates live
           </p>
 
@@ -891,7 +891,7 @@ export function QuoteBuilder({
               'NDA on request',
             ].map((promise) => (
               <li key={promise} className="flex items-center gap-2.5 text-sm text-white/75">
-                <BadgeCheck className="size-4 shrink-0 text-purple-300" aria-hidden="true" />
+                <BadgeCheck className="size-4 shrink-0 text-pink-300" aria-hidden="true" />
                 {promise}
               </li>
             ))}

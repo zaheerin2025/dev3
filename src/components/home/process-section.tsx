@@ -21,7 +21,7 @@ export function ProcessSection() {
           {/* Dashed connector line behind the step numbers (desktop only) */}
           <span
             aria-hidden="true"
-            className="absolute top-10 right-[12%] left-[12%] hidden border-t-2 border-dashed border-purple-300 lg:block"
+            className="absolute top-10 right-[12%] left-[12%] hidden border-t-2 border-dashed border-pink-300 lg:block"
           />
 
           {/* Floating sparkles between steps (desktop only) */}

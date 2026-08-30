@@ -105,7 +105,7 @@ function minifyCss(css: string): string {
 
 const CSS_SAMPLE = [
   '/* theme colors — do not edit */',
-  ':root { --brand: #0a0a0a; --accent: #7c3aed; }',
+  ':root { --brand: #0a0a0a; --accent: #ec4899; }',
   'body { margin: 0; padding: 0 ; font-family: Arial, sans-serif; }',
   '.hero { width: calc(100% - 40px); background: url("bg.png"); content: "a  b"; }',
   '.empty {}',
@@ -1576,7 +1576,7 @@ const RegexTesterTool = () => {
           <div className="custom-scrollbar max-h-72 overflow-auto rounded-xl border border-gray-200">
             {shown.map((m, i) => (
               <div key={i} className="border-b border-gray-100 px-4 py-2.5 font-mono text-xs text-[#374151] last:border-b-0">
-                <span className="mr-2 font-bold text-purple-600">#{i + 1}</span>
+                <span className="mr-2 font-bold text-pink-600">#{i + 1}</span>
                 <span className="mr-2 text-gray-400">@ {m.index}</span>
                 <span className="font-bold">“{m.text.length > 80 ? m.text.slice(0, 77) + '…' : m.text}”</span>
                 {m.groups.length > 0 ? (

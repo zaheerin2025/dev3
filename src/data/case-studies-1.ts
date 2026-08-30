@@ -30,7 +30,7 @@ export const caseStudiesBatch1: CaseStudy[] = [
       {
         title: 'One-page checkout',
         blurb: 'A single-screen checkout with Apple Pay, Google Pay and express wallets, cutting the purchase path from four steps to one and driving cart abandonment down 22%.',
-        gradient: 'from-blue-500 to-cyan-600',
+        gradient: 'from-pink-500 to-amber-600',
       },
       {
         title: 'Klaviyo email flows',
@@ -40,12 +40,12 @@ export const caseStudiesBatch1: CaseStudy[] = [
       {
         title: 'Rebuy upsell engine',
         blurb: 'Smart bundle and frequently-bought-together rules surface styling pairs at the moment of purchase, lifting average order value 38% without discounting a single product.',
-        gradient: 'from-cyan-500 to-blue-700',
+        gradient: 'from-amber-500 to-pink-700',
       },
       {
         title: '0.9s storefront performance',
         blurb: 'A performance-first Liquid theme with optimised imagery and deferred scripts cut Largest Contentful Paint from 2.1s to 0.9s, keeping mobile shoppers engaged through every collection launch.',
-        gradient: 'from-lime-400 to-blue-500',
+        gradient: 'from-yellow-300 to-orange-400',
       },
     ],
     testimonialId: 't1',
@@ -81,12 +81,12 @@ export const caseStudiesBatch1: CaseStudy[] = [
       {
         title: '30-second merchant onboarding',
         blurb: 'A guided KYC wizard with automated document verification, risk scoring and e-signature contracts activates new merchants in thirty seconds instead of four days of manual review.',
-        gradient: 'from-blue-500 to-cyan-600',
+        gradient: 'from-pink-500 to-amber-600',
       },
       {
         title: '99.98% uptime architecture',
         blurb: 'Event-sourced processing on PostgreSQL with Redis caching and canary deployments keeps payment flows available through traffic peaks, with zero maintenance windows since launch.',
-        gradient: 'from-cyan-500 to-blue-700',
+        gradient: 'from-amber-500 to-pink-700',
       },
       {
         title: 'Merchant-first dashboard',
@@ -132,12 +132,12 @@ export const caseStudiesBatch1: CaseStudy[] = [
       {
         title: 'Conversion-first patient journey',
         blurb: 'Sticky booking actions, two-tap appointment requests and treatment pages built around cost and reassurance questions turn casual researchers into booked patients.',
-        gradient: 'from-blue-500 to-cyan-600',
+        gradient: 'from-pink-500 to-amber-600',
       },
       {
         title: 'Local SEO domination',
         blurb: 'LocalBusiness schema, suburb-level location pages, an optimised Google Business Profile and weekly review generation pushed Meridian to the #1 map pack spot for dentist near me.',
-        gradient: 'from-lime-400 to-blue-500',
+        gradient: 'from-yellow-300 to-orange-400',
       },
       {
         title: 'Call tracking that proves ROI',
@@ -147,7 +147,7 @@ export const caseStudiesBatch1: CaseStudy[] = [
       {
         title: '98 PageSpeed healthcare site',
         blurb: 'A Next.js build served through Cloudflare loads instantly on clinic Wi-Fi and phones alike, scoring 98 on PageSpeed and passing WCAG accessibility checks.',
-        gradient: 'from-blue-400 to-cyan-500',
+        gradient: 'from-pink-400 to-amber-500',
       },
     ],
     testimonialId: 't3',
@@ -188,12 +188,12 @@ export const caseStudiesBatch1: CaseStudy[] = [
       {
         title: 'Interactive map search',
         blurb: 'Leaflet-powered search with draw-on-map boundaries, school zones and price filters replaced a broken iframe, becoming the way buyers explore the portfolio.',
-        gradient: 'from-blue-500 to-cyan-600',
+        gradient: 'from-pink-500 to-amber-600',
       },
       {
         title: 'Suburb landing pages',
         blurb: 'Programmatic suburb pages with Yoast SEO and structured data rank for long-tail property searches, feeding a steady stream of buyers who already know where they want to live.',
-        gradient: 'from-cyan-500 to-blue-700',
+        gradient: 'from-amber-500 to-pink-700',
       },
       {
         title: 'Qualified enquiry routing',
@@ -233,12 +233,12 @@ export const caseStudiesBatch1: CaseStudy[] = [
       {
         title: 'Unified dispatch board',
         blurb: 'Vehicles, loads, drivers and exceptions stream onto one live screen, replacing fourteen systems and ending the morning ritual of reconciling contradictory spreadsheets by phone.',
-        gradient: 'from-blue-500 to-cyan-600',
+        gradient: 'from-pink-500 to-amber-600',
       },
       {
         title: '14-system integration layer',
         blurb: 'API connectors and message queues normalise data from telematics, scheduling, HR and customer systems into PostgreSQL with 99.9% verified sync accuracy.',
-        gradient: 'from-cyan-500 to-blue-700',
+        gradient: 'from-amber-500 to-pink-700',
       },
       {
         title: 'Proactive exception alerts',
@@ -248,7 +248,7 @@ export const caseStudiesBatch1: CaseStudy[] = [
       {
         title: 'Route intelligence',
         blurb: 'Suggestions weigh live traffic, load weight and driver hours, cutting dispatch time 41% and proving $1.2M in first-year fuel and routing savings.',
-        gradient: 'from-lime-400 to-blue-500',
+        gradient: 'from-yellow-300 to-orange-400',
       },
     ],
     testimonialId: 't4',

@@ -6,8 +6,8 @@ export const TOOL_CATEGORIES = [
     id: 'website',
     label: 'Website & Web Development',
     short: 'Website',
-    gradient: 'from-purple-600 to-pink-500',
-    pill: 'bg-purple-100 text-purple-700',
+    gradient: 'from-pink-600 to-rose-500',
+    pill: 'bg-pink-100 text-pink-700',
     description:
       'Free website tools: uptime and security header checks, SEO meta tag and robots.txt generators, sitemap builders, code minifiers and policy generators.',
   },
@@ -24,8 +24,8 @@ export const TOOL_CATEGORIES = [
     id: 'software',
     label: 'Software & Developer Utilities',
     short: 'Developer',
-    gradient: 'from-blue-500 to-cyan-400',
-    pill: 'bg-blue-100 text-blue-700',
+    gradient: 'from-pink-500 to-amber-400',
+    pill: 'bg-pink-100 text-pink-700',
     description:
       'Daily developer utilities: JSON and SQL formatters, regex tester, hash and UUID generators, QR codes, CSS generators and diff checking.',
   },
@@ -42,8 +42,8 @@ export const TOOL_CATEGORIES = [
     id: 'business',
     label: 'Business, SEO & Client Tools',
     short: 'Business',
-    gradient: 'from-lime-500 to-emerald-400',
-    pill: 'bg-lime-100 text-emerald-700',
+    gradient: 'from-yellow-400 to-pink-500',
+    pill: 'bg-yellow-100 text-pink-700',
     description:
       'Business and SEO tools: invoice and quote generators, profit and ROI calculators, keyword analyzers, schema builders and client brief templates.',
   },

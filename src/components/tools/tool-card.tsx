@@ -27,11 +27,11 @@ export const ToolCard = React.memo(function ToolCard({ meta }: { meta: ToolMeta 
           </span>
         ) : null}
       </div>
-      <h3 className="mt-4 font-display text-[15px] font-bold leading-snug text-[#0a0a0a] transition-colors group-hover:text-purple-700">
+      <h3 className="mt-4 font-display text-[15px] font-bold leading-snug text-[#0a0a0a] transition-colors group-hover:text-pink-700">
         {meta.name}
       </h3>
       <p className="mt-1.5 line-clamp-2 flex-1 text-[13px] leading-relaxed text-[#4b5563]">{meta.blurb}</p>
-      <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-purple-700">
+      <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-pink-700">
         Use tool
         <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
       </span>

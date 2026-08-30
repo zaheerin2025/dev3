@@ -55,7 +55,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
       <Section dark dots>
         {/* Ambient glow orbs (decorative) */}
         <span
-          className="glow-orb left-[-9rem] top-[-9rem] h-[26rem] w-[26rem] bg-purple-400/20"
+          className="glow-orb left-[-9rem] top-[-9rem] h-[26rem] w-[26rem] bg-pink-400/20"
           aria-hidden="true"
         />
         <span
@@ -67,7 +67,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
         />
         <div className="relative flex flex-col items-start gap-5">
           <Breadcrumbs
-            className="[&_[data-slot=breadcrumb-page]]:font-medium [&_[data-slot=breadcrumb-page]]:text-white [&_[data-slot=breadcrumb-separator]_svg]:text-purple-400/60 [&_a:hover]:text-white [&_ol]:text-purple-200/70"
+            className="[&_[data-slot=breadcrumb-page]]:font-medium [&_[data-slot=breadcrumb-page]]:text-white [&_[data-slot=breadcrumb-separator]_svg]:text-pink-400/60 [&_a:hover]:text-white [&_ol]:text-pink-200/70"
             items={[{ label: 'Portfolio', href: '/portfolio' }, { label: study.title }]}
           />
           <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -79,17 +79,17 @@ export function CaseStudyView({ slug }: { slug: string }) {
             >
               {CATEGORY_LABELS[study.category]}
             </span>
-            <span className="inline-flex items-center rounded-full bg-purple-400/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-purple-200 ring-1 ring-inset ring-purple-300/25">
+            <span className="inline-flex items-center rounded-full bg-pink-400/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-pink-200 ring-1 ring-inset ring-pink-300/25">
               {study.industry}
             </span>
           </div>
           <h1 className="text-3xl font-bold text-balance text-white sm:text-4xl md:text-5xl">
             {study.title}
           </h1>
-          <p className="max-w-3xl text-base leading-relaxed text-purple-100/80 sm:text-lg">
+          <p className="max-w-3xl text-base leading-relaxed text-pink-100/80 sm:text-lg">
             {study.summary}
           </p>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-purple-100/60">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-pink-100/60">
             <span>
               Client: <span className="font-medium text-white">{study.client}</span>
             </span>
@@ -105,7 +105,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
                     <Link
                       key={serviceSlug}
                       href={`/${serviceSlug}`}
-                      className="font-medium text-purple-300 underline-offset-4 hover:underline"
+                      className="font-medium text-pink-300 underline-offset-4 hover:underline"
                     >
                       {service?.name ?? serviceSlug}
                     </Link>
@@ -125,7 +125,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
                   <p className="text-gradient-soft font-display text-3xl font-extrabold sm:text-4xl">
                     {result.metric}
                   </p>
-                  <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-purple-200/60">
+                  <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-pink-200/60">
                     {result.label}
                   </p>
                 </div>
@@ -137,7 +137,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
         {/* Cover media inside a gradient hairline frame */}
         <Reveal className="relative mt-12 md:mt-16">
           <span
-            className="glow-orb -top-12 left-1/2 h-80 w-[34rem] -translate-x-1/2 bg-purple-500/20"
+            className="glow-orb -top-12 left-1/2 h-80 w-[34rem] -translate-x-1/2 bg-pink-500/20"
             aria-hidden="true"
           />
           <div className="gradient-frame shadow-[0_40px_80px_-40px_rgb(0_0_0/0.65)]">
@@ -161,7 +161,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
           <Reveal>
             <div className="flex gap-4">
               <span
-                className="mt-1.5 w-1 shrink-0 self-stretch rounded-full bg-gradient-to-b from-purple-500 to-pink-300"
+                className="mt-1.5 w-1 shrink-0 self-stretch rounded-full bg-gradient-to-b from-pink-500 to-pink-300"
                 aria-hidden="true"
               />
               <div>
@@ -179,7 +179,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
           <Reveal delay={80}>
             <div className="flex gap-4">
               <span
-                className="mt-1.5 w-1 shrink-0 self-stretch rounded-full bg-gradient-to-b from-pink-500 to-purple-300"
+                className="mt-1.5 w-1 shrink-0 self-stretch rounded-full bg-gradient-to-b from-pink-500 to-pink-300"
                 aria-hidden="true"
               />
               <div>
@@ -225,7 +225,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
             <Reveal
               key={item.title}
               delay={(index % 2) * 60}
-              className="group relative h-full min-h-[15rem] overflow-hidden rounded-2xl ring-1 ring-purple-900/10"
+              className="group relative h-full min-h-[15rem] overflow-hidden rounded-2xl ring-1 ring-pink-900/10"
             >
               {/* Zooming gradient "media" layer */}
               <span
@@ -266,10 +266,10 @@ export function CaseStudyView({ slug }: { slug: string }) {
       {review ? (
         <Section tinted>
           <Reveal>
-            <figure className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-purple-700 to-[#0a0a0a] p-8 shadow-[0_32px_64px_-32px_rgb(4_16_11/0.55)] sm:p-12">
+            <figure className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-pink-700 to-[#0a0a0a] p-8 shadow-[0_32px_64px_-32px_rgb(4_16_11/0.55)] sm:p-12">
               {/* Ambient glows + oversized quote glyph (decorative) */}
               <span
-                className="glow-orb left-[-5rem] top-[-7rem] h-72 w-72 bg-purple-400/25"
+                className="glow-orb left-[-5rem] top-[-7rem] h-72 w-72 bg-pink-400/25"
                 aria-hidden="true"
               />
               <span
@@ -309,11 +309,11 @@ export function CaseStudyView({ slug }: { slug: string }) {
                       alt={`Portrait of ${review.name}`}
                       width={56}
                       height={56}
-                      className="h-14 w-14 rounded-full object-cover ring-2 ring-purple-300/50"
+                      className="h-14 w-14 rounded-full object-cover ring-2 ring-pink-300/50"
                     />
                   ) : (
                     <span
-                      className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-400/15 text-sm font-bold text-purple-200 ring-2 ring-purple-300/50"
+                      className="flex h-14 w-14 items-center justify-center rounded-full bg-pink-400/15 text-sm font-bold text-pink-200 ring-2 ring-pink-300/50"
                       aria-hidden="true"
                     >
                       {review.initials}
@@ -321,7 +321,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
                   )}
                   <span>
                     <span className="block text-base font-semibold text-white">{review.name}</span>
-                    <span className="block text-sm text-purple-100/70">
+                    <span className="block text-sm text-pink-100/70">
                       {review.role}, {review.company}
                     </span>
                   </span>

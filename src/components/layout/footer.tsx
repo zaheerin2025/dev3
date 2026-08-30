@@ -121,7 +121,7 @@ export function Footer() {
       {/* Signature gradient top edge */}
       <div
         aria-hidden="true"
-        className="h-1.5 w-full bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400"
+        className="h-1.5 w-full bg-gradient-to-r from-pink-600 via-pink-500 to-orange-400"
       />
 
       {/* Ambient shapes + blobs on black (toned down so text stays readable) */}
@@ -134,7 +134,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-2.5" ariaLabel="Developers3 — home">
               <span
                 aria-hidden="true"
-                className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 shadow-[0_4px_14px_rgba(124,58,237,0.45)]"
+                className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-pink-600 to-pink-500 shadow-[0_4px_14px_rgba(236,72,153,0.45)]"
               >
                 <Sparkle className="size-5 fill-white text-white" aria-hidden="true" />
               </span>
@@ -161,7 +161,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Developers3 on ${label}`}
-                  className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/70 ring-1 ring-inset ring-white/15 transition-all duration-300 hover:-translate-y-0.5 hover:bg-purple-600 hover:text-white hover:ring-purple-500"
+                  className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/70 ring-1 ring-inset ring-white/15 transition-all duration-300 hover:-translate-y-0.5 hover:bg-pink-600 hover:text-white hover:ring-pink-500"
                 >
                   <Icon className="size-4" aria-hidden="true" />
                 </a>
@@ -230,7 +230,7 @@ export function Footer() {
                     onClick={() => trackEvent('call_click', { location: 'footer' })}
                     className="inline-flex items-center gap-2.5 transition-colors hover:text-white"
                   >
-                    <Phone className="size-4 shrink-0 text-purple-400" aria-hidden="true" />
+                    <Phone className="size-4 shrink-0 text-pink-400" aria-hidden="true" />
                     {phoneDisplay}
                   </a>
                 </li>
@@ -240,18 +240,18 @@ export function Footer() {
                     onClick={() => trackEvent('email_click', { location: 'footer' })}
                     className="inline-flex items-center gap-2.5 transition-colors hover:text-white"
                   >
-                    <Mail className="size-4 shrink-0 text-purple-400" aria-hidden="true" />
+                    <Mail className="size-4 shrink-0 text-pink-400" aria-hidden="true" />
                     {email}
                   </a>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <MapPin className="mt-0.5 size-4 shrink-0 text-purple-400" aria-hidden="true" />
+                  <MapPin className="mt-0.5 size-4 shrink-0 text-pink-400" aria-hidden="true" />
                   <span>
                     {site.address.street}, {site.address.city}, {site.address.state} {site.address.zip}
                   </span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Clock className="size-4 shrink-0 text-purple-400" aria-hidden="true" />
+                  <Clock className="size-4 shrink-0 text-pink-400" aria-hidden="true" />
                   <span>{site.hours}</span>
                 </li>
               </ul>

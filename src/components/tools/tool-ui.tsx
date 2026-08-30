@@ -111,7 +111,7 @@ export function TextInput({ label, value, onChange, placeholder, help, className
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-11 rounded-xl border-gray-200 bg-white text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-purple-500 focus-visible:ring-purple-500"
+        className="h-11 rounded-xl border-gray-200 bg-white text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-pink-500 focus-visible:ring-pink-500"
       />
     </FieldShell>
   );
@@ -133,7 +133,7 @@ export function NumberInput({ label, value, onChange, placeholder, min, max, ste
           step={step ?? 'any'}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="h-11 rounded-xl border-gray-200 bg-white pr-14 text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-purple-500 focus-visible:ring-purple-500"
+          className="h-11 rounded-xl border-gray-200 bg-white pr-14 text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-pink-500 focus-visible:ring-pink-500"
         />
         {suffix ? (
           <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">{suffix}</span>
@@ -150,7 +150,7 @@ export function SelectInput({ label, value, onChange, options, help, className }
   return (
     <FieldShell label={label} help={help} className={className}>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="h-11 w-full rounded-xl border-gray-200 bg-white text-[#0a0a0a] focus-visible:ring-purple-500">
+        <SelectTrigger className="h-11 w-full rounded-xl border-gray-200 bg-white text-[#0a0a0a] focus-visible:ring-pink-500">
           <SelectValue placeholder="Select…" />
         </SelectTrigger>
         <SelectContent>
@@ -187,7 +187,7 @@ export function TextAreaInput({ label, value, onChange, placeholder, rows = 6, h
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={rows}
-        className="resize-y rounded-xl border-gray-200 bg-white font-mono text-[13px] leading-relaxed text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-purple-500 focus-visible:ring-purple-500"
+        className="resize-y rounded-xl border-gray-200 bg-white font-mono text-[13px] leading-relaxed text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-pink-500 focus-visible:ring-pink-500"
       />
     </FieldShell>
   );
@@ -240,7 +240,7 @@ export function Verdict({ tone, title, message }: { tone: 'good' | 'warn' | 'bad
 
 export function ToolNote({ children }: { children: React.ReactNode }) {
   return (
-    <p className="rounded-xl bg-purple-50 px-4 py-3 text-xs leading-relaxed text-purple-800">
+    <p className="rounded-xl bg-pink-50 px-4 py-3 text-xs leading-relaxed text-pink-800">
       {children}
     </p>
   );

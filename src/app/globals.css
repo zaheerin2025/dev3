@@ -44,39 +44,43 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ============================================================
+   BRAND TOKENS — pink primary + yellow accent (warm system).
+   No blues, no purples anywhere in the palette.
+   ============================================================ */
 :root {
   --radius: 0.75rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.2 0.02 300);
+  --foreground: oklch(0.245 0.012 40);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.032 265);
+  --card-foreground: oklch(0.245 0.012 40);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.032 265);
-  --primary: oklch(0.541 0.238 293.5);
+  --popover-foreground: oklch(0.245 0.012 40);
+  --primary: oklch(0.592 0.249 0.7);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.961 0.014 308);
-  --secondary-foreground: oklch(0.33 0.06 293);
-  --muted: oklch(0.968 0.006 250);
-  --muted-foreground: oklch(0.51 0.02 300);
-  --accent: oklch(0.955 0.033 310);
-  --accent-foreground: oklch(0.35 0.09 293);
+  --secondary: oklch(0.961 0.021 340);
+  --secondary-foreground: oklch(0.44 0.11 347);
+  --muted: oklch(0.968 0.005 70);
+  --muted-foreground: oklch(0.51 0.018 60);
+  --accent: oklch(0.961 0.021 340);
+  --accent-foreground: oklch(0.44 0.11 347);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.012 300);
-  --input: oklch(0.92 0.012 300);
-  --ring: oklch(0.606 0.25 292.7);
-  --chart-1: oklch(0.606 0.25 292.7);
-  --chart-2: oklch(0.718 0.202 349.5);
-  --chart-3: oklch(0.541 0.238 293.5);
-  --chart-4: oklch(0.769 0.188 70.08);
-  --chart-5: oklch(0.592 0.249 0.7);
+  --border: oklch(0.918 0.008 70);
+  --input: oklch(0.918 0.008 70);
+  --ring: oklch(0.656 0.241 353.5);
+  --chart-1: oklch(0.656 0.241 353.5);
+  --chart-2: oklch(0.796 0.184 86);
+  --chart-3: oklch(0.705 0.194 39.6);
+  --chart-4: oklch(0.718 0.202 349.5);
+  --chart-5: oklch(0.828 0.155 84);
   --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.2 0.032 265);
-  --sidebar-primary: oklch(0.541 0.238 293.5);
+  --sidebar-foreground: oklch(0.245 0.012 40);
+  --sidebar-primary: oklch(0.592 0.249 0.7);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.961 0.014 308);
-  --sidebar-accent-foreground: oklch(0.33 0.06 293);
-  --sidebar-border: oklch(0.92 0.012 300);
-  --sidebar-ring: oklch(0.606 0.25 292.7);
+  --sidebar-accent: oklch(0.961 0.021 340);
+  --sidebar-accent-foreground: oklch(0.44 0.11 347);
+  --sidebar-border: oklch(0.918 0.008 70);
+  --sidebar-ring: oklch(0.656 0.241 353.5);
 }
 
 .dark {
@@ -86,7 +90,7 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.606 0.25 292.7);
+  --primary: oklch(0.718 0.202 349.5);
   --primary-foreground: oklch(0.145 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -97,20 +101,20 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.606 0.25 292.7);
-  --chart-1: oklch(0.606 0.25 292.7);
-  --chart-2: oklch(0.718 0.202 349.5);
-  --chart-3: oklch(0.541 0.238 293.5);
-  --chart-4: oklch(0.769 0.188 70.08);
-  --chart-5: oklch(0.592 0.249 0.7);
+  --ring: oklch(0.718 0.202 349.5);
+  --chart-1: oklch(0.718 0.202 349.5);
+  --chart-2: oklch(0.796 0.184 86);
+  --chart-3: oklch(0.705 0.194 39.6);
+  --chart-4: oklch(0.656 0.241 353.5);
+  --chart-5: oklch(0.828 0.155 84);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.606 0.25 292.7);
+  --sidebar-primary: oklch(0.718 0.202 349.5);
   --sidebar-primary-foreground: oklch(0.145 0 0);
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.606 0.25 292.7);
+  --sidebar-ring: oklch(0.718 0.202 349.5);
 }
 
 @layer base {
@@ -123,10 +127,10 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     text-rendering: optimizeLegibility;
-    /* Colorful page wash: faint purple→pink ambience */
+    /* Warm page wash: faint pink→yellow ambience */
     background-image:
-      radial-gradient(56rem 30rem at 88% -6%, rgb(124 58 237 / 0.045), transparent 62%),
-      radial-gradient(44rem 26rem at -10% 14%, rgb(236 72 153 / 0.035), transparent 60%);
+      radial-gradient(56rem 30rem at 88% -6%, rgb(236 72 153 / 0.05), transparent 62%),
+      radial-gradient(44rem 26rem at -10% 14%, rgb(250 204 21 / 0.07), transparent 60%);
     background-attachment: fixed;
   }
   h1, h2, h3, h4, h5, h6 {
@@ -134,7 +138,7 @@
     letter-spacing: -0.025em;
   }
   ::selection {
-    background: oklch(0.541 0.238 293.5);
+    background: oklch(0.592 0.249 0.7);
     color: #fff;
   }
 }
@@ -144,24 +148,24 @@
      BRAND SECTION BACKGROUNDS
      ============================================= */
 
-  /* Deep ink black brand section (flat) — colorful layer's dark */
+  /* Deep ink black brand section (flat) */
   .section-dark {
     background-color: #0a0a0a;
     color: #f5f5f5;
   }
-  /* Deep black section with layered purple/pink gradient + vignette */
+  /* Deep black section with layered pink/yellow gradient + vignette */
   .section-dark-deep {
     background-color: #0a0a0a;
     background-image:
-      radial-gradient(52rem 30rem at 85% -10%, rgb(124 58 237 / 0.2), transparent 60%),
-      radial-gradient(40rem 26rem at 8% 110%, rgb(236 72 153 / 0.14), transparent 60%),
-      linear-gradient(165deg, #0a0a0a 0%, #1c0f2e 55%, #0a0a0a 100%);
+      radial-gradient(52rem 30rem at 85% -10%, rgb(236 72 153 / 0.18), transparent 60%),
+      radial-gradient(40rem 26rem at 8% 110%, rgb(250 204 21 / 0.1), transparent 60%),
+      linear-gradient(165deg, #0a0a0a 0%, #26101a 55%, #0a0a0a 100%);
     color: #f5f5f5;
   }
   /* Light warm wash used to alternate white sections */
   .section-tint {
-    background-color: #f7f4ee;
-    background-image: radial-gradient(46rem 24rem at 90% 0%, rgb(124 58 237 / 0.05), transparent 62%);
+    background-color: #faf4ec;
+    background-image: radial-gradient(46rem 24rem at 90% 0%, rgb(236 72 153 / 0.05), transparent 62%);
   }
 
   /* =============================================
@@ -169,22 +173,22 @@
      ============================================= */
   .bg-grid-light {
     background-image:
-      linear-gradient(to right, rgb(124 58 237 / 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(124 58 237 / 0.05) 1px, transparent 1px);
+      linear-gradient(to right, rgb(236 72 153 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(236 72 153 / 0.06) 1px, transparent 1px);
     background-size: 44px 44px;
     -webkit-mask-image: radial-gradient(72rem 36rem at 50% 0%, black 55%, transparent 100%);
     mask-image: radial-gradient(72rem 36rem at 50% 0%, black 55%, transparent 100%);
   }
   .bg-dots-dark {
-    background-image: radial-gradient(rgb(196 181 253 / 0.14) 1px, transparent 1px);
+    background-image: radial-gradient(rgb(249 168 212 / 0.16) 1px, transparent 1px);
     background-size: 24px 24px;
   }
   .section-dark-deep.bg-dots-dark {
     background-color: #0a0a0a;
     background-image:
-      radial-gradient(rgb(196 181 253 / 0.14) 1px, transparent 1px),
-      radial-gradient(52rem 30rem at 85% -10%, rgb(124 58 237 / 0.2), transparent 60%),
-      linear-gradient(165deg, #0a0a0a 0%, #1c0f2e 55%, #0a0a0a 100%);
+      radial-gradient(rgb(249 168 212 / 0.16) 1px, transparent 1px),
+      radial-gradient(52rem 30rem at 85% -10%, rgb(236 72 153 / 0.18), transparent 60%),
+      linear-gradient(165deg, #0a0a0a 0%, #26101a 55%, #0a0a0a 100%);
     background-size: 24px 24px, 100% 100%, 100% 100%;
   }
 
@@ -202,16 +206,15 @@
   .text-balance {
     text-wrap: balance;
   }
-  /* Colorful creative brand gradients (purple→pink→orange, matching
-     .gradient-border / .btn-primary-pill in the colorful layer below) */
+  /* Warm brand gradient: pink → orange → yellow */
   .text-gradient {
-    background-image: linear-gradient(100deg, #7c3aed 10%, #ec4899 55%, #f97316 90%);
+    background-image: linear-gradient(100deg, #ec4899 8%, #f97316 52%, #facc15 95%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
   .text-gradient-soft {
-    background-image: linear-gradient(100deg, #c4b5fd, #f9a8d4);
+    background-image: linear-gradient(100deg, #f9a8d4, #fde047);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -238,10 +241,10 @@
   }
   .card-hover:hover {
     transform: translateY(-5px);
-    border-color: rgb(124 58 237 / 0.35);
+    border-color: rgb(236 72 153 / 0.35);
     box-shadow:
       0 2px 4px rgb(2 8 23 / 0.05),
-      0 20px 44px -18px rgb(124 58 237 / 0.32);
+      0 20px 44px -18px rgb(236 72 153 / 0.32);
   }
   /* Frosted glass chip (hero floaters, badges on media) */
   .glass-chip {
@@ -251,17 +254,10 @@
     border: 1px solid rgb(255 255 255 / 0.65);
     box-shadow: 0 8px 24px -10px rgb(2 8 23 / 0.25);
   }
-  .glass-chip-dark {
-    background: rgb(10 10 10 / 0.55);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgb(196 181 253 / 0.25);
-    box-shadow: 0 8px 24px -10px rgb(0 0 0 / 0.5);
-  }
   /* Gradient hairline frame (hero media, highlighted pricing) */
   .gradient-frame {
     position: relative;
-    background: linear-gradient(135deg, rgb(124 58 237 / 0.55), rgb(236 72 153 / 0.32) 40%, rgb(249 115 22 / 0.45));
+    background: linear-gradient(135deg, rgb(236 72 153 / 0.55), rgb(250 204 21 / 0.5) 40%, rgb(249 115 22 / 0.45));
     padding: 1px;
     border-radius: 1.5rem;
   }
@@ -271,11 +267,11 @@
     align-items: center;
     justify-content: center;
     border-radius: 0.9rem;
-    background-image: linear-gradient(140deg, #a855f7, #7c3aed 55%, #ec4899);
+    background-image: linear-gradient(140deg, #f472b6, #ec4899 55%, #f97316);
     color: #fff;
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.35),
-      0 8px 18px -8px rgb(124 58 237 / 0.55);
+      0 8px 18px -8px rgb(236 72 153 / 0.55);
   }
   /* Gradient horizontal rule */
   .divider-gradient {
@@ -305,6 +301,27 @@
     animation: pulse-dot 2s ease-in-out infinite;
   }
 
+  /* Shine sweep for primary CTAs */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-shine::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    z-index: 1;
+    background: linear-gradient(105deg, transparent 42%, rgb(255 255 255 / 0.55) 50%, transparent 58%);
+    transform: translateX(-130%);
+    transition: transform 0.8s ease;
+    pointer-events: none;
+  }
+  .btn-shine:hover::after,
+  .btn-shine:focus-visible::after {
+    transform: translateX(130%);
+  }
+
   /* =============================================
      SCROLL-REVEAL — SEO/JS SAFE
      Hidden state only applies once JS arms the
@@ -324,24 +341,10 @@
     opacity: 1;
     transform: translateY(0);
   }
-  @media (prefers-reduced-motion: reduce) {
-    .reveal.is-armed {
-      transition: none;
-      opacity: 1;
-      transform: none;
-    }
-    .animate-float,
-    .animate-float-slow {
-      animation: none;
-    }
-    html {
-      scroll-behavior: auto;
-    }
-  }
 
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgb(124 58 237 / 0.4) transparent;
+    scrollbar-color: rgb(236 72 153 / 0.4) transparent;
   }
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
@@ -351,17 +354,17 @@
     background: transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgb(124 58 237 / 0.4);
+    background: rgb(236 72 153 / 0.4);
     border-radius: 9999px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgb(124 58 237 / 0.6);
+    background: rgb(236 72 153 / 0.6);
   }
 }
 
 /* ============================================================
    COLORFUL CREATIVE LAYER — home + tools design system
-   (off-white/black sections, purple→pink accents, stickers,
+   (off-white/black sections, pink→yellow accents, stickers,
    marquees, tilted cards, pill buttons)
    ============================================================ */
 
@@ -377,10 +380,10 @@
 
 /* Pill buttons */
 .btn-primary-pill {
-  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 px-7 py-3.5 text-sm font-bold text-white shadow-[0_10px_30px_-10px_rgba(124,58,237,0.6)] transition-all duration-300 hover:shadow-[0_16px_40px_-12px_rgba(236,72,153,0.65)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-pink-600 via-rose-500 to-orange-400 px-7 py-3.5 text-sm font-bold text-white shadow-[0_10px_30px_-10px_rgba(236,72,153,0.6)] transition-all duration-300 hover:shadow-[0_16px_40px_-12px_rgba(249,115,22,0.55)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2;
 }
 .btn-primary-pill-sm {
-  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-pink-600 via-rose-500 to-orange-400 px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2;
 }
 .btn-secondary-pill {
   @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#0a0a0a] bg-white px-7 py-3 text-sm font-bold text-[#0a0a0a] transition-all duration-300 hover:bg-[#0a0a0a] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2;
@@ -399,7 +402,7 @@
 
 /* 2px gradient border via mask (wraps a card; child needs rounded too) */
 .gradient-border {
-  background: linear-gradient(135deg, #7c3aed, #ec4899, #f97316);
+  background: linear-gradient(135deg, #ec4899, #f97316, #facc15);
   padding: 2px;
   border-radius: 1.75rem;
 }
@@ -424,7 +427,7 @@
   box-shadow: 0 24px 48px -16px rgba(10, 10, 10, 0.18);
 }
 
-/* Marker highlighter effect */
+/* Marker highlighter effect — sunshine-yellow pen stroke (brand accent) */
 .highlighter {
   background-image: linear-gradient(120deg, rgba(253, 230, 138, 0.75) 0%, rgba(253, 224, 71, 0.65) 100%);
   background-repeat: no-repeat;
@@ -501,6 +504,30 @@
   animation-delay: var(--rise-delay, 0ms);
 }
 
+/* Hero rotating headline slot — kept unlayered AFTER .word-rise so its
+   inline-grid display wins the cascade (both are unlayered here; later
+   rule with equal specificity wins, so order matters). Words stack in
+   one grid cell so the width is fixed to the widest word (zero layout
+   shift); each child fades up, holds ~2.4s, fades away on a 9.6s loop
+   with per-word inline animation-delay. */
+.hero-rotator {
+  display: inline-grid;
+  vertical-align: bottom;
+  justify-items: center;
+}
+.hero-rotator > span {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  opacity: 0;
+  animation: hero-word-cycle 9.6s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+@keyframes hero-word-cycle {
+  0% { opacity: 0; transform: translateY(0.55em); }
+  3%, 21% { opacity: 1; transform: translateY(0); }
+  24.5%, 100% { opacity: 0; transform: translateY(-0.55em); }
+}
+
 /* Mobile menu staggered fade-in (animation-delay set inline per item) */
 @keyframes menu-fade-in {
   from {
@@ -528,6 +555,16 @@
   .tilt-l,
   .tilt-r {
     transform: none;
+  }
+  .btn-shine::after {
+    display: none;
+  }
+  /* Rotating headline: freeze on the first word */
+  .hero-rotator > span {
+    animation: none !important;
+  }
+  .hero-rotator > span:first-child {
+    opacity: 1;
   }
 }
 

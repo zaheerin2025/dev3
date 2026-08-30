@@ -52,7 +52,7 @@ export function Marquee({
     <div
       className={cn(
         'marquee-hover-pause relative overflow-hidden py-4 md:py-5',
-        variant === 'dark' ? 'bg-[#0a0a0a] text-white' : 'bg-gradient-to-r from-purple-600 to-pink-500 text-white',
+        variant === 'dark' ? 'bg-[#0a0a0a] text-white' : 'bg-gradient-to-r from-pink-600 to-pink-500 text-white',
         className
       )}
     >

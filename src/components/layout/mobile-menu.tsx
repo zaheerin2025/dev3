@@ -60,11 +60,11 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             href="/"
             ariaLabel="Developers3 — home"
             onClick={onClose}
-            className="flex items-center gap-2.5 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+            className="flex items-center gap-2.5 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
           >
             <span
               aria-hidden="true"
-              className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 shadow-[0_4px_14px_rgba(124,58,237,0.35)]"
+              className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-pink-600 to-orange-400 shadow-[0_4px_14px_rgba(236,72,153,0.35)]"
             >
               <Sparkle className="size-5 text-white" />
             </span>
@@ -77,7 +77,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             type="button"
             onClick={onClose}
             aria-label="Close menu"
-            className="flex size-11 items-center justify-center rounded-full border-2 border-[#0a0a0a] text-[#0a0a0a] transition-colors duration-200 hover:bg-[#0a0a0a] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+            className="flex size-11 items-center justify-center rounded-full border-2 border-[#0a0a0a] text-[#0a0a0a] transition-colors duration-200 hover:bg-[#0a0a0a] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
           >
             <X className="size-5" aria-hidden="true" />
           </button>
@@ -90,13 +90,13 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className="menu-fade group inline-flex items-baseline gap-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+              className="menu-fade group inline-flex items-baseline gap-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
               style={{ animationDelay: `${index * 70}ms` }}
             >
               <span className="text-gradient text-sm font-bold" aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <span className="font-display text-4xl font-bold text-[#0a0a0a] transition-colors duration-200 group-hover:text-purple-600">
+              <span className="font-display text-4xl font-bold text-[#0a0a0a] transition-colors duration-200 group-hover:text-pink-600">
                 {item.label}
               </span>
             </Link>
@@ -117,7 +117,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 href={site.phoneHref}
                 className="inline-flex items-center gap-2.5 transition-colors hover:text-[#0a0a0a]"
               >
-                <Phone className="size-4 shrink-0 text-purple-600" aria-hidden="true" />
+                <Phone className="size-4 shrink-0 text-pink-600" aria-hidden="true" />
                 {site.phoneDisplay}
               </a>
             ) : null}
@@ -125,7 +125,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
               href={`mailto:${site.email}`}
               className="inline-flex items-center gap-2.5 transition-colors hover:text-[#0a0a0a]"
             >
-              <Mail className="size-4 shrink-0 text-purple-600" aria-hidden="true" />
+              <Mail className="size-4 shrink-0 text-pink-600" aria-hidden="true" />
               {site.email}
             </a>
           </div>

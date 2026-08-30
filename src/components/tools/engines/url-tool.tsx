@@ -68,7 +68,7 @@ export function UrlTool<T>({ config }: { config: UrlToolConfig<T> }) {
             autoCorrect="off"
             spellCheck={false}
             aria-label="Website URL"
-            className="h-13 rounded-full border-2 border-gray-200 bg-white pl-11 pr-4 text-[15px] text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-purple-500 focus-visible:ring-purple-500"
+            className="h-13 rounded-full border-2 border-gray-200 bg-white pl-11 pr-4 text-[15px] text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-pink-500 focus-visible:ring-pink-500"
           />
         </div>
         <button type="submit" disabled={state === 'loading'} className="btn-primary-pill sm:!px-8">

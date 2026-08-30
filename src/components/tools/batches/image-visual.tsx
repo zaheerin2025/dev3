@@ -219,7 +219,7 @@ function cmykToRgb(c: number, m: number, y: number, k: number): RGB {
   };
 }
 
-/** All numbers in a string, in order — tolerant parser for "rgb(...)", "124 58 237", etc. */
+/** All numbers in a string, in order — tolerant parser for "rgb(...)", "236 72 153", etc. */
 function parseNumbers(s: string): number[] {
   return (s.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number);
 }
@@ -293,7 +293,7 @@ function PillButton({ children, onClick, variant = 'primary', disabled, classNam
         variant === 'primary' && 'btn-primary-pill-sm',
         variant === 'secondary' && 'btn-secondary-pill-sm',
         variant === 'ghost' &&
-          'inline-flex items-center justify-center gap-2 rounded-full border-2 border-dashed border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-600 transition-colors hover:border-purple-400 hover:text-purple-700',
+          'inline-flex items-center justify-center gap-2 rounded-full border-2 border-dashed border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-600 transition-colors hover:border-pink-400 hover:text-pink-700',
         disabled && 'pointer-events-none opacity-40',
         className,
       )}
@@ -377,7 +377,7 @@ function FileDrop({ onFiles, accept, multiple, title, hint, icon, compact, class
       className={cn(
         'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed text-center transition-colors',
         compact ? 'p-4' : 'p-8 sm:p-10',
-        over ? 'border-purple-500 bg-purple-50' : 'border-gray-300 bg-white hover:border-purple-400 hover:bg-purple-50/40',
+        over ? 'border-pink-500 bg-pink-50' : 'border-gray-300 bg-white hover:border-pink-400 hover:bg-pink-50/40',
         className,
       )}
     >
@@ -389,7 +389,7 @@ function FileDrop({ onFiles, accept, multiple, title, hint, icon, compact, class
         className="hidden"
         onChange={(e) => { pick(e.target.files); e.target.value = ''; }}
       />
-      <span className={cn('text-purple-600', compact ? '[&_svg]:size-5' : '[&_svg]:size-8')}>{icon ?? <Upload aria-hidden />}</span>
+      <span className={cn('text-pink-600', compact ? '[&_svg]:size-5' : '[&_svg]:size-8')}>{icon ?? <Upload aria-hidden />}</span>
       <span className={cn('font-bold text-[#0a0a0a]', compact ? 'text-xs' : 'text-sm sm:text-base')}>{title}</span>
       {hint ? <span className="text-xs text-muted-foreground">{hint}</span> : null}
     </div>
@@ -527,7 +527,7 @@ const WebpConverterTool = () => {
                 help="80–85 is the sweet spot for photos; go lower for thumbnails, higher for graphics with text."
               />
             ) : (
-              <p className="rounded-xl bg-purple-50 px-4 py-3 text-xs text-purple-800">PNG is lossless — the quality slider does not apply.</p>
+              <p className="rounded-xl bg-pink-50 px-4 py-3 text-xs text-pink-800">PNG is lossless — the quality slider does not apply.</p>
             )}
             <div className="flex flex-wrap items-center gap-3">
               <PillButton onClick={convert} disabled={busy}>
@@ -582,7 +582,7 @@ const SPLASH_DEVICES: SplashDevice[] = [
 const SplashPreviewTool = () => {
   const [deviceId, setDeviceId] = React.useState('iphone15');
   const [bgMode, setBgMode] = React.useState<'solid' | 'gradient'>('gradient');
-  const [bg1, setBg1] = React.useState('#7c3aed');
+  const [bg1, setBg1] = React.useState('#ec4899');
   const [bg2, setBg2] = React.useState('#ec4899');
   const [bgAngle, setBgAngle] = React.useState(160);
   const [icon, setIcon] = React.useState<LoadedImage | null>(null);
@@ -606,14 +606,14 @@ const SplashPreviewTool = () => {
     if (!ctx) return;
 
     if (bgMode === 'solid') {
-      ctx.fillStyle = hexToRgb(bg1) ? bg1 : '#7c3aed';
+      ctx.fillStyle = hexToRgb(bg1) ? bg1 : '#ec4899';
       ctx.fillRect(0, 0, W, H);
     } else {
       const rad = (bgAngle * Math.PI) / 180;
       const len = Math.abs(W * Math.cos(rad)) + Math.abs(H * Math.sin(rad));
       const cx = W / 2, cy = H / 2;
       const grad = ctx.createLinearGradient(cx - (Math.cos(rad) * len) / 2, cy - (Math.sin(rad) * len) / 2, cx + (Math.cos(rad) * len) / 2, cy + (Math.sin(rad) * len) / 2);
-      grad.addColorStop(0, hexToRgb(bg1) ? bg1 : '#7c3aed');
+      grad.addColorStop(0, hexToRgb(bg1) ? bg1 : '#ec4899');
       grad.addColorStop(1, hexToRgb(bg2) ? bg2 : '#ec4899');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, W, H);
@@ -857,7 +857,7 @@ const StoreResizerTool = () => {
                 <div key={preset.id} className="card-soft flex flex-col gap-2 p-3">
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-sm font-bold text-[#0a0a0a]">{preset.label}</p>
-                    <span className="rounded-full bg-purple-100 px-2 py-0.5 font-mono text-[10px] font-bold text-purple-700">{preset.w}×{preset.h}</span>
+                    <span className="rounded-full bg-pink-100 px-2 py-0.5 font-mono text-[10px] font-bold text-pink-700">{preset.w}×{preset.h}</span>
                   </div>
                   <p className="text-xs text-muted-foreground">{preset.note}</p>
                   <div className="flex items-center justify-center overflow-hidden rounded-xl border border-gray-100" style={CHECKER_STYLE}>
@@ -896,7 +896,7 @@ const MOCKUP_FRAMES = [
   { value: '#1c1c1e', label: 'Graphite' },
   { value: '#f5f5f7', label: 'Silver' },
   { value: '#e7ddcf', label: 'Sand' },
-  { value: '#7c3aed', label: 'Brand purple' },
+  { value: '#ec4899', label: 'Brand purple' },
   { value: '#ec4899', label: 'Brand pink' },
   { value: '#0f766e', label: 'Teal' },
 ];
@@ -921,7 +921,7 @@ function drawMockup(canvas: HTMLCanvasElement, img: HTMLImageElement, o: MockupO
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   } else if (o.bgMode === 'gradient') {
     const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    grad.addColorStop(0, hexToRgb(o.bg1) ? o.bg1 : '#7c3aed');
+    grad.addColorStop(0, hexToRgb(o.bg1) ? o.bg1 : '#ec4899');
     grad.addColorStop(1, hexToRgb(o.bg2) ? o.bg2 : '#ec4899');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -983,7 +983,7 @@ const MockupGeneratorTool = () => {
   const [src, setSrc] = React.useState<LoadedImage | null>(null);
   const [frame, setFrame] = React.useState('#1c1c1e');
   const [bgMode, setBgMode] = React.useState<'transparent' | 'solid' | 'gradient'>('gradient');
-  const [bg1, setBg1] = React.useState('#7c3aed');
+  const [bg1, setBg1] = React.useState('#ec4899');
   const [bg2, setBg2] = React.useState('#ec4899');
   const [shadow, setShadow] = React.useState(true);
   const [notch, setNotch] = React.useState(true);
@@ -1666,7 +1666,7 @@ const ScreenRecorderToGifTool = () => {
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="card-soft flex flex-col gap-3 p-5">
           <div className="flex items-center gap-2">
-            <Video className="size-5 text-purple-600" aria-hidden />
+            <Video className="size-5 text-pink-600" aria-hidden />
             <h3 className="font-display text-lg font-bold text-[#0a0a0a]">Record the screen</h3>
           </div>
           {supported ? (
@@ -1695,7 +1695,7 @@ const ScreenRecorderToGifTool = () => {
         </div>
         <div className="card-soft flex flex-col gap-3 p-5">
           <div className="flex items-center gap-2">
-            <Film className="size-5 text-purple-600" aria-hidden />
+            <Film className="size-5 text-pink-600" aria-hidden />
             <h3 className="font-display text-lg font-bold text-[#0a0a0a]">Or upload existing footage</h3>
           </div>
           <FileDrop
@@ -1733,7 +1733,7 @@ const ScreenRecorderToGifTool = () => {
             <div className="flex flex-col gap-2">
               <p className="text-sm font-bold text-[#0a0a0a]" role="status">{statusMsg || 'Working…'}</p>
               <div className="h-2 overflow-hidden rounded-full bg-gray-200" aria-hidden>
-                <div className="h-full rounded-full bg-gradient-to-r from-purple-600 to-pink-500 transition-all" style={{ width: `${Math.round(progress * 100)}%` }} />
+                <div className="h-full rounded-full bg-gradient-to-r from-pink-600 to-pink-500 transition-all" style={{ width: `${Math.round(progress * 100)}%` }} />
               </div>
             </div>
           ) : (
@@ -1793,10 +1793,10 @@ function wfBlockStyle(type: string): React.CSSProperties {
   switch (type) {
     case 'header': return { background: '#e5e7eb', borderRadius: 4 };
     case 'nav': return { background: '#f3f4f6', borderRadius: 4 };
-    case 'hero': return { background: 'linear-gradient(120deg, rgba(124,58,237,0.22), rgba(236,72,153,0.22))', borderRadius: 8, border: '1.5px dashed rgba(124,58,237,0.5)' };
+    case 'hero': return { background: 'linear-gradient(120deg, rgba(236,72,153,0.22), rgba(236,72,153,0.22))', borderRadius: 8, border: '1.5px dashed rgba(236,72,153,0.5)' };
     case 'image': return { background: '#eef2f7', borderRadius: 8, border: '1.5px solid #cbd5e1' };
     case 'text': return { background: 'transparent' };
-    case 'button': return { background: 'linear-gradient(90deg,#7c3aed,#ec4899)', borderRadius: 999 };
+    case 'button': return { background: 'linear-gradient(90deg,#ec4899,#ec4899)', borderRadius: 999 };
     case 'input': return { background: '#ffffff', borderRadius: 8, border: '1.5px solid #cbd5e1' };
     case 'card': return { background: '#ffffff', borderRadius: 10, border: '1.5px solid #cbd5e1' };
     case 'tabbar': return { background: '#e5e7eb', borderRadius: 10 };
@@ -1848,7 +1848,7 @@ function drawWfBlock(ctx: CanvasRenderingContext2D, b: WfBlock, W: number, H: nu
     }
     case 'hero': {
       const g = ctx.createLinearGradient(x, y, x + w, y + h);
-      g.addColorStop(0, 'rgba(124,58,237,0.25)');
+      g.addColorStop(0, 'rgba(236,72,153,0.25)');
       g.addColorStop(1, 'rgba(236,72,153,0.25)');
       ctx.fillStyle = g;
       ctx.setLineDash([8, 6]);
@@ -1871,7 +1871,7 @@ function drawWfBlock(ctx: CanvasRenderingContext2D, b: WfBlock, W: number, H: nu
     }
     case 'button': {
       const g = ctx.createLinearGradient(x, y, x + w, y);
-      g.addColorStop(0, '#7c3aed'); g.addColorStop(1, '#ec4899');
+      g.addColorStop(0, '#ec4899'); g.addColorStop(1, '#ec4899');
       ctx.fillStyle = g;
       roundRectPath(ctx, x, y, w, h, h / 2); ctx.fill();
       ctx.fillStyle = '#ffffff';
@@ -2065,7 +2065,7 @@ const WireframeSketcherTool = () => {
               key={d.type}
               type="button"
               onClick={() => addBlock(d.type)}
-              className="rounded-full border-2 border-gray-200 bg-white px-3.5 py-1.5 text-xs font-bold text-gray-700 transition-colors hover:border-purple-400 hover:text-purple-700"
+              className="rounded-full border-2 border-gray-200 bg-white px-3.5 py-1.5 text-xs font-bold text-gray-700 transition-colors hover:border-pink-400 hover:text-pink-700"
             >
               + {d.label}
             </button>
@@ -2097,7 +2097,7 @@ const WireframeSketcherTool = () => {
                 onKeyDown={(e) => { if (e.key === 'Enter') setSelected(b.id); }}
                 className={cn(
                   'absolute cursor-grab touch-none select-none active:cursor-grabbing',
-                  selected === b.id && 'ring-2 ring-purple-500 ring-offset-1',
+                  selected === b.id && 'ring-2 ring-pink-500 ring-offset-1',
                   b.type === 'text' && 'p-1',
                 )}
                 style={{ left: `${b.x * 100}%`, top: `${b.y * 100}%`, width: `${b.w * 100}%`, height: `${b.h * 100}%`, ...wfBlockStyle(b.type) }}
@@ -2152,7 +2152,7 @@ const FLOW_NODE_SIZE: Record<FlowNodeType, { w: number; h: number }> = {
 };
 
 const FLOW_TYPE_STYLES: Record<FlowNodeType, { fill: string; stroke: string; pill: string; chip: string; label: string }> = {
-  screen: { fill: '#f5f3ff', stroke: '#7c3aed', pill: 'bg-purple-100 text-purple-700', chip: 'Screen', label: 'Screen' },
+  screen: { fill: '#f5f3ff', stroke: '#ec4899', pill: 'bg-pink-100 text-pink-700', chip: 'Screen', label: 'Screen' },
   decision: { fill: '#fffbeb', stroke: '#d97706', pill: 'bg-amber-100 text-amber-700', chip: 'Decision', label: 'Decision' },
   action: { fill: '#fdf2f8', stroke: '#ec4899', pill: 'bg-pink-100 text-pink-700', chip: 'Action', label: 'Action' },
 };
@@ -2301,7 +2301,7 @@ const UserFlowMapperTool = () => {
           aria-pressed={connectMode}
           className={cn(
             'inline-flex items-center gap-1.5 rounded-full border-2 px-4 py-2 text-xs font-bold transition-colors',
-            connectMode ? 'border-purple-600 bg-purple-600 text-white' : 'border-gray-200 bg-white text-gray-700 hover:border-purple-400',
+            connectMode ? 'border-pink-600 bg-pink-600 text-white' : 'border-gray-200 bg-white text-gray-700 hover:border-pink-400',
           )}
         >
           <Link2 className="size-3.5" aria-hidden /> {connectMode ? 'Connecting — pick A, then B' : 'Connect nodes'}
@@ -2345,7 +2345,7 @@ const UserFlowMapperTool = () => {
             const sel = selectedEdge === e.id;
             return (
               <g key={e.id}>
-                <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={sel ? '#7c3aed' : '#9ca3af'} strokeWidth={sel ? 3 : 2} markerEnd="url(#flow-arrow)" />
+                <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={sel ? '#ec4899' : '#9ca3af'} strokeWidth={sel ? 3 : 2} markerEnd="url(#flow-arrow)" />
                 <line
                   x1={x1} y1={y1} x2={x2} y2={y2}
                   stroke="transparent"
@@ -2373,7 +2373,7 @@ const UserFlowMapperTool = () => {
                   <polygon
                     points={`${s.w / 2},0 ${s.w},${s.h / 2} ${s.w / 2},${s.h} 0,${s.h / 2}`}
                     fill={st.fill}
-                    stroke={isFrom ? '#7c3aed' : isSel ? '#0a0a0a' : st.stroke}
+                    stroke={isFrom ? '#ec4899' : isSel ? '#0a0a0a' : st.stroke}
                     strokeWidth={isSel || isFrom ? 3 : 1.8}
                   />
                 ) : (
@@ -2382,7 +2382,7 @@ const UserFlowMapperTool = () => {
                     height={s.h}
                     rx={n.type === 'action' ? 26 : 14}
                     fill={st.fill}
-                    stroke={isFrom ? '#7c3aed' : isSel ? '#0a0a0a' : st.stroke}
+                    stroke={isFrom ? '#ec4899' : isSel ? '#0a0a0a' : st.stroke}
                     strokeWidth={isSel || isFrom ? 3 : 1.8}
                   />
                 )}
@@ -2594,7 +2594,7 @@ const ColorConverterTool = () => {
 interface GradStop { color: string; pos: number }
 
 const GRADIENT_PRESETS: { name: string; colors: [string, string]; angle: number }[] = [
-  { name: 'Brand pop', colors: ['#7c3aed', '#ec4899'], angle: 90 },
+  { name: 'Brand pop', colors: ['#ec4899', '#ec4899'], angle: 90 },
   { name: 'Sunset', colors: ['#f97316', '#ec4899'], angle: 45 },
   { name: 'Ocean', colors: ['#0ea5e9', '#22d3ee'], angle: 135 },
   { name: 'Mint', colors: ['#10b981', '#a7f3d0'], angle: 120 },
@@ -2606,7 +2606,7 @@ const GRADIENT_PRESETS: { name: string; colors: [string, string]; angle: number 
 
 const GradientGeneratorTool = () => {
   const [stops, setStops] = React.useState<GradStop[]>([
-    { color: '#7c3aed', pos: 0 },
+    { color: '#ec4899', pos: 0 },
     { color: '#ec4899', pos: 100 },
   ]);
   const [kind, setKind] = React.useState<'linear' | 'radial'>('linear');
@@ -2652,7 +2652,7 @@ const GradientGeneratorTool = () => {
               type="button"
               onClick={() => applyPreset(p)}
               title={`${p.name} — click to load`}
-              className="group flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white py-1 pl-1 pr-3.5 text-xs font-bold text-gray-700 transition-colors hover:border-purple-400"
+              className="group flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white py-1 pl-1 pr-3.5 text-xs font-bold text-gray-700 transition-colors hover:border-pink-400"
             >
               <span className="size-6 rounded-full border border-black/10" style={{ backgroundImage: `linear-gradient(90deg, ${p.colors[0]}, ${p.colors[1]})` }} aria-hidden />
               {p.name}
@@ -2731,7 +2731,7 @@ const GradientGeneratorTool = () => {
 
 interface ShadowLayer { x: number; y: number; blur: number; spread: number; color: string; opacity: number; inset: boolean }
 
-const SHADOW_DEFAULT_1: ShadowLayer = { x: 0, y: 18, blur: 40, spread: -12, color: '#7c3aed', opacity: 35, inset: false };
+const SHADOW_DEFAULT_1: ShadowLayer = { x: 0, y: 18, blur: 40, spread: -12, color: '#ec4899', opacity: 35, inset: false };
 const SHADOW_DEFAULT_2: ShadowLayer = { x: 0, y: 2, blur: 4, spread: 0, color: '#0a0a0a', opacity: 10, inset: false };
 
 function shadowLayerCss(l: ShadowLayer): string {
@@ -2843,7 +2843,7 @@ const BorderRadiusTool = () => {
     <div className="flex flex-col gap-5">
       <div className="grid items-center justify-items-center gap-4 rounded-2xl border border-gray-200 bg-[#f4f1fa] p-8">
         <div
-          className="size-52 bg-gradient-to-br from-purple-600 to-pink-500 shadow-lg transition-all duration-200 sm:size-64"
+          className="size-52 bg-gradient-to-br from-pink-600 to-pink-500 shadow-lg transition-all duration-200 sm:size-64"
           style={{ borderRadius: radiusCss }}
           role="img"
           aria-label="Live border radius preview"
@@ -2898,7 +2898,7 @@ const BorderRadiusTool = () => {
                 key={p.name}
                 type="button"
                 onClick={() => { setBlobH([...p.h]); setBlobV([...p.v]); }}
-                className="rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition-colors hover:border-purple-400 hover:text-purple-700"
+                className="rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition-colors hover:border-pink-400 hover:text-pink-700"
               >
                 {p.name}
               </button>
@@ -2941,7 +2941,7 @@ const InstagramGridPlannerTool = () => {
   const [slots, setSlots] = React.useState<(GridTile | null)[]>(Array(9).fill(null));
   const [selected, setSelected] = React.useState<number | null>(null);
   const [aspect, setAspect] = React.useState<'1:1' | '2:3'>('1:1');
-  const [placeholderColor, setPlaceholderColor] = React.useState('#7c3aed');
+  const [placeholderColor, setPlaceholderColor] = React.useState('#ec4899');
   const [busy, setBusy] = React.useState(false);
 
   const filled = slots.filter(Boolean).length;
@@ -3025,7 +3025,7 @@ const InstagramGridPlannerTool = () => {
           ctx.fillStyle = '#f3f4f6';
           ctx.fillRect(x, y, cell, cellH);
         } else if (tile.kind === 'color') {
-          ctx.fillStyle = tile.color ?? '#7c3aed';
+          ctx.fillStyle = tile.color ?? '#ec4899';
           ctx.fillRect(x, y, cell, cellH);
         } else if (tile.img) {
           drawImageCover(ctx, tile.img, x, y, cell, cellH);
@@ -3074,7 +3074,7 @@ const InstagramGridPlannerTool = () => {
                 className={cn(
                   'flex w-full items-center justify-center overflow-hidden rounded-lg border-2 bg-white transition-all',
                   cellAspect,
-                  selected === i ? 'border-purple-600 ring-2 ring-purple-300' : 'border-transparent hover:border-purple-300',
+                  selected === i ? 'border-pink-600 ring-2 ring-pink-300' : 'border-transparent hover:border-pink-300',
                 )}
                 style={tile ? undefined : CHECKER_STYLE}
               >
@@ -3218,7 +3218,7 @@ const YouTubeThumbnailDownloaderTool = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <Grid3x3 className="size-4 text-purple-600" aria-hidden />
+            <Grid3x3 className="size-4 text-pink-600" aria-hidden />
             <Label className="text-sm font-bold text-[#0a0a0a]">Every size on the CDN</Label>
           </div>
 
@@ -3250,7 +3250,7 @@ const YouTubeThumbnailDownloaderTool = () => {
                   </div>
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-sm font-bold text-[#0a0a0a]">{v.label}</p>
-                    <span className="rounded-full bg-purple-100 px-2 py-0.5 font-mono text-[10px] font-bold text-purple-700">{v.dims}</span>
+                    <span className="rounded-full bg-pink-100 px-2 py-0.5 font-mono text-[10px] font-bold text-pink-700">{v.dims}</span>
                   </div>
                   <p className="text-xs text-muted-foreground">{v.note}</p>
                   {st === 'ok' ? (
@@ -3439,7 +3439,7 @@ const GiveawayWinnerPickerTool = () => {
         <div className="card-soft p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="flex items-center gap-2 font-display text-lg font-bold text-[#0a0a0a]">
-              <PartyPopper className="size-5 text-purple-600" aria-hidden /> Your winners
+              <PartyPopper className="size-5 text-pink-600" aria-hidden /> Your winners
             </p>
             <p className="text-xs font-semibold text-gray-500">Drawn {result.at}</p>
           </div>
@@ -3451,20 +3451,20 @@ const GiveawayWinnerPickerTool = () => {
                 aria-hidden={i >= revealed}
                 className={cn(
                   'flex items-center gap-3 rounded-2xl border-2 p-3 transition-all duration-500',
-                  i < revealed ? 'translate-y-0 border-purple-200 bg-white opacity-100' : 'translate-y-3 border-transparent opacity-0',
+                  i < revealed ? 'translate-y-0 border-pink-200 bg-white opacity-100' : 'translate-y-3 border-transparent opacity-0',
                 )}
               >
                 <span
                   className={cn(
                     'flex size-9 shrink-0 items-center justify-center rounded-full font-display text-sm font-bold text-white',
-                    i === 0 ? 'bg-gradient-to-br from-purple-600 to-pink-500' : 'bg-[#0a0a0a]',
+                    i === 0 ? 'bg-gradient-to-br from-pink-600 to-pink-500' : 'bg-[#0a0a0a]',
                   )}
                 >
                   {i + 1}
                 </span>
                 <span className="min-w-0 flex-1 truncate text-sm font-bold text-[#0a0a0a]">{w.name}</span>
                 {w.weight > 1 ? (
-                  <span className="rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-bold text-purple-700">won with {w.weight} entries</span>
+                  <span className="rounded-full bg-pink-100 px-2 py-0.5 text-[10px] font-bold text-pink-700">won with {w.weight} entries</span>
                 ) : null}
               </li>
             ))}
@@ -3825,7 +3825,7 @@ const InvoiceGeneratorTool = () => {
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Frame className="size-4 text-purple-600" aria-hidden />
+            <Frame className="size-4 text-pink-600" aria-hidden />
             <Label className="text-sm font-bold text-[#0a0a0a]">Live document preview</Label>
           </div>
           <div className="custom-scrollbar overflow-x-auto rounded-2xl border border-gray-200 bg-gray-100 p-3 sm:p-5">
@@ -3880,7 +3880,7 @@ function QuoteDoc({ data }: { data: QuoteData }) {
       className="ivquote-doc mx-auto w-full max-w-[720px] overflow-hidden rounded-2xl border border-gray-200 bg-white text-[#0a0a0a] shadow-xl"
       style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
     >
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-purple-600 to-pink-500 px-6 py-5 text-white sm:px-9">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-pink-600 to-pink-500 px-6 py-5 text-white sm:px-9">
         <div className="flex items-center gap-2.5">
           <Ticket className="size-5" aria-hidden />
           <span className="font-display text-xl font-bold tracking-[0.14em]">QUOTATION</span>
@@ -3933,8 +3933,8 @@ function QuoteDoc({ data }: { data: QuoteData }) {
 
         <div className="ml-auto mt-5 w-full max-w-60 space-y-1.5 text-xs">
           <p className="flex justify-between"><span className="text-gray-500">Subtotal</span><span className="font-bold tabular-nums">{docMoney(data.currency, t.subtotal)}</span></p>
-          <p className="flex justify-between"><span className="text-gray-500">Discount ({t.pct}%)</span><span className="font-bold tabular-nums text-purple-700">−{docMoney(data.currency, t.discount)}</span></p>
-          <p className="flex justify-between border-t-2 border-purple-600 pt-2 font-display text-base font-bold text-purple-700"><span>Total</span><span className="tabular-nums">{docMoney(data.currency, t.total)}</span></p>
+          <p className="flex justify-between"><span className="text-gray-500">Discount ({t.pct}%)</span><span className="font-bold tabular-nums text-pink-700">−{docMoney(data.currency, t.discount)}</span></p>
+          <p className="flex justify-between border-t-2 border-pink-600 pt-2 font-display text-base font-bold text-pink-700"><span>Total</span><span className="tabular-nums">{docMoney(data.currency, t.total)}</span></p>
         </div>
 
         {data.terms.trim() ? (
@@ -4108,7 +4108,7 @@ const QuoteEstimateGeneratorTool = () => {
                           aria-pressed={l.mode === m}
                           className={cn(
                             'px-3 py-1.5 text-[11px] font-bold transition-colors',
-                            l.mode === m ? 'bg-purple-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50',
+                            l.mode === m ? 'bg-pink-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50',
                           )}
                         >
                           {m === 'hours' ? 'Hours × rate' : 'Fixed price'}
@@ -4141,7 +4141,7 @@ const QuoteEstimateGeneratorTool = () => {
                         className="h-10 min-w-0 flex-1 rounded-lg border-gray-200 bg-white text-sm"
                       />
                     )}
-                    <span className="ml-auto shrink-0 text-xs font-bold text-purple-700">= {docMoney(currency || '$', total)}</span>
+                    <span className="ml-auto shrink-0 text-xs font-bold text-pink-700">= {docMoney(currency || '$', total)}</span>
                   </div>
                 </div>
               );
@@ -4167,7 +4167,7 @@ const QuoteEstimateGeneratorTool = () => {
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Frame className="size-4 text-purple-600" aria-hidden />
+            <Frame className="size-4 text-pink-600" aria-hidden />
             <Label className="text-sm font-bold text-[#0a0a0a]">Live quote preview</Label>
           </div>
           <div className="custom-scrollbar overflow-x-auto rounded-2xl border border-gray-200 bg-gray-100 p-3 sm:p-5">
@@ -4215,13 +4215,13 @@ const PushNotificationTesterTool = () => {
 
   const wall = theme === 'dark'
     ? 'bg-gradient-to-b from-[#191138] via-[#241a4d] to-[#0c0a1d]'
-    : 'bg-gradient-to-b from-sky-200 via-violet-200 to-fuchsia-200';
+    : 'bg-gradient-to-b from-yellow-200 via-pink-200 to-rose-200';
 
   const appIcon = iconUrl && !iconBroken ? (
      
     <img src={iconUrl} alt="" className="size-10 rounded-xl object-cover" onError={() => setIconBroken(true)} />
   ) : (
-    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-pink-500 text-white" aria-hidden="true">
+    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-pink-600 to-pink-500 text-white" aria-hidden="true">
       {iconUrl ? <span className="text-sm font-bold">{initial}</span> : <Box className="size-5" />}
     </span>
   );
@@ -4291,7 +4291,7 @@ const PushNotificationTesterTool = () => {
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <LayoutGrid className="size-4 text-purple-600" aria-hidden />
+            <LayoutGrid className="size-4 text-pink-600" aria-hidden />
             <Label className="text-sm font-bold text-[#0a0a0a]">Three surfaces, one message</Label>
           </div>
 
@@ -4630,7 +4630,7 @@ export const batch: BatchTool[] = [
           a: 'Each step mixes the input toward white (tints) or black (shades) by fixed factors with 500 as the untouched color — the same mental model Tailwind’s palette ladder uses.',
         },
         {
-          q: 'Can I enter colors like “rgb(124 58 237)” without commas?',
+          q: 'Can I enter colors like “rgb(236 72 153)” without commas?',
           a: 'Yes — the parser reads the numbers out of any string, so spaces, commas, css rgb()/hsl() wrappers and missing # signs all work.',
         },
       ],
@@ -4895,7 +4895,7 @@ export const batch: BatchTool[] = [
       longDescription:
         'Turn scope into a client-ready estimate: service lines priced as hours × rate or a fixed amount, an optional discount, a validity date and terms — previewed live on a document with a distinct purple header so it is never confused with an invoice. Print to PDF or copy the whole quote as text.',
       howTo: [
-        'Name the project and fill in both parties; the purple-headed document builds as you type.',
+        'Name the project and fill in both parties; the pink-headed document builds as you type.',
         'Add service lines and switch each one between hours × rate and fixed price.',
         'Apply a discount percentage, then set the valid-until date and terms.',
         'Print / Save as PDF, or copy the quote as text for the email thread.',

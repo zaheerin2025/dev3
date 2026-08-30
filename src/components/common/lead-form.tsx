@@ -107,7 +107,7 @@ function Field({
       <Label htmlFor={id} className="text-sm font-medium">
         {label}
         {required ? (
-          <span className="ml-0.5 text-purple-600" aria-hidden="true">
+          <span className="ml-0.5 text-pink-600" aria-hidden="true">
             *
           </span>
         ) : null}
@@ -148,7 +148,7 @@ function SuccessPanel({
             dark ? 'bg-white/10' : 'bg-white'
           )}
         >
-          <CheckCircle2 className="h-14 w-14 text-purple-600" />
+          <CheckCircle2 className="h-14 w-14 text-pink-600" />
         </span>
       </span>
       <h3
@@ -166,7 +166,7 @@ function SuccessPanel({
       </p>
       {leadId ? (
         <p className={cn('text-xs', dark ? 'text-slate-400' : 'text-muted-foreground')}>
-          Reference: <span className="font-mono font-semibold text-purple-700">{leadId}</span>
+          Reference: <span className="font-mono font-semibold text-pink-700">{leadId}</span>
         </p>
       ) : null}
       <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
@@ -486,7 +486,7 @@ export function LeadForm({
       By submitting, you agree to our{' '}
       <Link
         href="/privacy"
-        className="font-medium text-purple-700 underline decoration-purple-300 underline-offset-2 hover:text-purple-800"
+        className="font-medium text-pink-700 underline decoration-pink-300 underline-offset-2 hover:text-pink-800"
       >
         Privacy Policy
       </Link>
@@ -552,7 +552,7 @@ export function LeadForm({
         )}
       >
         <span
-          className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500"
+          className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pink-500 to-yellow-400"
           aria-hidden="true"
         />
         <div className="flex items-center gap-3">
@@ -683,7 +683,7 @@ const RAIL_CONTACT_ROWS = [
 function LeadRail() {
   return (
     <aside className="section-dark-deep bg-dots-dark relative hidden overflow-hidden lg:flex lg:flex-col">
-      <span className="glow-orb -right-20 top-10 h-72 w-72 bg-purple-500/25" aria-hidden="true" />
+      <span className="glow-orb -right-20 top-10 h-72 w-72 bg-pink-500/25" aria-hidden="true" />
       <div className="relative z-10 flex h-full flex-col gap-7 p-8">
         <p className="flex w-fit items-center gap-2 text-xs font-medium text-pink-200">
           <span
