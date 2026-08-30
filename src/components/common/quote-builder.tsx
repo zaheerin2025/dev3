@@ -499,7 +499,11 @@ export function QuoteBuilder({
         title="What do you need?"
         hint="Pick one — we scope the rest together on a free call."
       />
-      <div role="radiogroup" aria-label="Service needed" className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        role="radiogroup"
+        aria-label="Service needed"
+        className={cn('grid gap-2.5 sm:grid-cols-2', variant === 'inline' && 'lg:grid-cols-3')}
+      >
         {services.map((service) => (
           <ServiceCard
             key={service.slug}

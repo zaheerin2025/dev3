@@ -400,9 +400,9 @@ export function PricingView() {
         </div>
       </Section>
 
-      {/* Quote form */}
+      {/* Quote form — text column clearly narrower than the form (lg-split-quote) */}
       <Section tinted>
-        <div className="grid items-start gap-10 lg:grid-cols-2">
+        <div className="grid items-start gap-10 lg:gap-14 lg-split-quote">
           <Reveal>
             <h2 className="text-4xl font-bold text-balance sm:text-5xl">
               Get Your <span className="text-gradient">Custom Quote</span>

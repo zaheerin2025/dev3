@@ -560,8 +560,10 @@
    that pattern; semantic classes are immune)
    ============================================================ */
 @media (min-width: 1024px) {
+  /* Quote sections: left text column clearly NARROWER than the form
+     (37.5% / 62.5%) so the wizard gets the room it needs */
   .lg-split-quote {
-    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
   }
   .lg-split-1fr-320 {
     grid-template-columns: minmax(0, 1fr) 320px;

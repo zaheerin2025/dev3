@@ -352,9 +352,9 @@ export function ServiceDetailView({ slug }: { slug: string }) {
         </Section>
       ) : null}
 
-      {/* 11 — Lead form */}
+      {/* 11 — Lead form — text column clearly narrower than the form (lg-split-quote) */}
       <Section tinted>
-        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="grid items-start gap-10 lg:gap-16 lg-split-quote">
           <Reveal>
             <h2 className="text-4xl font-bold text-balance sm:text-5xl">
               Get Your Free <span className="text-gradient">{service.shortName}</span> Quote
