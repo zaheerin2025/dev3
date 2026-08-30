@@ -3,11 +3,11 @@ import { cn } from '@/lib/utils';
 
 interface MarqueeProps {
   items: string[];
-  /** dark = black band, gradient = emerald band */
+  /** dark = dark band, gradient = dark band (neutralized) */
   variant?: 'dark' | 'gradient';
   reverse?: boolean;
   speed?: 'normal' | 'slow';
-  /** indexes of items rendered with gradient text (dark variant) */
+  /** indexes of items rendered brighter (dark variant) */
   accentIndexes?: number[];
   className?: string;
 }
@@ -15,7 +15,7 @@ interface MarqueeProps {
 /**
  * Infinite scrolling marquee strip used as a section separator.
  * Content is duplicated exactly twice inside a w-max track that
- * translates -50%, producing a seamless loop.
+ * translates -50%, producing a seamless loop. Neutral colors.
  */
 export function Marquee({
   items,
@@ -32,7 +32,7 @@ export function Marquee({
           <span
             className={cn(
               'px-5 font-display text-lg font-bold uppercase tracking-[0.06em] md:px-7 md:text-2xl',
-              variant === 'dark' && accentIndexes.includes(i) && 'text-gradient-soft'
+              variant === 'dark' && accentIndexes.includes(i) && 'text-white',
             )}
           >
             {item}
@@ -40,7 +40,7 @@ export function Marquee({
           <Sparkle
             className={cn(
               'size-4 shrink-0 md:size-5',
-              variant === 'dark' ? 'fill-white/25 text-white/25' : 'fill-white/60 text-white/60'
+              variant === 'dark' ? 'fill-white/25 text-white/25' : 'fill-white/60 text-white/60',
             )}
           />
         </span>
@@ -52,15 +52,15 @@ export function Marquee({
     <div
       className={cn(
         'marquee-hover-pause relative overflow-hidden py-4 md:py-5',
-        variant === 'dark' ? 'bg-[#0a0a0a] text-white' : 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white',
-        className
+        'bg-[#131316] text-white',
+        className,
       )}
     >
       <div
         className={cn(
           'flex w-max',
           speed === 'normal' ? 'animate-marquee' : 'animate-marquee-slow',
-          reverse && 'marquee-reverse'
+          reverse && 'marquee-reverse',
         )}
       >
         {row(false)}

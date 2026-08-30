@@ -21,21 +21,21 @@ export function ProcessSection() {
           {/* Dashed connector line behind the step numbers (desktop only) */}
           <span
             aria-hidden="true"
-            className="absolute top-10 right-[12%] left-[12%] hidden border-t-2 border-dashed border-emerald-300 lg:block"
+            className="absolute top-10 right-[12%] left-[12%] hidden border-t-2 border-dashed border-gray-300 lg:block"
           />
 
           {/* Floating sparkles between steps (desktop only) */}
           <Sparkle
             aria-hidden="true"
-            className="animate-float absolute top-2 left-[31%] hidden size-5 fill-yellow-300 text-yellow-300 lg:block"
+            className="animate-float absolute top-2 left-[31%] hidden size-5 fill-gray-300 text-gray-300 lg:block"
           />
           <Sparkle
             aria-hidden="true"
-            className="animate-float-slow absolute top-14 left-[56%] hidden size-4 fill-emerald-400 text-emerald-400 lg:block"
+            className="animate-float-slow absolute top-14 left-[56%] hidden size-4 fill-gray-400 text-gray-400 lg:block"
           />
           <Sparkle
             aria-hidden="true"
-            className="animate-float absolute top-4 left-[80%] hidden size-4 fill-amber-300 text-amber-300 [animation-delay:-2s] lg:block"
+            className="animate-float absolute top-4 left-[80%] hidden size-4 fill-gray-300 text-gray-300 [animation-delay:-2s] lg:block"
           />
 
           <div className="relative grid gap-10 lg:grid-cols-4">

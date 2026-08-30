@@ -17,7 +17,7 @@ function Stars({ rating }: { rating: number }) {
       aria-label={`Rated ${rating} out of 5 stars`}
     >
       {Array.from({ length: rating }).map((_, i) => (
-        <Star key={i} className="size-4 fill-amber-400 text-amber-400" aria-hidden="true" />
+        <Star key={i} className="size-4 fill-gray-400 text-gray-400" aria-hidden="true" />
       ))}
     </div>
   );
@@ -37,7 +37,7 @@ function TestimonialFooter({ testimonial }: { testimonial: Testimonial }) {
       ) : (
         <span
           aria-hidden="true"
-          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-amber-400 text-sm font-bold text-white"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-500 to-gray-400 text-sm font-bold text-white"
         >
           {testimonial.initials}
         </span>

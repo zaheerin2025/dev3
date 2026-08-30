@@ -38,15 +38,15 @@ function ServicesHubView() {
       <Section grid id="services-hero" className="lg:py-20">
         {/* Ambient glow orbs (decorative) */}
         <span
-          className="glow-orb left-[-10rem] top-[-8rem] h-[28rem] w-[28rem] bg-emerald-300/25"
+          className="glow-orb left-[-10rem] top-[-8rem] h-[28rem] w-[28rem] bg-gray-300/25"
           aria-hidden="true"
         />
         <span
-          className="glow-orb right-[-12rem] top-1/3 h-96 w-96 bg-emerald-300/20"
+          className="glow-orb right-[-12rem] top-1/3 h-96 w-96 bg-gray-300/20"
           aria-hidden="true"
         />
         <span
-          className="glow-orb bottom-[-12rem] left-1/4 h-80 w-80 bg-emerald-200/30"
+          className="glow-orb bottom-[-12rem] left-1/4 h-80 w-80 bg-gray-200/30"
           aria-hidden="true"
         />
         <div className="relative flex flex-col items-start">
@@ -56,7 +56,7 @@ function ServicesHubView() {
           />
           <Reveal className="mt-8 max-w-3xl">
             <div className="flex flex-col items-start gap-6">
-              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-600">
+              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-800">
                 Full-service digital agency
               </p>
               <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
@@ -152,7 +152,7 @@ function ServicesHubView() {
                   <step.icon className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <span className="flex flex-col">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-700">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-gray-800">
                     Step {index + 1}
                   </span>
                   <span className="text-sm font-semibold text-foreground">{step.label}</span>

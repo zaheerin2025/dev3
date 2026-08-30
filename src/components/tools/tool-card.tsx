@@ -22,16 +22,16 @@ export const ToolCard = React.memo(function ToolCard({ meta }: { meta: ToolMeta 
           <meta.icon className="size-5" />
         </span>
         {meta.badge ? (
-          <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
+          <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-gray-800">
             {meta.badge}
           </span>
         ) : null}
       </div>
-      <h3 className="mt-4 font-display text-[15px] font-bold leading-snug text-[#0a0a0a] transition-colors group-hover:text-emerald-700">
+      <h3 className="mt-4 font-display text-[15px] font-bold leading-snug text-[#0a0a0a] transition-colors group-hover:text-gray-800">
         {meta.name}
       </h3>
       <p className="mt-1.5 line-clamp-2 flex-1 text-[13px] leading-relaxed text-[#4b5563]">{meta.blurb}</p>
-      <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-emerald-700">
+      <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-gray-800">
         Use tool
         <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
       </span>

@@ -80,7 +80,7 @@ export function ToolsHubView() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search 100 tools — try “meta”, “invoice”, “QR”…"
               aria-label="Search tools"
-              className="h-14 w-full rounded-full border-2 border-gray-200 bg-white pl-13 pr-12 text-[15px] font-medium text-[#0a0a0a] shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-emerald-500"
+              className="h-14 w-full rounded-full border-2 border-gray-200 bg-white pl-13 pr-12 text-[15px] font-medium text-[#0a0a0a] shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-gray-500"
             />
             {query ? (
               <button
@@ -120,7 +120,7 @@ export function ToolsHubView() {
 
           {filtered.length === 0 ? (
             <div className="card-soft mx-auto max-w-md p-10 text-center">
-              <Sparkle className="mx-auto size-8 fill-yellow-300 text-yellow-300" aria-hidden="true" />
+              <Sparkle className="mx-auto size-8 fill-gray-300 text-gray-300" aria-hidden="true" />
               <p className="mt-3 font-display text-lg font-bold text-[#0a0a0a]">No tools match “{query}”</p>
               <p className="mt-1 text-sm text-muted-foreground">Try a shorter keyword, or clear the filters.</p>
               <button
@@ -183,7 +183,7 @@ export function ToolsHubView() {
                     {c.label}
                   </span>
                   <p className="mt-3 flex-1 text-sm leading-relaxed text-[#4b5563]">{c.description}</p>
-                  <span className="mt-3 text-xs font-bold text-emerald-700">
+                  <span className="mt-3 text-xs font-bold text-gray-800">
                     {toolDefinitions.filter((d) => d.meta.category === c.id).length} tools →
                   </span>
                 </button>
@@ -193,7 +193,7 @@ export function ToolsHubView() {
 
           {/* Bottom CTA */}
           <Reveal>
-            <div className="mt-12 overflow-hidden rounded-[24px] bg-gradient-to-r from-emerald-600 to-emerald-500 p-8 text-center text-white sm:p-12">
+            <div className="mt-12 overflow-hidden rounded-[24px] bg-gradient-to-r from-gray-800 to-gray-500 p-8 text-center text-white sm:p-12">
               <h2 className="font-display text-2xl font-bold sm:text-4xl">Need this built for you?</h2>
               <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/85 sm:text-base">
                 These tools are free forever — but if you want a custom web platform, app or
@@ -219,7 +219,7 @@ function CategoryPill({ active, onClick, label }: { active: boolean; onClick: ()
       className={`rounded-full px-5 py-2.5 text-sm font-bold transition-all ${
         active
           ? 'bg-[#0a0a0a] text-white shadow-md'
-          : 'border-2 border-gray-200 bg-white text-gray-600 hover:border-[#0a0a0a] hover:text-[#0a0a0a]'
+          : 'border-2 border-gray-200 bg-white text-gray-600 hover:border-zinc-200 hover:text-[#0a0a0a]'
       }`}
     >
       {label}

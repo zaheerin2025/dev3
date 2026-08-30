@@ -99,7 +99,7 @@ function TierContent({ tier }: { tier: PricingTier }) {
       <ul className="flex flex-col gap-2.5">
         {tier.features.map((feature) => (
           <li key={feature} className="flex items-start gap-2.5 text-sm">
-            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/15">
+            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-800 ring-1 ring-inset ring-gray-800/15">
               <Check className="h-3 w-3" aria-hidden="true" />
             </span>
             <span className="leading-relaxed">{feature}</span>
@@ -126,7 +126,7 @@ function TierContent({ tier }: { tier: PricingTier }) {
 function ComparisonCell({ value }: { value: string }) {
   if (value === 'Included') {
     return (
-      <span className="inline-flex items-center gap-1.5 font-medium text-emerald-700">
+      <span className="inline-flex items-center gap-1.5 font-medium text-gray-800">
         <Check className="h-4 w-4" aria-hidden="true" />
         {value}
       </span>
@@ -176,16 +176,16 @@ export function PricingView() {
       <Section grid className="lg:py-20">
         {/* Ambient glow orbs (decorative) */}
         <span
-          className="glow-orb left-[-10rem] top-[-9rem] h-[26rem] w-[26rem] bg-emerald-300/25"
+          className="glow-orb left-[-10rem] top-[-9rem] h-[26rem] w-[26rem] bg-gray-300/25"
           aria-hidden="true"
         />
         <span
-          className="glow-orb right-[-11rem] top-1/3 h-96 w-96 bg-emerald-300/20"
+          className="glow-orb right-[-11rem] top-1/3 h-96 w-96 bg-gray-300/20"
           aria-hidden="true"
         />
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'Pricing' }]} />
-          <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-600">
+          <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-800">
             Simple, fixed pricing
           </p>
           <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
@@ -210,11 +210,11 @@ export function PricingView() {
             <Reveal key={tier.name} delay={index * 80} className="h-full">
               {tier.highlighted ? (
                 <div className="relative h-full lg:scale-[1.04]">
-                  <div className="gradient-frame h-full shadow-[0_28px_56px_-28px_rgb(5_150_105/0.5)]">
-                    <span className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-emerald-500 to-amber-400 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg">
+                  <div className="gradient-frame h-full shadow-[0_28px_56px_-28px_rgb(0_0_0/0.5)]">
+                    <span className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-gray-500 to-gray-400 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg">
                       Most Popular
                     </span>
-                    <div className="h-full rounded-[1.45rem] bg-gradient-to-b from-emerald-50/80 to-white p-8">
+                    <div className="h-full rounded-[1.45rem] bg-gradient-to-b from-gray-100/80 to-white p-8">
                       <TierContent tier={tier} />
                     </div>
                   </div>
@@ -241,7 +241,7 @@ export function PricingView() {
                   className="flex items-center gap-3.5 sm:flex-col sm:gap-3 sm:text-center"
                 >
                   <span
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-amber-400 font-display text-base font-bold text-white shadow-[0_8px_20px_-8px_rgb(5_150_105/0.6)]"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-500 to-gray-400 font-display text-base font-bold text-white shadow-[0_8px_20px_-8px_rgb(0_0_0/0.6)]"
                     aria-hidden="true"
                   >
                     {index + 1}
@@ -261,48 +261,48 @@ export function PricingView() {
           <div className="card-surface overflow-hidden rounded-[1.5rem]">
             <div className="custom-scrollbar overflow-x-auto">
               <table className="w-full min-w-[640px] text-left text-sm">
-                <thead className="bg-emerald-50/70">
+                <thead className="bg-gray-100/70">
                   <tr>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-emerald-900"
+                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-900"
                     >
                       Feature
                     </th>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-emerald-900"
+                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-900"
                     >
                       Starter
                     </th>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-emerald-900"
+                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-900"
                     >
                       Business
                     </th>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-emerald-900"
+                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-900"
                     >
                       E-commerce / Custom
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-emerald-900/[0.06]">
+                <tbody className="divide-y divide-gray-900/[0.06]">
                   {comparisonTable.map((row, rowIndex) => (
                     <tr
                       key={row.feature}
                       className={cn(
-                        'transition-colors hover:bg-emerald-50/60',
-                        rowIndex % 2 === 1 && 'bg-emerald-50/40'
+                        'transition-colors hover:bg-gray-100/60',
+                        rowIndex % 2 === 1 && 'bg-gray-100/40'
                       )}
                     >
                       <th
                         scope="row"
                         className={cn(
                           'sticky left-0 z-10 px-6 py-4 text-left font-medium text-foreground',
-                          rowIndex % 2 === 1 ? 'bg-emerald-50' : 'bg-white'
+                          rowIndex % 2 === 1 ? 'bg-gray-100' : 'bg-white'
                         )}
                       >
                         {row.feature}
@@ -369,14 +369,14 @@ export function PricingView() {
                 <h3 className="font-semibold">{block.name}</h3>
                 <p className="text-sm text-muted-foreground">{block.blurb}</p>
                 <p>
-                  <span className="font-display text-lg font-bold text-emerald-700">
+                  <span className="font-display text-lg font-bold text-gray-800">
                     From {block.startingAt}
                   </span>{' '}
                   <span className="text-xs text-muted-foreground">{block.unit}</span>
                 </p>
                 <Link
                   href={`/${block.serviceSlug}`}
-                  className="mt-auto inline-flex min-h-11 items-center text-sm font-semibold text-emerald-700 transition-colors hover:text-emerald-800"
+                  className="mt-auto inline-flex min-h-11 items-center text-sm font-semibold text-gray-800 transition-colors hover:text-gray-900"
                 >
                   Learn more →
                 </Link>

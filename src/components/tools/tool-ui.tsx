@@ -59,7 +59,7 @@ export function CopyButton({ value, className, label = 'Copy' }: { value: string
       onClick={() => copy(value)}
       disabled={!value}
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border-2 border-[#0a0a0a] bg-white px-4 py-2 text-xs font-bold text-[#0a0a0a] transition-all hover:bg-[#0a0a0a] hover:text-white disabled:opacity-40',
+        'inline-flex items-center gap-1.5 rounded-full border-2 border-zinc-200 bg-white px-4 py-2 text-xs font-bold text-[#0a0a0a] transition-all hover:bg-[#0a0a0a] hover:text-white disabled:opacity-40',
         className
       )}
     >
@@ -111,7 +111,7 @@ export function TextInput({ label, value, onChange, placeholder, help, className
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-11 rounded-xl border-gray-200 bg-white text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500"
+        className="h-11 rounded-xl border-gray-200 bg-white text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
       />
     </FieldShell>
   );
@@ -133,7 +133,7 @@ export function NumberInput({ label, value, onChange, placeholder, min, max, ste
           step={step ?? 'any'}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="h-11 rounded-xl border-gray-200 bg-white pr-14 text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500"
+          className="h-11 rounded-xl border-gray-200 bg-white pr-14 text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
         />
         {suffix ? (
           <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">{suffix}</span>
@@ -150,7 +150,7 @@ export function SelectInput({ label, value, onChange, options, help, className }
   return (
     <FieldShell label={label} help={help} className={className}>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="h-11 w-full rounded-xl border-gray-200 bg-white text-[#0a0a0a] focus-visible:ring-emerald-500">
+        <SelectTrigger className="h-11 w-full rounded-xl border-gray-200 bg-white text-[#0a0a0a] focus-visible:ring-gray-500">
           <SelectValue placeholder="Select…" />
         </SelectTrigger>
         <SelectContent>
@@ -187,7 +187,7 @@ export function TextAreaInput({ label, value, onChange, placeholder, rows = 6, h
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={rows}
-        className="resize-y rounded-xl border-gray-200 bg-white font-mono text-[13px] leading-relaxed text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500"
+        className="resize-y rounded-xl border-gray-200 bg-white font-mono text-[13px] leading-relaxed text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
       />
     </FieldShell>
   );
@@ -213,7 +213,7 @@ export function StatCard({ label, value, hint, tone = 'default' }: {
   label: string; value: React.ReactNode; hint?: string; tone?: 'default' | 'good' | 'warn' | 'bad';
 }) {
   const toneClass =
-    tone === 'good' ? 'text-emerald-600' : tone === 'warn' ? 'text-amber-600' : tone === 'bad' ? 'text-teal-600' : 'text-gradient';
+    tone === 'good' ? 'text-gray-800' : tone === 'warn' ? 'text-gray-800' : tone === 'bad' ? 'text-gray-800' : 'text-gradient';
   return (
     <div className="card-soft p-4 text-center sm:p-5">
       <p className="font-display text-2xl font-bold sm:text-3xl"><span className={toneClass}>{value}</span></p>
@@ -226,10 +226,10 @@ export function StatCard({ label, value, hint, tone = 'default' }: {
 export function Verdict({ tone, title, message }: { tone: 'good' | 'warn' | 'bad'; title: string; message: string }) {
   const styles =
     tone === 'good'
-      ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+      ? 'border-gray-200 bg-gray-100 text-gray-900'
       : tone === 'warn'
-        ? 'border-amber-200 bg-amber-50 text-amber-800'
-        : 'border-teal-200 bg-teal-50 text-teal-800';
+        ? 'border-gray-200 bg-gray-100 text-gray-900'
+        : 'border-gray-200 bg-gray-100 text-gray-900';
   return (
     <div className={cn('rounded-2xl border-2 p-4 sm:p-5', styles)} role="status">
       <p className="font-display text-lg font-bold">{title}</p>
@@ -240,7 +240,7 @@ export function Verdict({ tone, title, message }: { tone: 'good' | 'warn' | 'bad
 
 export function ToolNote({ children }: { children: React.ReactNode }) {
   return (
-    <p className="rounded-xl bg-emerald-50 px-4 py-3 text-xs leading-relaxed text-emerald-800">
+    <p className="rounded-xl bg-gray-100 px-4 py-3 text-xs leading-relaxed text-gray-900">
       {children}
     </p>
   );

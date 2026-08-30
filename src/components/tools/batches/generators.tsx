@@ -2394,7 +2394,7 @@ const PR_CSS = [
 
 const PERSONA_CSS = [
   '.persona-head { display: flex; gap: 18px; align-items: center; border-bottom: 2px solid #1c1917; padding-bottom: 18px; margin-bottom: 20px; }',
-  '.avatar { width: 64px; height: 64px; border-radius: 50%; background: #059669; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; flex: 0 0 auto; }',
+  '.avatar { width: 64px; height: 64px; border-radius: 50%; background: #1f2937; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; flex: 0 0 auto; }',
   '.chip { display: inline-block; background: #f5f5f4; border: 1px solid #e7e5e4; border-radius: 999px; padding: 2px 10px; font-size: 12px; color: #57534e; margin: 2px 4px 2px 0; font-family: Arial, Helvetica, sans-serif; }',
   '.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }',
   '@media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }',
@@ -2474,7 +2474,7 @@ const PALETTES: Record<string, Palette[]> = {
       chips: [
         { name: 'Tangerine', hex: '#EA580C', role: 'Primary' },
         { name: 'Amber', hex: '#F59E0B', role: 'Secondary' },
-        { name: 'Cream', hex: '#fffbeb', role: 'Background' },
+        { name: 'Cream', hex: '#FFF7ED', role: 'Background' },
         { name: 'Espresso', hex: '#292524', role: 'Accent' },
       ],
     },
@@ -2484,7 +2484,7 @@ const PALETTES: Record<string, Palette[]> = {
       chips: [
         { name: 'Hot Coral', hex: '#FF4D5A', role: 'Primary' },
         { name: 'Voltage Violet', hex: '#7C3AED', role: 'Secondary' },
-        { name: 'Pale Rose', hex: '#f0fdfa', role: 'Background' },
+        { name: 'Pale Rose', hex: '#FFF1F2', role: 'Background' },
         { name: 'Ink', hex: '#18181B', role: 'Accent' },
       ],
     },
@@ -2610,9 +2610,9 @@ const PALETTES: Record<string, Palette[]> = {
       name: 'Playful Pop',
       note: 'Bubblegum and sky blue keep things light and likeable — friendly on first contact.',
       chips: [
-        { name: 'Bubblegum', hex: '#059669', role: 'Primary' },
+        { name: 'Bubblegum', hex: '#EC4899', role: 'Primary' },
         { name: 'Sky Blue', hex: '#38BDF8', role: 'Secondary' },
-        { name: 'Cotton', hex: '#ecfdf5', role: 'Background' },
+        { name: 'Cotton', hex: '#FDF2F8', role: 'Background' },
         { name: 'Navy', hex: '#1E293B', role: 'Accent' },
       ],
     },

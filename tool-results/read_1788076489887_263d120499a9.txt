@@ -1,0 +1,913 @@
+     1→'use client';
+     2→
+     3→import * as React from 'react';
+     4→import {
+     5→  BadgeCheck,
+     6→  CheckCircle2,
+     7→  Clock3,
+     8→  Layers,
+     9→  Loader2,
+    10→  Mail,
+    11→  MessageCircle,
+    12→  Package,
+    13→  Plus,
+    14→  Send,
+    15→  Sparkles,
+    16→} from 'lucide-react';
+    17→import { Button } from '@/components/ui/button';
+    18→import { Input } from '@/components/ui/input';
+    19→import { Label } from '@/components/ui/label';
+    20→import { Textarea } from '@/components/ui/textarea';
+    21→import { Link } from '@/components/common/link';
+    22→import {
+    23→  Select,
+    24→  SelectContent,
+    25→  SelectItem,
+    26→  SelectTrigger,
+    27→  SelectValue,
+    28→} from '@/components/ui/select';
+    29→import { ServiceIconGlyph } from '@/components/common/icon-map';
+    30→import { useToast } from '@/hooks/use-toast';
+    31→import { cn } from '@/lib/utils';
+    32→import { trackEvent } from '@/lib/analytics';
+    33→import { services } from '@/data';
+    34→import { whatsappLink } from '@/lib/site';
+    35→import {
+    36→  computeEstimate,
+    37→  describeSelection,
+    38→  estimateRangeLabel,
+    39→  GENERIC_BUDGETS,
+    40→  GENERIC_TIMELINES,
+    41→  getQuoteConfig,
+    42→  getPaceOptions,
+    43→  NOT_SURE_SLUG,
+    44→  serializeSelection,
+    45→  type QuoteAddon,
+    46→  type QuoteChoice,
+    47→  type ServiceQuoteConfig,
+    48→} from '@/data/quote-config';
+    49→
+    50→/* ------------------------------------------------------------------ */
+    51→/*  Types & constants                                                  */
+    52→/* ------------------------------------------------------------------ */
+    53→
+    54→export interface QuoteBuilderProps {
+    55→  /** Lead source stored with the submission, e.g. "service:seo-services". */
+    56→  source?: string;
+    57→  /** Service (slug) preselected on load — service pages pass their slug. */
+    58→  defaultService?: string;
+    59→  /**
+    60→   * full  — split card with a sticky dark estimate rail (service/pricing pages).
+    61→   * inline— single-column card with a compact estimate banner (contact page).
+    62→   */
+    63→  variant?: 'full' | 'inline';
+    64→  className?: string;
+    65→}
+    66→
+    67→interface FormState {
+    68→  firstName: string;
+    69→  lastName: string;
+    70→  email: string;
+    71→  phone: string;
+    72→  company: string;
+    73→  notes: string;
+    74→}
+    75→
+    76→const EMPTY_FORM: FormState = {
+    77→  firstName: '',
+    78→  lastName: '',
+    79→  email: '',
+    80→  phone: '',
+    81→  company: '',
+    82→  notes: '',
+    83→};
+    84→
+    85→type Errors = Partial<Record<'name' | 'email' | 'budget' | 'notes', string>>;
+    86→
+    87→const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    88→const NOTES_MAX = 800;
+    89→const NOTES_MIN_WHEN_REQUIRED = 10;
+    90→
+    91→/** Selection defaults derived from a config (first option of each group). */
+    92→function defaultsFor(config: ServiceQuoteConfig | null) {
+    93→  const paceOptions = getPaceOptions(config);
+    94→  return {
+    95→    type: config?.types[0]?.value ?? '',
+    96→    size: config?.sizes[0]?.value ?? '',
+    97→    pace: paceOptions[0]?.value ?? 'standard',
+    98→  };
+    99→}
+   100→
+   101→/* ------------------------------------------------------------------ */
+   102→/*  Small building blocks                                              */
+   103→/* ------------------------------------------------------------------ */
+   104→
+   105→function PillChoice({
+   106→  selected,
+   107→  label,
+   108→  hint,
+   109→  badge,
+   110→  icon,
+   111→  onSelect,
+   112→  idPrefix,
+   113→  value,
+   114→  name,
+   115→}: {
+   116→  selected: boolean;
+   117→  label: string;
+   118→  hint?: string;
+   119→  badge?: string;
+   120→  icon?: React.ReactNode;
+   121→  onSelect: () => void;
+   122→  idPrefix: string;
+   123→  value: string;
+   124→  name: string;
+   125→}) {
+   126→  return (
+   127→    <button
+   128→      type="button"
+   129→      role="radio"
+   130→      aria-checked={selected}
+   131→      name={name}
+   132→      id={`${idPrefix}-${value}`}
+   133→      onClick={onSelect}
+   134→      className={cn(
+   135→        'group relative flex min-h-[44px] w-full items-center justify-between gap-2 rounded-full border-2 px-4 py-2 text-left text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2',
+   136→        selected
+   137→          ? 'border-[#0a0a0a] bg-[#0a0a0a] text-white shadow-[0_8px_20px_-10px_rgb(10_10_10/0.6)]'
+   138→          : 'border-gray-200 bg-white text-[#0a0a0a] hover:-translate-y-0.5 hover:border-emerald-400'
+   139→      )}
+   140→    >
+   141→      <span className="flex min-w-0 items-center gap-2.5">
+   142→        {icon ? (
+   143→          <span
+   144→            className={cn(
+   145→              'flex size-7 shrink-0 items-center justify-center rounded-lg transition-colors',
+   146→              selected ? 'bg-white/15 text-white' : 'bg-emerald-50 text-emerald-600'
+   147→            )}
+   148→            aria-hidden="true"
+   149→          >
+   150→            {icon}
+   151→          </span>
+   152→        ) : null}
+   153→        <span className="min-w-0">
+   154→          <span className="block text-[13px] font-semibold leading-snug">{label}</span>
+   155→          {hint ? (
+   156→            <span
+   157→              className={cn(
+   158→                'block text-[11px] font-medium leading-tight',
+   159→                selected ? 'text-white/60' : 'text-muted-foreground'
+   160→              )}
+   161→            >
+   162→              {hint}
+   163→            </span>
+   164→          ) : null}
+   165→        </span>
+   166→      </span>
+   167→      {badge ? (
+   168→        <span
+   169→          className={cn(
+   170→            'shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold',
+   171→            selected ? 'bg-white/15 text-white' : 'bg-emerald-50 text-emerald-700'
+   172→          )}
+   173→        >
+   174→          {badge}
+   175→        </span>
+   176→      ) : null}
+   177→    </button>
+   178→  );
+   179→}
+   180→
+   181→function ChoiceGroup({
+   182→  step,
+   183→  icon: Icon,
+   184→  title,
+   185→  hint,
+   186→  children,
+   187→}: {
+   188→  step: string;
+   189→  icon: typeof Layers;
+   190→  title: string;
+   191→  hint?: string;
+   192→  children: React.ReactNode;
+   193→}) {
+   194→  return (
+   195→    <div className="flex flex-col gap-3">
+   196→      <div className="flex items-start gap-3">
+   197→        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-500 text-white shadow-[0_8px_18px_-8px_rgb(5_150_105/0.5)]" aria-hidden="true">
+   198→          <Icon className="size-4" />
+   199→        </span>
+   200→        <div className="min-w-0">
+   201→          <h3 className="font-display text-base font-bold text-[#0a0a0a]">
+   202→            <span className="mr-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-600" aria-hidden="true">
+   203→              {step}
+   204→            </span>
+   205→            {title}
+   206→          </h3>
+   207→          {hint ? <p className="text-xs leading-relaxed text-muted-foreground">{hint}</p> : null}
+   208→        </div>
+   209→      </div>
+   210→      {children}
+   211→    </div>
+   212→  );
+   213→}
+   214→
+   215→function AddonChip({
+   216→  addon,
+   217→  selected,
+   218→  onToggle,
+   219→  idPrefix,
+   220→}: {
+   221→  addon: QuoteAddon;
+   222→  selected: boolean;
+   223→  onToggle: () => void;
+   224→  idPrefix: string;
+   225→}) {
+   226→  const priceLabel = `+$${addon.price.toLocaleString('en-US')}${addon.monthly ? '/mo' : ''}`;
+   227→  return (
+   228→    <button
+   229→      type="button"
+   230→      role="checkbox"
+   231→      aria-checked={selected}
+   232→      id={`${idPrefix}-${addon.value}`}
+   233→      onClick={onToggle}
+   234→      className={cn(
+   235→        'flex min-h-[44px] items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2',
+   236→        selected
+   237→          ? 'border-emerald-600 bg-emerald-600 text-white shadow-[0_8px_20px_-10px_rgb(5_150_105/0.7)]'
+   238→          : 'border-gray-200 bg-white text-[#0a0a0a] hover:-translate-y-0.5 hover:border-emerald-400'
+   239→      )}
+   240→    >
+   241→      <span
+   242→        className={cn(
+   243→          'flex size-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
+   244→          selected ? 'border-white bg-white text-emerald-600' : 'border-gray-300 text-transparent'
+   245→        )}
+   246→        aria-hidden="true"
+   247→      >
+   248→        <CheckCircle2 className="size-3" strokeWidth={3} />
+   249→      </span>
+   250→      <span className="min-w-0 truncate">{addon.label}</span>
+   251→      <span
+   252→        className={cn(
+   253→          'shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold',
+   254→          selected ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-700'
+   255→        )}
+   256→      >
+   257→        {priceLabel}
+   258→      </span>
+   259→    </button>
+   260→  );
+   261→}
+   262→
+   263→function Field({
+   264→  id,
+   265→  label,
+   266→  required,
+   267→  optional,
+   268→  error,
+   269→  children,
+   270→}: {
+   271→  id: string;
+   272→  label: string;
+   273→  required?: boolean;
+   274→  optional?: boolean;
+   275→  error?: string;
+   276→  children: React.ReactNode;
+   277→}) {
+   278→  return (
+   279→    <div className="flex flex-col gap-1.5">
+   280→      <Label htmlFor={id} className="text-sm font-bold text-[#0a0a0a]">
+   281→        {label}
+   282→        {required ? (
+   283→          <span className="ml-0.5 text-emerald-600" aria-hidden="true">
+   284→            *
+   285→          </span>
+   286→        ) : null}
+   287→        {optional ? <span className="ml-1 text-xs font-normal text-muted-foreground">(optional)</span> : null}
+   288→      </Label>
+   289→      {children}
+   290→      {error ? (
+   291→        <p id={`${id}-error`} className="text-xs font-medium text-destructive">
+   292→          {error}
+   293→        </p>
+   294→      ) : null}
+   295→    </div>
+   296→  );
+   297→}
+   298→
+   299→function SuccessPanel({ leadId, onReset }: { leadId: string | null; onReset: () => void }) {
+   300→  return (
+   301→    <div className="flex flex-col items-center justify-center gap-4 p-8 text-center sm:p-12" role="status" aria-live="polite">
+   302→      <span className="gradient-frame flex rounded-full p-3" aria-hidden="true">
+   303→        <span className="flex h-20 w-20 items-center justify-center rounded-full bg-white">
+   304→          <CheckCircle2 className="h-14 w-14 text-emerald-600" />
+   305→        </span>
+   306→      </span>
+   307→      <h3 className="font-display text-2xl font-bold text-[#0a0a0a]">Quote request received!</h3>
+   308→      <p className="max-w-md text-sm leading-relaxed text-[#4b5563] sm:text-base">
+   309→        We&rsquo;ll review your configuration and reply within one business day with a fixed,
+   310→        itemized quote — the number we agree on is the number you pay.
+   311→      </p>
+   312→      {leadId ? (
+   313→        <p className="text-xs text-muted-foreground">
+   314→          Reference: <span className="font-mono font-semibold text-emerald-700">{leadId}</span>
+   315→        </p>
+   316→      ) : null}
+   317→      <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
+   318→        {whatsappLink() ? (
+   319→          <a
+   320→            href={whatsappLink()}
+   321→            target="_blank"
+   322→            rel="noopener noreferrer"
+   323→            onClick={() => trackEvent('whatsapp_click', { location: 'quote_success' })}
+   324→            className="btn-secondary-pill-sm"
+   325→          >
+   326→            <MessageCircle className="h-4 w-4" aria-hidden="true" />
+   327→            Chat on WhatsApp
+   328→          </a>
+   329→        ) : null}
+   330→        <Button variant="ghost" onClick={onReset}>
+   331→          Build another quote
+   332→        </Button>
+   333→      </div>
+   334→    </div>
+   335→  );
+   336→}
+   337→
+   338→/* ------------------------------------------------------------------ */
+   339→/*  Estimate rail (full variant) & banner (inline variant)             */
+   340→/* ------------------------------------------------------------------ */
+   341→
+   342→function EstimateContent({ estimate, compact }: { estimate: { low: number; high: number; suffix: string; caption: string; lines: { label: string; value: string; tone: string }[] } | null; compact?: boolean }) {
+   343→  if (!estimate) {
+   344→    return (
+   345→      <div className={cn('flex flex-col gap-2', compact && 'gap-1')}>
+   346→        <p className={cn('font-display font-extrabold tracking-tight', compact ? 'text-2xl text-white' : 'text-3xl text-white')}>
+   347→          Custom quote
+   348→        </p>
+   349→        <p className={cn('leading-relaxed', compact ? 'text-xs text-white/60' : 'text-sm text-white/60')}>
+   350→          Pick a service to see a live estimate — or tell us what you need and we&rsquo;ll scope it
+   351→          with you on a free call.
+   352→        </p>
+   353→      </div>
+   354→    );
+   355→  }
+   356→
+   357→  return (
+   358→    <div className="flex flex-col gap-2">
+   359→      <p className={cn('text-gradient font-display font-extrabold tracking-tight', compact ? 'text-2xl sm:text-3xl' : 'text-4xl')}>
+   360→        ${estimate.low.toLocaleString('en-US')} – ${estimate.high.toLocaleString('en-US')}
+   361→        <span className="text-lg font-bold">{estimate.suffix}</span>
+   362→      </p>
+   363→      <p className={cn('font-semibold uppercase tracking-[0.14em]', compact ? 'text-[10px] text-white/50' : 'text-xs text-white/50')}>
+   364→        {estimate.caption} · guidance range
+   365→      </p>
+   366→      {!compact ? (
+   367→        <ul className="mt-3 flex flex-col gap-1.5">
+   368→          {estimate.lines.map((line) => (
+   369→            <li key={line.label} className="flex items-center justify-between gap-3 text-[13px]">
+   370→              <span className="min-w-0 truncate text-white/60">{line.label}</span>
+   371→              <span
+   372→                className={cn(
+   373→                  'shrink-0 font-mono font-semibold tabular-nums',
+   374→                  line.tone === 'base' && 'text-white',
+   375→                  line.tone === 'up' && 'text-emerald-300',
+   376→                  line.tone === 'down' && 'text-emerald-300',
+   377→                  line.tone === 'neutral' && 'text-white/80'
+   378→                )}
+   379→              >
+   380→                {line.value}
+   381→              </span>
+   382→            </li>
+   383→          ))}
+   384→        </ul>
+   385→      ) : null}
+   386→    </div>
+   387→  );
+   388→}
+   389→
+   390→/* ------------------------------------------------------------------ */
+   391→/*  QuoteBuilder                                                       */
+   392→/* ------------------------------------------------------------------ */
+   393→
+   394→/**
+   395→ * The global instant-quote experience.
+   396→ * - DYNAMIC: every service drives its own project types, scope sizes and
+   397→ *   add-ons from src/data/quote-config.ts — the form reshapes per service.
+   398→ * - AUTOMATED: a live estimate range recalculates on every selection.
+   399→ * - COHESIVE: one component renders the quote section on every service page,
+   400→ *   the pricing page, and the contact page (inline variant).
+   401→ */
+   402→export function QuoteBuilder({
+   403→  source = 'contact',
+   404→  defaultService,
+   405→  variant = 'full',
+   406→  className,
+   407→}: QuoteBuilderProps) {
+   408→  const { toast } = useToast();
+   409→  const inline = variant === 'inline';
+   410→  const idPrefix = `qb-${source.replace(/[^a-z0-9]+/gi, '-')}`;
+   411→
+   412→  const [serviceSlug, setServiceSlug] = React.useState(defaultService ?? NOT_SURE_SLUG);
+   413→  const [selection, setSelection] = React.useState(() => defaultsFor(getQuoteConfig(defaultService ?? NOT_SURE_SLUG)));
+   414→  const [pickedAddons, setPickedAddons] = React.useState<string[]>([]);
+   415→  const [genericBudget, setGenericBudget] = React.useState('');
+   416→  const [genericTimeline, setGenericTimeline] = React.useState('');
+   417→  const [form, setForm] = React.useState<FormState>(EMPTY_FORM);
+   418→  const [honeypot, setHoneypot] = React.useState('');
+   419→  const [errors, setErrors] = React.useState<Errors>({});
+   420→  const [submitting, setSubmitting] = React.useState(false);
+   421→  const [submitted, setSubmitted] = React.useState(false);
+   422→  const [leadId, setLeadId] = React.useState<string | null>(null);
+   423→
+   424→  const config = getQuoteConfig(serviceSlug);
+   425→  const paceOptions = getPaceOptions(config);
+   426→  const selectedService = services.find((service) => service.slug === serviceSlug);
+   427→  const serviceName = selectedService?.name ?? 'Not sure yet / something else';
+   428→  const estimate = config
+   429→    ? computeEstimate(config, { ...selection, addons: pickedAddons })
+   430→    : null;
+   431→
+   432→  /* ------------------------- interactions ------------------------- */
+   433→
+   434→  const pickService = (slug: string) => {
+   435→    setServiceSlug(slug);
+   436→    setSelection(defaultsFor(getQuoteConfig(slug)));
+   437→    setPickedAddons([]);
+   438→    setGenericBudget('');
+   439→    setGenericTimeline('');
+   440→    setErrors({});
+   441→  };
+   442→
+   443→  const setFormValue = (key: keyof FormState) => (value: string) => {
+   444→    setForm((prev) => ({ ...prev, [key]: value }));
+   445→    const errorKey = key === 'firstName' ? 'name' : key === 'notes' ? 'notes' : key === 'email' ? 'email' : null;
+   446→    if (errorKey) {
+   447→      setErrors((prev) => (prev[errorKey] ? { ...prev, [errorKey]: undefined } : prev));
+   448→    }
+   449→  };
+   450→
+   451→  const validate = (): boolean => {
+   452→    const next: Errors = {};
+   453→    if (form.firstName.trim().length < 2) next.name = 'Please enter your first name.';
+   454→    if (!EMAIL_REGEX.test(form.email.trim())) next.email = 'Please enter a valid email address.';
+   455→    if (!config && !genericBudget) next.budget = 'Please pick a budget range.';
+   456→    if ((!config || !estimate) && form.notes.trim().length < NOTES_MIN_WHEN_REQUIRED) {
+   457→      next.notes = 'Please add a few details about what you need (at least 10 characters).';
+   458→    }
+   459→    setErrors(next);
+   460→    return Object.keys(next).length === 0;
+   461→  };
+   462→
+   463→  const handleSubmit = async (event: React.FormEvent) => {
+   464→    event.preventDefault();
+   465→    if (!validate()) return;
+   466→    setSubmitting(true);
+   467→    try {
+   468→      const fullName = [form.firstName.trim(), form.lastName.trim()].filter(Boolean).join(' ');
+   469→
+   470→      const summaryLines = describeSelection(serviceName, config, { ...selection, addons: pickedAddons }, estimate);
+   471→      const message = [
+   472→        form.company.trim() ? `Company: ${form.company.trim()}` : null,
+   473→        '',
+   474→        '— Quote configuration —',
+   475→        ...summaryLines,
+   476→        '',
+   477→        form.notes.trim() ? `Notes: ${form.notes.trim()}` : 'Notes: (none added)',
+   478→      ]
+   479→        .filter((line) => line !== null)
+   480→        .join('\n');
+   481→
+   482→      const response = await fetch('/api/leads', {
+   483→        method: 'POST',
+   484→        headers: { 'Content-Type': 'application/json' },
+   485→        body: JSON.stringify({
+   486→          name: fullName,
+   487→          email: form.email,
+   488→          phone: form.phone,
+   489→          service: serviceSlug === NOT_SURE_SLUG ? 'not-sure' : serviceSlug,
+   490→          budget: estimate ? estimateRangeLabel(estimate) : genericBudget,
+   491→          timeline: config ? paceOptions.find((p) => p.value === selection.pace)?.label ?? '' : genericTimeline,
+   492→          message,
+   493→          estimate: estimate ? `${estimateRangeLabel(estimate)} ${estimate.caption}` : '',
+   494→          quoteConfig: serializeSelection(serviceName, config, { ...selection, addons: pickedAddons }, estimate),
+   495→          source,
+   496→          website: honeypot,
+   497→        }),
+   498→      });
+   499→      const payload = (await response.json()) as { ok?: boolean; id?: string; error?: string };
+   500→      if (!response.ok || !payload.ok) {
+   501→        throw new Error(payload.error ?? 'Something went wrong.');
+   502→      }
+   503→      trackEvent('generate_lead', {
+   504→        source,
+   505→        service: serviceSlug,
+   506→        estimate: estimate ? `${estimate.low}-${estimate.high}` : 'custom',
+   507→        addons: pickedAddons.length,
+   508→      });
+   509→      setLeadId(payload.id ?? null);
+   510→      setSubmitted(true);
+   511→      toast({
+   512→        title: 'Quote request received!',
+   513→        description: 'Thanks — your fixed, itemized quote arrives within one business day.',
+   514→      });
+   515→    } catch (error) {
+   516→      toast({
+   517→        title: 'Could not send your request',
+   518→        description: error instanceof Error ? error.message : 'Please try again or email us directly.',
+   519→        variant: 'destructive',
+   520→      });
+   521→    } finally {
+   522→      setSubmitting(false);
+   523→    }
+   524→  };
+   525→
+   526→  const resetToForm = () => {
+   527→    setSubmitted(false);
+   528→    setLeadId(null);
+   529→    setErrors({});
+   530→    setForm(EMPTY_FORM);
+   531→  };
+   532→
+   533→  /* --------------------------- styles ----------------------------- */
+   534→
+   535→  const inputClass =
+   536→    'h-11 rounded-xl border-gray-200 bg-white text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500';
+   537→
+   538→  /* -------------------------- sub-blocks -------------------------- */
+   539→
+   540→  const servicePicker = (
+   541→    <ChoiceGroup step="Step 1" icon={Sparkles} title="What do you need?" hint="Pick a service — the quote builder adapts to it instantly.">
+   542→      <div role="radiogroup" aria-label="Service needed" className="grid gap-2 sm:grid-cols-2">
+   543→        {services.map((service) => (
+   544→          <PillChoice
+   545→            key={service.slug}
+   546→            name={`service-${idPrefix}`}
+   547→            value={service.slug}
+   548→            idPrefix={`${idPrefix}-svc`}
+   549→            selected={serviceSlug === service.slug}
+   550→            onSelect={() => pickService(service.slug)}
+   551→            label={service.shortName}
+   552→            icon={<ServiceIconGlyph icon={service.icon} className="size-4" />}
+   553→          />
+   554→        ))}
+   555→        <PillChoice
+   556→          name={`service-${idPrefix}`}
+   557→          value={NOT_SURE_SLUG}
+   558→          idPrefix={`${idPrefix}-svc`}
+   559→          selected={serviceSlug === NOT_SURE_SLUG}
+   560→          onSelect={() => pickService(NOT_SURE_SLUG)}
+   561→          label="Not sure yet"
+   562→          hint="Scope it with us on a free call"
+   563→        />
+   564→      </div>
+   565→    </ChoiceGroup>
+   566→  );
+   567→
+   568→  const shapeProject = config ? (
+   569→    <div className="flex flex-col gap-6">
+   570→      <ChoiceGroup step="Step 2" icon={Package} title="Project type">
+   571→        <div role="radiogroup" aria-label="Project type" className="grid gap-2 sm:grid-cols-2">
+   572→          {config.types.map((type) => (
+   573→            <PillChoice
+   574→              key={type.value}
+   575→              name={`type-${idPrefix}`}
+   576→              value={type.value}
+   577→              idPrefix={`${idPrefix}-type`}
+   578→              selected={selection.type === type.value}
+   579→              onSelect={() => setSelection((prev) => ({ ...prev, type: type.value }))}
+   580→              label={type.label}
+   581→              hint={type.hint}
+   582→              badge={
+   583→                type.delta
+   584→                  ? `${type.delta > 0 ? '+' : '−'}$${Math.abs(type.delta).toLocaleString('en-US')}`
+   585→                  : undefined
+   586→              }
+   587→            />
+   588→          ))}
+   589→        </div>
+   590→      </ChoiceGroup>
+   591→
+   592→      <ChoiceGroup step="Step 3" icon={Layers} title="Scope & size">
+   593→        <div role="radiogroup" aria-label="Project scope" className="grid gap-2 sm:grid-cols-2">
+   594→          {config.sizes.map((size) => (
+   595→            <PillChoice
+   596→              key={size.value}
+   597→              name={`size-${idPrefix}`}
+   598→              value={size.value}
+   599→              idPrefix={`${idPrefix}-size`}
+   600→              selected={selection.size === size.value}
+   601→              onSelect={() => setSelection((prev) => ({ ...prev, size: size.value }))}
+   602→              label={size.label}
+   603→              hint={size.hint}
+   604→            />
+   605→          ))}
+   606→        </div>
+   607→      </ChoiceGroup>
+   608→
+   609→      <ChoiceGroup
+   610→        step="Step 4"
+   611→        icon={Plus}
+   612→        title="Add-ons"
+   613→        hint="Optional extras — tap to include them in the estimate."
+   614→      >
+   615→        <div role="group" aria-label="Add-ons" className="flex flex-wrap gap-2">
+   616→          {config.addons.map((addon) => (
+   617→            <AddonChip
+   618→              key={addon.value}
+   619→              addon={addon}
+   620→              idPrefix={`${idPrefix}-addon`}
+   621→              selected={pickedAddons.includes(addon.value)}
+   622→              onToggle={() =>
+   623→                setPickedAddons((prev) =>
+   624→                  prev.includes(addon.value)
+   625→                    ? prev.filter((value) => value !== addon.value)
+   626→                    : [...prev, addon.value]
+   627→                )
+   628→              }
+   629→            />
+   630→          ))}
+   631→        </div>
+   632→      </ChoiceGroup>
+   633→
+   634→      <ChoiceGroup step="Step 5" icon={Clock3} title={config.billing === 'monthly' ? 'Commitment' : 'Timeline'}>
+   635→        <div role="radiogroup" aria-label="Timeline" className="grid gap-2 sm:grid-cols-3">
+   636→          {paceOptions.map((pace) => (
+   637→            <PillChoice
+   638→              key={pace.value}
+   639→              name={`pace-${idPrefix}`}
+   640→              value={pace.value}
+   641→              idPrefix={`${idPrefix}-pace`}
+   642→              selected={selection.pace === pace.value}
+   643→              onSelect={() => setSelection((prev) => ({ ...prev, pace: pace.value }))}
+   644→              label={pace.label}
+   645→              hint={pace.hint}
+   646→            />
+   647→          ))}
+   648→        </div>
+   649→      </ChoiceGroup>
+   650→    </div>
+   651→  ) : (
+   652→    <div className="flex flex-col gap-6">
+   653→      <ChoiceGroup step="Step 2" icon={Package} title="Budget range" hint="A rough idea is enough — we scope the details together.">
+   654→        <div className="grid gap-2 sm:grid-cols-2">
+   655→          <Field id={`${idPrefix}-budget`} label="Budget" required error={errors.budget}>
+   656→            <Select value={genericBudget} onValueChange={(value) => { setGenericBudget(value); setErrors((prev) => ({ ...prev, budget: undefined })); }}>
+   657→              <SelectTrigger id={`${idPrefix}-budget`} className={cn(inputClass, 'w-full')} aria-label="Budget range">
+   658→                <SelectValue placeholder="Select a range" />
+   659→              </SelectTrigger>
+   660→              <SelectContent>
+   661→                {GENERIC_BUDGETS.map((range) => (
+   662→                  <SelectItem key={range} value={range}>
+   663→                    {range}
+   664→                  </SelectItem>
+   665→                ))}
+   666→              </SelectContent>
+   667→            </Select>
+   668→          </Field>
+   669→          <Field id={`${idPrefix}-gentime`} label="Timeline" optional>
+   670→            <Select value={genericTimeline} onValueChange={setGenericTimeline}>
+   671→              <SelectTrigger id={`${idPrefix}-gentime`} className={cn(inputClass, 'w-full')} aria-label="Project timeline">
+   672→                <SelectValue placeholder="When do you want to start?" />
+   673→              </SelectTrigger>
+   674→              <SelectContent>
+   675→                {GENERIC_TIMELINES.map((option) => (
+   676→                  <SelectItem key={option} value={option}>
+   677→                    {option}
+   678→                  </SelectItem>
+   679→                ))}
+   680→              </SelectContent>
+   681→            </Select>
+   682→          </Field>
+   683→        </div>
+   684→      </ChoiceGroup>
+   685→    </div>
+   686→  );
+   687→
+   688→  const detailsFields = (
+   689→    <ChoiceGroup step={config ? 'Step 6' : 'Step 3'} icon={Mail} title="Where do we send it?" hint="One business day, one fixed quote — no spam, ever.">
+   690→      <div className="grid gap-4 sm:grid-cols-2">
+   691→        <Field id={`${idPrefix}-first`} label="First name" required error={errors.name}>
+   692→          <Input
+   693→            id={`${idPrefix}-first`}
+   694→            value={form.firstName}
+   695→            onChange={(e) => setFormValue('firstName')(e.target.value)}
+   696→            placeholder="Jane"
+   697→            autoComplete="given-name"
+   698→            required
+   699→            aria-invalid={Boolean(errors.name)}
+   700→            aria-describedby={errors.name ? `${idPrefix}-first-error` : undefined}
+   701→            className={inputClass}
+   702→          />
+   703→        </Field>
+   704→        <Field id={`${idPrefix}-last`} label="Last name" optional>
+   705→          <Input
+   706→            id={`${idPrefix}-last`}
+   707→            value={form.lastName}
+   708→            onChange={(e) => setFormValue('lastName')(e.target.value)}
+   709→            placeholder="Smith"
+   710→            autoComplete="family-name"
+   711→            className={inputClass}
+   712→          />
+   713→        </Field>
+   714→        <Field id={`${idPrefix}-email`} label="Email" required error={errors.email}>
+   715→          <Input
+   716→            id={`${idPrefix}-email`}
+   717→            type="email"
+   718→            value={form.email}
+   719→            onChange={(e) => setFormValue('email')(e.target.value)}
+   720→            placeholder="jane@company.com"
+   721→            autoComplete="email"
+   722→            required
+   723→            aria-invalid={Boolean(errors.email)}
+   724→            aria-describedby={errors.email ? `${idPrefix}-email-error` : undefined}
+   725→            className={inputClass}
+   726→          />
+   727→        </Field>
+   728→        <Field id={`${idPrefix}-phone`} label="Phone" optional>
+   729→          <Input
+   730→            id={`${idPrefix}-phone`}
+   731→            type="tel"
+   732→            value={form.phone}
+   733→            onChange={(e) => setFormValue('phone')(e.target.value)}
+   734→            placeholder="+1 (555) 000-0000"
+   735→            autoComplete="tel"
+   736→            className={inputClass}
+   737→          />
+   738→        </Field>
+   739→        <Field id={`${idPrefix}-company`} label="Company" optional>
+   740→          <Input
+   741→            id={`${idPrefix}-company`}
+   742→            value={form.company}
+   743→            onChange={(e) => setFormValue('company')(e.target.value)}
+   744→            placeholder="Company or brand name"
+   745→            autoComplete="organization"
+   746→            className={inputClass}
+   747→          />
+   748→        </Field>
+   749→      </div>
+   750→      <Field
+   751→        id={`${idPrefix}-notes`}
+   752→        label={config ? 'Anything else we should know?' : 'Tell us what you need'}
+   753→        required={!config}
+   754→        optional={Boolean(config)}
+   755→        error={errors.notes}
+   756→      >
+   757→        <Textarea
+   758→          id={`${idPrefix}-notes`}
+   759→          value={form.notes}
+   760→          onChange={(e) => setFormValue('notes')(e.target.value)}
+   761→          placeholder="Goals, links, deadlines, references — anything that helps us quote accurately…"
+   762→          rows={4}
+   763→          maxLength={NOTES_MAX}
+   764→          required={!config}
+   765→          aria-invalid={Boolean(errors.notes)}
+   766→          aria-describedby={errors.notes ? `${idPrefix}-notes-error` : `${idPrefix}-notes-hint`}
+   767→          className={cn(inputClass, 'h-auto min-h-[110px] py-3')}
+   768→        />
+   769→        <div id={`${idPrefix}-notes-hint`} className="flex items-center justify-between text-[11px] text-muted-foreground">
+   770→          <span>{config ? 'Optional — your configuration already tells us a lot.' : 'Goals, scope, links all help.'}</span>
+   771→          <span className={cn('tabular-nums', form.notes.length >= NOTES_MAX - 40 && 'text-destructive')} aria-live="polite">
+   772→            {form.notes.length}/{NOTES_MAX}
+   773→          </span>
+   774→        </div>
+   775→      </Field>
+   776→    </ChoiceGroup>
+   777→  );
+   778→
+   779→  const honeypotField = (
+   780→    <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+   781→      <label>
+   782→        Company website
+   783→        <input
+   784→          type="text"
+   785→          name="website"
+   786→          tabIndex={-1}
+   787→          autoComplete="off"
+   788→          value={honeypot}
+   789→          onChange={(e) => setHoneypot(e.target.value)}
+   790→        />
+   791→      </label>
+   792→    </div>
+   793→  );
+   794→
+   795→  const submitButton = (
+   796→    <button
+   797→      type="submit"
+   798→      disabled={submitting}
+   799→      className="btn-primary-pill w-full disabled:pointer-events-none disabled:opacity-60"
+   800→    >
+   801→      {submitting ? (
+   802→        <>
+   803→          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+   804→          Sending…
+   805→        </>
+   806→      ) : (
+   807→        <>
+   808→          <Send className="h-4 w-4" aria-hidden="true" />
+   809→          Send my quote request
+   810→        </>
+   811→      )}
+   812→    </button>
+   813→  );
+   814→
+   815→  const consentCopy = (
+   816→    <p className="text-xs leading-relaxed text-muted-foreground">
+   817→      By submitting, you agree to our{' '}
+   818→      <Link
+   819→        href="/privacy-policy"
+   820→        className="font-medium text-emerald-700 underline decoration-emerald-300 underline-offset-2 hover:text-emerald-800"
+   821→      >
+   822→        Privacy Policy
+   823→      </Link>
+   824→      . Estimates are guidance ranges — your final quote is fixed and itemized before any work starts.
+   825→    </p>
+   826→  );
+   827→
+   828→  const formBody = submitted ? (
+   829→    <SuccessPanel leadId={leadId} onReset={resetToForm} />
+   830→  ) : (
+   831→    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-7" aria-label="Instant quote builder">
+   832→      {honeypotField}
+   833→      {servicePicker}
+   834→      {shapeProject}
+   835→      {detailsFields}
+   836→      {submitButton}
+   837→      {consentCopy}
+   838→    </form>
+   839→  );
+   840→
+   841→  /* --------------------------- variants --------------------------- */
+   842→
+   843→  if (inline) {
+   844→    // Single-column, surface-less variant — the parent (contact page's
+   845→    // gradient-border card) supplies the card chrome; we draw the dark
+   846→    // estimate banner plus the builder steps inside a white canvas.
+   847→    return (
+   848→      <div className={cn('relative overflow-hidden rounded-[20px] bg-white', className)} data-slot="quote-builder">
+   849→        {submitted ? (
+   850→          <SuccessPanel leadId={leadId} onReset={resetToForm} />
+   851→        ) : (
+   852→          <div className="flex flex-col">
+   853→            <div className="bg-[#0a0a0a] p-6 sm:p-7">
+   854→              <div className="flex items-center gap-2">
+   855→                <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-emerald-300" aria-hidden="true" />
+   856→                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-200">Instant estimate</p>
+   857→              </div>
+   858→              <div className="mt-3">
+   859→                <EstimateContent estimate={estimate} compact />
+   860→              </div>
+   861→            </div>
+   862→            <div className="p-6 sm:p-7">{formBody}</div>
+   863→          </div>
+   864→        )}
+   865→      </div>
+   866→    );
+   867→  }
+   868→
+   869→  // Full variant — split card with sticky estimate rail.
+   870→  // NOTE: no overflow-hidden on the card — it would break the rail's sticky
+   871→  // positioning, so each side rounds its own outer corners instead.
+   872→  return (
+   873→    <div className={cn('card-soft grid grid-cols-1 lg-split-quote', className)} data-slot="quote-builder">
+   874→      {/* Estimate rail — dark, sticky on desktop, stacks above the form on mobile */}
+   875→      <aside className="relative flex flex-col gap-6 overflow-hidden rounded-t-[24px] bg-[#0a0a0a] p-6 text-white sm:p-8 lg:sticky lg:top-28 lg:self-start lg:rounded-b-none lg:rounded-l-[24px]">
+   876→        <span className="blob -right-16 top-6 size-56 bg-gradient-to-br from-emerald-600 to-emerald-500" aria-hidden="true" />
+   877→        <div className="relative z-10 flex flex-col gap-5">
+   878→          <p className="flex w-fit items-center gap-2 text-xs font-semibold text-emerald-200">
+   879→            <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-emerald-300" aria-hidden="true" />
+   880→            Instant estimate · updates live
+   881→          </p>
+   882→
+   883→          <EstimateContent estimate={estimate} />
+   884→
+   885→          <div className="border-t-2 border-dashed border-white/15" role="presentation" />
+   886→
+   887→          <ul className="flex flex-col gap-2.5">
+   888→            {[
+   889→              'Free consultation — no obligation',
+   890→              'Fixed, itemized quote before we start',
+   891→              'NDA on request',
+   892→            ].map((promise) => (
+   893→              <li key={promise} className="flex items-center gap-2.5 text-sm text-white/75">
+   894→                <BadgeCheck className="size-4 shrink-0 text-emerald-300" aria-hidden="true" />
+   895→                {promise}
+   896→              </li>
+   897→            ))}
+   898→          </ul>
+   899→
+   900→          <p className="mt-auto rounded-2xl bg-white/5 p-4 text-[13px] leading-relaxed text-white/60 ring-1 ring-inset ring-white/10">
+   901→            The estimate is a guidance range. After a short scoping call you get one fixed number —
+   902→            the price we agree is the price you pay.
+   903→          </p>
+   904→        </div>
+   905→      </aside>
+   906→
+   907→      {/* Builder form */}
+   908→      <div className="relative rounded-b-[24px] bg-white p-6 sm:p-8 lg:rounded-b-none lg:rounded-r-[24px] lg:p-10">{formBody}</div>
+   909→    </div>
+   910→  );
+   911→}
+   912→
+   913→

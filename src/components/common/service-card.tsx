@@ -23,7 +23,7 @@ export function ServiceCard({ service, showPrice = false, className }: ServiceCa
       <article className="card-surface card-hover relative flex h-full flex-col gap-4 overflow-hidden p-6 group-focus-visible:ring-2 group-focus-visible:ring-ring">
         {/* Top accent line that brightens on hover */}
         <span
-          className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-gray-500 via-gray-400 to-gray-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           aria-hidden="true"
         />
         <span className="icon-tile h-12 w-12 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3">
@@ -35,16 +35,16 @@ export function ServiceCard({ service, showPrice = false, className }: ServiceCa
         </div>
         <div className="mt-auto flex items-center justify-between pt-1">
           {showPrice ? (
-            <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/15">
+            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-800 ring-1 ring-inset ring-gray-800/15">
               From {service.startingPrice}
             </span>
           ) : (
             <span />
           )}
-          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-700">
+          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-800">
             Learn more
             <span
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-50 transition-all duration-300 group-hover:bg-emerald-600 group-hover:text-white"
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 transition-all duration-300 group-hover:bg-gray-800 group-hover:text-white"
               aria-hidden="true"
             >
               <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />

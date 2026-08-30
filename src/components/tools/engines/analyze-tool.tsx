@@ -48,7 +48,7 @@ export function AnalyzeTool({ config }: { config: AnalyzeToolConfig }) {
             <button
               type="button"
               onClick={() => setText(config.sample!)}
-              className="rounded-full border-2 border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 transition-colors hover:border-[#0a0a0a] hover:text-[#0a0a0a]"
+              className="rounded-full border-2 border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 transition-colors hover:border-zinc-200 hover:text-[#0a0a0a]"
             >
               Load sample
             </button>
@@ -103,7 +103,7 @@ export function AnalyzeTool({ config }: { config: AnalyzeToolConfig }) {
           ) : null}
 
           {result.note ? (
-            <p className="rounded-xl bg-emerald-50 px-4 py-3 text-xs leading-relaxed text-emerald-800">{result.note}</p>
+            <p className="rounded-xl bg-gray-100 px-4 py-3 text-xs leading-relaxed text-gray-900">{result.note}</p>
           ) : null}
         </div>
       ) : null}

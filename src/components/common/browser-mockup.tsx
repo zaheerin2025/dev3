@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 type MockupVariant = 'landing' | 'store' | 'dashboard';
 
 interface BrowserMockupProps {
-  /** Tailwind gradient classes for accent surfaces, e.g. "from-emerald-500 to-amber-400" */
+  /** Tailwind gradient classes for accent surfaces, e.g. "from-gray-500 to-gray-400" */
   gradient: string;
   variant?: MockupVariant;
   domain?: string;
@@ -14,10 +14,10 @@ function Chrome({ domain }: { domain: string }) {
   return (
     <div className="flex items-center gap-2 border-b border-gray-100 bg-gray-50 px-4 py-2.5">
       <span className="size-2.5 rounded-full bg-red-400" />
-      <span className="size-2.5 rounded-full bg-amber-400" />
-      <span className="size-2.5 rounded-full bg-lime-400" />
+      <span className="size-2.5 rounded-full bg-gray-400" />
+      <span className="size-2.5 rounded-full bg-gray-400" />
       <span className="ml-2 flex h-5 min-w-0 flex-1 items-center gap-1.5 rounded-full bg-white px-2.5 ring-1 ring-gray-200">
-        <span className="size-1.5 shrink-0 rounded-full bg-lime-500" />
+        <span className="size-1.5 shrink-0 rounded-full bg-gray-500" />
         <span className="truncate text-[9px] font-medium text-gray-400">{domain}</span>
       </span>
     </div>

@@ -103,7 +103,7 @@ export function AdminBar() {
         aria-label="Admin toolbar"
       >
         <span className="mr-1 hidden items-center gap-1.5 pl-1 text-xs font-semibold tracking-wide text-gray-300 sm:flex">
-          <span className="size-2 rounded-full bg-emerald-400" aria-hidden="true" />
+          <span className="size-2 rounded-full bg-gray-400" aria-hidden="true" />
           Admin
         </span>
         <button
@@ -112,7 +112,7 @@ export function AdminBar() {
           className={cn(
             'flex h-9 items-center gap-2 rounded-full px-3.5 text-sm font-semibold transition-colors',
             enabled
-              ? 'bg-emerald-600 text-white hover:bg-emerald-500'
+              ? 'bg-gray-800 text-white hover:bg-gray-500'
               : 'text-gray-200 hover:bg-white/10 hover:text-white'
           )}
           aria-pressed={enabled}
@@ -268,7 +268,7 @@ function EditorPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
             'No unsaved changes.'
           ) : (
             <>
-              <span className="font-semibold text-emerald-700">{dirtyCount}</span> unsaved change
+              <span className="font-semibold text-gray-800">{dirtyCount}</span> unsaved change
               {dirtyCount === 1 ? '' : 's'}.
             </>
           )}
@@ -325,7 +325,7 @@ function FieldEditor({ field }: { field: ContentField; onUnauthorized: () => voi
       id={`ve-field-${field.key}`}
       className={cn(
         'flex flex-col gap-1.5 rounded-lg border p-3 transition-colors',
-        selected ? 'border-emerald-400 bg-emerald-50/50 ring-2 ring-emerald-200' : 'border-gray-200'
+        selected ? 'border-gray-400 bg-gray-100/50 ring-2 ring-gray-200' : 'border-gray-200'
       )}
     >
       <div className="flex items-center justify-between gap-2">

@@ -105,7 +105,7 @@ function minifyCss(css: string): string {
 
 const CSS_SAMPLE = [
   '/* theme colors — do not edit */',
-  ':root { --brand: #0a0a0a; --accent: #059669; }',
+  ':root { --brand: #0a0a0a; --accent: #1f2937; }',
   'body { margin: 0; padding: 0 ; font-family: Arial, sans-serif; }',
   '.hero { width: calc(100% - 40px); background: url("bg.png"); content: "a  b"; }',
   '.empty {}',
@@ -1501,7 +1501,7 @@ const RegexTesterTool = () => {
     matches.forEach((m, i) => {
       if (m.index > pos) nodes.push(<span key={'t' + i}>{test.slice(pos, m.index)}</span>);
       nodes.push(
-        <mark key={'m' + i} className="bg-yellow-200 text-[#0a0a0a]">
+        <mark key={'m' + i} className="bg-gray-200 text-[#0a0a0a]">
           {test.slice(m.index, m.index + m.text.length)}
         </mark>
       );
@@ -1555,7 +1555,7 @@ const RegexTesterTool = () => {
       />
 
       {error !== '' ? (
-        <p className="rounded-xl bg-teal-50 px-4 py-3 text-xs font-bold text-teal-700">Invalid pattern — {error}</p>
+        <p className="rounded-xl bg-gray-100 px-4 py-3 text-xs font-bold text-gray-800">Invalid pattern — {error}</p>
       ) : null}
 
       {!error && test.trim() !== '' ? (
@@ -1576,7 +1576,7 @@ const RegexTesterTool = () => {
           <div className="custom-scrollbar max-h-72 overflow-auto rounded-xl border border-gray-200">
             {shown.map((m, i) => (
               <div key={i} className="border-b border-gray-100 px-4 py-2.5 font-mono text-xs text-[#374151] last:border-b-0">
-                <span className="mr-2 font-bold text-emerald-600">#{i + 1}</span>
+                <span className="mr-2 font-bold text-gray-800">#{i + 1}</span>
                 <span className="mr-2 text-gray-400">@ {m.index}</span>
                 <span className="font-bold">“{m.text.length > 80 ? m.text.slice(0, 77) + '…' : m.text}”</span>
                 {m.groups.length > 0 ? (
@@ -1591,7 +1591,7 @@ const RegexTesterTool = () => {
       ) : null}
 
       {!error && test.trim() !== '' && matches.length === 0 ? (
-        <p className="rounded-xl bg-amber-50 px-4 py-3 text-xs font-bold text-amber-700">No matches — adjust the pattern or add the /i flag.</p>
+        <p className="rounded-xl bg-gray-100 px-4 py-3 text-xs font-bold text-gray-800">No matches — adjust the pattern or add the /i flag.</p>
       ) : null}
 
       <ToolNote>
@@ -1716,9 +1716,9 @@ const DiffCheckerTool = () => {
                 key={i}
                 className={
                   r.type === 'add'
-                    ? 'border-l-2 border-emerald-400 bg-emerald-50 px-4 py-1 text-emerald-800'
+                    ? 'border-l-2 border-gray-400 bg-gray-100 px-4 py-1 text-gray-900'
                     : r.type === 'del'
-                      ? 'border-l-2 border-teal-400 bg-teal-50 px-4 py-1 text-teal-800'
+                      ? 'border-l-2 border-gray-400 bg-gray-100 px-4 py-1 text-gray-900'
                       : 'border-l-2 border-transparent px-4 py-1 text-[#374151]'
                 }
               >
@@ -1898,7 +1898,7 @@ const EmojiPickerTool = () => {
         <div className="flex items-end">
           <p className="text-xs leading-relaxed text-muted-foreground" aria-live="polite">
             {lastCopied !== '' ? (
-              <span className="font-bold text-emerald-600">Copied! {lastCopied} is on your clipboard.</span>
+              <span className="font-bold text-gray-800">Copied! {lastCopied} is on your clipboard.</span>
             ) : (
               'Click any emoji to copy it instantly, then paste into your caption, bio or CTA.'
             )}
@@ -1917,8 +1917,8 @@ const EmojiPickerTool = () => {
                 onClick={() => grab(emoji)}
                 title={'Copy ' + emoji}
                 className={
-                  'flex size-13 items-center justify-center rounded-2xl border-2 text-2xl transition-all hover:-translate-y-0.5 hover:border-[#0a0a0a] ' +
-                  (lastCopied === emoji ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 bg-white')
+                  'flex size-13 items-center justify-center rounded-2xl border-2 text-2xl transition-all hover:-translate-y-0.5 hover:border-zinc-200 ' +
+                  (lastCopied === emoji ? 'border-gray-500 bg-gray-100' : 'border-gray-200 bg-white')
                 }
               >
                 {emoji}

@@ -74,13 +74,13 @@ export function TextTool({ config }: { config: TextToolConfig }) {
                 <button
                   type="button"
                   onClick={() => setInput(config.sample!)}
-                  className="rounded-full border-2 border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 transition-colors hover:border-[#0a0a0a] hover:text-[#0a0a0a]"
+                  className="rounded-full border-2 border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 transition-colors hover:border-zinc-200 hover:text-[#0a0a0a]"
                 >
                   Load sample
                 </button>
               ) : null}
               {config.acceptFile ? (
-                <label className="cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 transition-colors hover:border-[#0a0a0a] hover:text-[#0a0a0a]">
+                <label className="cursor-pointer rounded-full border-2 border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 transition-colors hover:border-zinc-200 hover:text-[#0a0a0a]">
                   Upload file
                   <input
                     type="file"
@@ -110,7 +110,7 @@ export function TextTool({ config }: { config: TextToolConfig }) {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0a0a0a]">
               {config.outputLabel}
-              <ArrowRight className="size-3.5 text-emerald-600" />
+              <ArrowRight className="size-3.5 text-gray-800" />
             </p>
             <div className="flex gap-2">
               <CopyButton value={output} />
@@ -124,7 +124,7 @@ export function TextTool({ config }: { config: TextToolConfig }) {
           {config.showStats !== false && input ? (
             <p className="text-xs text-muted-foreground">
               Output: {output.length.toLocaleString()} chars
-              {saved > 0 ? <span className="font-bold text-emerald-600"> · {((saved / input.length) * 100).toFixed(1)}% smaller</span> : null}
+              {saved > 0 ? <span className="font-bold text-gray-800"> · {((saved / input.length) * 100).toFixed(1)}% smaller</span> : null}
             </p>
           ) : null}
         </div>

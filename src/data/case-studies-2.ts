@@ -34,25 +34,25 @@ export const caseStudiesBatch2: CaseStudy[] = [
         title: 'Unified Workout Logging',
         blurb:
           'Members log sets, reps, and rest times in four taps, with offline caching that keeps every session recorded even in basement gyms with no signal.',
-        gradient: 'from-emerald-500 to-amber-600',
+        gradient: 'from-gray-500 to-gray-800',
       },
       {
         title: 'Wearable & Health Sync',
         blurb:
           'Apple Health and Google Fit streams flow into each member profile, turning heart-rate and step data into progress rings, recovery hints, and weekly training insights.',
-        gradient: 'from-amber-500 to-emerald-700',
+        gradient: 'from-gray-500 to-gray-800',
       },
       {
         title: 'Streaks, Leaderboards & Push',
         blurb:
           'Gamified streaks and studio leaderboards keep members competing, while OneSignal campaigns time streak reminders and class openings to each member’s actual training rhythm.',
-        gradient: 'from-amber-400 to-amber-500',
+        gradient: 'from-gray-400 to-gray-500',
       },
       {
         title: 'One Codebase, Two Stores',
         blurb:
           'A single Flutter codebase ships pixel-consistent releases to the App Store and Google Play, cutting maintenance effort roughly in half versus separate native builds.',
-        gradient: 'from-yellow-300 to-amber-400',
+        gradient: 'from-gray-300 to-gray-400',
       },
     ],
     testimonialId: 't5',
@@ -92,25 +92,25 @@ export const caseStudiesBatch2: CaseStudy[] = [
         title: 'Three-Tap Reordering',
         blurb:
           'Favorites, recent orders, and location-aware menus put a regular’s usual drink three taps from the home screen, driving a 71% repeat order rate.',
-        gradient: 'from-emerald-500 to-amber-600',
+        gradient: 'from-gray-500 to-gray-800',
       },
       {
         title: 'Live Square POS Sync',
         blurb:
           'A middleware layer keeps items, modifiers, and prices identical across 14 cafés, while pickup windows flow straight into the barista ticket queue.',
-        gradient: 'from-amber-500 to-emerald-700',
+        gradient: 'from-gray-500 to-gray-800',
       },
       {
         title: 'Points-Based Loyalty',
         blurb:
           'Digital points replace paper punch cards, with double-point happy hours and free-drink milestones that nudge customers toward their next visit.',
-        gradient: 'from-amber-400 to-amber-500',
+        gradient: 'from-gray-400 to-gray-500',
       },
       {
         title: 'Segmented Push Campaigns',
         blurb:
           'OneSignal win-back flows, seasonal launches, and location promos reach the right regulars at the right hour, lifting average order value by 29%.',
-        gradient: 'from-teal-400 to-amber-400',
+        gradient: 'from-gray-400 to-gray-400',
       },
     ],
     testimonialId: 't6',
@@ -150,25 +150,25 @@ export const caseStudiesBatch2: CaseStudy[] = [
         title: 'Adaptive Learner Dashboards',
         blurb:
           'Every student sees the next lesson, pending assignments, and streak progress on one screen, removing the ‘what do I do now?’ drop-off point.',
-        gradient: 'from-emerald-500 to-amber-600',
+        gradient: 'from-gray-500 to-gray-800',
       },
       {
         title: 'Segmented Video on Mux',
         blurb:
           'Lessons broken into 6-10 minute chapters with transcripts and adaptive bitrate playback more than doubled average watch time to 2.3x baseline.',
-        gradient: 'from-amber-500 to-emerald-700',
+        gradient: 'from-gray-500 to-gray-800',
       },
       {
         title: 'Instructor Cohort Heatmaps',
         blurb:
           'Cohort heatmaps flag struggling students days before they churn, letting instructors intervene with targeted feedback while a course is still running.',
-        gradient: 'from-amber-400 to-amber-500',
+        gradient: 'from-gray-400 to-gray-500',
       },
       {
         title: 'Zero-Downtime Migration',
         blurb:
           'Dual-write rehearsals moved 12,000 enrolled students mid-semester over two weekends with no lost progress and no visible interruption for learners.',
-        gradient: 'from-yellow-300 to-amber-400',
+        gradient: 'from-gray-300 to-gray-400',
       },
     ],
     testimonialId: 't8',
@@ -208,25 +208,25 @@ export const caseStudiesBatch2: CaseStudy[] = [
         title: 'Flavor Finder Quiz',
         blurb:
           'Five questions on roast, brew method, and tasting notes match each visitor to a blend and pre-fill a subscription recommendation with the right grind and cadence.',
-        gradient: 'from-emerald-500 to-amber-600',
+        gradient: 'from-gray-500 to-gray-800',
       },
       {
         title: 'Self-Service Subscriptions',
         blurb:
           'Skip, swap, pause, and delay take two clicks in a customer portal, turning would-be cancellations into schedule changes and lifting repeat purchases 45%.',
-        gradient: 'from-amber-500 to-emerald-700',
+        gradient: 'from-gray-500 to-gray-800',
       },
       {
         title: 'Lifecycle Email in Klaviyo',
         blurb:
           'Welcome, brewing-guide, replenishment, and win-back flows run on autopilot in Klaviyo, with Mailchimp archives and GA4 events tying email to revenue.',
-        gradient: 'from-amber-400 to-amber-500',
+        gradient: 'from-gray-400 to-gray-500',
       },
       {
         title: '1.9-Second Mobile Store',
         blurb:
           'A performance-first WooCommerce theme cut mobile load times to 1.9 seconds and pushed conversion from 3.1% to 5.8% across the whole catalog.',
-        gradient: 'from-yellow-300 to-amber-400',
+        gradient: 'from-gray-300 to-gray-400',
       },
     ],
     metaTitle: 'Crema Coffee Co. — Ecommerce Development Case Study | Developers3',
@@ -265,25 +265,25 @@ export const caseStudiesBatch2: CaseStudy[] = [
         title: 'SEO Content Engine',
         blurb:
           'Sixty interlinked care guides and plant-finder pages target high-intent queries like ‘pet safe plants’ and ‘low light plants’, driving 270% organic session growth.',
-        gradient: 'from-emerald-500 to-amber-600',
+        gradient: 'from-gray-500 to-gray-800',
       },
       {
         title: 'Restructured Shopping Campaigns',
         blurb:
           'Feed optimization, margin-aware bidding, and intent-matched campaign structure lifted return on ad spend from 2.1x to 5.2x while cutting CPA by 38%.',
-        gradient: 'from-amber-500 to-emerald-700',
+        gradient: 'from-gray-500 to-gray-800',
       },
       {
         title: 'UGC Social Calendar',
         blurb:
           'Creator styling videos, repotting demos, and shelf tours templated in Canva keep daily posts flowing, adding 14k Instagram followers in 90 days.',
-        gradient: 'from-amber-400 to-amber-500',
+        gradient: 'from-gray-400 to-gray-500',
       },
       {
         title: 'Revenue-Tracked GA4 Reporting',
         blurb:
           'GA4 events tie every channel to real revenue, so budgets shift weekly toward what converts and the plant club keeps a filled funnel.',
-        gradient: 'from-teal-400 to-amber-400',
+        gradient: 'from-gray-400 to-gray-400',
       },
     ],
     testimonialId: 't7',

@@ -319,7 +319,7 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
 
       {/* Editor card */}
       {draft ? (
-        <div className="card-surface rounded-2xl p-6 ring-1 ring-emerald-600/15">
+        <div className="card-surface rounded-2xl p-6 ring-1 ring-gray-800/15">
           <div className="flex items-center justify-between gap-3">
             <h3 className="text-base font-semibold">
               {draft.id ? 'Edit post' : 'New post'}
@@ -390,7 +390,7 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
                 <img
                   src={draft.image}
                   alt="Cover preview"
-                  className="h-14 w-24 rounded-lg object-cover ring-1 ring-emerald-900/10"
+                  className="h-14 w-24 rounded-lg object-cover ring-1 ring-gray-900/10"
                   onError={(event) => {
                     event.currentTarget.style.display = 'none';
                   }}
@@ -399,7 +399,7 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
                   }}
                 />
               ) : (
-                <div className="flex h-14 w-24 items-center justify-center rounded-lg border border-dashed border-emerald-900/15 text-[11px] text-muted-foreground">
+                <div className="flex h-14 w-24 items-center justify-center rounded-lg border border-dashed border-gray-900/15 text-[11px] text-muted-foreground">
                   No image
                 </div>
               )}
@@ -481,7 +481,7 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
             No posts yet — create your first one with “New post”.
           </p>
         ) : (
-          <ul className="divide-y divide-emerald-900/5">
+          <ul className="divide-y divide-gray-900/5">
             {posts.map((post) => (
               <li key={post.id} className="flex flex-wrap items-center gap-3 px-5 py-4">
                 <div className="min-w-0 flex-1">
@@ -493,7 +493,7 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
                 </div>
                 <Badge
                   variant="outline"
-                  className="border-emerald-600/15 bg-emerald-50 text-emerald-700"
+                  className="border-gray-800/15 bg-gray-100 text-gray-800"
                 >
                   {post.category}
                 </Badge>
@@ -662,7 +662,7 @@ function PricingTab({ token, onUnauthorized }: { token: string; onUnauthorized: 
         <h3 className="text-base font-semibold">Website tiers</h3>
         <div className="mt-4 grid gap-4 lg:grid-cols-3">
           {tiers.map((tier, index) => (
-            <div key={`${tier.name}-${index}`} className="rounded-xl border border-emerald-900/10 p-4">
+            <div key={`${tier.name}-${index}`} className="rounded-xl border border-gray-900/10 p-4">
               <div className="grid gap-3">
                 <div className="flex flex-col gap-1.5">
                   <Label htmlFor={`tier-name-${index}`}>Name</Label>
@@ -727,7 +727,7 @@ function PricingTab({ token, onUnauthorized }: { token: string; onUnauthorized: 
         <h3 className="text-base font-semibold">Service pricing blocks</h3>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {blocks.map((block, index) => (
-            <div key={`${block.serviceSlug}-${index}`} className="rounded-xl border border-emerald-900/10 p-4">
+            <div key={`${block.serviceSlug}-${index}`} className="rounded-xl border border-gray-900/10 p-4">
               <div className="grid gap-3">
                 <div className="flex flex-col gap-1.5">
                   <Label htmlFor={`block-name-${index}`}>Name</Label>

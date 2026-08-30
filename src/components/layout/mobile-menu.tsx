@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Mail, Phone, Sparkle, X } from 'lucide-react';
+import { Mail, Phone, X } from 'lucide-react';
 import { site } from '@/lib/site';
 import { Link } from '@/components/common/link';
 
@@ -60,43 +60,42 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             href="/"
             ariaLabel="Developers3 — home"
             onClick={onClose}
-            className="flex items-center gap-2.5 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            className="flex items-center gap-2.5 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
           >
             <span
               aria-hidden="true"
-              className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-600 to-amber-400 shadow-[0_4px_14px_rgba(5,150,105,0.35)]"
+              className="flex size-9 items-center justify-center rounded-lg bg-zinc-900"
             >
-              <Sparkle className="size-5 text-white" />
+              <span className="text-base" aria-hidden="true">✦</span>
             </span>
-            <span className="font-display text-lg font-bold tracking-tight text-[#0a0a0a]">
-              Developers<span className="text-gradient">3</span>
-              <span aria-hidden="true" className="ml-0.5 inline-block size-1.5 rounded-full bg-yellow-300" />
+            <span className="font-display text-lg font-bold tracking-tight text-zinc-900">
+              Developers3
             </span>
           </Link>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close menu"
-            className="flex size-11 items-center justify-center rounded-full border-2 border-[#0a0a0a] text-[#0a0a0a] transition-colors duration-200 hover:bg-[#0a0a0a] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            className="flex size-11 items-center justify-center rounded-full border border-zinc-200 text-zinc-900 transition-colors duration-200 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
           >
             <X className="size-5" aria-hidden="true" />
           </button>
         </div>
 
-        {/* Big bold staggered links */}
+        {/* Big staggered links */}
         <nav aria-label="Mobile navigation" className="mt-12 flex flex-col gap-5">
           {MENU_LINKS.map((item, index) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className="menu-fade group inline-flex items-baseline gap-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+              className="menu-fade group inline-flex items-baseline gap-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
               style={{ animationDelay: `${index * 70}ms` }}
             >
-              <span className="text-gradient text-sm font-bold" aria-hidden="true">
+              <span className="text-sm font-bold text-zinc-400" aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <span className="font-display text-4xl font-bold text-[#0a0a0a] transition-colors duration-200 group-hover:text-emerald-600">
+              <span className="font-display text-4xl font-bold text-zinc-900 transition-colors duration-200 group-hover:text-zinc-600">
                 {item.label}
               </span>
             </Link>
@@ -109,23 +108,23 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
           style={{ animationDelay: `${MENU_LINKS.length * 70}ms` }}
         >
           <Link href="/contact" onClick={onClose} className="btn-primary-pill-sm w-full">
-            🚀 Start Your Project
+            Start Your Project
           </Link>
-          <div className="flex flex-col gap-3 text-sm font-medium text-gray-500">
+          <div className="flex flex-col gap-3 text-sm font-medium text-zinc-500">
             {site.phoneDisplay ? (
               <a
                 href={site.phoneHref}
-                className="inline-flex items-center gap-2.5 transition-colors hover:text-[#0a0a0a]"
+                className="inline-flex items-center gap-2.5 transition-colors hover:text-zinc-900"
               >
-                <Phone className="size-4 shrink-0 text-emerald-600" aria-hidden="true" />
+                <Phone className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
                 {site.phoneDisplay}
               </a>
             ) : null}
             <a
               href={`mailto:${site.email}`}
-              className="inline-flex items-center gap-2.5 transition-colors hover:text-[#0a0a0a]"
+              className="inline-flex items-center gap-2.5 transition-colors hover:text-zinc-900"
             >
-              <Mail className="size-4 shrink-0 text-emerald-600" aria-hidden="true" />
+              <Mail className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
               {site.email}
             </a>
           </div>

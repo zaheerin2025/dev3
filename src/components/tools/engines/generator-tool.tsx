@@ -145,7 +145,7 @@ export function GeneratorTool({ config }: { config: GeneratorConfig }) {
       <div className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0a0a0a]">
-            <Sparkle className="size-4 fill-yellow-300 text-yellow-300" />
+            <Sparkle className="size-4 fill-gray-300 text-gray-300" />
             {config.outputLabel}
           </p>
           <div className="flex gap-2">

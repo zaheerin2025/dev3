@@ -54,7 +54,7 @@ export function PromisesSection() {
                 </span>
                 <h3 className="mt-5 text-lg font-bold text-[#0a0a0a]">{promise.title}</h3>
                 <p className="mt-3 text-[#4b5563] leading-relaxed">{promise.body}</p>
-                <p className="mt-auto pt-6 text-sm font-semibold text-emerald-700">
+                <p className="mt-auto pt-6 text-sm font-semibold text-gray-800">
                   {promise.sticker}
                 </p>
               </article>

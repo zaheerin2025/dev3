@@ -78,7 +78,7 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
           <div className="mt-12 grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
             <div>
               <h2 className="flex items-center gap-2 font-display text-2xl font-bold text-[#0a0a0a]">
-                <Sparkle className="size-5 fill-yellow-300 text-yellow-300" aria-hidden="true" />
+                <Sparkle className="size-5 fill-gray-300 text-gray-300" aria-hidden="true" />
                 How to use the {meta.name}
               </h2>
               <ol className="mt-5 flex flex-col gap-4">
@@ -102,7 +102,7 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
                   Developers3 builds websites, apps and marketing systems for a living. These
                   utilities are the same ones our team uses daily — shared freely, supported by ads.
                 </p>
-                <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-emerald-700 hover:underline">
+                <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-gray-800 hover:underline">
                   Need help with a project? Talk to us →
                 </Link>
               </div>
@@ -134,7 +134,7 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
           <div className="mt-14">
             <div className="flex items-end justify-between gap-4">
               <h2 className="font-display text-2xl font-bold text-[#0a0a0a]">Related free tools</h2>
-              <Link href="/tools" className="text-sm font-bold text-emerald-700 hover:underline">
+              <Link href="/tools" className="text-sm font-bold text-gray-800 hover:underline">
                 Browse all 100 →
               </Link>
             </div>
@@ -149,7 +149,7 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
           <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 rounded-2xl bg-gray-50 px-6 py-5 text-xs font-semibold text-gray-500">
             {['No signup required', 'Runs in your browser where possible', 'Nothing stored on our servers', 'Free forever'].map((item) => (
               <span key={item} className="inline-flex items-center gap-1.5">
-                <CircleCheck className="size-4 text-emerald-500" aria-hidden="true" />
+                <CircleCheck className="size-4 text-gray-500" aria-hidden="true" />
                 {item}
               </span>
             ))}

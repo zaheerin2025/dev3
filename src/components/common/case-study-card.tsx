@@ -14,10 +14,10 @@ const CATEGORY_LABELS: Record<CaseStudyCategory, string> = {
 };
 
 const CATEGORY_STYLES: Record<CaseStudyCategory, string> = {
-  web: 'bg-emerald-600/90 text-white',
-  ecommerce: 'bg-amber-500/90 text-amber-950',
-  apps: 'bg-emerald-600/90 text-white',
-  marketing: 'bg-teal-500/90 text-white',
+  web: 'bg-gray-800/90 text-white',
+  ecommerce: 'bg-gray-500/90 text-gray-950',
+  apps: 'bg-gray-800/90 text-white',
+  marketing: 'bg-gray-500/90 text-white',
 };
 
 interface CaseStudyCardProps {
@@ -34,7 +34,7 @@ export function CaseStudyCard({ study, className }: CaseStudyCardProps) {
       className={cn('group block h-full rounded-[1.25rem] focus-visible:outline-none', className)}
     >
       <article className="card-surface card-hover flex h-full flex-col overflow-hidden group-focus-visible:ring-2 group-focus-visible:ring-ring">
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-gradient-to-br from-emerald-100 to-emerald-50">
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-100">
           <Image
             src={study.coverImage}
             alt={study.coverAlt}
@@ -57,15 +57,15 @@ export function CaseStudyCard({ study, className }: CaseStudyCardProps) {
           </span>
         </div>
         <div className="flex h-full flex-col gap-2.5 p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">{study.industry}</p>
-          <h3 className="text-lg font-semibold leading-snug text-foreground transition-colors group-hover:text-emerald-800">
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-gray-800">{study.industry}</p>
+          <h3 className="text-lg font-semibold leading-snug text-foreground transition-colors group-hover:text-gray-900">
             {study.title}
           </h3>
           <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{study.summary}</p>
-          <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-semibold text-emerald-700">
+          <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-sm font-semibold text-gray-800">
             View case study
             <span
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-50 transition-all duration-300 group-hover:bg-emerald-600 group-hover:text-white"
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 transition-all duration-300 group-hover:bg-gray-800 group-hover:text-white"
               aria-hidden="true"
             >
               <ArrowUpRight className="h-3.5 w-3.5" />

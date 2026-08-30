@@ -726,3 +726,25 @@ Stage Summary:
 - New cohesive brand: Emerald & Sunshine (emerald/teal/lime primary, amber/yellow accent, green-ink dark sections, cream tints). 64 files changed. No pink/rose/blue/purple anywhere in src/.
 - Structural design untouched (stickers, tilts, marquees, animated hero all preserved) — only the color system changed, per user's request.
 - Known issues: (1) pre-existing dev-mode Radix accordion hydration warning; (2) real contact details still placeholders in site.ts / admin Site Content.
+
+---
+Task ID: 26
+Agent: orchestrator (Z.ai main)
+Task: Remove styling entirely (user: "can you remove styling only for now?") — strip all decorative styling down to a clean neutral base, keep 100% functionality. (Also staged earlier same-session: NEBULA dark 3D build — globals/hero/header/footer + three.js install — then user redirected to full style removal.)
+
+Work Log:
+- NEBULA build (superseded same session, but useful artifacts kept): installed three@0.185 + @react-three/fiber@9 + @react-three/drei@10 + @types/three; rewrote globals.css as dark aurora system; built hero-scene.tsx (R3F); re-tinted header/footer/mobile-menu/marquee/floating-shapes/button/logos/themeColor.
+- User then requested full styling removal. Rewrote globals.css as "Clean Neutral": white bg, zinc-ink text, #e4e4e7 borders, solid zinc-900 primary buttons; ALL legacy utility names kept as neutral equivalents (text-gradient→inherit, highlighter→none, sticker→plain pill, btn pills→solid zinc-900/white outline, tilt/shine/blob→disabled, section-dark/black→flat #131316, section-cream/white/tint→#fafafa/#fff, glass→plain white, icon-tile→zinc-900, marquee→#131316 band, grid/dots/noise→off). .blob { display:none } kills every decorative blob site-wide.
+- hero.tsx → clean static hero (no WebGL, no floaters/marquee pill; static tech list; Editable ids + trackEvent intact). Deleted hero-scene.tsx. three deps left installed but unused (tree-shaken).
+- header.tsx / mobile-menu.tsx / footer.tsx → clean white bar + white overlay menu + flat dark footer; all nav/mega-menu/newsletter/social/admin logic byte-preserved.
+- floating-shapes.tsx → both components return null. marquee.tsx → single neutral dark band. button.tsx variants → solid zinc-900 / neutral outline.
+- Deterministic sed sweep over 157 files (views, common, home, tools, admin, ads, ui, layout, data, lib, hooks, app; excluding my hand-rewritten files): all Tailwind color families (emerald/teal/lime/amber/orange/yellow/fuchsia/violet/purple/rose/pink/sky/cyan/indigo/blue) → gray scale by step (600/700→gray-800, 800/900→gray-900, 50/100→gray-100 …); border-[#0a0a0a]→border-zinc-200; hard offset shadows→soft; ~60 old hexes → neutral equivalents; rgb/rgba/underscore triple forms → black/gray neutrals. KEPT red/green semantics and bg-[#0a0a0a] (neutral black). Post-sweep rg: ZERO color-family classes remain in src/.
+- Restored logo-color-advisor curated PALETTES content 100% to pre-rebrand values from git 9485db8 (4 chip hexes: #FFF7ED, #FFF1F2, #EC4899, #FDF2F8) — tool content is not styling.
+- Neutralized public/logo.svg + src/app/icon.svg (flat #0a0a0a tile, #9ca3af dots) and layout.tsx themeColor → #ffffff.
+- Verification: dev server via .zscripts/dev.sh after pkill + rm -rf .next (note: plain `&` background launch got reaped again; nohup bash .zscripts/dev.sh worked). agent-browser: desktop 1440x900 full scroll (hero/services/stats/work/tools/process/FAQ/CTA/footer all clean neutral), mega menu opens, FAQ accordion expands, mobile 390x844 zero horizontal overflow, mobile menu + navigation to pricing works, contact quote builder selects "Custom Websites" → live estimate "$1,400 – $1,900", QR tool form functional, footer bottom == document height (sticky, no gap). agent-browser errors: none. ESLint clean, tsc clean (examples/ pre-existing only).
+
+Stage Summary:
+- Site is now a clean neutral base: white surfaces, ink text, zinc-900 primary buttons, flat #131316 dark sections. Zero gradients, zero glow, zero 3D, zero blobs, zero color accents (WhatsApp button keeps its functional green brand icon).
+- Functionality 100% intact: hash router, mega menu, quote builder + live estimates, tools, admin editable, newsletter, SEO.
+- three/@react-three/fiber/@react-three/drei remain in package.json (unused, tree-shaken) for a future 3D styling pass if requested.
+- Known: dev-mode "1 Issue" badge = pre-existing Radix accordion hydration warning (documented Task 25); real contact details still placeholders in site.ts / admin Site Content.

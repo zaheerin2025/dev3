@@ -11,7 +11,6 @@ import {
   Mail,
   MapPin,
   Phone,
-  Sparkle,
   Twitter,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -22,7 +21,6 @@ import { useSiteSettings } from '@/lib/use-site-settings';
 import { services } from '@/data';
 import { Link } from '@/components/common/link';
 import { trackEvent } from '@/lib/analytics';
-import { FloatingShapesDark } from '@/components/common/floating-shapes';
 
 const COMPANY_LINKS = [
   { label: 'About Us', href: '/about' },
@@ -86,7 +84,7 @@ function NewsletterForm() {
           placeholder="you@company.com"
           autoComplete="email"
           required
-          className="min-h-[44px] rounded-full border-white/15 bg-white/10 text-white placeholder:text-white/40 focus-visible:border-emerald-400/60 focus-visible:ring-emerald-400/30"
+          className="min-h-[44px] rounded-full border-white/15 bg-white/10 text-white placeholder:text-white/40 focus-visible:border-zinc-400/60 focus-visible:ring-zinc-400/30"
         />
         <Button
           type="submit"
@@ -104,9 +102,8 @@ function NewsletterForm() {
 }
 
 /**
- * COLORFUL FOOTER — green-ink section with the emerald→teal→amber gradient edge,
- * Sparkle logo lockup, floating shapes, pill newsletter and white/amber link
- * columns. Sticks to the bottom via the site shell's `mt-auto`.
+ * FOOTER — flat dark section, plain columns, functional newsletter.
+ * Sticks to the bottom via the site shell's `mt-auto`.
  */
 export function Footer() {
   const year = new Date().getFullYear();
@@ -118,15 +115,6 @@ export function Footer() {
 
   return (
     <footer className="relative mt-auto overflow-hidden section-black text-white">
-      {/* Signature gradient top edge */}
-      <div
-        aria-hidden="true"
-        className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-amber-400"
-      />
-
-      {/* Ambient shapes + blobs on black (toned down so text stays readable) */}
-      <FloatingShapesDark className="opacity-70" />
-
       <div className="relative mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
           {/* Brand */}
@@ -134,18 +122,16 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-2.5" ariaLabel="Developers3 — home">
               <span
                 aria-hidden="true"
-                className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-600 to-teal-500 shadow-[0_4px_14px_rgba(5,150,105,0.45)]"
+                className="flex size-9 items-center justify-center rounded-lg bg-white/10"
               >
-                <Sparkle className="size-5 fill-white text-white" aria-hidden="true" />
+                <span className="text-base" aria-hidden="true">✦</span>
               </span>
               <span className="font-display text-lg font-bold tracking-tight text-white">
-                Developers<span className="text-gradient-soft">3</span>
-                <span aria-hidden="true" className="ml-0.5 inline-block size-1.5 rounded-full bg-yellow-300" />
+                Developers3
               </span>
             </Link>
             <p className="max-w-xs text-sm leading-relaxed text-white/60">
-              {site.tagline}. We design, build, and grow websites, apps, and software for ambitious
-              businesses — with transparent pricing and senior people on every project.
+              {site.tagline}
             </p>
             <div className="flex items-center gap-2">
               {[
@@ -161,7 +147,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Developers3 on ${label}`}
-                  className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/70 ring-1 ring-inset ring-white/15 transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-600 hover:text-white hover:ring-emerald-500"
+                  className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/70 ring-1 ring-inset ring-white/15 transition-colors duration-200 hover:bg-white/20 hover:text-white"
                 >
                   <Icon className="size-4" aria-hidden="true" />
                 </a>
@@ -171,7 +157,7 @@ export function Footer() {
 
           {/* Services */}
           <nav aria-label="Footer services">
-            <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-amber-400">
+            <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-zinc-400">
               Services
             </h3>
             <ul className="flex flex-col gap-2.5">
@@ -190,7 +176,7 @@ export function Footer() {
 
           {/* Company + legal */}
           <nav aria-label="Footer company">
-            <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-amber-400">
+            <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-zinc-400">
               Company
             </h3>
             <ul className="flex flex-col gap-2.5">
@@ -220,7 +206,7 @@ export function Footer() {
           {/* Contact + newsletter */}
           <div className="flex flex-col gap-6">
             <div>
-              <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-amber-400">
+              <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-zinc-400">
                 Get in touch
               </h3>
               <ul className="flex flex-col gap-3 text-sm text-white/60">
@@ -230,7 +216,7 @@ export function Footer() {
                     onClick={() => trackEvent('call_click', { location: 'footer' })}
                     className="inline-flex items-center gap-2.5 transition-colors hover:text-white"
                   >
-                    <Phone className="size-4 shrink-0 text-amber-400" aria-hidden="true" />
+                    <Phone className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
                     {phoneDisplay}
                   </a>
                 </li>
@@ -240,18 +226,18 @@ export function Footer() {
                     onClick={() => trackEvent('email_click', { location: 'footer' })}
                     className="inline-flex items-center gap-2.5 transition-colors hover:text-white"
                   >
-                    <Mail className="size-4 shrink-0 text-amber-400" aria-hidden="true" />
+                    <Mail className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
                     {email}
                   </a>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <MapPin className="mt-0.5 size-4 shrink-0 text-amber-400" aria-hidden="true" />
+                  <MapPin className="mt-0.5 size-4 shrink-0 text-zinc-400" aria-hidden="true" />
                   <span>
                     {site.address.street}, {site.address.city}, {site.address.state} {site.address.zip}
                   </span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Clock className="size-4 shrink-0 text-amber-400" aria-hidden="true" />
+                  <Clock className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
                   <span>{site.hours}</span>
                 </li>
               </ul>

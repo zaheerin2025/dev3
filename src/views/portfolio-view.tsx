@@ -41,7 +41,7 @@ function WebsiteGrid({ items }: { items: PortfolioItem[] }) {
       {items.map((item, index) => (
         <Reveal key={item.id} delay={(index % 3) * 60}>
           <article className="card-surface card-hover group flex h-full flex-col overflow-hidden rounded-3xl">
-            <div className="relative aspect-[16/10] overflow-hidden bg-emerald-50">
+            <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
               {item.imageUrl ? (
                  
                 <img
@@ -57,7 +57,7 @@ function WebsiteGrid({ items }: { items: PortfolioItem[] }) {
               )}
             </div>
             <div className="flex flex-1 flex-col p-6">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-emerald-600">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-800">
                 {item.category}
               </p>
               <h3 className="mt-2 text-lg font-bold leading-snug">{item.title}</h3>
@@ -70,7 +70,7 @@ function WebsiteGrid({ items }: { items: PortfolioItem[] }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackEvent('portfolio_visit', { title: item.title })}
-                  className="inline-flex min-h-[44px] items-center gap-1.5 text-sm font-bold text-emerald-600 transition-colors hover:text-emerald-800"
+                  className="inline-flex min-h-[44px] items-center gap-1.5 text-sm font-bold text-gray-800 transition-colors hover:text-gray-900"
                 >
                   Visit website
                   <ExternalLink className="h-4 w-4" aria-hidden="true" />
@@ -135,20 +135,20 @@ export function PortfolioView() {
       <Section grid className="md:pt-20">
         {/* Ambient glow orbs (decorative) */}
         <span
-          className="glow-orb left-[-10rem] top-[-9rem] h-[26rem] w-[26rem] bg-emerald-300/25"
+          className="glow-orb left-[-10rem] top-[-9rem] h-[26rem] w-[26rem] bg-gray-300/25"
           aria-hidden="true"
         />
         <span
-          className="glow-orb right-[-10rem] top-1/4 h-80 w-80 bg-emerald-300/20"
+          className="glow-orb right-[-10rem] top-1/4 h-80 w-80 bg-gray-300/20"
           aria-hidden="true"
         />
         <span
-          className="glow-orb bottom-[-10rem] left-1/3 h-80 w-80 bg-emerald-200/30"
+          className="glow-orb bottom-[-10rem] left-1/3 h-80 w-80 bg-gray-200/30"
           aria-hidden="true"
         />
         <Reveal className="relative mx-auto max-w-3xl text-center">
           <div className="flex flex-col items-center gap-5">
-            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-600">
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-800">
               Featured Work
             </p>
             <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl">
@@ -175,7 +175,7 @@ export function PortfolioView() {
 
         {/* Case studies filter bar */}
         <div className="relative mt-16 flex flex-col items-center gap-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-600">
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-800">
             Case Studies
           </p>
           <div
@@ -197,8 +197,8 @@ export function PortfolioView() {
                   className={cn(
                     'inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     isActive
-                      ? 'bg-gradient-to-br from-emerald-600 to-teal-500 text-white shadow-[0_8px_20px_-8px_rgb(5_150_105/0.65)] hover:from-emerald-500 hover:to-emerald-500'
-                      : 'bg-white text-foreground/70 ring-1 ring-inset ring-emerald-900/10 hover:text-emerald-800 hover:ring-emerald-500/30'
+                      ? 'bg-gradient-to-br from-gray-800 to-gray-500 text-white shadow-[0_8px_20px_-8px_rgb(0_0_0/0.65)] hover:from-gray-500 hover:to-gray-500'
+                      : 'bg-white text-foreground/70 ring-1 ring-inset ring-gray-900/10 hover:text-gray-900 hover:ring-gray-500/30'
                   )}
                 >
                   {filter.label}
@@ -224,9 +224,9 @@ export function PortfolioView() {
             ))}
           </div>
         ) : (
-          <div className="relative mt-10 flex flex-col items-center gap-4 rounded-[1.5rem] border border-dashed border-emerald-900/15 bg-white/60 px-6 py-16 text-center">
+          <div className="relative mt-10 flex flex-col items-center gap-4 rounded-[1.5rem] border border-dashed border-gray-900/15 bg-white/60 px-6 py-16 text-center">
             <span
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-600/15"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-800 ring-1 ring-inset ring-gray-800/15"
               aria-hidden="true"
             >
               <Inbox className="h-5 w-5" />
