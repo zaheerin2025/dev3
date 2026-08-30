@@ -102,7 +102,7 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
                   Developers3 builds websites, apps and marketing systems for a living. These
                   utilities are the same ones our team uses daily — shared freely, supported by ads.
                 </p>
-                <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-pink-700 hover:underline">
+                <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-emerald-700 hover:underline">
                   Need help with a project? Talk to us →
                 </Link>
               </div>
@@ -134,7 +134,7 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
           <div className="mt-14">
             <div className="flex items-end justify-between gap-4">
               <h2 className="font-display text-2xl font-bold text-[#0a0a0a]">Related free tools</h2>
-              <Link href="/tools" className="text-sm font-bold text-pink-700 hover:underline">
+              <Link href="/tools" className="text-sm font-bold text-emerald-700 hover:underline">
                 Browse all 100 →
               </Link>
             </div>

@@ -97,12 +97,12 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]} />
           <div className="mt-6 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-pink-700 ring-1 ring-inset ring-pink-600/20">
-              <span className="h-1.5 w-1.5 rounded-full bg-pink-500" aria-hidden="true" />
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
               {post.category}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-pink-900/10">
-              <Clock className="h-3.5 w-3.5 text-pink-600" aria-hidden="true" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-emerald-900/10">
+              <Clock className="h-3.5 w-3.5 text-emerald-600" aria-hidden="true" />
               {post.readTime}
             </span>
           </div>
@@ -112,8 +112,8 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{post.excerpt}</p>
           <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="flex items-center gap-2.5">
-              <Avatar className="h-10 w-10 ring-2 ring-pink-100">
-                <AvatarFallback className="bg-pink-100 text-xs font-bold text-pink-700">
+              <Avatar className="h-10 w-10 ring-2 ring-emerald-100">
+                <AvatarFallback className="bg-emerald-100 text-xs font-bold text-emerald-700">
                   {author?.initials ?? 'D3'}
                 </AvatarFallback>
               </Avatar>
@@ -181,7 +181,7 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
                       ))}
                     </div>
                     {section.bullets && section.bullets.length > 0 ? (
-                      <ul className="mt-5 list-disc space-y-2 pl-5 marker:text-pink-500">
+                      <ul className="mt-5 list-disc space-y-2 pl-5 marker:text-emerald-500">
                         {section.bullets.map((bullet, bIndex) => (
                           <li key={bIndex} className="leading-7 text-foreground/80">
                             {bullet}
@@ -210,9 +210,9 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
                     onClick={() =>
                       document.getElementById(slugify(section.heading))?.scrollIntoView({ behavior: 'smooth' })
                     }
-                    className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-muted-foreground transition-colors hover:bg-pink-50 hover:text-pink-800"
+                    className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-muted-foreground transition-colors hover:bg-emerald-50 hover:text-emerald-800"
                   >
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-pink-50 text-xs font-bold text-pink-700 ring-1 ring-inset ring-pink-600/15 transition-colors group-hover:bg-pink-600 group-hover:text-white">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-xs font-bold text-emerald-700 ring-1 ring-inset ring-emerald-600/15 transition-colors group-hover:bg-emerald-600 group-hover:text-white">
                       {index + 1}
                     </span>
                     <span className="leading-snug">{section.heading}</span>
@@ -221,15 +221,15 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
               </nav>
             </div>
 
-            <div className="rounded-2xl border border-pink-600/10 bg-pink-50 p-5">
-              <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-pink-800">
+            <div className="rounded-2xl border border-emerald-600/10 bg-emerald-50 p-5">
+              <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-emerald-800">
                 <ListChecks className="h-4 w-4" aria-hidden="true" />
                 Key takeaways
               </h2>
               <ul className="mt-3 flex flex-col gap-2.5">
                 {post.keyTakeaways.map((takeaway, index) => (
                   <li key={index} className="flex items-start gap-2.5">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-pink-600" aria-hidden="true" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" />
                     <span className="text-sm leading-relaxed">{takeaway}</span>
                   </li>
                 ))}
@@ -247,11 +247,11 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
                 alt={`Portrait of ${author.name}`}
                 width={64}
                 height={64}
-                className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-pink-100"
+                className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-emerald-100"
               />
             ) : (
-              <Avatar className="h-16 w-16 ring-2 ring-pink-100">
-                <AvatarFallback className="bg-pink-100 font-bold text-pink-700">D3</AvatarFallback>
+              <Avatar className="h-16 w-16 ring-2 ring-emerald-100">
+                <AvatarFallback className="bg-emerald-100 font-bold text-emerald-700">D3</AvatarFallback>
               </Avatar>
             )}
             <div>
@@ -260,7 +260,7 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
               </h2>
               {author ? (
                 <>
-                  <p className="text-sm font-medium text-pink-700">{author.role}</p>
+                  <p className="text-sm font-medium text-emerald-700">{author.role}</p>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{author.bio}</p>
                 </>
               ) : null}
@@ -270,14 +270,14 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
 
         {/* Related service CTA */}
         <Reveal className="mt-6">
-          <div className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-pink-700 to-[#0a0a0a] p-8 text-white shadow-[0_28px_56px_-28px_rgb(4_16_11/0.55)] sm:p-10">
+          <div className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-emerald-700 to-[#0a0a0a] p-8 text-white shadow-[0_28px_56px_-28px_rgb(4_16_11/0.55)] sm:p-10">
             {/* Ambient glows + texture */}
             <span
-              className="glow-orb -right-12 -top-16 h-64 w-64 bg-pink-400/30"
+              className="glow-orb -right-12 -top-16 h-64 w-64 bg-emerald-400/30"
               aria-hidden="true"
             />
             <span
-              className="glow-orb -bottom-20 -left-10 h-56 w-56 bg-pink-400/20"
+              className="glow-orb -bottom-20 -left-10 h-56 w-56 bg-emerald-400/20"
               aria-hidden="true"
             />
             <span
@@ -290,20 +290,20 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
             />
             <div className="relative grid items-center gap-6 sm:grid-cols-[1fr_auto]">
               <div>
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-pink-100 ring-1 ring-inset ring-white/20">
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-100 ring-1 ring-inset ring-white/20">
                   Related service
                 </span>
                 <h2 className="mt-3 text-xl font-bold text-balance sm:text-2xl">
                   {relatedService ? `${relatedService.name} — done for you` : 'Need this built for you?'}
                 </h2>
-                <p className="mt-2 text-sm leading-relaxed text-pink-50/85">
+                <p className="mt-2 text-sm leading-relaxed text-emerald-50/85">
                   The team that wrote this guide builds these every week. Get a free quote.
                 </p>
               </div>
               <Button
                 asChild
                 size="lg"
-                className="h-12 w-full bg-white text-pink-800 hover:bg-pink-50 sm:w-auto"
+                className="h-12 w-full bg-white text-emerald-800 hover:bg-emerald-50 sm:w-auto"
               >
                 <Link href={`/${post.relatedServiceSlug}`}>
                   {relatedService ? `Explore ${relatedService.shortName}` : 'Get Free Quote'}
@@ -344,7 +344,7 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
                     </Link>
                     <div className="flex flex-1 flex-col gap-2 p-5">
                       <h3 className="font-semibold leading-snug">
-                        <Link href={`/blog/${related.slug}`} className="transition-colors group-hover:text-pink-800">
+                        <Link href={`/blog/${related.slug}`} className="transition-colors group-hover:text-emerald-800">
                           {related.title}
                         </Link>
                       </h3>
@@ -397,12 +397,12 @@ function DbPostArticle({ post }: { post: DbPost }) {
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]} />
           <div className="mt-6 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-pink-700 ring-1 ring-inset ring-pink-600/20">
-              <span className="h-1.5 w-1.5 rounded-full bg-pink-500" aria-hidden="true" />
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
               {post.category}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-pink-900/10">
-              <Clock className="h-3.5 w-3.5 text-pink-600" aria-hidden="true" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-emerald-900/10">
+              <Clock className="h-3.5 w-3.5 text-emerald-600" aria-hidden="true" />
               {post.readTime} min read
             </span>
           </div>
@@ -412,8 +412,8 @@ function DbPostArticle({ post }: { post: DbPost }) {
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{post.excerpt}</p>
           <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="flex items-center gap-2.5">
-              <Avatar className="h-10 w-10 ring-2 ring-pink-100">
-                <AvatarFallback className="bg-pink-100 text-xs font-bold text-pink-700">
+              <Avatar className="h-10 w-10 ring-2 ring-emerald-100">
+                <AvatarFallback className="bg-emerald-100 text-xs font-bold text-emerald-700">
                   {initials}
                 </AvatarFallback>
               </Avatar>
@@ -517,9 +517,9 @@ function DbPostArticle({ post }: { post: DbPost }) {
                             .getElementById(id)
                             ?.scrollIntoView({ behavior: 'smooth' })
                         }
-                        className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-muted-foreground transition-colors hover:bg-pink-50 hover:text-pink-800"
+                        className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-muted-foreground transition-colors hover:bg-emerald-50 hover:text-emerald-800"
                       >
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-pink-50 text-xs font-bold text-pink-700 ring-1 ring-inset ring-pink-600/15 transition-colors group-hover:bg-pink-600 group-hover:text-white">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-xs font-bold text-emerald-700 ring-1 ring-inset ring-emerald-600/15 transition-colors group-hover:bg-emerald-600 group-hover:text-white">
                           {index + 1}
                         </span>
                         <span className="leading-snug">{section.heading}</span>
@@ -535,14 +535,14 @@ function DbPostArticle({ post }: { post: DbPost }) {
         {/* Author box */}
         <Reveal className="mt-14">
           <div className="card-surface flex items-start gap-4 rounded-2xl p-6 sm:items-center">
-            <Avatar className="h-16 w-16 ring-2 ring-pink-100">
-              <AvatarFallback className="bg-pink-100 font-bold text-pink-700">
+            <Avatar className="h-16 w-16 ring-2 ring-emerald-100">
+              <AvatarFallback className="bg-emerald-100 font-bold text-emerald-700">
                 {initials}
               </AvatarFallback>
             </Avatar>
             <div>
               <h2 className="text-base font-semibold">Written by {post.authorName}</h2>
-              <p className="text-sm font-medium text-pink-700">{post.authorRole}</p>
+              <p className="text-sm font-medium text-emerald-700">{post.authorRole}</p>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                 Part of the Developers3 team, sharing practical notes from real client projects.
               </p>

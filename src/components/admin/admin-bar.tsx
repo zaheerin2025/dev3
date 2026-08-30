@@ -112,7 +112,7 @@ export function AdminBar() {
           className={cn(
             'flex h-9 items-center gap-2 rounded-full px-3.5 text-sm font-semibold transition-colors',
             enabled
-              ? 'bg-pink-600 text-white hover:bg-pink-500'
+              ? 'bg-emerald-600 text-white hover:bg-emerald-500'
               : 'text-gray-200 hover:bg-white/10 hover:text-white'
           )}
           aria-pressed={enabled}
@@ -268,7 +268,7 @@ function EditorPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
             'No unsaved changes.'
           ) : (
             <>
-              <span className="font-semibold text-pink-700">{dirtyCount}</span> unsaved change
+              <span className="font-semibold text-emerald-700">{dirtyCount}</span> unsaved change
               {dirtyCount === 1 ? '' : 's'}.
             </>
           )}
@@ -325,7 +325,7 @@ function FieldEditor({ field }: { field: ContentField; onUnauthorized: () => voi
       id={`ve-field-${field.key}`}
       className={cn(
         'flex flex-col gap-1.5 rounded-lg border p-3 transition-colors',
-        selected ? 'border-pink-400 bg-pink-50/50 ring-2 ring-pink-200' : 'border-gray-200'
+        selected ? 'border-emerald-400 bg-emerald-50/50 ring-2 ring-emerald-200' : 'border-gray-200'
       )}
     >
       <div className="flex items-center justify-between gap-2">

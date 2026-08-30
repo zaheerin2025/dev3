@@ -41,14 +41,14 @@ export function FAQSection({ faqs, title = 'Frequently Asked Questions', descrip
         className={cn(
           'mb-3 rounded-2xl border px-5 transition-colors',
           dark
-            ? 'border-pink-400/15 bg-white/[0.04] data-[state=open]:border-pink-400/30'
-            : 'border-pink-900/10 bg-white shadow-[0_1px_2px_rgb(5_19_14/0.04)] data-[state=open]:border-pink-500/35 data-[state=open]:shadow-[0_8px_24px_-14px_rgb(5_150_105/0.4)]'
+            ? 'border-emerald-400/15 bg-white/[0.04] data-[state=open]:border-emerald-400/30'
+            : 'border-emerald-900/10 bg-white shadow-[0_1px_2px_rgb(5_19_14/0.04)] data-[state=open]:border-emerald-500/35 data-[state=open]:shadow-[0_8px_24px_-14px_rgb(5_150_105/0.4)]'
         )}
       >
         <AccordionTrigger
           className={cn(
             'text-left text-base font-semibold hover:no-underline',
-            dark ? 'text-pink-50 hover:text-white' : 'text-foreground hover:text-pink-800'
+            dark ? 'text-emerald-50 hover:text-white' : 'text-foreground hover:text-emerald-800'
           )}
         >
           {faq.question}
@@ -56,7 +56,7 @@ export function FAQSection({ faqs, title = 'Frequently Asked Questions', descrip
         <AccordionContent
           className={cn(
             'text-[15px] leading-relaxed',
-            dark ? 'text-pink-100/70' : 'text-muted-foreground'
+            dark ? 'text-emerald-100/70' : 'text-muted-foreground'
           )}
         >
           {faq.answer}
@@ -76,7 +76,7 @@ export function FAQSection({ faqs, title = 'Frequently Asked Questions', descrip
         <Reveal className="mb-10 text-center">
           <h2 className={cn('text-2xl font-bold sm:text-3xl', dark ? 'text-white' : 'text-foreground')}>{title}</h2>
           {description ? (
-            <p className={cn('mt-3 text-muted-foreground', dark && 'text-pink-100/70')}>{description}</p>
+            <p className={cn('mt-3 text-muted-foreground', dark && 'text-emerald-100/70')}>{description}</p>
           ) : null}
         </Reveal>
       ) : null}

@@ -33,7 +33,7 @@ export function LegalView({ kind }: LegalViewProps) {
           <article className="card-surface rounded-[1.5rem] p-6 sm:p-10">
             <h1 className="text-3xl font-bold text-balance sm:text-4xl">{config.label}</h1>
             <p className="mt-4 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-              <CalendarDays className="h-3.5 w-3.5 text-pink-600" aria-hidden="true" />
+              <CalendarDays className="h-3.5 w-3.5 text-emerald-600" aria-hidden="true" />
               Last updated: {legalLastUpdated}
             </p>
 

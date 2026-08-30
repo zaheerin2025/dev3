@@ -56,7 +56,7 @@ const FLOATING_TAGS = [
 ];
 
 /**
- * HERO — the animated showcase. Cream section with pink/yellow floating
+ * HERO — the animated showcase. Cream section with emerald/amber floating
  * shapes, a staggered word-rise headline whose key slot cycles through
  * what we build (CSS-only rotation over a yellow marker stroke), a shine
  * sweep on the primary CTA, honest proof chips, a tilted browser-mockup
@@ -76,8 +76,8 @@ export function Hero() {
         {/* Live availability badge — pulsing dot inside the brand sticker */}
         <Sticker rotate={-2}>
           <span className="relative flex size-2.5" aria-hidden="true">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-pink-500 opacity-60" />
-            <span className="relative inline-flex size-2.5 rounded-full bg-pink-500" />
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+            <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500" />
           </span>
           Web Design &amp; Development Studio
         </Sticker>
@@ -156,9 +156,9 @@ export function Hero() {
           {HERO_CHIPS.map(({ icon: Icon, label }) => (
             <span
               key={label}
-              className="inline-flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-[#0a0a0a] shadow-sm transition-colors duration-300 hover:border-pink-300"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-[#0a0a0a] shadow-sm transition-colors duration-300 hover:border-emerald-300"
             >
-              <Icon className="size-4 text-pink-600" aria-hidden="true" />
+              <Icon className="size-4 text-emerald-600" aria-hidden="true" />
               {label}
             </span>
           ))}
@@ -169,7 +169,7 @@ export function Hero() {
         <div className="relative mx-auto mt-16 max-w-4xl">
           <div
             aria-hidden="true"
-            className="blob top-1/2 left-1/2 size-[24rem] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-pink-500 to-yellow-400 md:size-[30rem]"
+            className="blob top-1/2 left-1/2 size-[24rem] -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-emerald-500 to-amber-400 md:size-[30rem]"
           />
 
           {/* Floating capability tags */}
@@ -178,19 +178,19 @@ export function Hero() {
               key={label}
               className={`glass-chip absolute z-20 hidden items-center gap-2 rounded-full px-4 py-2 text-xs font-bold text-[#0a0a0a] md:inline-flex ${className}`}
             >
-              <Icon className="size-4 text-pink-600" aria-hidden="true" />
+              <Icon className="size-4 text-emerald-600" aria-hidden="true" />
               {label}
             </span>
           ))}
 
           <div className="relative z-10 mx-auto w-full max-w-2xl rotate-1 tilt-hover">
-            <BrowserMockup gradient="from-pink-500 to-orange-400" variant="store" domain="yourstore.com" />
+            <BrowserMockup gradient="from-emerald-500 to-teal-400" variant="store" domain="yourstore.com" />
           </div>
           <div className="tilt-l tilt-hover absolute top-10 -left-2 hidden w-[38%] md:block">
             <BrowserMockup gradient="from-amber-400 to-yellow-300" variant="dashboard" domain="app.yourbrand.com" />
           </div>
           <div className="tilt-r tilt-hover absolute top-14 -right-2 hidden w-[38%] md:block">
-            <BrowserMockup gradient="from-rose-400 to-pink-500" variant="landing" domain="launch.yourbrand.com" />
+            <BrowserMockup gradient="from-lime-400 to-emerald-500" variant="landing" domain="launch.yourbrand.com" />
           </div>
         </div>
 
@@ -206,7 +206,7 @@ export function Hero() {
                 {STACK_MARQUEE.map((tech) => (
                   <li key={tech} className="flex items-center gap-8 text-sm font-bold whitespace-nowrap text-[#0a0a0a]">
                     {tech}
-                    <span className="fill-pink-500 text-pink-500" aria-hidden="true">
+                    <span className="fill-emerald-500 text-emerald-500" aria-hidden="true">
                       ✦
                     </span>
                   </li>

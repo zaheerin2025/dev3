@@ -10,11 +10,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-gradient-to-br from-pink-600 to-pink-500 text-white shadow-[0_8px_20px_-8px_rgb(236_72_153/0.65)] hover:from-pink-500 hover:to-pink-500 hover:shadow-[0_12px_28px_-10px_rgb(236_72_153/0.75)] hover:-translate-y-px active:translate-y-0",
+          "bg-gradient-to-br from-emerald-600 to-teal-500 text-white shadow-[0_8px_20px_-8px_rgb(5_150_105/0.65)] hover:from-emerald-500 hover:to-teal-500 hover:shadow-[0_12px_28px_-10px_rgb(5_150_105/0.75)] hover:-translate-y-px active:translate-y-0",
         destructive:
           "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "border border-pink-900/15 bg-background shadow-[0_1px_2px_rgb(10_10_10/0.05)] hover:border-pink-500/45 hover:bg-pink-50/60 hover:text-pink-800 dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border border-emerald-900/15 bg-background shadow-[0_1px_2px_rgb(10_10_10/0.05)] hover:border-emerald-500/45 hover:bg-emerald-50/60 hover:text-emerald-800 dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost:

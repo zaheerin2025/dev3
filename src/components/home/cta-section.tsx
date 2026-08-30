@@ -22,15 +22,15 @@ export function CtaSection() {
       {/* Decorative blurred blobs */}
       <div
         aria-hidden="true"
-        className="blob animate-blob top-[-8rem] left-[-8rem] size-96 bg-gradient-to-br from-pink-500 to-yellow-400"
+        className="blob animate-blob top-[-8rem] left-[-8rem] size-96 bg-gradient-to-br from-emerald-500 to-yellow-400"
       />
       <div
         aria-hidden="true"
-        className="blob animate-blob-alt right-[-6rem] bottom-[-6rem] size-72 bg-gradient-to-br from-pink-500 to-amber-400"
+        className="blob animate-blob-alt right-[-6rem] bottom-[-6rem] size-72 bg-gradient-to-br from-emerald-500 to-amber-400"
       />
       <div
         aria-hidden="true"
-        className="blob animate-blob right-[18%] bottom-[10%] size-72 bg-gradient-to-br from-pink-500 to-orange-400 [animation-delay:-4s]"
+        className="blob animate-blob right-[18%] bottom-[10%] size-72 bg-gradient-to-br from-emerald-500 to-amber-400 [animation-delay:-4s]"
       />
 
       <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
@@ -61,7 +61,7 @@ export function CtaSection() {
               href={whatsapp}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 font-bold text-[#0a0a0a] transition-colors hover:text-pink-600"
+              className="inline-flex items-center gap-2 font-bold text-[#0a0a0a] transition-colors hover:text-emerald-600"
             >
               📞 Or WhatsApp us directly
             </a>

@@ -21,7 +21,7 @@ export const homeServiceCards: HomeServiceCard[] = [
     title: 'Website Design',
     tagline: 'Conversion-focused custom websites built to win clients and rank on Google.',
     icon: 'pen-tool',
-    gradient: 'from-pink-600 to-rose-500',
+    gradient: 'from-emerald-600 to-teal-500',
     num: '01',
   },
   {
@@ -29,7 +29,7 @@ export const homeServiceCards: HomeServiceCard[] = [
     title: 'Website Redesign',
     tagline: 'Turn an outdated site into a modern experience visitors instantly trust.',
     icon: 'target',
-    gradient: 'from-pink-500 to-orange-400',
+    gradient: 'from-emerald-500 to-amber-400',
     num: '02',
   },
   {
@@ -37,7 +37,7 @@ export const homeServiceCards: HomeServiceCard[] = [
     title: 'E-Commerce',
     tagline: 'Online stores engineered for speed, trust and repeat purchases.',
     icon: 'cart',
-    gradient: 'from-pink-500 to-amber-400',
+    gradient: 'from-emerald-500 to-amber-400',
     num: '03',
   },
   {
@@ -45,7 +45,7 @@ export const homeServiceCards: HomeServiceCard[] = [
     title: 'Landing Pages',
     tagline: 'Fast, focused campaign pages that turn ad clicks into real leads.',
     icon: 'wordpress',
-    gradient: 'from-orange-500 to-amber-400',
+    gradient: 'from-amber-500 to-amber-400',
     num: '04',
   },
   {
@@ -53,7 +53,7 @@ export const homeServiceCards: HomeServiceCard[] = [
     title: 'SEO & Speed',
     tagline: 'Higher rankings and sub-second loads that keep you ahead of competitors.',
     icon: 'trending-up',
-    gradient: 'from-yellow-400 to-orange-400',
+    gradient: 'from-yellow-400 to-amber-400',
     num: '05',
   },
   {
@@ -61,7 +61,7 @@ export const homeServiceCards: HomeServiceCard[] = [
     title: 'Maintenance & Support',
     tagline: 'Updates, backups and monitoring so your site never skips a beat.',
     icon: 'wrench',
-    gradient: 'from-rose-500 to-pink-600',
+    gradient: 'from-teal-500 to-emerald-600',
     num: '06',
   },
 ];

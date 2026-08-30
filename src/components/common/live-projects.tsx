@@ -91,7 +91,7 @@ function LiveProjectCard({ item, index }: { item: PublicPortfolio; index: number
       aria-label={`${item.title} — opens the live site in a new tab`}
       onClick={() => trackEvent('portfolio_live_click', { title: item.title })}
       className={cn(
-        'group block h-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400',
+        'group block h-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400',
         index % 2 === 0 ? 'lg:rotate-[-0.6deg]' : 'lg:rotate-[0.6deg]'
       )}
     >
@@ -105,8 +105,8 @@ function LiveProjectCard({ item, index }: { item: PublicPortfolio; index: number
               className="size-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.05]"
             />
           ) : (
-            <div className="flex size-full items-center justify-center bg-gradient-to-br from-pink-600/10 to-pink-500/10">
-              <span className="font-display text-4xl font-bold text-pink-600/30">
+            <div className="flex size-full items-center justify-center bg-gradient-to-br from-emerald-600/10 to-emerald-500/10">
+              <span className="font-display text-4xl font-bold text-emerald-600/30">
                 {item.title.slice(0, 2).toUpperCase()}
               </span>
             </div>
@@ -117,17 +117,17 @@ function LiveProjectCard({ item, index }: { item: PublicPortfolio; index: number
         </div>
         <div className="px-3 pb-3 pt-4">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="min-w-0 truncate font-display text-lg font-bold text-[#0a0a0a] transition-colors group-hover:text-pink-700">
+            <h3 className="min-w-0 truncate font-display text-lg font-bold text-[#0a0a0a] transition-colors group-hover:text-emerald-700">
               {item.title}
             </h3>
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-pink-500/10 text-pink-600 transition-transform duration-300 group-hover:rotate-45">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 transition-transform duration-300 group-hover:rotate-45">
               <ExternalLink className="size-4" aria-hidden="true" />
             </span>
           </div>
           <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-[#4b5563]">
             {item.description}
           </p>
-          <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-pink-600">
+          <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600">
             Visit live site
             <span className="text-xs font-normal text-[#4b5563]/60">
               {item.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}

@@ -9,18 +9,18 @@ interface FloatingShapesProps {
 
 /**
  * Decorative floating shapes: blurred gradient blobs + ✦ stars + circles.
- * Brand palette: pink · yellow · amber · orange (no blues, no purples).
+ * Brand palette: emerald · yellow · amber (no blues, no purples).
  * Place inside a `relative` section; pure decoration (aria-hidden).
  */
 export function FloatingShapes({ className, variant = 'default' }: FloatingShapesProps) {
   if (variant === 'subtle') {
     return (
       <div aria-hidden className={cn('pointer-events-none absolute inset-0 overflow-hidden opacity-60', className)}>
-        <div className="blob animate-blob left-[-8%] top-[-10%] size-64 bg-gradient-to-br from-pink-300 to-yellow-200 md:size-80" />
-        <div className="blob animate-blob-alt right-[-8%] top-[8%] size-56 bg-gradient-to-br from-amber-200 to-pink-300" />
+        <div className="blob animate-blob left-[-8%] top-[-10%] size-64 bg-gradient-to-br from-emerald-300 to-yellow-200 md:size-80" />
+        <div className="blob animate-blob-alt right-[-8%] top-[8%] size-56 bg-gradient-to-br from-amber-200 to-emerald-300" />
         <Sparkle className="animate-float absolute left-[6%] top-[16%] size-4 fill-yellow-300 text-yellow-300" />
-        <Sparkle className="animate-float-slow absolute right-[7%] top-[6%] size-3.5 fill-pink-300 text-pink-300" />
-        <span className="animate-float-slow absolute left-[40%] top-[4%] size-2.5 rounded-full border-2 border-orange-200" />
+        <Sparkle className="animate-float-slow absolute right-[7%] top-[6%] size-3.5 fill-emerald-300 text-emerald-300" />
+        <span className="animate-float-slow absolute left-[40%] top-[4%] size-2.5 rounded-full border-2 border-amber-200" />
       </div>
     );
   }
@@ -28,18 +28,18 @@ export function FloatingShapes({ className, variant = 'default' }: FloatingShape
   return (
     <div aria-hidden className={cn('pointer-events-none absolute inset-0 overflow-hidden', className)}>
       {/* Blurred gradient blobs */}
-      <div className="blob animate-blob left-[-6%] top-[-8%] size-72 bg-gradient-to-br from-pink-400 to-yellow-300 md:size-96" />
-      <div className="blob animate-blob-alt right-[-8%] top-[22%] size-64 bg-gradient-to-br from-amber-300 to-pink-400" />
-      <div className="blob animate-blob bottom-[-12%] left-[28%] size-72 bg-gradient-to-br from-pink-500 to-orange-400" />
+      <div className="blob animate-blob left-[-6%] top-[-8%] size-72 bg-gradient-to-br from-emerald-400 to-yellow-300 md:size-96" />
+      <div className="blob animate-blob-alt right-[-8%] top-[22%] size-64 bg-gradient-to-br from-amber-300 to-emerald-400" />
+      <div className="blob animate-blob bottom-[-12%] left-[28%] size-72 bg-gradient-to-br from-emerald-500 to-amber-400" />
 
       {/* ✦ stars */}
       <Sparkle className="animate-float absolute left-[8%] top-[24%] size-5 fill-yellow-300 text-yellow-300" />
-      <Sparkle className="animate-float-slow absolute right-[9%] top-[14%] size-4 fill-pink-400 text-pink-400" />
+      <Sparkle className="animate-float-slow absolute right-[9%] top-[14%] size-4 fill-emerald-400 text-emerald-400" />
       <Sparkle className="animate-float absolute bottom-[20%] right-[24%] size-6 fill-amber-300 text-amber-300 [animation-delay:-2s]" />
-      <Sparkle className="animate-float-slow absolute bottom-[14%] left-[16%] size-4 fill-orange-300 text-orange-300 [animation-delay:-4s]" />
+      <Sparkle className="animate-float-slow absolute bottom-[14%] left-[16%] size-4 fill-amber-300 text-amber-300 [animation-delay:-4s]" />
 
       {/* Circles */}
-      <span className="animate-float-slow absolute left-[46%] top-[10%] size-3 rounded-full border-2 border-orange-300" />
+      <span className="animate-float-slow absolute left-[46%] top-[10%] size-3 rounded-full border-2 border-amber-300" />
       <span className="animate-float absolute bottom-[10%] left-[38%] size-4 rounded-full bg-yellow-300/80 [animation-delay:-1.5s]" />
     </div>
   );
@@ -49,10 +49,10 @@ export function FloatingShapes({ className, variant = 'default' }: FloatingShape
 export function FloatingShapesDark({ className }: FloatingShapesProps) {
   return (
     <div aria-hidden className={cn('pointer-events-none absolute inset-0 overflow-hidden', className)}>
-      <div className="blob animate-blob left-[-6%] top-[-10%] size-80 bg-gradient-to-br from-pink-600 to-orange-500 md:size-[28rem]" />
-      <div className="blob animate-blob-alt bottom-[-14%] right-[-6%] size-72 bg-gradient-to-br from-amber-400 to-pink-500" />
+      <div className="blob animate-blob left-[-6%] top-[-10%] size-80 bg-gradient-to-br from-emerald-600 to-amber-500 md:size-[28rem]" />
+      <div className="blob animate-blob-alt bottom-[-14%] right-[-6%] size-72 bg-gradient-to-br from-amber-400 to-emerald-500" />
       <Sparkle className="animate-float absolute right-[10%] top-[18%] size-5 fill-yellow-300/80 text-yellow-300/80" />
-      <Sparkle className="animate-float-slow absolute bottom-[22%] left-[7%] size-4 fill-pink-400/80 text-pink-400/80 [animation-delay:-3s]" />
+      <Sparkle className="animate-float-slow absolute bottom-[22%] left-[7%] size-4 fill-emerald-400/80 text-emerald-400/80 [animation-delay:-3s]" />
       <span className="animate-float absolute left-[20%] top-[12%] size-3 rounded-full border-2 border-yellow-300/60" />
     </div>
   );

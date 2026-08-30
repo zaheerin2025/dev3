@@ -68,7 +68,7 @@ export function UrlTool<T>({ config }: { config: UrlToolConfig<T> }) {
             autoCorrect="off"
             spellCheck={false}
             aria-label="Website URL"
-            className="h-13 rounded-full border-2 border-gray-200 bg-white pl-11 pr-4 text-[15px] text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-pink-500 focus-visible:ring-pink-500"
+            className="h-13 rounded-full border-2 border-gray-200 bg-white pl-11 pr-4 text-[15px] text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500"
           />
         </div>
         <button type="submit" disabled={state === 'loading'} className="btn-primary-pill sm:!px-8">
@@ -83,7 +83,7 @@ export function UrlTool<T>({ config }: { config: UrlToolConfig<T> }) {
       </form>
 
       {state === 'error' ? (
-        <div className="rounded-2xl border-2 border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-700" role="alert">
+        <div className="rounded-2xl border-2 border-teal-200 bg-teal-50 p-4 text-sm font-medium text-teal-700" role="alert">
           {error}
         </div>
       ) : null}
@@ -116,7 +116,7 @@ export function StatusPill({ ok, children, className }: { ok: boolean | null; ch
     <span
       className={cn(
         'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold',
-        ok === true ? 'bg-emerald-100 text-emerald-700' : ok === false ? 'bg-rose-100 text-rose-700' : 'bg-gray-100 text-gray-600',
+        ok === true ? 'bg-emerald-100 text-emerald-700' : ok === false ? 'bg-teal-100 text-teal-700' : 'bg-gray-100 text-gray-600',
         className
       )}
     >

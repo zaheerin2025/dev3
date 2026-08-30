@@ -652,3 +652,77 @@ Stage Summary:
 - New animated hero is the centerpiece: rotating gradient slot, marker highlight, shine CTA, floating tags, tech marquee — all CSS-only, SEO-safe SSR, reduced-motion safe, zero layout shift.
 - Favicon/logo rebranded; stale tool artifacts removed; Turbopack stale-chunk workaround documented (restart with rm -rf .next when CSS edits don't appear).
 - Contact details remain placeholders (hello@developers3.com / +1 555) — awaiting user's real details; editable via /#/admin → Site Content.
+
+---
+Task ID: 24-a
+Agent: color-sweep-views
+Task: Re-tint src/views/** from pink/rose scheme to Emerald & Sunshine system
+
+Work Log:
+- Read worklog.md (Task 1 brand contract: emerald primary + amber accent, ink #0a0a0a) and scoped the sweep to the 14 assigned files in src/views/ (home-view.tsx explicitly NOT in scope and untouched).
+- Grepped src/views/ for old-palette tokens: found pink-{N} everywhere, rose-500 gradients (blog-view, portfolio-view), orange-400 (pricing-view), and Tailwind arbitrary shadows rgb(236_72_153/X) (blog-view x2, portfolio-view, pricing-view x2, contact-view). No fuchsia/violet/purple/indigo/blue/sky/cyan classes, no #ec4899/#f97316/#26101a, no blue/purple hexes present.
+- Applied a deterministic sed mapping per prefix to exactly the 14 files: pink-*→emerald-*, rose-*→teal-*, orange-*→amber-*, fuchsia/violet/purple/indigo/blue/sky/cyan-*→emerald-* (no-ops here), #ec4899→#059669, #f97316→#f59e0b, rgb(236_72_153→rgb(5_150_105 (Tailwind underscore form), plus spaced/comma rgb/rgba variants, 249_115_22→245_158_11, #26101a→#0d211a, #3b82f6/#8b5cf6/#6366f1/#22d3ee→#059669. Prefixes (bg-/text-/ring-/from-/to-/via-/hover:*/group-hover:*/marker:/divide- etc.) preserved; only color name+step swapped. Structure, layout, text, logic, imports untouched. Dark ink rgb(4_16_11/…) shadows and #0a0a0a kept as-is.
+- Verified with the mandated rg pattern over src/views/ (pink-|rose-|fuchsia-|violet-|purple-|indigo-|sky-|cyan-|blue-|#ec4899|#f97316|236 72 153|236,72,153|249 115 22|249,115,22): zero matches. Case-insensitive follow-up for pink/rose/fuchsia/orange and old hex forms: zero matches. No lint/build run, nothing committed.
+
+Stage Summary:
+- Files changed (14): about-view, admin-view, blog-post-view, blog-view, case-study-view, contact-view, legal-view, not-found-view, portfolio-view, pricing-view, service-detail-view, services-hub-view, tool-view, tools-hub-view — 159 lines edited, ~232 color-token substitutions.
+- Gradient notes (deterministic results kept per spec): "from-pink-600 to-rose-500" → "from-emerald-600 to-teal-500" (blog/portfolio filter pills); "from-pink-500 to-orange-400" → "from-emerald-500 to-amber-400" (pricing Most Popular badge + tier number chip); pink glow orbs and pink/ink hero gradients now emerald/ink; pink shadow glows → rgb(5_150_105/X).
+- Anomalies: none blocking. pink-900 borders/dividers became emerald-900 (very dark green) — visually consistent with the dark-ink accent system. home-view.tsx still carries its own palette (outside this task's scope) for the orchestrator to sweep separately.
+
+---
+Task ID: 24-b
+Agent: color-sweep-components
+Task: Re-tint components (common/home-except-hero/admin/mobile-menu) from pink/rose scheme to Emerald & Sunshine system
+
+Work Log:
+- Read worklog.md for brand contract (Task 1: emerald primary + amber accent, ink #0a0a0a; Task 24: pink+yellow era being replaced).
+- Scoped sweep: src/components/common/ (22 tsx files), src/components/home/ EXCLUDING hero.tsx, src/components/layout/mobile-menu.tsx, src/components/admin/ (3 files). hero.tsx, header.tsx, footer.tsx untouched per instructions.
+- Grepped scope for old-palette tokens: pink-{N} in 25 files (incl. lead-form, quote-builder, cta-band, testimonial-card, service/case-study cards, floating-shapes, marquee, process-steps, stat-grid, tech-pills, faq-section, section-heading, live-projects, browser-mockup doc comment, 7 home sections, admin-bar, panels, mobile-menu); rose-500 x1 (case-study-card marketing badge); orange-{N} x16 (floating-shapes, process-section, work-section, cta-section, mobile-menu, browser-mockup comment); Tailwind arbitrary rgb(236_72_153/X) x5 (process-steps x2, quote-builder x2, video-section) + rgba(236,72,153,0.35) x1 (mobile-menu logo tile). No fuchsia/violet/purple/indigo/blue/sky/cyan classes, no #ec4899/#f97316/#26101a, no blue/purple hexes present in scope.
+- icon-map.tsx audited: holds no color classes (pure Lucide icon mapping) — no changes needed; its consumers already use the emerald ramp.
+- Applied one deterministic sed pass to the 35 in-scope files: pink-*→emerald-*, rose-*→teal-*, orange-*→amber-*, fuchsia/violet/purple/indigo/blue/sky/cyan-*→emerald-* (no-ops here), #ec4899→#059669, #f97316→#f59e0b, 236_72_153→5_150_105 (underscore), spaced/comma rgb+rgba variants, 249_115_22→245_158_11, #26101a→#0d211a, #3b82f6/#8b5cf6/#6366f1/#22d3ee→#059669. Only color name+step changed; prefixes (from-/via-/to-/bg-/text-/border-/ring-/fill-/decoration-/hover:/group-hover:/data-[state=open]:/border-l- etc.) preserved. Structure, layout, spacing, text, logic, imports untouched. Ink #0a0a0a, ink-shadow rgb(4_16_11|10_10_10), neutral #4b5563, yellows/limes/ambers/greens kept as-is.
+- 2 comment-word fixes (design-describing): floating-shapes.tsx header "Brand palette: pink · yellow · amber · orange" → "emerald · yellow · amber"; marquee.tsx "gradient = purple→pink band" → "gradient = emerald band".
+- Verified with the mandated rg pattern over common/, home/, admin/, layout/mobile-menu.tsx: ZERO matches. Case-insensitive follow-up for underscore/comma rgb triples (236_72_153, 236 72 153, 236,72,153, 249_115_22 …) and old hexes (#ec4899, #f97316, #26101a, #3b82f6, #8b5cf6, #6366f1, #22d3ee): ZERO matches. No lint/build run, nothing committed.
+
+Stage Summary:
+- Files changed (25 with substitutions/comment edits; 35 swept, 10 clean no-ops): common/ 15 (lead-form, floating-shapes, faq-section, section-heading, tech-pills, process-steps, marquee, testimonial-card, quote-builder, stat-grid, browser-mockup, live-projects, cta-band, service-card, case-study-card), home/ 7 (testimonials-section, process-section, services-section, promises-section, work-section, video-section, cta-section), layout/mobile-menu.tsx, admin/ 2 (admin-bar, panels). Untouched as required: home/hero.tsx, layout/header.tsx, layout/footer.tsx.
+- ~201 value substitutions: 178 pink→emerald, 1 rose→teal, 16 orange→amber, 6 pink rgb/rgba shadow triples → emerald rgb(5 150 105) forms; +2 comment words.
+- Gradient notes (deterministic results kept per spec): logo tiles "from-pink-600 to-orange-400" → "from-emerald-600 to-amber-400" (mobile-menu, panels, quote-builder); marquee band → from-emerald-600 to-emerald-500; cta-band → from-emerald-700 via-emerald-800 to-[#0a0a0a]; floating-shapes blobs now emerald/yellow/amber family (both gradient stops occasionally amber/emerald — accepted); case-study-card category badges: web/apps bg-emerald-600, ecommerce amber-500, marketing bg-teal-500; work-section dark pills: emerald-500/20 + amber-400|500/20.
+- Anomalies: none blocking. Some dark-variant text tokens that were pink-50/100/200 on ink became emerald-50/100/200 (readable light-green on dark, consistent with existing dark-section emerald usage). hero.tsx (already re-tinted by Task 24 hero redesign owner) and the pink tokens in src/data/**, src/app/globals.css, ui/, tools/ remain owned by other agents/tasks.
+
+---
+Task ID: 24-c
+Agent: color-sweep-data-tools
+Task: Re-tint tools/ui/data/lib/app from pink/rose scheme to Emerald & Sunshine system
+
+Work Log:
+- Read worklog.md for context, confirmed Emerald & Sunshine tokens already live in globals.css (emerald/teal/amber + ink #0a0a0a, dark #070d0b/#0d211a), so layout.tsx themeColor "#050914" (stale blue-black from the old scheme) was retargeted to #059669.
+- Swept scope with rg for Tailwind classes (pink-/rose-/orange-/fuchsia-/violet-/purple-/indigo-/sky-/cyan-/blue-), old hexes (#ec4899, #f97316 + full pink/rose/orange/violet/blue Tailwind hex families), rgb/rgba(236,72,153|249,115,22) in spaced and compact forms, and arbitrary rgba values. src/components/ui (incl. toast.tsx) had zero old-color matches — no edits needed there; button.tsx untouched as instructed.
+- Applied deterministic mapping to 11 tools files (tool-shell, tool-card, tool-ui, engines/text-tool, engines/analyze-tool, engines/url-tool, engines/calc-tool, batches/text-tools, batches/dev-url, batches/image-visual, batches/generators), 5 data files (tools/types.ts, blog-posts.ts, case-studies-1.ts, case-studies-2.ts, home-content.ts), 2 lib files (blog-db.ts, types.ts incl. doc-comment gradient examples), and src/app/layout.tsx. pink-N→emerald-N, rose-N→teal-N, orange-N→amber-N; hexes #ec4899→#059669, #f97316→#f59e0b, rgba(236,72,153,X)→rgba(5,150,105,X), rgb(236 72 153)→rgb(5 150 105); amber/yellow/lime/red/green + neutrals kept.
+- Unlisted light-tint hexes mapped step-preservingly: #f5f3ff (violet-50) and #fdf2f8 (pink-50)→#ecfdf5 (emerald-50; flow-mapper node fills must stay light — labels render in #374151 on top), #fff1f2→#f0fdfa (teal-50), #fff7ed→#fffbeb (amber-50), #fda4af→#5eead4 (teal-300), #fdba74→#fcd34d (amber-300). Saturated blue/purple UI accents collapsed to #059669 per spec: gradient presets #0ea5e9/#22d3ee/#818cf8/#4c1d95, PERSONA_CSS avatar #4c1d95, and the profile-picture guide ring rgba(124,58,237,0.55)→rgba(5,150,105,0.55) (violet-600 in spaced form, caught by a second rgb/rgba sweep).
+- Design-describing color words updated per low-priority rule: mockup frame labels 'Brand pink'/'Brand purple'→'Brand emerald', 'pink-headed'→'emerald-headed', estimate-doc copy "purple header"→"emerald header" (3 spots), avatar copy/FAQ "purple ring"→"emerald ring" (2 spots) — these describe elements that are now literally emerald; FAQ color-input example "rgb(236 72 153)"→"rgb(5 150 105)" (it documents the tool's accepted format).
+- Verification: official grep (pink-|rose-|fuchsia-|violet-|purple-|indigo-|sky-|cyan-|blue-|#ec4899|#f97316|236 72 153|236,72,153|249 115 22|249,115,22) over src/components/tools/ src/components/ui/ src/data/ src/lib/ src/app/ → 0 matches. Second sweep for orange-/old-family hexes/spaced rgb forms → only deliberate palette-content keeps (below). Corruption check (prose-→ptease, double prefixes) → clean. No lint/build run; nothing committed.
+
+Stage Summary:
+- 19 files changed, ~271 substitutions (263 value swaps counted via git diff + 8 design-descriptor word updates). tools/ 11 files (~190: dev-url.tsx and image-visual.tsx carry most), data/ 5 files (~71 gradient/pill strings — note 'from-orange-500 to-amber-400' became 'from-amber-500 to-amber-400' both-amber, accepted per spec), lib/ 2 files (4), app/ 1 file (themeColor). ui/ 0 files (already clean).
+- Deliberate keeps (flagged, not regressions): (1) generators.tsx logo-color-advisor curated PALETTES/INDUSTRY_NOTES content keeps its multi-hue chips ('Cobalt' #2563EB, 'Voltage Violet' #7C3AED, 'Sky Blue' #38BDF8, 'Ice' #F0F9FF, navy/plum/aqua families) — that tool's editorial content intentionally showcases non-brand palettes and its explanatory notes cannot be rewritten under the no-text-change rule; only old-brand-family hexes inside it were mapped (#EC4899→#059669, #FDF2F8→#ecfdf5, #FFF1F2→#f0fdfa, #FFF7ED→#fffbeb), leaving chip names like 'Pale Rose' pointing at teal-50. (2) image-visual.tsx rgba(10,10,40,0.45) shadow kept (near-black neutral, consistent with kept slate-900 #0f172a); rgba(239,68,68) red overlay kept (red is KEEP). (3) 'Brand emerald' appears twice in MOCKUP_FRAMES (both old entries mapped to #059669) — deterministic duplicate accepted.
+- Anomalies: none blocking. Everything the official grep hunts is gone from scope; other agents' territories (views/, common/, home/, layout/, globals.css, icon.svg, button.tsx) untouched by this task.
+
+---
+Task ID: 25
+Agent: orchestrator (Z.ai main)
+Task: Full rebrand — replace pink/yellow color system with new "Emerald & Sunshine" palette; make the site colorful, modern, cohesive.
+
+Work Log:
+- User rejected the pink+yellow combination; asked for a new colorful/modern/cohesive design. Chose an emerald→teal→lime primary family + amber/yellow accents + systematic warm-green service-tile ramp (emerald/lime/amber/teal/orange). Zero pink, zero blue/purple.
+- Rewrote globals.css tokens: :root/.dark (primary=emerald-600, ring/secondary/accent/charts re-tinted), section-dark(-deep) → green-ink #070d0b with emerald/amber glows, section-tint → cream #f7f6ef, text-gradient → emerald→teal→lime, text-gradient-soft → emerald-300→amber-300, icon-tile/card-hover/gradient-frame/gradient-border/divider/scrollbar/grid/dots → emerald family, btn-primary-pill(-sm) → emerald-teal-lime gradient. Kept ink #0a0a0a borders, sticker/tilt/marquee structure, and the yellow .highlighter.
+- Re-tinted brand marks: public/logo.svg + src/app/icon.svg → emerald→teal tile with yellow sparkle dots; layout.tsx themeColor → #059669.
+- Manually re-tinted core components: header (logo tile, nav hover/active emerald, active underline emerald→amber, mega-menu tile ramp + emerald hovers), footer (emerald→teal→amber top edge, amber headings/icons, emerald socials hover, emerald newsletter focus), hero (emerald ping dot, chips, blob emerald→amber, mockup gradients emerald/amber/lime, emerald marquee stars), ui/button (default emerald→teal gradient, outline emerald).
+- Delegated mechanical sweep to 3 parallel agents with exact mapping (pink-N→emerald-N, rose-N→teal-N, orange-N→amber-N, blue/purple family→emerald-N, keep amber/yellow/lime/red/neutrals/ink; hex swaps #ec4899→#059669, #f97316→#f59e0b, rgb triples): 24-a src/views (14 files, ~232 subs), 24-b components common/home-except-hero/admin/mobile-menu (25 files, ~203 subs), 24-c tools/ui/data/lib/app (19 files, ~271 subs). All reported grep-clean; orchestrator global grep over src/ confirms ZERO pink/rose/blue/purple classes and ZERO old hexes.
+- Debugged stale-CSS trap: an old dev server (pre-edit) + Turbopack persistent cache served pink CSS twice (after initial edits, and after a git stash test). Fix: kill next processes, rm -rf .next, restart via .zscripts/dev.sh; verified served chunk has 0×#ec4899 and 1×#047857. NOTE for future agents: after bulk file swaps or stash cycles, always nuke .next before browser verification.
+- Hydration console warning (Radix accordion useId mismatch) verified PRE-EXISTING via git stash A/B test (identical 2 errors on old code); dev-mode-only, accordion works. Left for separate fix.
+- E2E verification (agent-browser): home desktop 1440x900 (hero anims, rotating word, gradient headline, marquee, services ramp, dark portfolio section, footer), mega menu open, pricing tiers + comparison table, tools hub, contact quote builder (selected Custom Websites → live estimate $1,400–$1,900), FAQ accordion expand, mobile menu overlay, mobile 390x844 no overflow. ESLint clean, tsc clean (only pre-existing examples/ errors).
+
+Stage Summary:
+- New cohesive brand: Emerald & Sunshine (emerald/teal/lime primary, amber/yellow accent, green-ink dark sections, cream tints). 64 files changed. No pink/rose/blue/purple anywhere in src/.
+- Structural design untouched (stickers, tilts, marquees, animated hero all preserved) — only the color system changed, per user's request.
+- Known issues: (1) pre-existing dev-mode Radix accordion hydration warning; (2) real contact details still placeholders in site.ts / admin Site Content.

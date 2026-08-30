@@ -219,7 +219,7 @@ function cmykToRgb(c: number, m: number, y: number, k: number): RGB {
   };
 }
 
-/** All numbers in a string, in order — tolerant parser for "rgb(...)", "236 72 153", etc. */
+/** All numbers in a string, in order — tolerant parser for "rgb(...)", "5 150 105", etc. */
 function parseNumbers(s: string): number[] {
   return (s.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number);
 }
@@ -293,7 +293,7 @@ function PillButton({ children, onClick, variant = 'primary', disabled, classNam
         variant === 'primary' && 'btn-primary-pill-sm',
         variant === 'secondary' && 'btn-secondary-pill-sm',
         variant === 'ghost' &&
-          'inline-flex items-center justify-center gap-2 rounded-full border-2 border-dashed border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-600 transition-colors hover:border-pink-400 hover:text-pink-700',
+          'inline-flex items-center justify-center gap-2 rounded-full border-2 border-dashed border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-600 transition-colors hover:border-emerald-400 hover:text-emerald-700',
         disabled && 'pointer-events-none opacity-40',
         className,
       )}
@@ -377,7 +377,7 @@ function FileDrop({ onFiles, accept, multiple, title, hint, icon, compact, class
       className={cn(
         'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed text-center transition-colors',
         compact ? 'p-4' : 'p-8 sm:p-10',
-        over ? 'border-pink-500 bg-pink-50' : 'border-gray-300 bg-white hover:border-pink-400 hover:bg-pink-50/40',
+        over ? 'border-emerald-500 bg-emerald-50' : 'border-gray-300 bg-white hover:border-emerald-400 hover:bg-emerald-50/40',
         className,
       )}
     >
@@ -389,7 +389,7 @@ function FileDrop({ onFiles, accept, multiple, title, hint, icon, compact, class
         className="hidden"
         onChange={(e) => { pick(e.target.files); e.target.value = ''; }}
       />
-      <span className={cn('text-pink-600', compact ? '[&_svg]:size-5' : '[&_svg]:size-8')}>{icon ?? <Upload aria-hidden />}</span>
+      <span className={cn('text-emerald-600', compact ? '[&_svg]:size-5' : '[&_svg]:size-8')}>{icon ?? <Upload aria-hidden />}</span>
       <span className={cn('font-bold text-[#0a0a0a]', compact ? 'text-xs' : 'text-sm sm:text-base')}>{title}</span>
       {hint ? <span className="text-xs text-muted-foreground">{hint}</span> : null}
     </div>
@@ -527,7 +527,7 @@ const WebpConverterTool = () => {
                 help="80–85 is the sweet spot for photos; go lower for thumbnails, higher for graphics with text."
               />
             ) : (
-              <p className="rounded-xl bg-pink-50 px-4 py-3 text-xs text-pink-800">PNG is lossless — the quality slider does not apply.</p>
+              <p className="rounded-xl bg-emerald-50 px-4 py-3 text-xs text-emerald-800">PNG is lossless — the quality slider does not apply.</p>
             )}
             <div className="flex flex-wrap items-center gap-3">
               <PillButton onClick={convert} disabled={busy}>
@@ -582,8 +582,8 @@ const SPLASH_DEVICES: SplashDevice[] = [
 const SplashPreviewTool = () => {
   const [deviceId, setDeviceId] = React.useState('iphone15');
   const [bgMode, setBgMode] = React.useState<'solid' | 'gradient'>('gradient');
-  const [bg1, setBg1] = React.useState('#ec4899');
-  const [bg2, setBg2] = React.useState('#ec4899');
+  const [bg1, setBg1] = React.useState('#059669');
+  const [bg2, setBg2] = React.useState('#059669');
   const [bgAngle, setBgAngle] = React.useState(160);
   const [icon, setIcon] = React.useState<LoadedImage | null>(null);
   const [iconScale, setIconScale] = React.useState(24);
@@ -606,15 +606,15 @@ const SplashPreviewTool = () => {
     if (!ctx) return;
 
     if (bgMode === 'solid') {
-      ctx.fillStyle = hexToRgb(bg1) ? bg1 : '#ec4899';
+      ctx.fillStyle = hexToRgb(bg1) ? bg1 : '#059669';
       ctx.fillRect(0, 0, W, H);
     } else {
       const rad = (bgAngle * Math.PI) / 180;
       const len = Math.abs(W * Math.cos(rad)) + Math.abs(H * Math.sin(rad));
       const cx = W / 2, cy = H / 2;
       const grad = ctx.createLinearGradient(cx - (Math.cos(rad) * len) / 2, cy - (Math.sin(rad) * len) / 2, cx + (Math.cos(rad) * len) / 2, cy + (Math.sin(rad) * len) / 2);
-      grad.addColorStop(0, hexToRgb(bg1) ? bg1 : '#ec4899');
-      grad.addColorStop(1, hexToRgb(bg2) ? bg2 : '#ec4899');
+      grad.addColorStop(0, hexToRgb(bg1) ? bg1 : '#059669');
+      grad.addColorStop(1, hexToRgb(bg2) ? bg2 : '#059669');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, W, H);
     }
@@ -857,7 +857,7 @@ const StoreResizerTool = () => {
                 <div key={preset.id} className="card-soft flex flex-col gap-2 p-3">
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-sm font-bold text-[#0a0a0a]">{preset.label}</p>
-                    <span className="rounded-full bg-pink-100 px-2 py-0.5 font-mono text-[10px] font-bold text-pink-700">{preset.w}×{preset.h}</span>
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-700">{preset.w}×{preset.h}</span>
                   </div>
                   <p className="text-xs text-muted-foreground">{preset.note}</p>
                   <div className="flex items-center justify-center overflow-hidden rounded-xl border border-gray-100" style={CHECKER_STYLE}>
@@ -896,8 +896,8 @@ const MOCKUP_FRAMES = [
   { value: '#1c1c1e', label: 'Graphite' },
   { value: '#f5f5f7', label: 'Silver' },
   { value: '#e7ddcf', label: 'Sand' },
-  { value: '#ec4899', label: 'Brand purple' },
-  { value: '#ec4899', label: 'Brand pink' },
+  { value: '#059669', label: 'Brand emerald' },
+  { value: '#059669', label: 'Brand emerald' },
   { value: '#0f766e', label: 'Teal' },
 ];
 
@@ -921,8 +921,8 @@ function drawMockup(canvas: HTMLCanvasElement, img: HTMLImageElement, o: MockupO
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   } else if (o.bgMode === 'gradient') {
     const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    grad.addColorStop(0, hexToRgb(o.bg1) ? o.bg1 : '#ec4899');
-    grad.addColorStop(1, hexToRgb(o.bg2) ? o.bg2 : '#ec4899');
+    grad.addColorStop(0, hexToRgb(o.bg1) ? o.bg1 : '#059669');
+    grad.addColorStop(1, hexToRgb(o.bg2) ? o.bg2 : '#059669');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
@@ -983,8 +983,8 @@ const MockupGeneratorTool = () => {
   const [src, setSrc] = React.useState<LoadedImage | null>(null);
   const [frame, setFrame] = React.useState('#1c1c1e');
   const [bgMode, setBgMode] = React.useState<'transparent' | 'solid' | 'gradient'>('gradient');
-  const [bg1, setBg1] = React.useState('#ec4899');
-  const [bg2, setBg2] = React.useState('#ec4899');
+  const [bg1, setBg1] = React.useState('#059669');
+  const [bg2, setBg2] = React.useState('#059669');
   const [shadow, setShadow] = React.useState(true);
   const [notch, setNotch] = React.useState(true);
   const [exportScale, setExportScale] = React.useState(2);
@@ -1278,7 +1278,7 @@ function renderAvatar(canvas: HTMLCanvasElement, img: HTMLImageElement, size: nu
   ctx.clip();
   ctx.drawImage(img, (size - dw) / 2 + offX * maxX, (size - dh) / 2 + offY * maxY, dw, dh);
   ctx.restore();
-  ctx.strokeStyle = 'rgba(124, 58, 237, 0.55)';
+  ctx.strokeStyle = 'rgba(5, 150, 105, 0.55)';
   ctx.lineWidth = Math.max(2, size * 0.008);
   ctx.beginPath();
   ctx.arc(size / 2, size / 2, size / 2 - ctx.lineWidth / 2, 0, Math.PI * 2);
@@ -1388,7 +1388,7 @@ const ProfilePictureResizerTool = () => {
               <PillButton variant="ghost" onClick={() => { setSrc(null); setZoom(100); setOff({ x: 0, y: 0 }); }}>New photo</PillButton>
             </div>
             <ToolNote>
-              The export is a square PNG with fully transparent corners, so it sits cleanly on any profile background — the purple ring in the preview is a
+              The export is a square PNG with fully transparent corners, so it sits cleanly on any profile background — the emerald ring in the preview is a
               guide only and is never drawn into the file. One framing works for every platform, since each stores the same square asset.
             </ToolNote>
           </div>
@@ -1666,7 +1666,7 @@ const ScreenRecorderToGifTool = () => {
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="card-soft flex flex-col gap-3 p-5">
           <div className="flex items-center gap-2">
-            <Video className="size-5 text-pink-600" aria-hidden />
+            <Video className="size-5 text-emerald-600" aria-hidden />
             <h3 className="font-display text-lg font-bold text-[#0a0a0a]">Record the screen</h3>
           </div>
           {supported ? (
@@ -1676,8 +1676,8 @@ const ScreenRecorderToGifTool = () => {
               </p>
               {recording ? (
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-rose-50 px-4 py-2 text-sm font-bold text-rose-600">
-                    <span className="size-2.5 animate-pulse rounded-full bg-rose-500" aria-hidden /> REC {mmss}
+                  <span className="inline-flex items-center gap-2 rounded-full bg-teal-50 px-4 py-2 text-sm font-bold text-teal-600">
+                    <span className="size-2.5 animate-pulse rounded-full bg-teal-500" aria-hidden /> REC {mmss}
                   </span>
                   <PillButton variant="secondary" onClick={stopRecording}><Square className="size-4" /> Stop & use take</PillButton>
                 </div>
@@ -1695,7 +1695,7 @@ const ScreenRecorderToGifTool = () => {
         </div>
         <div className="card-soft flex flex-col gap-3 p-5">
           <div className="flex items-center gap-2">
-            <Film className="size-5 text-pink-600" aria-hidden />
+            <Film className="size-5 text-emerald-600" aria-hidden />
             <h3 className="font-display text-lg font-bold text-[#0a0a0a]">Or upload existing footage</h3>
           </div>
           <FileDrop
@@ -1733,7 +1733,7 @@ const ScreenRecorderToGifTool = () => {
             <div className="flex flex-col gap-2">
               <p className="text-sm font-bold text-[#0a0a0a]" role="status">{statusMsg || 'Working…'}</p>
               <div className="h-2 overflow-hidden rounded-full bg-gray-200" aria-hidden>
-                <div className="h-full rounded-full bg-gradient-to-r from-pink-600 to-pink-500 transition-all" style={{ width: `${Math.round(progress * 100)}%` }} />
+                <div className="h-full rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 transition-all" style={{ width: `${Math.round(progress * 100)}%` }} />
               </div>
             </div>
           ) : (
@@ -1793,10 +1793,10 @@ function wfBlockStyle(type: string): React.CSSProperties {
   switch (type) {
     case 'header': return { background: '#e5e7eb', borderRadius: 4 };
     case 'nav': return { background: '#f3f4f6', borderRadius: 4 };
-    case 'hero': return { background: 'linear-gradient(120deg, rgba(236,72,153,0.22), rgba(236,72,153,0.22))', borderRadius: 8, border: '1.5px dashed rgba(236,72,153,0.5)' };
+    case 'hero': return { background: 'linear-gradient(120deg, rgba(5,150,105,0.22), rgba(5,150,105,0.22))', borderRadius: 8, border: '1.5px dashed rgba(5,150,105,0.5)' };
     case 'image': return { background: '#eef2f7', borderRadius: 8, border: '1.5px solid #cbd5e1' };
     case 'text': return { background: 'transparent' };
-    case 'button': return { background: 'linear-gradient(90deg,#ec4899,#ec4899)', borderRadius: 999 };
+    case 'button': return { background: 'linear-gradient(90deg,#059669,#059669)', borderRadius: 999 };
     case 'input': return { background: '#ffffff', borderRadius: 8, border: '1.5px solid #cbd5e1' };
     case 'card': return { background: '#ffffff', borderRadius: 10, border: '1.5px solid #cbd5e1' };
     case 'tabbar': return { background: '#e5e7eb', borderRadius: 10 };
@@ -1848,8 +1848,8 @@ function drawWfBlock(ctx: CanvasRenderingContext2D, b: WfBlock, W: number, H: nu
     }
     case 'hero': {
       const g = ctx.createLinearGradient(x, y, x + w, y + h);
-      g.addColorStop(0, 'rgba(236,72,153,0.25)');
-      g.addColorStop(1, 'rgba(236,72,153,0.25)');
+      g.addColorStop(0, 'rgba(5,150,105,0.25)');
+      g.addColorStop(1, 'rgba(5,150,105,0.25)');
       ctx.fillStyle = g;
       ctx.setLineDash([8, 6]);
       roundRectPath(ctx, x, y, w, h, 10); ctx.fill(); ctx.stroke();
@@ -1871,7 +1871,7 @@ function drawWfBlock(ctx: CanvasRenderingContext2D, b: WfBlock, W: number, H: nu
     }
     case 'button': {
       const g = ctx.createLinearGradient(x, y, x + w, y);
-      g.addColorStop(0, '#ec4899'); g.addColorStop(1, '#ec4899');
+      g.addColorStop(0, '#059669'); g.addColorStop(1, '#059669');
       ctx.fillStyle = g;
       roundRectPath(ctx, x, y, w, h, h / 2); ctx.fill();
       ctx.fillStyle = '#ffffff';
@@ -2065,7 +2065,7 @@ const WireframeSketcherTool = () => {
               key={d.type}
               type="button"
               onClick={() => addBlock(d.type)}
-              className="rounded-full border-2 border-gray-200 bg-white px-3.5 py-1.5 text-xs font-bold text-gray-700 transition-colors hover:border-pink-400 hover:text-pink-700"
+              className="rounded-full border-2 border-gray-200 bg-white px-3.5 py-1.5 text-xs font-bold text-gray-700 transition-colors hover:border-emerald-400 hover:text-emerald-700"
             >
               + {d.label}
             </button>
@@ -2097,7 +2097,7 @@ const WireframeSketcherTool = () => {
                 onKeyDown={(e) => { if (e.key === 'Enter') setSelected(b.id); }}
                 className={cn(
                   'absolute cursor-grab touch-none select-none active:cursor-grabbing',
-                  selected === b.id && 'ring-2 ring-pink-500 ring-offset-1',
+                  selected === b.id && 'ring-2 ring-emerald-500 ring-offset-1',
                   b.type === 'text' && 'p-1',
                 )}
                 style={{ left: `${b.x * 100}%`, top: `${b.y * 100}%`, width: `${b.w * 100}%`, height: `${b.h * 100}%`, ...wfBlockStyle(b.type) }}
@@ -2122,7 +2122,7 @@ const WireframeSketcherTool = () => {
               type="button"
               onClick={() => removeSelected()}
               aria-label="Delete selected block"
-              className="absolute -right-3 -top-3 z-10 flex size-7 items-center justify-center rounded-full bg-rose-500 text-white shadow-md hover:bg-rose-600"
+              className="absolute -right-3 -top-3 z-10 flex size-7 items-center justify-center rounded-full bg-teal-500 text-white shadow-md hover:bg-teal-600"
             >
               <X className="size-4" aria-hidden />
             </button>
@@ -2152,9 +2152,9 @@ const FLOW_NODE_SIZE: Record<FlowNodeType, { w: number; h: number }> = {
 };
 
 const FLOW_TYPE_STYLES: Record<FlowNodeType, { fill: string; stroke: string; pill: string; chip: string; label: string }> = {
-  screen: { fill: '#f5f3ff', stroke: '#ec4899', pill: 'bg-pink-100 text-pink-700', chip: 'Screen', label: 'Screen' },
+  screen: { fill: '#ecfdf5', stroke: '#059669', pill: 'bg-emerald-100 text-emerald-700', chip: 'Screen', label: 'Screen' },
   decision: { fill: '#fffbeb', stroke: '#d97706', pill: 'bg-amber-100 text-amber-700', chip: 'Decision', label: 'Decision' },
-  action: { fill: '#fdf2f8', stroke: '#ec4899', pill: 'bg-pink-100 text-pink-700', chip: 'Action', label: 'Action' },
+  action: { fill: '#ecfdf5', stroke: '#059669', pill: 'bg-emerald-100 text-emerald-700', chip: 'Action', label: 'Action' },
 };
 
 const PRESET_FLOW_NODES: FlowNode[] = [
@@ -2301,7 +2301,7 @@ const UserFlowMapperTool = () => {
           aria-pressed={connectMode}
           className={cn(
             'inline-flex items-center gap-1.5 rounded-full border-2 px-4 py-2 text-xs font-bold transition-colors',
-            connectMode ? 'border-pink-600 bg-pink-600 text-white' : 'border-gray-200 bg-white text-gray-700 hover:border-pink-400',
+            connectMode ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-gray-200 bg-white text-gray-700 hover:border-emerald-400',
           )}
         >
           <Link2 className="size-3.5" aria-hidden /> {connectMode ? 'Connecting — pick A, then B' : 'Connect nodes'}
@@ -2345,7 +2345,7 @@ const UserFlowMapperTool = () => {
             const sel = selectedEdge === e.id;
             return (
               <g key={e.id}>
-                <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={sel ? '#ec4899' : '#9ca3af'} strokeWidth={sel ? 3 : 2} markerEnd="url(#flow-arrow)" />
+                <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={sel ? '#059669' : '#9ca3af'} strokeWidth={sel ? 3 : 2} markerEnd="url(#flow-arrow)" />
                 <line
                   x1={x1} y1={y1} x2={x2} y2={y2}
                   stroke="transparent"
@@ -2373,7 +2373,7 @@ const UserFlowMapperTool = () => {
                   <polygon
                     points={`${s.w / 2},0 ${s.w},${s.h / 2} ${s.w / 2},${s.h} 0,${s.h / 2}`}
                     fill={st.fill}
-                    stroke={isFrom ? '#ec4899' : isSel ? '#0a0a0a' : st.stroke}
+                    stroke={isFrom ? '#059669' : isSel ? '#0a0a0a' : st.stroke}
                     strokeWidth={isSel || isFrom ? 3 : 1.8}
                   />
                 ) : (
@@ -2382,7 +2382,7 @@ const UserFlowMapperTool = () => {
                     height={s.h}
                     rx={n.type === 'action' ? 26 : 14}
                     fill={st.fill}
-                    stroke={isFrom ? '#ec4899' : isSel ? '#0a0a0a' : st.stroke}
+                    stroke={isFrom ? '#059669' : isSel ? '#0a0a0a' : st.stroke}
                     strokeWidth={isSel || isFrom ? 3 : 1.8}
                   />
                 )}
@@ -2594,20 +2594,20 @@ const ColorConverterTool = () => {
 interface GradStop { color: string; pos: number }
 
 const GRADIENT_PRESETS: { name: string; colors: [string, string]; angle: number }[] = [
-  { name: 'Brand pop', colors: ['#ec4899', '#ec4899'], angle: 90 },
-  { name: 'Sunset', colors: ['#f97316', '#ec4899'], angle: 45 },
-  { name: 'Ocean', colors: ['#0ea5e9', '#22d3ee'], angle: 135 },
+  { name: 'Brand pop', colors: ['#059669', '#059669'], angle: 90 },
+  { name: 'Sunset', colors: ['#f59e0b', '#059669'], angle: 45 },
+  { name: 'Ocean', colors: ['#059669', '#059669'], angle: 135 },
   { name: 'Mint', colors: ['#10b981', '#a7f3d0'], angle: 120 },
-  { name: 'Midnight', colors: ['#0f172a', '#4c1d95'], angle: 160 },
-  { name: 'Peach', colors: ['#fda4af', '#fdba74'], angle: 60 },
-  { name: 'Aurora', colors: ['#34d399', '#818cf8'], angle: 110 },
+  { name: 'Midnight', colors: ['#0f172a', '#059669'], angle: 160 },
+  { name: 'Peach', colors: ['#5eead4', '#fcd34d'], angle: 60 },
+  { name: 'Aurora', colors: ['#34d399', '#059669'], angle: 110 },
   { name: 'Lava', colors: ['#ef4444', '#fbbf24'], angle: 30 },
 ];
 
 const GradientGeneratorTool = () => {
   const [stops, setStops] = React.useState<GradStop[]>([
-    { color: '#ec4899', pos: 0 },
-    { color: '#ec4899', pos: 100 },
+    { color: '#059669', pos: 0 },
+    { color: '#059669', pos: 100 },
   ]);
   const [kind, setKind] = React.useState<'linear' | 'radial'>('linear');
   const [angle, setAngle] = React.useState(90);
@@ -2652,7 +2652,7 @@ const GradientGeneratorTool = () => {
               type="button"
               onClick={() => applyPreset(p)}
               title={`${p.name} — click to load`}
-              className="group flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white py-1 pl-1 pr-3.5 text-xs font-bold text-gray-700 transition-colors hover:border-pink-400"
+              className="group flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white py-1 pl-1 pr-3.5 text-xs font-bold text-gray-700 transition-colors hover:border-emerald-400"
             >
               <span className="size-6 rounded-full border border-black/10" style={{ backgroundImage: `linear-gradient(90deg, ${p.colors[0]}, ${p.colors[1]})` }} aria-hidden />
               {p.name}
@@ -2690,7 +2690,7 @@ const GradientGeneratorTool = () => {
                     type="button"
                     onClick={() => setStops((prev) => prev.filter((_, idx) => idx !== i))}
                     aria-label={`Remove stop ${i + 1}`}
-                    className="mb-1 flex size-9 items-center justify-center rounded-full bg-rose-50 text-rose-600 hover:bg-rose-100"
+                    className="mb-1 flex size-9 items-center justify-center rounded-full bg-teal-50 text-teal-600 hover:bg-teal-100"
                   >
                     <Trash2 className="size-4" aria-hidden />
                   </button>
@@ -2731,7 +2731,7 @@ const GradientGeneratorTool = () => {
 
 interface ShadowLayer { x: number; y: number; blur: number; spread: number; color: string; opacity: number; inset: boolean }
 
-const SHADOW_DEFAULT_1: ShadowLayer = { x: 0, y: 18, blur: 40, spread: -12, color: '#ec4899', opacity: 35, inset: false };
+const SHADOW_DEFAULT_1: ShadowLayer = { x: 0, y: 18, blur: 40, spread: -12, color: '#059669', opacity: 35, inset: false };
 const SHADOW_DEFAULT_2: ShadowLayer = { x: 0, y: 2, blur: 4, spread: 0, color: '#0a0a0a', opacity: 10, inset: false };
 
 function shadowLayerCss(l: ShadowLayer): string {
@@ -2843,7 +2843,7 @@ const BorderRadiusTool = () => {
     <div className="flex flex-col gap-5">
       <div className="grid items-center justify-items-center gap-4 rounded-2xl border border-gray-200 bg-[#f4f1fa] p-8">
         <div
-          className="size-52 bg-gradient-to-br from-pink-600 to-pink-500 shadow-lg transition-all duration-200 sm:size-64"
+          className="size-52 bg-gradient-to-br from-emerald-600 to-emerald-500 shadow-lg transition-all duration-200 sm:size-64"
           style={{ borderRadius: radiusCss }}
           role="img"
           aria-label="Live border radius preview"
@@ -2898,7 +2898,7 @@ const BorderRadiusTool = () => {
                 key={p.name}
                 type="button"
                 onClick={() => { setBlobH([...p.h]); setBlobV([...p.v]); }}
-                className="rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition-colors hover:border-pink-400 hover:text-pink-700"
+                className="rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition-colors hover:border-emerald-400 hover:text-emerald-700"
               >
                 {p.name}
               </button>
@@ -2941,7 +2941,7 @@ const InstagramGridPlannerTool = () => {
   const [slots, setSlots] = React.useState<(GridTile | null)[]>(Array(9).fill(null));
   const [selected, setSelected] = React.useState<number | null>(null);
   const [aspect, setAspect] = React.useState<'1:1' | '2:3'>('1:1');
-  const [placeholderColor, setPlaceholderColor] = React.useState('#ec4899');
+  const [placeholderColor, setPlaceholderColor] = React.useState('#059669');
   const [busy, setBusy] = React.useState(false);
 
   const filled = slots.filter(Boolean).length;
@@ -3025,7 +3025,7 @@ const InstagramGridPlannerTool = () => {
           ctx.fillStyle = '#f3f4f6';
           ctx.fillRect(x, y, cell, cellH);
         } else if (tile.kind === 'color') {
-          ctx.fillStyle = tile.color ?? '#ec4899';
+          ctx.fillStyle = tile.color ?? '#059669';
           ctx.fillRect(x, y, cell, cellH);
         } else if (tile.img) {
           drawImageCover(ctx, tile.img, x, y, cell, cellH);
@@ -3074,7 +3074,7 @@ const InstagramGridPlannerTool = () => {
                 className={cn(
                   'flex w-full items-center justify-center overflow-hidden rounded-lg border-2 bg-white transition-all',
                   cellAspect,
-                  selected === i ? 'border-pink-600 ring-2 ring-pink-300' : 'border-transparent hover:border-pink-300',
+                  selected === i ? 'border-emerald-600 ring-2 ring-emerald-300' : 'border-transparent hover:border-emerald-300',
                 )}
                 style={tile ? undefined : CHECKER_STYLE}
               >
@@ -3094,7 +3094,7 @@ const InstagramGridPlannerTool = () => {
                   type="button"
                   onClick={() => removeTile(i)}
                   aria-label={`Remove tile ${i + 1}`}
-                  className="absolute -right-1.5 -top-1.5 flex size-6 items-center justify-center rounded-full bg-[#0a0a0a] text-white shadow hover:bg-rose-600"
+                  className="absolute -right-1.5 -top-1.5 flex size-6 items-center justify-center rounded-full bg-[#0a0a0a] text-white shadow hover:bg-teal-600"
                 >
                   <X className="size-3.5" aria-hidden />
                 </button>
@@ -3208,7 +3208,7 @@ const YouTubeThumbnailDownloaderTool = () => {
         <>
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 font-mono text-xs font-bold text-[#0a0a0a]">
-              <Youtube className="size-3.5 text-rose-600" aria-hidden /> {activeId}
+              <Youtube className="size-3.5 text-teal-600" aria-hidden /> {activeId}
             </span>
             <CopyButton value={watchUrl} label="Copy video link" />
             <CopyButton
@@ -3218,7 +3218,7 @@ const YouTubeThumbnailDownloaderTool = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <Grid3x3 className="size-4 text-pink-600" aria-hidden />
+            <Grid3x3 className="size-4 text-emerald-600" aria-hidden />
             <Label className="text-sm font-bold text-[#0a0a0a]">Every size on the CDN</Label>
           </div>
 
@@ -3250,7 +3250,7 @@ const YouTubeThumbnailDownloaderTool = () => {
                   </div>
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-sm font-bold text-[#0a0a0a]">{v.label}</p>
-                    <span className="rounded-full bg-pink-100 px-2 py-0.5 font-mono text-[10px] font-bold text-pink-700">{v.dims}</span>
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-700">{v.dims}</span>
                   </div>
                   <p className="text-xs text-muted-foreground">{v.note}</p>
                   {st === 'ok' ? (
@@ -3439,7 +3439,7 @@ const GiveawayWinnerPickerTool = () => {
         <div className="card-soft p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="flex items-center gap-2 font-display text-lg font-bold text-[#0a0a0a]">
-              <PartyPopper className="size-5 text-pink-600" aria-hidden /> Your winners
+              <PartyPopper className="size-5 text-emerald-600" aria-hidden /> Your winners
             </p>
             <p className="text-xs font-semibold text-gray-500">Drawn {result.at}</p>
           </div>
@@ -3451,20 +3451,20 @@ const GiveawayWinnerPickerTool = () => {
                 aria-hidden={i >= revealed}
                 className={cn(
                   'flex items-center gap-3 rounded-2xl border-2 p-3 transition-all duration-500',
-                  i < revealed ? 'translate-y-0 border-pink-200 bg-white opacity-100' : 'translate-y-3 border-transparent opacity-0',
+                  i < revealed ? 'translate-y-0 border-emerald-200 bg-white opacity-100' : 'translate-y-3 border-transparent opacity-0',
                 )}
               >
                 <span
                   className={cn(
                     'flex size-9 shrink-0 items-center justify-center rounded-full font-display text-sm font-bold text-white',
-                    i === 0 ? 'bg-gradient-to-br from-pink-600 to-pink-500' : 'bg-[#0a0a0a]',
+                    i === 0 ? 'bg-gradient-to-br from-emerald-600 to-emerald-500' : 'bg-[#0a0a0a]',
                   )}
                 >
                   {i + 1}
                 </span>
                 <span className="min-w-0 flex-1 truncate text-sm font-bold text-[#0a0a0a]">{w.name}</span>
                 {w.weight > 1 ? (
-                  <span className="rounded-full bg-pink-100 px-2 py-0.5 text-[10px] font-bold text-pink-700">won with {w.weight} entries</span>
+                  <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">won with {w.weight} entries</span>
                 ) : null}
               </li>
             ))}
@@ -3780,7 +3780,7 @@ const InvoiceGeneratorTool = () => {
                       onClick={() => removeItem(it.id)}
                       aria-label={`Remove item ${i + 1}`}
                       disabled={items.length === 1}
-                      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-600 transition-colors hover:bg-rose-100 disabled:opacity-30"
+                      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-teal-50 text-teal-600 transition-colors hover:bg-teal-100 disabled:opacity-30"
                     >
                       <Trash2 className="size-4" aria-hidden />
                     </button>
@@ -3825,7 +3825,7 @@ const InvoiceGeneratorTool = () => {
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Frame className="size-4 text-pink-600" aria-hidden />
+            <Frame className="size-4 text-emerald-600" aria-hidden />
             <Label className="text-sm font-bold text-[#0a0a0a]">Live document preview</Label>
           </div>
           <div className="custom-scrollbar overflow-x-auto rounded-2xl border border-gray-200 bg-gray-100 p-3 sm:p-5">
@@ -3880,7 +3880,7 @@ function QuoteDoc({ data }: { data: QuoteData }) {
       className="ivquote-doc mx-auto w-full max-w-[720px] overflow-hidden rounded-2xl border border-gray-200 bg-white text-[#0a0a0a] shadow-xl"
       style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
     >
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-pink-600 to-pink-500 px-6 py-5 text-white sm:px-9">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-emerald-600 to-emerald-500 px-6 py-5 text-white sm:px-9">
         <div className="flex items-center gap-2.5">
           <Ticket className="size-5" aria-hidden />
           <span className="font-display text-xl font-bold tracking-[0.14em]">QUOTATION</span>
@@ -3933,8 +3933,8 @@ function QuoteDoc({ data }: { data: QuoteData }) {
 
         <div className="ml-auto mt-5 w-full max-w-60 space-y-1.5 text-xs">
           <p className="flex justify-between"><span className="text-gray-500">Subtotal</span><span className="font-bold tabular-nums">{docMoney(data.currency, t.subtotal)}</span></p>
-          <p className="flex justify-between"><span className="text-gray-500">Discount ({t.pct}%)</span><span className="font-bold tabular-nums text-pink-700">−{docMoney(data.currency, t.discount)}</span></p>
-          <p className="flex justify-between border-t-2 border-pink-600 pt-2 font-display text-base font-bold text-pink-700"><span>Total</span><span className="tabular-nums">{docMoney(data.currency, t.total)}</span></p>
+          <p className="flex justify-between"><span className="text-gray-500">Discount ({t.pct}%)</span><span className="font-bold tabular-nums text-emerald-700">−{docMoney(data.currency, t.discount)}</span></p>
+          <p className="flex justify-between border-t-2 border-emerald-600 pt-2 font-display text-base font-bold text-emerald-700"><span>Total</span><span className="tabular-nums">{docMoney(data.currency, t.total)}</span></p>
         </div>
 
         {data.terms.trim() ? (
@@ -4093,7 +4093,7 @@ const QuoteEstimateGeneratorTool = () => {
                       onClick={() => removeLine(l.id)}
                       aria-label={`Remove service ${i + 1}`}
                       disabled={lines.length === 1}
-                      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-600 transition-colors hover:bg-rose-100 disabled:opacity-30"
+                      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-teal-50 text-teal-600 transition-colors hover:bg-teal-100 disabled:opacity-30"
                     >
                       <Trash2 className="size-4" aria-hidden />
                     </button>
@@ -4108,7 +4108,7 @@ const QuoteEstimateGeneratorTool = () => {
                           aria-pressed={l.mode === m}
                           className={cn(
                             'px-3 py-1.5 text-[11px] font-bold transition-colors',
-                            l.mode === m ? 'bg-pink-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50',
+                            l.mode === m ? 'bg-emerald-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50',
                           )}
                         >
                           {m === 'hours' ? 'Hours × rate' : 'Fixed price'}
@@ -4141,7 +4141,7 @@ const QuoteEstimateGeneratorTool = () => {
                         className="h-10 min-w-0 flex-1 rounded-lg border-gray-200 bg-white text-sm"
                       />
                     )}
-                    <span className="ml-auto shrink-0 text-xs font-bold text-pink-700">= {docMoney(currency || '$', total)}</span>
+                    <span className="ml-auto shrink-0 text-xs font-bold text-emerald-700">= {docMoney(currency || '$', total)}</span>
                   </div>
                 </div>
               );
@@ -4167,7 +4167,7 @@ const QuoteEstimateGeneratorTool = () => {
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <Frame className="size-4 text-pink-600" aria-hidden />
+            <Frame className="size-4 text-emerald-600" aria-hidden />
             <Label className="text-sm font-bold text-[#0a0a0a]">Live quote preview</Label>
           </div>
           <div className="custom-scrollbar overflow-x-auto rounded-2xl border border-gray-200 bg-gray-100 p-3 sm:p-5">
@@ -4178,7 +4178,7 @@ const QuoteEstimateGeneratorTool = () => {
               <Printer className="size-4" /> Print / Save as PDF
             </PillButton>
             <CopyButton value={quoteText()} label="Copy as text" />
-            <span className="text-xs text-muted-foreground">The purple header keeps estimates visually separate from invoices in the same email thread.</span>
+            <span className="text-xs text-muted-foreground">The emerald header keeps estimates visually separate from invoices in the same email thread.</span>
           </div>
         </div>
       </div>
@@ -4215,19 +4215,19 @@ const PushNotificationTesterTool = () => {
 
   const wall = theme === 'dark'
     ? 'bg-gradient-to-b from-[#191138] via-[#241a4d] to-[#0c0a1d]'
-    : 'bg-gradient-to-b from-yellow-200 via-pink-200 to-rose-200';
+    : 'bg-gradient-to-b from-yellow-200 via-emerald-200 to-teal-200';
 
   const appIcon = iconUrl && !iconBroken ? (
      
     <img src={iconUrl} alt="" className="size-10 rounded-xl object-cover" onError={() => setIconBroken(true)} />
   ) : (
-    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-pink-600 to-pink-500 text-white" aria-hidden="true">
+    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-500 text-white" aria-hidden="true">
       {iconUrl ? <span className="text-sm font-bold">{initial}</span> : <Box className="size-5" />}
     </span>
   );
 
   const counterClass = (len: number, limit: number) =>
-    cn('text-right text-xs font-bold', len > limit ? 'text-rose-600' : 'text-gray-400');
+    cn('text-right text-xs font-bold', len > limit ? 'text-teal-600' : 'text-gray-400');
 
   const loadSample = () => {
     setTitle(PUSH_SAMPLE.title);
@@ -4291,7 +4291,7 @@ const PushNotificationTesterTool = () => {
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <LayoutGrid className="size-4 text-pink-600" aria-hidden />
+            <LayoutGrid className="size-4 text-emerald-600" aria-hidden />
             <Label className="text-sm font-bold text-[#0a0a0a]">Three surfaces, one message</Label>
           </div>
 
@@ -4630,7 +4630,7 @@ export const batch: BatchTool[] = [
           a: 'Each step mixes the input toward white (tints) or black (shades) by fixed factors with 500 as the untouched color — the same mental model Tailwind’s palette ladder uses.',
         },
         {
-          q: 'Can I enter colors like “rgb(236 72 153)” without commas?',
+          q: 'Can I enter colors like “rgb(5 150 105)” without commas?',
           a: 'Yes — the parser reads the numbers out of any string, so spaces, commas, css rgb()/hsl() wrappers and missing # signs all work.',
         },
       ],
@@ -4826,7 +4826,7 @@ export const batch: BatchTool[] = [
           a: 'The presets match each platform’s native size (400×400 LinkedIn/X, 320×320 Instagram, 460×460 GitHub). Starting from a photo at least twice that large keeps the crop sharp after platform compression.',
         },
         {
-          q: 'Is the purple ring saved into the file?',
+          q: 'Is the emerald ring saved into the file?',
           a: 'No — it is a preview guide only. The exported PNG contains just your photo on a transparent background.',
         },
       ],
@@ -4893,9 +4893,9 @@ export const batch: BatchTool[] = [
     Component: QuoteEstimateGeneratorTool,
     doc: {
       longDescription:
-        'Turn scope into a client-ready estimate: service lines priced as hours × rate or a fixed amount, an optional discount, a validity date and terms — previewed live on a document with a distinct purple header so it is never confused with an invoice. Print to PDF or copy the whole quote as text.',
+        'Turn scope into a client-ready estimate: service lines priced as hours × rate or a fixed amount, an optional discount, a validity date and terms — previewed live on a document with a distinct emerald header so it is never confused with an invoice. Print to PDF or copy the whole quote as text.',
       howTo: [
-        'Name the project and fill in both parties; the pink-headed document builds as you type.',
+        'Name the project and fill in both parties; the emerald-headed document builds as you type.',
         'Add service lines and switch each one between hours × rate and fixed price.',
         'Apply a discount percentage, then set the valid-until date and terms.',
         'Print / Save as PDF, or copy the quote as text for the email thread.',
@@ -4903,7 +4903,7 @@ export const batch: BatchTool[] = [
       faqs: [
         {
           q: 'How is this different from the invoice tool?',
-          a: 'Estimates precede work: they carry a validity date, terms and discounting, and they are priced as effort (hours × rate) or fixed scope. The purple header keeps the two documents apart in the same thread.',
+          a: 'Estimates precede work: they carry a validity date, terms and discounting, and they are priced as effort (hours × rate) or fixed scope. The emerald header keeps the two documents apart in the same thread.',
         },
         {
           q: 'Should I show the discount to the client?',

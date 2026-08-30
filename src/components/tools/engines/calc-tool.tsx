@@ -111,7 +111,7 @@ export function CalcTool({ config }: { config: CalcConfig }) {
               {result.stats.map((s) => (
                 <div key={s.label} className="card-soft p-5">
                   <p className="font-display text-2xl font-bold sm:text-3xl">
-                    <span className={s.tone === 'good' ? 'text-emerald-600' : s.tone === 'warn' ? 'text-amber-600' : s.tone === 'bad' ? 'text-rose-600' : 'text-gradient'}>
+                    <span className={s.tone === 'good' ? 'text-emerald-600' : s.tone === 'warn' ? 'text-amber-600' : s.tone === 'bad' ? 'text-teal-600' : 'text-gradient'}>
                       {s.value}
                     </span>
                   </p>

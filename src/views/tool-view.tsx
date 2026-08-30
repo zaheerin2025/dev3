@@ -55,7 +55,7 @@ export function ToolView({ slug }: { slug: string }) {
     return (
       <section className="section-cream flex min-h-[60vh] items-center py-20">
         <div className="mx-auto max-w-lg px-4 text-center">
-          <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-600 to-pink-500 text-white shadow-lg">
+          <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-500 text-white shadow-lg">
             <SearchX className="size-8" aria-hidden="true" />
           </span>
           <h1 className="mt-6 font-display text-3xl font-bold text-[#0a0a0a]">Tool not found</h1>

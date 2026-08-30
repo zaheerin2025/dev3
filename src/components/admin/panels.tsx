@@ -107,7 +107,7 @@ function QuoteConfigDetails({ json }: { json: string | null }) {
 
   return (
     <details className="mt-3 rounded-xl border bg-muted/40 px-3 py-2">
-      <summary className="cursor-pointer text-xs font-semibold text-muted-foreground transition-colors hover:text-pink-700">
+      <summary className="cursor-pointer text-xs font-semibold text-muted-foreground transition-colors hover:text-emerald-700">
         Quote configuration ({rows.length} fields)
       </summary>
       <dl className="mt-2 flex flex-col gap-1.5 text-sm">
@@ -152,7 +152,7 @@ function StatCard({
 }) {
   return (
     <div className="card-surface flex items-center gap-4 rounded-2xl p-5">
-      <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-pink-600 to-pink-500 text-white">
+      <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-500 text-white">
         <Icon className="size-5" aria-hidden="true" />
       </span>
       <div className="min-w-0">
@@ -364,28 +364,28 @@ export function LeadsPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
           {data.leads.map((lead) => (
             <article
               key={lead.id}
-              className={`card-surface rounded-2xl p-5 ${lead.read ? '' : 'border-l-4 border-l-pink-600'}`}
+              className={`card-surface rounded-2xl p-5 ${lead.read ? '' : 'border-l-4 border-l-emerald-600'}`}
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-semibold">{lead.name}</h3>
                     {!lead.read ? (
-                      <Badge className="bg-pink-600 text-white hover:bg-pink-600">New</Badge>
+                      <Badge className="bg-emerald-600 text-white hover:bg-emerald-600">New</Badge>
                     ) : null}
                     <Badge variant="outline" className="font-mono text-[11px]">
                       {lead.source}
                     </Badge>
                   </div>
                   <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                    <a href={`mailto:${lead.email}`} className="inline-flex items-center gap-1.5 hover:text-pink-700">
+                    <a href={`mailto:${lead.email}`} className="inline-flex items-center gap-1.5 hover:text-emerald-700">
                       <Mail className="size-3.5" aria-hidden="true" />
                       {lead.email}
                     </a>
                     {lead.phone ? (
                       <a
                         href={`tel:${lead.phone.replace(/[^+\d]/g, '')}`}
-                        className="inline-flex items-center gap-1.5 hover:text-pink-700"
+                        className="inline-flex items-center gap-1.5 hover:text-emerald-700"
                       >
                         <Phone className="size-3.5" aria-hidden="true" />
                         {lead.phone}
@@ -428,7 +428,7 @@ export function LeadsPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
                   </Badge>
                 ) : null}
                 {lead.estimate ? (
-                  <Badge className="bg-pink-600 font-normal text-white hover:bg-pink-600">
+                  <Badge className="bg-emerald-600 font-normal text-white hover:bg-emerald-600">
                     Estimate: {lead.estimate}
                   </Badge>
                 ) : null}

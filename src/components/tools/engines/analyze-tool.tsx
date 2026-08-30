@@ -103,7 +103,7 @@ export function AnalyzeTool({ config }: { config: AnalyzeToolConfig }) {
           ) : null}
 
           {result.note ? (
-            <p className="rounded-xl bg-pink-50 px-4 py-3 text-xs leading-relaxed text-pink-800">{result.note}</p>
+            <p className="rounded-xl bg-emerald-50 px-4 py-3 text-xs leading-relaxed text-emerald-800">{result.note}</p>
           ) : null}
         </div>
       ) : null}

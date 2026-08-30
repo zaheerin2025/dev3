@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 type MockupVariant = 'landing' | 'store' | 'dashboard';
 
 interface BrowserMockupProps {
-  /** Tailwind gradient classes for accent surfaces, e.g. "from-pink-500 to-orange-400" */
+  /** Tailwind gradient classes for accent surfaces, e.g. "from-emerald-500 to-amber-400" */
   gradient: string;
   variant?: MockupVariant;
   domain?: string;

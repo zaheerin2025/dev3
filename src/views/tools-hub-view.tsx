@@ -80,7 +80,7 @@ export function ToolsHubView() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search 100 tools — try “meta”, “invoice”, “QR”…"
               aria-label="Search tools"
-              className="h-14 w-full rounded-full border-2 border-gray-200 bg-white pl-13 pr-12 text-[15px] font-medium text-[#0a0a0a] shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-pink-500"
+              className="h-14 w-full rounded-full border-2 border-gray-200 bg-white pl-13 pr-12 text-[15px] font-medium text-[#0a0a0a] shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-emerald-500"
             />
             {query ? (
               <button
@@ -183,7 +183,7 @@ export function ToolsHubView() {
                     {c.label}
                   </span>
                   <p className="mt-3 flex-1 text-sm leading-relaxed text-[#4b5563]">{c.description}</p>
-                  <span className="mt-3 text-xs font-bold text-pink-700">
+                  <span className="mt-3 text-xs font-bold text-emerald-700">
                     {toolDefinitions.filter((d) => d.meta.category === c.id).length} tools →
                   </span>
                 </button>
@@ -193,7 +193,7 @@ export function ToolsHubView() {
 
           {/* Bottom CTA */}
           <Reveal>
-            <div className="mt-12 overflow-hidden rounded-[24px] bg-gradient-to-r from-pink-600 to-pink-500 p-8 text-center text-white sm:p-12">
+            <div className="mt-12 overflow-hidden rounded-[24px] bg-gradient-to-r from-emerald-600 to-emerald-500 p-8 text-center text-white sm:p-12">
               <h2 className="font-display text-2xl font-bold sm:text-4xl">Need this built for you?</h2>
               <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/85 sm:text-base">
                 These tools are free forever — but if you want a custom web platform, app or

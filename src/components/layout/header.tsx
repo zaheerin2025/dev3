@@ -27,13 +27,14 @@ const MAIN_NAV = [
   { label: 'Contact', href: '/contact' },
 ] as const;
 
-/** Colorful icon tiles for the services dropdown (cycle per row). */
+/** Colorful icon tiles for the services dropdown (cycle per row) —
+ *  fresh warm-green ramp: emerald / lime / amber / teal / orange. */
 const SERVICE_TILE_GRADIENTS = [
-  'from-pink-500 to-rose-500',
-  'from-amber-400 to-yellow-400',
-  'from-pink-500 to-orange-400',
-  'from-rose-500 to-pink-600',
-  'from-orange-400 to-amber-500',
+  'from-emerald-500 to-teal-500',
+  'from-lime-500 to-emerald-600',
+  'from-amber-400 to-orange-500',
+  'from-teal-500 to-emerald-600',
+  'from-orange-500 to-amber-500',
 ];
 
 function isActive(path: string, href: string): boolean {
@@ -56,7 +57,7 @@ export function Logo({ className }: { className?: string }) {
     >
       <span
         aria-hidden="true"
-        className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-pink-600 to-orange-400 shadow-[0_4px_14px_rgba(236,72,153,0.35)]"
+        className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-600 to-teal-500 shadow-[0_4px_14px_rgba(5,150,105,0.35)]"
       >
         <Sparkle className="size-5 text-white" />
       </span>
@@ -70,7 +71,7 @@ export function Logo({ className }: { className?: string }) {
 
 /**
  * COLORFUL HEADER — sticky white bar with a 2px ink edge, Sparkle logo,
- * bold editorial nav with purple hover, neo-brutalist services dropdown,
+ * bold editorial nav with emerald hover, neo-brutalist services dropdown,
  * gradient pill CTA and the full-screen mobile menu overlay.
  */
 export function Header({ path }: HeaderProps) {
@@ -96,8 +97,8 @@ export function Header({ path }: HeaderProps) {
             <DropdownMenuTrigger asChild>
               <button
                 className={cn(
-                  'group relative inline-flex h-16 items-center gap-1 text-[15px] font-bold transition-colors hover:text-pink-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500',
-                  servicesActive || megaOpen ? 'text-pink-600' : 'text-[#0a0a0a]'
+                  'group relative inline-flex h-16 items-center gap-1 text-[15px] font-bold transition-colors hover:text-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
+                  servicesActive || megaOpen ? 'text-emerald-600' : 'text-[#0a0a0a]'
                 )}
               >
                 Services
@@ -107,7 +108,7 @@ export function Header({ path }: HeaderProps) {
                 />
                 {(servicesActive || megaOpen) && (
                   <span
-                    className="absolute inset-x-0 bottom-3 mx-auto h-1 w-6 rounded-full bg-gradient-to-r from-pink-500 to-yellow-400"
+                    className="absolute inset-x-0 bottom-3 mx-auto h-1 w-6 rounded-full bg-gradient-to-r from-emerald-500 to-amber-400"
                     aria-hidden="true"
                   />
                 )}
@@ -123,12 +124,12 @@ export function Header({ path }: HeaderProps) {
               {/* Panel header row */}
               <div className="flex items-center justify-between gap-3 px-3 pb-1.5 pt-2">
                 <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-gray-500">
-                  <Sparkle className="size-3.5 fill-pink-400 text-pink-400" aria-hidden="true" />
+                  <Sparkle className="size-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
                   Featured services
                 </span>
                 <Link
                   href="/services"
-                  className="inline-flex items-center gap-1 text-xs font-bold text-pink-600 transition-colors hover:text-pink-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 transition-colors hover:text-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                 >
                   All services
                   <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -145,8 +146,8 @@ export function Header({ path }: HeaderProps) {
                       key={service.slug}
                       href={href}
                       className={cn(
-                        'group flex min-h-[52px] items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-pink-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500',
-                        active && 'bg-pink-50'
+                        'group flex min-h-[52px] items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
+                        active && 'bg-emerald-50'
                       )}
                       aria-current={active ? 'page' : undefined}
                     >
@@ -161,8 +162,8 @@ export function Header({ path }: HeaderProps) {
                       <span className="min-w-0 flex-1">
                         <span
                           className={cn(
-                            'block text-sm font-bold text-[#0a0a0a] transition-colors group-hover:text-pink-600',
-                            active && 'text-pink-600'
+                            'block text-sm font-bold text-[#0a0a0a] transition-colors group-hover:text-emerald-600',
+                            active && 'text-emerald-600'
                           )}
                         >
                           {service.name}
@@ -170,7 +171,7 @@ export function Header({ path }: HeaderProps) {
                         <span className="block truncate text-xs text-gray-500">{service.tagline}</span>
                       </span>
                       <ArrowRight
-                        className="size-4 shrink-0 -translate-x-1 text-pink-600 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
+                        className="size-4 shrink-0 -translate-x-1 text-emerald-600 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
                         aria-hidden="true"
                       />
                     </Link>
@@ -184,10 +185,10 @@ export function Header({ path }: HeaderProps) {
                   <div className="flex items-center gap-3">
                     <a
                       href={site.phoneHref}
-                      className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg text-xs font-bold text-[#0a0a0a] transition-colors hover:text-pink-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
+                      className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg text-xs font-bold text-[#0a0a0a] transition-colors hover:text-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                       aria-label={`Call us at ${site.phoneDisplay}`}
                     >
-                      <Phone className="size-4 text-pink-600" aria-hidden="true" />
+                      <Phone className="size-4 text-emerald-600" aria-hidden="true" />
                       {site.phoneDisplay}
                     </a>
                     <span className="text-[11px] font-medium text-gray-500">{site.hours}</span>
@@ -212,15 +213,15 @@ export function Header({ path }: HeaderProps) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'relative inline-flex h-16 items-center text-[15px] font-bold transition-colors hover:text-pink-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500',
-                  active ? 'text-pink-600' : 'text-[#0a0a0a]'
+                  'relative inline-flex h-16 items-center text-[15px] font-bold transition-colors hover:text-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
+                  active ? 'text-emerald-600' : 'text-[#0a0a0a]'
                 )}
                 aria-current={active ? 'page' : undefined}
               >
                 {item.label}
                 {active && (
                   <span
-                    className="absolute inset-x-0 bottom-3 mx-auto h-1 w-6 rounded-full bg-gradient-to-r from-pink-500 to-yellow-400"
+                    className="absolute inset-x-0 bottom-3 mx-auto h-1 w-6 rounded-full bg-gradient-to-r from-emerald-500 to-amber-400"
                     aria-hidden="true"
                   />
                 )}
@@ -242,7 +243,7 @@ export function Header({ path }: HeaderProps) {
           onClick={() => setMobileOpen(true)}
           aria-label="Open menu"
           aria-expanded={mobileOpen}
-          className="flex size-11 items-center justify-center rounded-full border-2 border-[#0a0a0a] text-[#0a0a0a] transition-colors duration-200 hover:bg-[#0a0a0a] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 lg:hidden"
+          className="flex size-11 items-center justify-center rounded-full border-2 border-[#0a0a0a] text-[#0a0a0a] transition-colors duration-200 hover:bg-[#0a0a0a] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 lg:hidden"
         >
           <Menu className="size-5" aria-hidden="true" />
         </button>

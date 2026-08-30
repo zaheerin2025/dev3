@@ -45,76 +45,77 @@
 }
 
 /* ============================================================
-   BRAND TOKENS — pink primary + yellow accent (warm system).
-   No blues, no purples anywhere in the palette.
+   BRAND TOKENS — "Emerald & Sunshine" warm system.
+   Primary emerald → teal → lime family + golden amber accent.
+   Colorful, modern, cohesive. No blues, no pinks, no purples.
    ============================================================ */
 :root {
   --radius: 0.75rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.245 0.012 40);
+  --foreground: oklch(0.235 0.014 170);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.245 0.012 40);
+  --card-foreground: oklch(0.235 0.014 170);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.245 0.012 40);
-  --primary: oklch(0.592 0.249 0.7);
+  --popover-foreground: oklch(0.235 0.014 170);
+  --primary: oklch(0.596 0.145 163.2);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.961 0.021 340);
-  --secondary-foreground: oklch(0.44 0.11 347);
-  --muted: oklch(0.968 0.005 70);
-  --muted-foreground: oklch(0.51 0.018 60);
-  --accent: oklch(0.961 0.021 340);
-  --accent-foreground: oklch(0.44 0.11 347);
+  --secondary: oklch(0.979 0.021 166.1);
+  --secondary-foreground: oklch(0.432 0.096 166);
+  --muted: oklch(0.968 0.006 95);
+  --muted-foreground: oklch(0.52 0.015 80);
+  --accent: oklch(0.962 0.059 95.6);
+  --accent-foreground: oklch(0.42 0.095 65);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.918 0.008 70);
-  --input: oklch(0.918 0.008 70);
-  --ring: oklch(0.656 0.241 353.5);
-  --chart-1: oklch(0.656 0.241 353.5);
-  --chart-2: oklch(0.796 0.184 86);
-  --chart-3: oklch(0.705 0.194 39.6);
-  --chart-4: oklch(0.718 0.202 349.5);
-  --chart-5: oklch(0.828 0.155 84);
+  --border: oklch(0.92 0.008 100);
+  --input: oklch(0.92 0.008 100);
+  --ring: oklch(0.696 0.17 162.5);
+  --chart-1: oklch(0.596 0.145 163.2);
+  --chart-2: oklch(0.666 0.157 60);
+  --chart-3: oklch(0.765 0.16 162.5);
+  --chart-4: oklch(0.837 0.128 66);
+  --chart-5: oklch(0.768 0.189 130);
   --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.245 0.012 40);
-  --sidebar-primary: oklch(0.592 0.249 0.7);
+  --sidebar-foreground: oklch(0.235 0.014 170);
+  --sidebar-primary: oklch(0.596 0.145 163.2);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.961 0.021 340);
-  --sidebar-accent-foreground: oklch(0.44 0.11 347);
-  --sidebar-border: oklch(0.918 0.008 70);
-  --sidebar-ring: oklch(0.656 0.241 353.5);
+  --sidebar-accent: oklch(0.979 0.021 166.1);
+  --sidebar-accent-foreground: oklch(0.432 0.096 166);
+  --sidebar-border: oklch(0.92 0.008 100);
+  --sidebar-ring: oklch(0.696 0.17 162.5);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.16 0.012 170);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.21 0.014 170);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.21 0.014 170);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.718 0.202 349.5);
-  --primary-foreground: oklch(0.145 0 0);
-  --secondary: oklch(0.269 0 0);
+  --primary: oklch(0.765 0.16 162.5);
+  --primary-foreground: oklch(0.16 0.012 170);
+  --secondary: oklch(0.269 0.014 170);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
+  --muted: oklch(0.269 0.014 170);
   --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --accent: oklch(0.269 0.014 170);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.718 0.202 349.5);
-  --chart-1: oklch(0.718 0.202 349.5);
-  --chart-2: oklch(0.796 0.184 86);
-  --chart-3: oklch(0.705 0.194 39.6);
-  --chart-4: oklch(0.656 0.241 353.5);
-  --chart-5: oklch(0.828 0.155 84);
-  --sidebar: oklch(0.205 0 0);
+  --ring: oklch(0.765 0.16 162.5);
+  --chart-1: oklch(0.765 0.16 162.5);
+  --chart-2: oklch(0.666 0.157 60);
+  --chart-3: oklch(0.768 0.189 130);
+  --chart-4: oklch(0.837 0.128 66);
+  --chart-5: oklch(0.596 0.145 163.2);
+  --sidebar: oklch(0.21 0.014 170);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.718 0.202 349.5);
-  --sidebar-primary-foreground: oklch(0.145 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-primary: oklch(0.765 0.16 162.5);
+  --sidebar-primary-foreground: oklch(0.16 0.012 170);
+  --sidebar-accent: oklch(0.269 0.014 170);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.718 0.202 349.5);
+  --sidebar-ring: oklch(0.765 0.16 162.5);
 }
 
 @layer base {
@@ -127,10 +128,10 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     text-rendering: optimizeLegibility;
-    /* Warm page wash: faint pink→yellow ambience */
+    /* Fresh page wash: faint emerald → amber ambience */
     background-image:
-      radial-gradient(56rem 30rem at 88% -6%, rgb(236 72 153 / 0.05), transparent 62%),
-      radial-gradient(44rem 26rem at -10% 14%, rgb(250 204 21 / 0.07), transparent 60%);
+      radial-gradient(56rem 30rem at 88% -6%, rgb(5 150 105 / 0.05), transparent 62%),
+      radial-gradient(44rem 26rem at -10% 14%, rgb(245 158 11 / 0.06), transparent 60%);
     background-attachment: fixed;
   }
   h1, h2, h3, h4, h5, h6 {
@@ -138,7 +139,7 @@
     letter-spacing: -0.025em;
   }
   ::selection {
-    background: oklch(0.592 0.249 0.7);
+    background: oklch(0.596 0.145 163.2);
     color: #fff;
   }
 }
@@ -148,24 +149,24 @@
      BRAND SECTION BACKGROUNDS
      ============================================= */
 
-  /* Deep ink black brand section (flat) */
+  /* Deep green-ink brand section (flat) */
   .section-dark {
-    background-color: #0a0a0a;
+    background-color: #0a0f0d;
     color: #f5f5f5;
   }
-  /* Deep black section with layered pink/yellow gradient + vignette */
+  /* Deep green-ink section with layered emerald/amber gradient + vignette */
   .section-dark-deep {
-    background-color: #0a0a0a;
+    background-color: #070d0b;
     background-image:
-      radial-gradient(52rem 30rem at 85% -10%, rgb(236 72 153 / 0.18), transparent 60%),
-      radial-gradient(40rem 26rem at 8% 110%, rgb(250 204 21 / 0.1), transparent 60%),
-      linear-gradient(165deg, #0a0a0a 0%, #26101a 55%, #0a0a0a 100%);
+      radial-gradient(52rem 30rem at 85% -10%, rgb(16 185 129 / 0.16), transparent 60%),
+      radial-gradient(40rem 26rem at 8% 110%, rgb(245 158 11 / 0.09), transparent 60%),
+      linear-gradient(165deg, #070d0b 0%, #0d211a 55%, #070d0b 100%);
     color: #f5f5f5;
   }
   /* Light warm wash used to alternate white sections */
   .section-tint {
-    background-color: #faf4ec;
-    background-image: radial-gradient(46rem 24rem at 90% 0%, rgb(236 72 153 / 0.05), transparent 62%);
+    background-color: #f7f6ef;
+    background-image: radial-gradient(46rem 24rem at 90% 0%, rgb(5 150 105 / 0.05), transparent 62%);
   }
 
   /* =============================================
@@ -173,22 +174,22 @@
      ============================================= */
   .bg-grid-light {
     background-image:
-      linear-gradient(to right, rgb(236 72 153 / 0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(236 72 153 / 0.06) 1px, transparent 1px);
+      linear-gradient(to right, rgb(5 150 105 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(5 150 105 / 0.06) 1px, transparent 1px);
     background-size: 44px 44px;
     -webkit-mask-image: radial-gradient(72rem 36rem at 50% 0%, black 55%, transparent 100%);
     mask-image: radial-gradient(72rem 36rem at 50% 0%, black 55%, transparent 100%);
   }
   .bg-dots-dark {
-    background-image: radial-gradient(rgb(249 168 212 / 0.16) 1px, transparent 1px);
+    background-image: radial-gradient(rgb(110 231 183 / 0.15) 1px, transparent 1px);
     background-size: 24px 24px;
   }
   .section-dark-deep.bg-dots-dark {
-    background-color: #0a0a0a;
+    background-color: #070d0b;
     background-image:
-      radial-gradient(rgb(249 168 212 / 0.16) 1px, transparent 1px),
-      radial-gradient(52rem 30rem at 85% -10%, rgb(236 72 153 / 0.18), transparent 60%),
-      linear-gradient(165deg, #0a0a0a 0%, #26101a 55%, #0a0a0a 100%);
+      radial-gradient(rgb(110 231 183 / 0.15) 1px, transparent 1px),
+      radial-gradient(52rem 30rem at 85% -10%, rgb(16 185 129 / 0.16), transparent 60%),
+      linear-gradient(165deg, #070d0b 0%, #0d211a 55%, #070d0b 100%);
     background-size: 24px 24px, 100% 100%, 100% 100%;
   }
 
@@ -206,15 +207,16 @@
   .text-balance {
     text-wrap: balance;
   }
-  /* Warm brand gradient: pink → orange → yellow */
+  /* Fresh growth gradient: emerald → teal → lime */
   .text-gradient {
-    background-image: linear-gradient(100deg, #ec4899 8%, #f97316 52%, #facc15 95%);
+    background-image: linear-gradient(100deg, #047857 5%, #0d9488 50%, #65a30d 95%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
+  /* Warm glow gradient for dark sections: emerald-300 → amber-300 */
   .text-gradient-soft {
-    background-image: linear-gradient(100deg, #f9a8d4, #fde047);
+    background-image: linear-gradient(100deg, #6ee7b7, #fcd34d);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -241,10 +243,10 @@
   }
   .card-hover:hover {
     transform: translateY(-5px);
-    border-color: rgb(236 72 153 / 0.35);
+    border-color: rgb(5 150 105 / 0.35);
     box-shadow:
       0 2px 4px rgb(2 8 23 / 0.05),
-      0 20px 44px -18px rgb(236 72 153 / 0.32);
+      0 20px 44px -18px rgb(5 150 105 / 0.3);
   }
   /* Frosted glass chip (hero floaters, badges on media) */
   .glass-chip {
@@ -257,7 +259,7 @@
   /* Gradient hairline frame (hero media, highlighted pricing) */
   .gradient-frame {
     position: relative;
-    background: linear-gradient(135deg, rgb(236 72 153 / 0.55), rgb(250 204 21 / 0.5) 40%, rgb(249 115 22 / 0.45));
+    background: linear-gradient(135deg, rgb(5 150 105 / 0.55), rgb(251 191 36 / 0.5) 40%, rgb(132 204 22 / 0.45));
     padding: 1px;
     border-radius: 1.5rem;
   }
@@ -267,17 +269,17 @@
     align-items: center;
     justify-content: center;
     border-radius: 0.9rem;
-    background-image: linear-gradient(140deg, #f472b6, #ec4899 55%, #f97316);
+    background-image: linear-gradient(140deg, #10b981, #059669 55%, #0d9488);
     color: #fff;
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.35),
-      0 8px 18px -8px rgb(236 72 153 / 0.55);
+      0 8px 18px -8px rgb(5 150 105 / 0.55);
   }
   /* Gradient horizontal rule */
   .divider-gradient {
     height: 1px;
     border: 0;
-    background-image: linear-gradient(to right, transparent, rgb(236 72 153 / 0.45), transparent);
+    background-image: linear-gradient(to right, transparent, rgb(5 150 105 / 0.45), transparent);
   }
 
   /* =============================================
@@ -344,7 +346,7 @@
 
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgb(236 72 153 / 0.4) transparent;
+    scrollbar-color: rgb(5 150 105 / 0.4) transparent;
   }
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
@@ -354,36 +356,36 @@
     background: transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgb(236 72 153 / 0.4);
+    background: rgb(5 150 105 / 0.4);
     border-radius: 9999px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgb(236 72 153 / 0.6);
+    background: rgb(5 150 105 / 0.6);
   }
 }
 
 /* ============================================================
    COLORFUL CREATIVE LAYER — home + tools design system
-   (off-white/black sections, pink→yellow accents, stickers,
+   (off-white/green-ink sections, emerald→lime accents, stickers,
    marquees, tilted cards, pill buttons)
    ============================================================ */
 
 .section-cream {
-  background-color: #f5f2ec;
+  background-color: #f8f7f1;
 }
 .section-white {
-  background-color: #fafafa;
+  background-color: #fafaf9;
 }
 .section-black {
-  background-color: #0a0a0a;
+  background-color: #0a0f0d;
 }
 
-/* Pill buttons */
+/* Pill buttons — fresh growth gradient */
 .btn-primary-pill {
-  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-pink-600 via-rose-500 to-orange-400 px-7 py-3.5 text-sm font-bold text-white shadow-[0_10px_30px_-10px_rgba(236,72,153,0.6)] transition-all duration-300 hover:shadow-[0_16px_40px_-12px_rgba(249,115,22,0.55)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 via-teal-500 to-lime-500 px-7 py-3.5 text-sm font-bold text-white shadow-[0_10px_30px_-10px_rgba(5,150,105,0.6)] transition-all duration-300 hover:shadow-[0_16px_40px_-12px_rgba(13,148,136,0.55)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2;
 }
 .btn-primary-pill-sm {
-  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-pink-600 via-rose-500 to-orange-400 px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-emerald-600 via-teal-500 to-lime-500 px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2;
 }
 .btn-secondary-pill {
   @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#0a0a0a] bg-white px-7 py-3 text-sm font-bold text-[#0a0a0a] transition-all duration-300 hover:bg-[#0a0a0a] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2;
@@ -402,7 +404,7 @@
 
 /* 2px gradient border via mask (wraps a card; child needs rounded too) */
 .gradient-border {
-  background: linear-gradient(135deg, #ec4899, #f97316, #facc15);
+  background: linear-gradient(135deg, #059669, #f59e0b, #84cc16);
   padding: 2px;
   border-radius: 1.75rem;
 }

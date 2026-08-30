@@ -97,11 +97,11 @@ export function ServiceDetailView({ slug }: { slug: string }) {
         <JsonLd data={[buildServiceSchema(service), ...reviews.map((t) => buildReviewSchema(t))]} />
         {/* Ambient glow orbs (decorative) */}
         <span
-          className="glow-orb left-[-10rem] top-[-8rem] h-[28rem] w-[28rem] bg-pink-300/25"
+          className="glow-orb left-[-10rem] top-[-8rem] h-[28rem] w-[28rem] bg-emerald-300/25"
           aria-hidden="true"
         />
         <span
-          className="glow-orb right-[-12rem] top-1/3 h-96 w-96 bg-pink-300/20"
+          className="glow-orb right-[-12rem] top-1/3 h-96 w-96 bg-emerald-300/20"
           aria-hidden="true"
         />
         <div className="relative grid items-center gap-12 lg:grid-cols-2">
@@ -111,7 +111,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                 className="text-xs [&_ol]:text-xs"
                 items={[{ label: 'Services', href: '/services' }, { label: service.name }]}
               />
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-pink-600">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-600">
                 {service.category === 'development' ? 'Development Service' : 'Growth Service'}
               </p>
               <h1 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
@@ -138,13 +138,13 @@ export function ServiceDetailView({ slug }: { slug: string }) {
           {/* Decorative service panel with gradient hairline frame */}
           <Reveal delay={150} className="relative">
             <span
-              className="glow-orb bottom-0 right-0 h-80 w-80 bg-pink-400/30"
+              className="glow-orb bottom-0 right-0 h-80 w-80 bg-emerald-400/30"
               aria-hidden="true"
             />
             <div className="gradient-frame shadow-[0_32px_64px_-32px_rgb(4_16_11/0.35)]">
               <div className="section-dark-deep bg-dots-dark relative flex h-full flex-col gap-6 overflow-hidden rounded-[1.45rem] p-8 sm:p-10">
                 <span
-                  className="glow-orb -right-16 -top-20 h-56 w-56 bg-pink-400/25"
+                  className="glow-orb -right-16 -top-20 h-56 w-56 bg-emerald-400/25"
                   aria-hidden="true"
                 />
                 <div className="relative flex items-center gap-4">
@@ -159,13 +159,13 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                       key={offering.title}
                       className="flex items-center gap-2.5 rounded-xl bg-white/5 px-4 py-2.5 text-sm font-medium text-slate-100 ring-1 ring-inset ring-white/10"
                     >
-                      <Check className="h-4 w-4 shrink-0 text-pink-300" aria-hidden="true" />
+                      <Check className="h-4 w-4 shrink-0 text-emerald-300" aria-hidden="true" />
                       {offering.title}
                     </li>
                   ))}
                 </ul>
                 <div className="relative mt-auto border-t border-white/10 pt-5">
-                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-pink-300/80">
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-300/80">
                     Starting at
                   </p>
                   <p className="text-gradient-soft mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
@@ -190,7 +190,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
             <Reveal key={offering.title} delay={(index % 3) * 60} className="h-full">
               <div className="card-surface card-hover relative h-full rounded-[1.25rem] p-6">
                 <span
-                  className="absolute right-6 top-5 font-display text-sm font-bold tracking-[0.2em] text-pink-900/15"
+                  className="absolute right-6 top-5 font-display text-sm font-bold tracking-[0.2em] text-emerald-900/15"
                   aria-hidden="true"
                 >
                   {String(index + 1).padStart(2, '0')}
@@ -221,7 +221,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
               const Icon = WHY_BENEFIT_ICONS[index % WHY_BENEFIT_ICONS.length];
               return (
                 <Reveal key={benefit.title} delay={index * 60} className="h-full">
-                  <div className="flex items-start gap-4 rounded-2xl bg-white p-5 shadow-[0_1px_2px_rgb(5_19_14/0.04)] ring-1 ring-inset ring-pink-600/10">
+                  <div className="flex items-start gap-4 rounded-2xl bg-white p-5 shadow-[0_1px_2px_rgb(5_19_14/0.04)] ring-1 ring-inset ring-emerald-600/10">
                     <span className="icon-tile h-10 w-10 shrink-0">
                       <Icon className="h-5 w-5" aria-hidden="true" />
                     </span>
@@ -242,7 +242,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
       {/* 4 — Process */}
       <Section dark dots>
         <span
-          className="glow-orb left-1/2 top-[-8rem] h-96 w-96 -translate-x-1/2 bg-pink-500/20"
+          className="glow-orb left-1/2 top-[-8rem] h-96 w-96 -translate-x-1/2 bg-emerald-500/20"
           aria-hidden="true"
         />
         <SectionHeading dark className="relative" eyebrow="Our process" title="How We Deliver" />
@@ -292,12 +292,12 @@ export function ServiceDetailView({ slug }: { slug: string }) {
           <div className="gradient-frame shadow-[0_24px_56px_-28px_rgb(4_16_11/0.28)]">
             <div className="relative overflow-hidden rounded-[calc(1.5rem-1px)] bg-white p-6 sm:p-8 lg:p-10">
               <span
-                className="glow-orb -right-20 -top-24 h-64 w-64 bg-pink-300/25"
+                className="glow-orb -right-20 -top-24 h-64 w-64 bg-emerald-300/25"
                 aria-hidden="true"
               />
               <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_auto]">
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-pink-600">Pricing</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-600">Pricing</p>
                   <h2 className="mt-4 text-2xl font-bold text-balance sm:text-3xl">{service.name} Pricing</h2>
                   <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <span className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">
@@ -311,7 +311,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                   <ul className="mt-6 flex flex-col gap-3">
                     {PRICING_GUARANTEES.map((item) => (
                       <li key={item} className="flex items-start gap-3 text-sm">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-pink-600" aria-hidden="true" />
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" />
                         <span className="text-foreground">{item}</span>
                       </li>
                     ))}
@@ -381,8 +381,8 @@ export function ServiceDetailView({ slug }: { slug: string }) {
             <ul className="mt-8 flex flex-col gap-4">
               {LEAD_PROMISES.map((promise) => (
                 <li key={promise} className="flex items-center gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-inset ring-pink-600/15">
-                    <Check className="h-4 w-4 text-pink-600" aria-hidden="true" />
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-inset ring-emerald-600/15">
+                    <Check className="h-4 w-4 text-emerald-600" aria-hidden="true" />
                   </span>
                   <span className="text-sm font-medium text-foreground">{promise}</span>
                 </li>

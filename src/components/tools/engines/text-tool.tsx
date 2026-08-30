@@ -110,7 +110,7 @@ export function TextTool({ config }: { config: TextToolConfig }) {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0a0a0a]">
               {config.outputLabel}
-              <ArrowRight className="size-3.5 text-pink-600" />
+              <ArrowRight className="size-3.5 text-emerald-600" />
             </p>
             <div className="flex gap-2">
               <CopyButton value={output} />
