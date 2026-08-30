@@ -1,47 +1,54 @@
 // Central site configuration for Developers3.
-// Update contact details here when the client provides final assets.
+// Identity fields below are intentionally EMPTY — no placeholder/fake data.
+// The owner enters real contact details in the admin panel (Site Content);
+// UI that depends on them stays hidden until real values exist.
 
 export const site = {
   name: 'Developers3',
-  legalName: 'Developers3 Digital LLC',
+  legalName: 'Developers3',
   domain: 'developers3.com',
   url: 'https://developers3.com',
   tagline: 'Web, App & Software Development Company',
   description:
     'Developers3 is a full-service web development agency building custom websites, WordPress, e-commerce stores, mobile apps and software that convert. Get a free quote today.',
-  email: 'hello@developers3.com',
-  phoneDisplay: '+1 (555) 013-4567',
-  phoneHref: 'tel:+15550134567',
-  phoneIntl: '+15550134567',
-  whatsappNumber: '15550134567',
+  email: '',
+  phoneDisplay: '',
+  phoneHref: '',
+  phoneIntl: '',
+  whatsappNumber: '',
   whatsappMessage: "Hi Developers3! I'd like to discuss a project. Can we chat?",
   address: {
-    street: '1200 Market Street, Suite 400',
-    city: 'San Francisco',
-    state: 'CA',
-    zip: '94102',
+    street: '',
+    city: '',
+    state: '',
+    zip: '',
     country: 'US',
   },
-  geo: { lat: 37.7749, lng: -122.4194 },
-  hours: 'Mon–Fri, 9:00 AM – 6:00 PM (PT)',
-  hoursSchema: ['Mo-Fr 09:00-18:00'],
-  founded: 2017,
+  geo: { lat: 0, lng: 0 },
+  hours: '',
+  hoursSchema: [] as string[],
+  founded: 0,
   stats: {
-    projects: '50+',
-    clients: '30+',
-    years: '8+',
-    satisfaction: '98%',
-    specialists: '12+',
+    projects: '',
+    clients: '',
+    years: '',
+    satisfaction: '',
+    specialists: '',
   },
   socials: {
-    linkedin: 'https://www.linkedin.com/company/developers3',
-    twitter: 'https://x.com/developers3',
-    instagram: 'https://www.instagram.com/developers3',
-    facebook: 'https://www.facebook.com/developers3',
-    github: 'https://github.com/developers3',
+    linkedin: '',
+    twitter: '',
+    instagram: '',
+    facebook: '',
+    github: '',
   },
-} as const;
+};
 
+/**
+ * WhatsApp deep link. Returns an empty string when no real WhatsApp number
+ * is configured, so callers can hide WhatsApp UI entirely.
+ */
 export function whatsappLink(message: string = site.whatsappMessage): string {
+  if (!site.whatsappNumber) return '';
   return `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(message)}`;
 }

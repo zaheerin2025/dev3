@@ -2,29 +2,25 @@ import { servicesPriority } from './services-priority';
 import { servicesExtended } from './services-extended';
 import { caseStudiesBatch1 } from './case-studies-1';
 import { caseStudiesBatch2 } from './case-studies-2';
-import { testimonials } from './testimonials';
 import { blogPosts } from './blog-posts';
 import { teamMembers } from './team';
 import { pricingFaqs, servicePricingBlocks, websiteTiers, comparisonTable } from './pricing';
 import {
   aboutStory,
-  clientNames,
   companyValues,
   homeFaqs,
   homeProcess,
   legalLastUpdated,
   privacySections,
   termsSections,
-  timeline,
   whyChooseUs,
 } from './company';
-import type { BlogPost, CaseStudy, Service, TeamMember, Testimonial } from '@/lib/types';
+import type { BlogPost, CaseStudy, Service, TeamMember } from '@/lib/types';
 
 export const services: Service[] = [...servicesPriority, ...servicesExtended];
 export const caseStudies: CaseStudy[] = [...caseStudiesBatch1, ...caseStudiesBatch2];
 
 export {
-  testimonials,
   blogPosts,
   teamMembers,
   websiteTiers,
@@ -34,9 +30,7 @@ export {
   homeFaqs,
   whyChooseUs,
   homeProcess,
-  clientNames,
   companyValues,
-  timeline,
   aboutStory,
   privacySections,
   termsSections,
@@ -70,14 +64,6 @@ export function getCaseStudy(slug: string): CaseStudy | undefined {
 
 export function getBlogPost(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);
-}
-
-export function getTestimonial(id: string): Testimonial | undefined {
-  return testimonials.find((t) => t.id === id);
-}
-
-export function getTestimonials(ids: string[]): Testimonial[] {
-  return ids.map(getTestimonial).filter((t): t is Testimonial => Boolean(t));
 }
 
 export function getTeamMember(id: string): TeamMember | undefined {

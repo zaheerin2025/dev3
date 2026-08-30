@@ -1,13 +1,16 @@
 'use client';
 
 import { trackEvent } from '@/lib/analytics';
-import { whatsappLink } from '@/lib/site';
+import { site, whatsappLink } from '@/lib/site';
 
 /**
  * Floating WhatsApp chat button with a pre-filled message.
- * Rendered above the sticky footer (z-40) on every page.
+ * Hidden entirely until a real WhatsApp number is configured in the
+ * admin panel — no fake numbers, ever.
  */
 export function WhatsAppButton() {
+  if (!site.whatsappNumber) return null;
+
   return (
     <a
       href={whatsappLink()}

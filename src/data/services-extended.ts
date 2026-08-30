@@ -648,12 +648,12 @@ export const servicesExtended: Service[] = [
     ],
     whyTitle: 'One Broken Website Can Cost More Than a Decade of Maintenance',
     whyIntro:
-      'A hacked or offline website is not an inconvenience; it is lost revenue, lost rankings and lost customer trust arriving all at once. Google de-indexes compromised sites, e-commerce stores watch checkout revenue evaporate, and rebuilding after a breach costs ten times what prevention would have. Our website maintenance services exist so none of that happens: monitored 24/7, patched proactively, backed up daily and supported by developers who already know your stack. Clients on our plans have averaged 99.98% uptime over the past three years.',
+      'A hacked or offline website is not an inconvenience; it is lost revenue, lost rankings and lost customer trust arriving all at once. Google de-indexes compromised sites, e-commerce stores watch checkout revenue evaporate, and rebuilding after a breach costs ten times what prevention would have. Our website maintenance services exist so none of that happens: monitored 24/7, patched proactively, backed up daily and supported by developers who already know your stack. Our maintenance plans are built to keep it that way.',
     whyBenefits: [
       {
         title: 'Near-Perfect Uptime, Around the Clock',
         description:
-          'Our monitoring pings your site every 60 seconds from multiple regions, so outages are detected in minutes — not discovered days later by a customer. Combined with rapid response, clients on maintenance plans average 99.98% uptime, the difference between a five-minute blip and a weekend of lost sales.',
+          'Our monitoring pings your site every 60 seconds from multiple regions, so outages are detected in minutes — not discovered days later by a customer. Combined with rapid response, that is the difference between a five-minute blip and a weekend of lost sales.',
       },
       {
         title: 'Security You Do Not Have to Think About',
@@ -738,7 +738,7 @@ export const servicesExtended: Service[] = [
       {
         question: 'Can we cancel, and what happens to our site?',
         answer:
-          'Cancel any time with 30 days’ notice — no penalties and no retention games. Your site, hosting and domain always remain in your name, and we hand over all documentation, access credentials and recent backups in organised form. Many clients stay for years, but we would rather earn renewal through 99.98% uptime and responsive support than trap anyone in a contract they resent.',
+          'Cancel any time with 30 days’ notice — no penalties and no retention games. Your site, hosting and domain always remain in your name, and we hand over all documentation, access credentials and recent backups in organised form. Many clients stay for years, but we would rather earn renewal through reliable uptime and responsive support than trap anyone in a contract they resent.',
       },
     ],
     relatedServiceSlugs: ['custom-website-development', 'wordpress-development', 'seo-services'],

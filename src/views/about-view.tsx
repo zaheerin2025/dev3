@@ -1,27 +1,16 @@
 'use client';
 
-import Image from 'next/image';
 import { Eye, Gem, Handshake, LineChart, Quote, type LucideIcon } from 'lucide-react';
 import { Section } from '@/components/common/section';
 import { SectionHeading } from '@/components/common/section-heading';
 import { Reveal } from '@/components/common/reveal';
 import { Breadcrumbs } from '@/components/common/breadcrumbs';
-import { StatGrid } from '@/components/common/stat-grid';
-import { TestimonialCard } from '@/components/common/testimonial-card';
 import { CTABand } from '@/components/common/cta-band';
-import { aboutStory, companyValues, teamMembers, testimonials, timeline } from '@/data';
-import { site } from '@/lib/site';
-
-const STATS = [
-  { value: site.stats.projects, label: 'Projects delivered' },
-  { value: site.stats.clients, label: 'Happy clients' },
-  { value: site.stats.years, label: 'Years in business' },
-  { value: site.stats.satisfaction, label: 'Client satisfaction' },
-];
+import { aboutStory, companyValues } from '@/data';
 
 const VALUE_ICONS: LucideIcon[] = [Gem, Eye, Handshake, LineChart];
 
-/** /about — story, mission, values, timeline, and team. */
+/** /about — honest story, mission, and values. No invented people or numbers. */
 export function AboutView() {
   return (
     <>
@@ -45,13 +34,10 @@ export function AboutView() {
               About <span className="text-gradient">Developers3</span>
             </h1>
             <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
-              The senior team behind 50+ websites, apps, and software products — built since 2017
-              with one rule: treat every client&rsquo;s business like our own.
+              A senior-only web, app &amp; software studio — with one rule: treat
+              every client&rsquo;s business like our own.
             </p>
           </Reveal>
-        </div>
-        <div className="relative mt-14">
-          <StatGrid items={STATS} />
         </div>
       </Section>
 
@@ -129,105 +115,6 @@ export function AboutView() {
               </Reveal>
             );
           })}
-        </div>
-      </Section>
-
-      {/* Timeline */}
-      <Section tinted>
-        <SectionHeading
-          eyebrow="Our journey"
-          title="From Two Developers to a Full Digital Team"
-        />
-        <div className="relative mx-auto max-w-2xl">
-          <span
-            className="absolute bottom-3 left-[7px] top-3 w-px bg-gradient-to-b from-gray-500/60 via-gray-400/40 to-transparent"
-            aria-hidden="true"
-          />
-          <ol className="space-y-10">
-            {timeline.map((entry, index) => (
-              <Reveal as="li" key={entry.year} delay={index * 80} className="relative pl-10">
-                <span
-                  className="absolute left-0 top-1.5 h-3.5 w-3.5 rounded-full bg-gradient-to-br from-gray-500 to-gray-800 ring-4 ring-gray-100"
-                  aria-hidden="true"
-                />
-                <p className="font-display text-sm font-bold tracking-wide text-gray-800">
-                  {entry.year}
-                </p>
-                <h3 className="mt-3 text-lg font-semibold">{entry.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-                  {entry.description}
-                </p>
-              </Reveal>
-            ))}
-          </ol>
-        </div>
-      </Section>
-
-      {/* Team */}
-      <Section>
-        <SectionHeading
-          eyebrow="Meet the team"
-          title="The People Behind The Pixels"
-          description="Senior designers, engineers, and marketers — the people on your first call are the people who build your project."
-        />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {teamMembers.map((member, index) => (
-            <Reveal key={member.id} delay={index * 70} className="h-full">
-              <article className="card-surface card-hover group flex h-full flex-col overflow-hidden rounded-[1.25rem]">
-                <div className="relative aspect-square">
-                  <Image
-                    src={member.photo}
-                    alt={`Portrait of ${member.name}`}
-                    fill
-                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                  />
-                  {/* Legibility gradient at the photo base */}
-                  <span
-                    className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0a0a0a]/70 via-[#0a0a0a]/25 to-transparent"
-                    aria-hidden="true"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col gap-3 p-5">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-500 to-gray-800 text-xs font-bold text-white ring-2 ring-gray-100"
-                      aria-hidden="true"
-                    >
-                      {member.initials}
-                    </span>
-                    <span className="min-w-0">
-                      <h3 className="truncate font-semibold">{member.name}</h3>
-                      <p className="text-sm text-muted-foreground">{member.role}</p>
-                    </span>
-                  </div>
-                  <p className="text-[13px] leading-relaxed text-muted-foreground line-clamp-4">
-                    {member.bio}
-                  </p>
-                  {member.funFact ? (
-                    <p className="mt-auto text-xs italic leading-relaxed text-muted-foreground/80 line-clamp-2">
-                      {member.funFact}
-                    </p>
-                  ) : null}
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-
-      {/* Credibility strip */}
-      <Section tinted>
-        <SectionHeading
-          eyebrow="Client words"
-          title="Trusted by Businesses Like Yours"
-        />
-        <div className="grid gap-6 md:grid-cols-3">
-          {testimonials.slice(0, 3).map((testimonial, index) => (
-            <Reveal key={testimonial.id} delay={index * 80} className="h-full">
-              <TestimonialCard testimonial={testimonial} className="h-full" />
-            </Reveal>
-          ))}
         </div>
       </Section>
 

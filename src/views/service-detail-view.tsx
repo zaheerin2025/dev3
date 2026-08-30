@@ -24,10 +24,9 @@ import { Section } from '@/components/common/section';
 import { SectionHeading } from '@/components/common/section-heading';
 import { ServiceCard } from '@/components/common/service-card';
 import { TechPills } from '@/components/common/tech-pills';
-import { TestimonialCard } from '@/components/common/testimonial-card';
-import { getRelatedServices, getService, getServiceCaseStudies, getTestimonials } from '@/data';
+import { getRelatedServices, getService, getServiceCaseStudies } from '@/data';
 import { trackEvent } from '@/lib/analytics';
-import { buildReviewSchema, buildServiceSchema } from '@/lib/schema';
+import { buildServiceSchema } from '@/lib/schema';
 
 const PRICING_GUARANTEES = [
   'Fixed, itemized quote before we start',
@@ -85,7 +84,6 @@ export function ServiceDetailView({ slug }: { slug: string }) {
     );
   }
 
-  const reviews = getTestimonials(service.testimonialIds);
   const relatedStudies = getServiceCaseStudies(service);
   const relatedServices = getRelatedServices(service);
   const [heroBefore, heroAccent, heroAfter] = splitHeroTitle(service.heroTitle, service.name);
@@ -94,7 +92,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
     <>
       {/* 1 — Hero */}
       <Section grid className="lg:py-20">
-        <JsonLd data={[buildServiceSchema(service), ...reviews.map((t) => buildReviewSchema(t))]} />
+        <JsonLd data={buildServiceSchema(service)} />
         {/* Ambient glow orbs (decorative) */}
         <span
           className="glow-orb left-[-10rem] top-[-8rem] h-[28rem] w-[28rem] bg-gray-300/25"
@@ -334,20 +332,6 @@ export function ServiceDetailView({ slug }: { slug: string }) {
           </div>
         </Reveal>
       </Section>
-
-      {/* 8 — Testimonials */}
-      {reviews.length > 0 ? (
-        <Section tinted>
-          <SectionHeading eyebrow="Reviews" title="What Clients Say About This Service" />
-          <div className="grid gap-6 sm:grid-cols-2">
-            {reviews.map((testimonial, index) => (
-              <Reveal key={testimonial.id} delay={(index % 2) * 60} className="h-full">
-                <TestimonialCard testimonial={testimonial} />
-              </Reveal>
-            ))}
-          </div>
-        </Section>
-      ) : null}
 
       {/* 9 — FAQ */}
       <Section tinted>

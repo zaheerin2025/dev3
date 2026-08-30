@@ -6,7 +6,6 @@ export type AnalyticsEventName =
   | 'whatsapp_click'
   | 'call_click'
   | 'email_click'
-  | 'newsletter_signup'
   | 'cta_click'
   | 'portfolio_filter'
   | 'faq_open';

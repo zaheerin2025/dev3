@@ -5,20 +5,17 @@ import { isAdminRequest } from '@/lib/admin-auth';
 
 /**
  * Admin leads inbox.
- *  GET    /api/admin/leads            → newest 200 leads + all subscribers
+ *  GET    /api/admin/leads            → newest 200 leads
  *  PATCH  /api/admin/leads {id,read}  → toggle a lead's read state
- *  DELETE /api/admin/leads?id=&type=  → remove a lead or a subscriber
+ *  DELETE /api/admin/leads?id=        → remove a lead
  */
 export async function GET(request: NextRequest) {
   if (!isAdminRequest(request)) {
     return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 });
   }
   try {
-    const [leads, subscribers] = await Promise.all([
-      db.lead.findMany({ orderBy: { createdAt: 'desc' }, take: 200 }),
-      db.newsletterSubscriber.findMany({ orderBy: { createdAt: 'desc' }, take: 500 }),
-    ]);
-    return NextResponse.json({ ok: true, leads, subscribers });
+    const leads = await db.lead.findMany({ orderBy: { createdAt: 'desc' }, take: 200 });
+    return NextResponse.json({ ok: true, leads });
   } catch (error) {
     console.error('[admin/leads] GET failed:', error);
     return NextResponse.json({ ok: false, error: 'Could not load leads.' }, { status: 500 });
@@ -54,22 +51,17 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-/** DELETE — remove a lead (?type=lead) or a newsletter subscriber (?type=subscriber). */
+/** DELETE — remove a lead (?id=). */
 export async function DELETE(request: NextRequest) {
   if (!isAdminRequest(request)) {
     return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 });
   }
   try {
     const id = request.nextUrl.searchParams.get('id') ?? '';
-    const type = request.nextUrl.searchParams.get('type') ?? 'lead';
-    if (!id || id.length > 64 || (type !== 'lead' && type !== 'subscriber')) {
+    if (!id || id.length > 64) {
       return NextResponse.json({ ok: false, error: 'Invalid request.' }, { status: 400 });
     }
-    if (type === 'lead') {
-      await db.lead.delete({ where: { id } });
-    } else {
-      await db.newsletterSubscriber.delete({ where: { id } });
-    }
+    await db.lead.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error('[admin/leads] DELETE failed:', error);

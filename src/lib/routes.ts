@@ -139,13 +139,13 @@ export function getRouteSeo(match: RouteMatch, data: RouteData): RouteSeo {
       return {
         title: 'About Us — A Senior Team Obsessed With Results | Developers3',
         description:
-          'Founded in 2017, Developers3 is a 12-person team of designers, engineers and marketers who have shipped 50+ projects for 30+ clients. Meet the people behind the work.',
+          'Meet the senior-only studio behind Developers3 — designers, engineers and marketers who treat every client\'s business like our own.'
       };
     case 'contact':
       return {
         title: 'Contact Us — Get a Free Project Quote | Developers3',
         description:
-          'Tell us about your project and get a free, itemized quote within one business day. Call, WhatsApp, or email — we reply fast and give straight advice.',
+          'Tell us about your project and get a free, itemized quote within one business day — straight advice from senior engineers.'
       };
     case 'blog':
       return {

@@ -1,6 +1,6 @@
 'use client';
 
-// Admin panels: Overview (dashboard) + Leads inbox + newsletter subscribers.
+// Admin panels: Overview (dashboard) + Leads inbox.
 // Consumes /api/admin/leads and /api/admin/posts with the HttpOnly session
 // cookie. Extracted from views/admin-view.tsx to keep the shell readable.
 
@@ -16,7 +16,6 @@ import {
   Pencil,
   Phone,
   Trash2,
-  Users,
   Check,
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -126,15 +125,8 @@ function QuoteConfigDetails({ json }: { json: string | null }) {
   );
 }
 
-interface AdminSubscriber {
-  id: string;
-  email: string;
-  createdAt: string;
-}
-
 interface LeadsPayload {
   leads: AdminLead[];
-  subscribers: AdminSubscriber[];
 }
 
 /* ─────────────────────────── Overview ─────────────────────────── */
@@ -219,12 +211,6 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
             value={data ? data.leads.length : null}
             loading={!data}
           />
-          <StatCard
-            icon={Users}
-            label="Subscribers"
-            value={data ? data.subscribers.length : null}
-            loading={!data}
-          />
           <StatCard icon={FileText} label="Published posts" value={postCount} loading={postCount === null} />
         </div>
       )}
@@ -282,7 +268,7 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
 export function LeadsPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
   const { toast } = useToast();
   const [data, setData] = React.useState<LeadsPayload | null>(null);
-  const [deleteTarget, setDeleteTarget] = React.useState<{ id: string; type: 'lead' | 'subscriber'; label: string } | null>(null);
+  const [deleteTarget, setDeleteTarget] = React.useState<{ id: string; type: 'lead'; label: string } | null>(null);
 
   const load = React.useCallback(async () => {
     try {
@@ -324,14 +310,14 @@ export function LeadsPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
 
   const confirmDelete = async () => {
     if (!deleteTarget) return;
-    const { id, type } = deleteTarget;
+    const { id } = deleteTarget;
     setDeleteTarget(null);
     try {
-      await adminFetch(`/api/admin/leads?id=${encodeURIComponent(id)}&type=${type}`, {
+      await adminFetch(`/api/admin/leads?id=${encodeURIComponent(id)}`, {
         method: 'DELETE',
       });
       await load();
-      toast({ title: type === 'lead' ? 'Lead deleted' : 'Subscriber removed' });
+      toast({ title: 'Lead deleted' });
     } catch (error) {
       if (error instanceof Error && error.message === 'Unauthorized.') return onUnauthorized();
       toast({ title: 'Delete failed', variant: 'destructive' });
@@ -451,50 +437,6 @@ export function LeadsPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
               </p>
             </article>
           ))}
-        </div>
-      )}
-
-      {/* Newsletter subscribers */}
-      <div>
-        <h2 className="text-lg font-semibold">Newsletter subscribers</h2>
-        <p className="text-sm text-muted-foreground">From the footer signup form.</p>
-      </div>
-      {data.subscribers.length === 0 ? (
-        <div className="card-surface rounded-2xl p-6 text-center text-sm text-muted-foreground">
-          No subscribers yet.
-        </div>
-      ) : (
-        <div className="card-surface max-h-96 overflow-y-auto rounded-2xl p-2">
-          <ul className="flex flex-col">
-            {data.subscribers.map((subscriber) => (
-              <li
-                key={subscriber.id}
-                className="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 hover:bg-muted/60"
-              >
-                <span className="min-w-0 truncate text-sm font-medium">{subscriber.email}</span>
-                <span className="flex shrink-0 items-center gap-3">
-                  <span className="text-xs text-muted-foreground">
-                    {format(new Date(subscriber.createdAt), 'MMM d, yyyy')}
-                  </span>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="size-7 text-red-600 hover:bg-red-50 hover:text-red-700"
-                    onClick={() =>
-                      setDeleteTarget({
-                        id: subscriber.id,
-                        type: 'subscriber',
-                        label: subscriber.email,
-                      })
-                    }
-                    aria-label={`Remove ${subscriber.email}`}
-                  >
-                    <Trash2 className="size-3.5" aria-hidden="true" />
-                  </Button>
-                </span>
-              </li>
-            ))}
-          </ul>
         </div>
       )}
 

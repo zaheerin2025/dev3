@@ -66,13 +66,6 @@ export const homeServiceCards: HomeServiceCard[] = [
   },
 ];
 
-export const homeStats = [
-  { value: '50+', label: 'Projects delivered' },
-  { value: '98%', label: 'Client satisfaction' },
-  { value: '8+', label: 'Years of craft' },
-  { value: '24hr', label: 'Response time' },
-];
-
 export const marqueeWork = ['WEB DESIGN', 'REDESIGN', 'E-COMMERCE', 'LANDING PAGES', 'SEO', 'MAINTENANCE'];
 /** Which marquee words scroll with gradient text */
 export const marqueeWorkAccents = [1, 4];
@@ -89,5 +82,3 @@ export const homeCaseStudySlugs = [
   'vantage-realty',
 ];
 
-/** Testimonials featured on the home page (ids from src/data/testimonials.ts). */
-export const homeTestimonialIds = ['t1', 't2', 't5'];

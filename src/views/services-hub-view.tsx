@@ -82,10 +82,8 @@ function ServicesHubView() {
           <Reveal delay={120} className="mt-14 w-full md:mt-16">
             <StatGrid
               items={[
-                { value: site.stats.projects, label: 'Projects delivered' },
                 { value: String(services.length), label: 'Specialist services' },
-                { value: site.stats.satisfaction, label: 'Client satisfaction' },
-                { value: '90+', label: 'Lighthouse performance' },
+                { value: 'Free', label: 'Itemized quotes' },
               ]}
             />
           </Reveal>

@@ -36,13 +36,6 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MESSAGE_MAX = 500;
 const MESSAGE_MIN = 20;
 
-/** Short social-proof quote shown in the dark rail (real client, t2). */
-const RAIL_QUOTE = {
-  text: 'They think like product engineers, not contractors — every sprint shipped something we could put in front of customers.',
-  name: 'David Chen',
-  role: 'CEO, NorthPay',
-};
-
 interface LeadFormProps {
   /** Lead source label stored with the submission, e.g. "service:web-dev". */
   source?: string;
@@ -170,17 +163,19 @@ function SuccessPanel({
         </p>
       ) : null}
       <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
-        <Button variant="outline" asChild>
-          <a
-            href={whatsappLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackEvent('whatsapp_click', { location: 'lead_success' })}
-          >
-            <MessageCircle className="h-4 w-4" aria-hidden="true" />
-            Chat on WhatsApp
-          </a>
-        </Button>
+        {whatsappLink() ? (
+          <Button variant="outline" asChild>
+            <a
+              href={whatsappLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent('whatsapp_click', { location: 'lead_success' })}
+            >
+              <MessageCircle className="h-4 w-4" aria-hidden="true" />
+              Chat on WhatsApp
+            </a>
+          </Button>
+        ) : null}
         <Button variant="ghost" onClick={onReset}>
           Send another message
         </Button>
@@ -653,32 +648,49 @@ export function LeadForm({
 /*  Dark left rail (full variant, desktop only)                        */
 /* ------------------------------------------------------------------ */
 
-const RAIL_CONTACT_ROWS = [
-  {
-    icon: Mail,
-    label: 'Email us',
-    value: site.email,
-    href: `mailto:${site.email}`,
-    external: false,
-    event: 'email_click' as const,
-  },
-  {
-    icon: Phone,
-    label: 'Call us',
-    value: site.phoneDisplay,
-    href: site.phoneHref,
-    external: false,
-    event: 'call_click' as const,
-  },
-  {
-    icon: MessageCircle,
-    label: 'WhatsApp',
-    value: 'Chat instantly',
-    href: whatsappLink(),
-    external: true,
-    event: 'whatsapp_click' as const,
-  },
-];
+type RailContactRow = {
+  icon: typeof Mail;
+  label: string;
+  value: string;
+  href: string;
+  external: boolean;
+  event: 'email_click' | 'call_click' | 'whatsapp_click';
+};
+
+const RAIL_CONTACT_ROWS: RailContactRow[] = (
+  [
+    site.email
+      ? {
+          icon: Mail,
+          label: 'Email us',
+          value: site.email,
+          href: `mailto:${site.email}`,
+          external: false,
+          event: 'email_click' as const,
+        }
+      : null,
+    site.phoneDisplay
+      ? {
+          icon: Phone,
+          label: 'Call us',
+          value: site.phoneDisplay,
+          href: site.phoneHref,
+          external: false,
+          event: 'call_click' as const,
+        }
+      : null,
+    whatsappLink()
+      ? {
+          icon: MessageCircle,
+          label: 'WhatsApp',
+          value: 'Chat instantly',
+          href: whatsappLink(),
+          external: true,
+          event: 'whatsapp_click' as const,
+        }
+      : null,
+  ].filter((row): row is RailContactRow => row !== null)
+);
 
 function LeadRail() {
   return (
@@ -690,7 +702,7 @@ function LeadRail() {
             className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-gray-300"
             aria-hidden="true"
           />
-          Average response: under 4h
+          We reply within one business day
         </p>
 
         <div>
@@ -700,8 +712,9 @@ function LeadRail() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-2.5">
-          {RAIL_CONTACT_ROWS.map((row) => (
+        {RAIL_CONTACT_ROWS.length > 0 ? (
+          <div className="flex flex-col gap-2.5">
+            {RAIL_CONTACT_ROWS.map((row) => (
             <a
               key={row.label}
               href={row.href}
@@ -725,33 +738,15 @@ function LeadRail() {
                 </span>
               </span>
             </a>
-          ))}
-        </div>
-
-        <div className="divider-gradient" role="presentation" />
+            ))}
+          </div>
+        ) : null}
 
         <div className="mt-auto flex flex-col gap-5">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <span className="text-gradient-soft text-2xl font-bold">{site.stats.projects}</span>
-              <span className="mt-0.5 block text-xs text-slate-400">projects delivered</span>
-            </div>
-            <div>
-              <span className="text-gradient-soft text-2xl font-bold">
-                {site.stats.satisfaction}
-              </span>
-              <span className="mt-0.5 block text-xs text-slate-400">client satisfaction</span>
-            </div>
-          </div>
-
-          <figure className="rounded-2xl bg-white/5 p-4 ring-1 ring-inset ring-white/10">
-            <blockquote className="text-[13px] leading-relaxed text-slate-300">
-              &ldquo;{RAIL_QUOTE.text}&rdquo;
-            </blockquote>
-            <figcaption className="mt-1.5 text-xs font-medium text-slate-400">
-              {RAIL_QUOTE.name} — {RAIL_QUOTE.role}
-            </figcaption>
-          </figure>
+          <p className="text-sm leading-relaxed text-slate-300">
+            Senior people on every project, fixed quotes before we start, and code
+            you own — that is how every build runs here.
+          </p>
         </div>
       </div>
     </aside>

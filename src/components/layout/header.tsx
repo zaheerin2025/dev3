@@ -1,13 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { ArrowRight, ChevronDown, Menu, Phone, Sparkle } from 'lucide-react';
+import { ArrowRight, ChevronDown, Menu, Sparkle } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { site } from '@/lib/site';
 import { featuredServices, services } from '@/data';
 import { Link } from '@/components/common/link';
 import { ServiceIconGlyph } from '@/components/common/icon-map';
@@ -164,26 +163,13 @@ export function Header({ path }: HeaderProps) {
 
                 {/* Bottom action row */}
                 <div className="mt-1 border-t border-dashed border-zinc-200 px-3 py-3">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <a
-                        href={site.phoneHref}
-                        className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg text-xs font-bold text-zinc-900 transition-colors hover:text-zinc-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
-                        aria-label={`Call us at ${site.phoneDisplay}`}
-                      >
-                        <Phone className="size-4 text-zinc-500" aria-hidden="true" />
-                        {site.phoneDisplay}
-                      </a>
-                      <span className="text-[11px] font-medium text-zinc-500">{site.hours}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Link href="/services" className="btn-secondary-pill-sm">
-                        All services
-                      </Link>
-                      <Link href="/contact" className="btn-primary-pill-sm">
-                        Free quote
-                      </Link>
-                    </div>
+                  <div className="flex items-center justify-end gap-2">
+                    <Link href="/services" className="btn-secondary-pill-sm">
+                      All services
+                    </Link>
+                    <Link href="/contact" className="btn-primary-pill-sm">
+                      Free quote
+                    </Link>
                   </div>
                 </div>
               </DropdownMenuContent>

@@ -110,24 +110,28 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
           <Link href="/contact" onClick={onClose} className="btn-primary-pill-sm w-full">
             Start Your Project
           </Link>
-          <div className="flex flex-col gap-3 text-sm font-medium text-zinc-500">
-            {site.phoneDisplay ? (
-              <a
-                href={site.phoneHref}
-                className="inline-flex items-center gap-2.5 transition-colors hover:text-zinc-900"
-              >
-                <Phone className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
-                {site.phoneDisplay}
-              </a>
-            ) : null}
-            <a
-              href={`mailto:${site.email}`}
-              className="inline-flex items-center gap-2.5 transition-colors hover:text-zinc-900"
-            >
-              <Mail className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
-              {site.email}
-            </a>
-          </div>
+          {site.phoneDisplay || site.email ? (
+            <div className="flex flex-col gap-3 text-sm font-medium text-zinc-500">
+              {site.phoneDisplay ? (
+                <a
+                  href={site.phoneHref}
+                  className="inline-flex items-center gap-2.5 transition-colors hover:text-zinc-900"
+                >
+                  <Phone className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
+                  {site.phoneDisplay}
+                </a>
+              ) : null}
+              {site.email ? (
+                <a
+                  href={`mailto:${site.email}`}
+                  className="inline-flex items-center gap-2.5 transition-colors hover:text-zinc-900"
+                >
+                  <Mail className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
+                  {site.email}
+                </a>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Breadcrumbs } from '@/components/common/breadcrumbs';
 import { CATEGORY_LABELS, CATEGORY_STYLES, CaseStudyCard } from '@/components/common/case-study-card';
@@ -12,9 +11,9 @@ import { Reveal } from '@/components/common/reveal';
 import { Section } from '@/components/common/section';
 import { SectionHeading } from '@/components/common/section-heading';
 import { TechPills } from '@/components/common/tech-pills';
-import { caseStudies, getCaseStudy, getService, getTestimonial } from '@/data';
+import { caseStudies, getCaseStudy, getService } from '@/data';
 import { cn } from '@/lib/utils';
-import { buildCaseStudySchema, buildReviewSchema } from '@/lib/schema';
+import { buildCaseStudySchema } from '@/lib/schema';
 
 /** Full case study page (e.g. /portfolio/lumina-boutique). */
 export function CaseStudyView({ slug }: { slug: string }) {
@@ -40,7 +39,6 @@ export function CaseStudyView({ slug }: { slug: string }) {
     );
   }
 
-  const review = study.testimonialId ? getTestimonial(study.testimonialId) : undefined;
   const sameCategory = caseStudies.filter(
     (item) => item.category === study.category && item.slug !== study.slug
   );
@@ -62,9 +60,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
           className="glow-orb right-[-8rem] top-1/3 h-80 w-80 bg-gray-400/15"
           aria-hidden="true"
         />
-        <JsonLd
-          data={[buildCaseStudySchema(study), ...(review ? [buildReviewSchema(review)] : [])]}
-        />
+        <JsonLd data={buildCaseStudySchema(study)} />
         <div className="relative flex flex-col items-start gap-5">
           <Breadcrumbs
             className="[&_[data-slot=breadcrumb-page]]:font-medium [&_[data-slot=breadcrumb-page]]:text-white [&_[data-slot=breadcrumb-separator]_svg]:text-gray-400/60 [&_a:hover]:text-white [&_ol]:text-gray-200/70"
@@ -261,76 +257,6 @@ export function CaseStudyView({ slug }: { slug: string }) {
           ))}
         </div>
       </Section>
-
-      {/* Testimonial */}
-      {review ? (
-        <Section tinted>
-          <Reveal>
-            <figure className="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-gray-800 to-[#0a0a0a] p-8 shadow-[0_32px_64px_-32px_rgb(4_16_11/0.55)] sm:p-12">
-              {/* Ambient glows + oversized quote glyph (decorative) */}
-              <span
-                className="glow-orb left-[-5rem] top-[-7rem] h-72 w-72 bg-gray-400/25"
-                aria-hidden="true"
-              />
-              <span
-                className="glow-orb bottom-[-8rem] right-[-4rem] h-80 w-80 bg-gray-400/20"
-                aria-hidden="true"
-              />
-              <span
-                className="pointer-events-none absolute -top-6 right-4 select-none font-display text-[9rem] font-black leading-none text-white/10 sm:-top-10 sm:text-[12rem]"
-                aria-hidden="true"
-              >
-                &rdquo;
-              </span>
-              <div className="relative">
-                <div
-                  className="flex items-center gap-1"
-                  role="img"
-                  aria-label={`Rated ${review.rating} out of 5 stars`}
-                >
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className={cn(
-                        'h-4 w-4',
-                        i < review.rating ? 'fill-gray-400 text-gray-400' : 'text-white/25'
-                      )}
-                      aria-hidden="true"
-                    />
-                  ))}
-                </div>
-                <blockquote className="mt-5 max-w-3xl text-xl font-medium leading-relaxed text-white sm:text-2xl">
-                  &ldquo;{review.quote}&rdquo;
-                </blockquote>
-                <figcaption className="mt-8 flex flex-wrap items-center gap-4 border-t border-white/15 pt-6">
-                  {review.avatar ? (
-                    <Image
-                      src={review.avatar}
-                      alt={`Portrait of ${review.name}`}
-                      width={56}
-                      height={56}
-                      className="h-14 w-14 rounded-full object-cover ring-2 ring-gray-300/50"
-                    />
-                  ) : (
-                    <span
-                      className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-400/15 text-sm font-bold text-gray-200 ring-2 ring-gray-300/50"
-                      aria-hidden="true"
-                    >
-                      {review.initials}
-                    </span>
-                  )}
-                  <span>
-                    <span className="block text-base font-semibold text-white">{review.name}</span>
-                    <span className="block text-sm text-gray-100/70">
-                      {review.role}, {review.company}
-                    </span>
-                  </span>
-                </figcaption>
-              </div>
-            </figure>
-          </Reveal>
-        </Section>
-      ) : null}
 
       {/* Related case studies */}
       {related.length > 0 ? (

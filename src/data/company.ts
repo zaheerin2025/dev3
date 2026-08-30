@@ -1,4 +1,4 @@
-import type { FAQ, LegalSection, ProcessStep, TimelineEntry } from '@/lib/types';
+import type { FAQ, LegalSection, ProcessStep } from '@/lib/types';
 
 export const homeFaqs: FAQ[] = [
   {
@@ -52,7 +52,7 @@ export const whyChooseUs: { title: string; description: string }[] = [
   {
     title: 'On-time, on-scope delivery',
     description:
-      '98% of our projects ship on schedule thanks to weekly demos, a proven discovery-to-launch process, and honest scoping.',
+      'Weekly demos, a proven discovery-to-launch process, and honest scoping keep projects on schedule — and when scope changes, you approve the new price first.',
   },
   {
     title: 'You own everything',
@@ -89,17 +89,6 @@ export const homeProcess: ProcessStep[] = [
   },
 ];
 
-export const clientNames: string[] = [
-  'NorthPay',
-  'Lumina Boutique',
-  'Meridian Dental',
-  'Atlas Logistics',
-  'PulseFit',
-  'BrewPoint',
-  'SkillForge',
-  'Urban Bloom',
-];
-
 export const companyValues: { title: string; description: string }[] = [
   {
     title: 'Craft over shortcuts',
@@ -123,58 +112,25 @@ export const companyValues: { title: string; description: string }[] = [
   },
 ];
 
-export const timeline: TimelineEntry[] = [
-  {
-    year: '2017',
-    title: 'Two developers, one mission',
-    description:
-      'Developers3 is founded by Alex Morgan and Priya Sharma after years of watching small businesses get overcharged by agencies and underserved by template mills.',
-  },
-  {
-    year: '2019',
-    title: 'First e-commerce success',
-    description:
-      'Our WooCommerce build for a local retailer passes $1M in online revenue. Referrals start flowing and the team grows to five.',
-  },
-  {
-    year: '2021',
-    title: 'Apps & full product builds',
-    description:
-      'We launch our mobile practice with Flutter, ship our first custom SaaS platform, and move into a proper studio office.',
-  },
-  {
-    year: '2023',
-    title: 'SEO & growth division',
-    description:
-      'Clients kept asking "now get us found" — so we built a dedicated SEO and paid media team. We deliver our 50th project.',
-  },
-  {
-    year: '2025',
-    title: '12 specialists, 30+ happy clients',
-    description:
-      'Today we cover the full digital journey: design, development, apps, SEO, ads, and maintenance — with a 98% client satisfaction rate.',
-  },
-];
-
 export const aboutStory: string[] = [
-  'Developers3 started in 2017 with a simple frustration: small businesses were stuck choosing between bloated agencies that charged five figures for a brochure site, and cheap template mills that left them with something slow, generic, and invisible on Google. Our founders — Alex Morgan and Priya Sharma — had spent years fixing both inside larger companies, and believed there was a better way: agency-quality work, senior people doing the actual building, and honest prices published up front.',
-  'The first clients came through referrals, and most of them are still with us today. That early base — a dental clinic, a boutique retailer, a logistics company — shaped how we work. We learned that a website is never just a website: it is a booking engine, a sales channel, a hiring tool. So every project starts with a business goal, not a design trend, and we measure our success in leads generated, orders processed, and hours saved — not in awards.',
-  'Today Developers3 is a team of 12+ specialists covering the full digital journey: UI/UX design, custom web and software development, WordPress and e-commerce, mobile apps, SEO, paid media, and ongoing maintenance. Having design, engineering, and marketing under one roof changes the conversation — our marketers review every build for search visibility, and our engineers keep every campaign landing page fast enough to convert.',
-  'We have delivered 50+ projects for 30+ active clients across healthcare, finance, retail, logistics, and education, and we hold ourselves to a 98% satisfaction rate. If you are weighing your next digital move — a rebuild, a new store, an app idea, or simply "we are not showing up on Google" — start with a free quote. You will get straightforward advice about what you actually need, even if the answer is less than you expected.',
+  'Developers3 started with a simple frustration: small businesses were stuck choosing between bloated agencies that charged five figures for a brochure site, and cheap template mills that left them with something slow, generic, and invisible on Google. We believed there was a better way: agency-quality work, senior people doing the actual building, and honest prices published up front.',
+  'That belief shapes how we work. A website is never just a website: it is a booking engine, a sales channel, a hiring tool. So every project starts with a business goal, not a design trend, and we measure our success in leads generated, orders processed, and hours saved — not in awards.',
+  'Today Developers3 covers the full digital journey: UI/UX design, custom web and software development, WordPress and e-commerce, mobile apps, SEO, paid media, and ongoing maintenance. Having design, engineering, and marketing under one roof changes the conversation — our marketers review every build for search visibility, and our engineers keep every campaign landing page fast enough to convert.',
+  'If you are weighing your next digital move — a rebuild, a new store, an app idea, or simply "we are not showing up on Google" — start with a free quote. You will get straightforward advice about what you actually need, even if the answer is less than you expected.',
 ];
 
 export const privacySections: LegalSection[] = [
   {
     heading: 'Overview',
     paragraphs: [
-      'This Privacy Policy explains how Developers3 ("we", "us", "our") collects, uses, and protects personal information when you visit developers3.com or contact us about our services. We keep this policy short and readable on purpose — if anything is unclear, email us at hello@developers3.com.',
+      'This Privacy Policy explains how Developers3 ("we", "us", "our") collects, uses, and protects personal information when you visit developers3.com or contact us about our services. We keep this policy short and readable on purpose — if anything is unclear, reach us through the contact form on this website.',
       'By using this website you agree to the practices described below. If you do not agree, please do not use the site.',
     ],
   },
   {
     heading: 'Information we collect',
     paragraphs: [
-      'Contact details you give us voluntarily: your name, email address, phone number, service and budget preferences, and message content when you submit a quote form, newsletter signup, or WhatsApp message.',
+      'Contact details you give us voluntarily: your name, email address, phone number, service and budget preferences, and message content when you submit a quote form on this website.',
       'Usage data collected automatically: pages visited, approximate location (country/city level), device and browser type, and referral source. This is gathered via cookies and analytics tools and is used in aggregate to improve the site.',
     ],
   },
@@ -203,7 +159,7 @@ export const privacySections: LegalSection[] = [
     heading: 'Your rights',
     paragraphs: [
       'Depending on your jurisdiction (including GDPR and CCPA regions), you may request access to, correction of, or deletion of your personal data, and you may opt out of marketing communications at any time via the unsubscribe link or by emailing us.',
-      'To exercise any right, email hello@developers3.com. We respond to verified requests within 30 days.',
+      'To exercise any right, reach us through the contact form on this website. We respond to verified requests within 30 days.',
     ],
   },
   {
@@ -259,7 +215,7 @@ export const termsSections: LegalSection[] = [
   {
     heading: 'General',
     paragraphs: [
-      'These terms are governed by the laws of the State of California. If any provision is found unenforceable, the remainder stays in effect. Questions? Email hello@developers3.com.',
+      'These terms are governed by applicable law. If any provision is found unenforceable, the remainder stays in effect. Questions? Reach us through the contact form on this website.',
     ],
   },
 ];

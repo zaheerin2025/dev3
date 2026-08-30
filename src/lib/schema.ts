@@ -1,9 +1,13 @@
 import { site } from './site';
-import type { CaseStudy, FAQ, PricingBlock, PricingTier, Service, Testimonial, BlogPost, TeamMember } from './types';
+import type { CaseStudy, FAQ, PricingBlock, PricingTier, Service, BlogPost, TeamMember } from './types';
 
 const abs = (path: string) => `${site.url}${path === '/' ? '' : path}`;
 
+/** Only real, admin-confirmed identity data is emitted — no placeholders. */
 export function buildOrganizationSchema() {
+  const hasAddress = Boolean(site.address.street && site.address.city);
+  const socials = Object.values(site.socials).filter(Boolean);
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -13,31 +17,47 @@ export function buildOrganizationSchema() {
     url: site.url,
     logo: abs('/logo.svg'),
     description: site.description,
-    foundingDate: String(site.founded),
-    email: site.email,
-    telephone: site.phoneIntl,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: site.address.street,
-      addressLocality: site.address.city,
-      addressRegion: site.address.state,
-      postalCode: site.address.zip,
-      addressCountry: site.address.country,
-    },
-    sameAs: Object.values(site.socials),
-    contactPoint: [
-      {
-        '@type': 'ContactPoint',
-        telephone: site.phoneIntl,
-        contactType: 'sales',
-        email: site.email,
-        availableLanguage: 'English',
-      },
-    ],
+    ...(site.founded ? { foundingDate: String(site.founded) } : {}),
+    ...(site.email ? { email: site.email } : {}),
+    ...(site.phoneIntl ? { telephone: site.phoneIntl } : {}),
+    ...(hasAddress
+      ? {
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: site.address.street,
+            addressLocality: site.address.city,
+            addressRegion: site.address.state,
+            postalCode: site.address.zip,
+            addressCountry: site.address.country,
+          },
+        }
+      : {}),
+    ...(socials.length > 0 ? { sameAs: socials } : {}),
+    ...(site.phoneIntl || site.email
+      ? {
+          contactPoint: [
+            {
+              '@type': 'ContactPoint',
+              ...(site.phoneIntl ? { telephone: site.phoneIntl } : {}),
+              contactType: 'sales',
+              ...(site.email ? { email: site.email } : {}),
+              availableLanguage: 'English',
+            },
+          ],
+        }
+      : {}),
   };
 }
 
+/**
+ * LocalBusiness schema — only when a real physical presence is configured.
+ * Returns null otherwise (the layout skips the script tag).
+ */
 export function buildLocalBusinessSchema() {
+  const hasAddress = Boolean(site.address.street && site.address.city);
+  if (!hasAddress && !site.phoneIntl) return null;
+  const socials = Object.values(site.socials).filter(Boolean);
+
   return {
     '@context': 'https://schema.org',
     '@type': ['LocalBusiness', 'ProfessionalService'],
@@ -47,32 +67,44 @@ export function buildLocalBusinessSchema() {
     image: abs('/images/og-image.png'),
     logo: abs('/logo.svg'),
     description: site.description,
-    telephone: site.phoneIntl,
-    email: site.email,
+    ...(site.phoneIntl ? { telephone: site.phoneIntl } : {}),
+    ...(site.email ? { email: site.email } : {}),
     priceRange: '$$',
-    foundingDate: String(site.founded),
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: site.address.street,
-      addressLocality: site.address.city,
-      addressRegion: site.address.state,
-      postalCode: site.address.zip,
-      addressCountry: site.address.country,
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: site.geo.lat,
-      longitude: site.geo.lng,
-    },
-    openingHoursSpecification: [
-      {
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-        opens: '09:00',
-        closes: '18:00',
-      },
-    ],
-    sameAs: Object.values(site.socials),
+    ...(site.founded ? { foundingDate: String(site.founded) } : {}),
+    ...(hasAddress
+      ? {
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: site.address.street,
+            addressLocality: site.address.city,
+            addressRegion: site.address.state,
+            postalCode: site.address.zip,
+            addressCountry: site.address.country,
+          },
+        }
+      : {}),
+    ...(site.address.street && site.geo.lat && site.geo.lng
+      ? {
+          geo: {
+            '@type': 'GeoCoordinates',
+            latitude: site.geo.lat,
+            longitude: site.geo.lng,
+          },
+        }
+      : {}),
+    ...(site.hoursSchema.length > 0
+      ? {
+          openingHoursSpecification: [
+            {
+              '@type': 'OpeningHoursSpecification',
+              dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+              opens: '09:00',
+              closes: '18:00',
+            },
+          ],
+        }
+      : {}),
+    ...(socials.length > 0 ? { sameAs: socials } : {}),
   };
 }
 
@@ -139,26 +171,6 @@ export function buildFaqPageSchema(faqs: FAQ[]) {
         text: faq.answer,
       },
     })),
-  };
-}
-
-export function buildReviewSchema(testimonial: Testimonial) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Review',
-    reviewRating: {
-      '@type': 'Rating',
-      ratingValue: testimonial.rating,
-      bestRating: 5,
-    },
-    author: {
-      '@type': 'Person',
-      name: testimonial.name,
-      jobTitle: testimonial.role,
-      worksFor: testimonial.company,
-    },
-    reviewBody: testimonial.quote,
-    itemReviewed: { '@id': `${site.url}/#organization` },
   };
 }
 

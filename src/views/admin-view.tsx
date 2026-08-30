@@ -796,14 +796,6 @@ const SITE_CONTENT_FIELDS: { key: string; label: string; defaultValue: string; h
     defaultValue: site.whatsappNumber,
     hint: 'Digits only, with country code — e.g. 15550134567.',
   },
-  { key: 'stats.projects', label: 'Projects delivered', defaultValue: site.stats.projects },
-  { key: 'stats.clients', label: 'Happy clients', defaultValue: site.stats.clients },
-  { key: 'stats.years', label: 'Years in business', defaultValue: site.stats.years },
-  {
-    key: 'stats.satisfaction',
-    label: 'Client satisfaction',
-    defaultValue: site.stats.satisfaction,
-  },
   {
     key: 'contact.businessEmail',
     label: 'Business / promotions email',
@@ -893,7 +885,7 @@ function SiteContentTab({ token, onUnauthorized }: { token: string; onUnauthoriz
         <div>
           <h2 className="text-lg font-semibold">Site content</h2>
           <p className="text-sm text-muted-foreground">
-            Overrides for the home hero, contact details, and stats. Leave a field empty to use the
+            Overrides for the home hero and contact details. Leave a field empty to use the
             default.
           </p>
         </div>
