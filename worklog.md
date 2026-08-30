@@ -614,3 +614,19 @@ Stage Summary:
 - The pre-crash design is BACK and committed (9485db8): DB-logo editorial header + mega menu with phone row, blue footer with contact/newsletter block, colorful Awwwards home with YELLOW marker highlighter in the hero, blue/cyan brand everywhere. Purple era preserved on branch `backup-purple-era`.
 - Quote builder (dynamic per-service, live estimate), 100-tool portal, admin panel, portfolio DB — all intact (restored with 6e78dce; none of that functionality was lost).
 - OPEN ITEM for user: real contact details (phone/WhatsApp/email/address) were lost in the crash — awaiting values from user; editable at /#/admin → Site Content or provide in chat to hardcode into src/lib/site.ts.
+
+---
+Task ID: 24
+Agent: orchestrator (Z.ai main)
+Task: CORRECTION to Task 23 — user clarified the REAL original design was the COLORFUL header/footer (Sparkle logo, purple/pink/orange brand, ink-black sections), not the older blue DB era. Restore colorful everywhere + keep yellow highlighter.
+
+Work Log:
+- Misread user intent in Task 23 (restored blue 6e78dce era); user corrected: "you again made blue etc, not actual like it was real colorful original header footer". The colorful design = commit e1c05bb era (Sparkle logo header with 2px ink edge + yellow dot + gradient pill CTA + full-screen MobileMenu, purple-glow ink footer, purple→pink→orange text-gradients, purple oklch tokens).
+- Backup branch `backup-blue-era` created at 9485db8 (blue restore kept safe); `git checkout e1c05bb -- src/` (29 files, diff vs e1c05bb = 0); re-applied yellow `.highlighter` (sunshine marker gradient rgba(253,230,138,.75)→rgba(253,224,71,.65) + 0.15em radius) — hero "Grow" keeps the YELLOW word background the user explicitly asked for, now inside the colorful theme.
+- SERVER NOTE (repeatable pattern): starting .zscripts/dev.sh and ending the tool call BEFORE dev.sh prints "running in background" → sandbox kills the still-running script and its EXIT trap kills the server. Fix: wait inside the SAME tool call until "running in background" appears in the launcher log, THEN the orphaned next-server survives across tool calls.
+- VERIFY: lint 0/0, tsc 0 errors, rm -rf .next clean rebuild via dev.sh (waited for full completion); agent-browser E2E on colorful state: home top (Sparkle header + gradient "Win Clients" + YELLOW "Grow" highlight), full-home scroll (all sections + purple-glow footer with contact block + gradient Subscribe), #/seo-services quote builder (estimate rail + SEO preselected), mobile 390x844 (no overflow), zero console errors. Committed as d2d3cd4.
+
+Stage Summary:
+- Site is back on the COLORFUL brand (user's real original): colorful header/footer/globals + yellow hero highlighter, committed d2d3cd4. Blue era preserved on `backup-blue-era`, purple e1c05bb state on `backup-purple-era`.
+- Dev-server survival rule documented (wait for launcher completion within the spawning tool call).
+- STILL OPEN: real contact details lost in the crash — placeholders shown everywhere (footer/header menu/contact/forms wired consistently); awaiting real values from user (chat or /#/admin → Site Content).
