@@ -4,6 +4,7 @@ import * as React from 'react';
 import { ExternalLink, Inbox } from 'lucide-react';
 import { CaseStudyCard, CATEGORY_LABELS } from '@/components/common/case-study-card';
 import { CTABand } from '@/components/common/cta-band';
+import { PageHero } from '@/components/common/page-hero';
 import { Reveal } from '@/components/common/reveal';
 import { Section } from '@/components/common/section';
 import { SectionHeading } from '@/components/common/section-heading';
@@ -131,39 +132,16 @@ export function PortfolioView() {
 
   return (
     <>
-      {/* Hero */}
-      <Section grid className="md:pt-20">
-        {/* Ambient glow orbs (decorative) */}
-        <span
-          className="glow-orb left-[-10rem] top-[-9rem] h-[26rem] w-[26rem] bg-gray-300/25"
-          aria-hidden="true"
-        />
-        <span
-          className="glow-orb right-[-10rem] top-1/4 h-80 w-80 bg-gray-300/20"
-          aria-hidden="true"
-        />
-        <span
-          className="glow-orb bottom-[-10rem] left-1/3 h-80 w-80 bg-gray-200/30"
-          aria-hidden="true"
-        />
-        <Reveal className="relative mx-auto max-w-3xl text-center">
-          <div className="flex flex-col items-center gap-5">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
-              Featured Work
-            </p>
-            <h1 className="text-balance text-5xl font-bold tracking-tight sm:text-6xl">
-              Our <span className="text-gradient">Portfolio</span>
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              Real projects for real clients — live websites you can visit right now, plus case
-              studies with measurable results and the full story behind them.
-            </p>
-          </div>
-        </Reveal>
-
+      {/* Hero — same left-aligned pattern as every page */}
+      <PageHero
+        eyebrow="Featured Work"
+        title="Our **Portfolio**"
+        description="Real projects for real clients — live websites you can visit right now, plus case studies with measurable results and the full story behind them."
+        crumbs={[{ label: 'Portfolio' }]}
+      >
         {/* Live client websites (admin-managed) */}
         {sites && sites.length > 0 ? (
-          <div className="relative mt-14">
+          <div>
             <SectionHeading
               eyebrow="Client Websites"
               title="Live Sites We **Built & Shipped**"
@@ -172,17 +150,17 @@ export function PortfolioView() {
             <WebsiteGrid items={sites} />
           </div>
         ) : null}
+      </PageHero>
 
-        {/* Case studies filter bar */}
-        <div className="relative mt-16 flex flex-col items-center gap-4">
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
-            Case Studies
-          </p>
-          <div
-            role="group"
-            aria-label="Filter projects by category"
-            className="flex flex-wrap justify-center gap-2.5"
-          >
+      {/* Case studies */}
+      <Section>
+        <SectionHeading
+          eyebrow="Case Studies"
+          title="The Stories Behind **The Results**"
+          description="Filter by category — every study includes the full build story and the measurable outcome."
+          className="mb-8"
+        />
+        <div className="flex flex-wrap items-center gap-2.5" role="group" aria-label="Filter projects by category">
             {FILTERS.map((filter) => {
               const isActive = active === filter.value;
               return (
@@ -197,7 +175,7 @@ export function PortfolioView() {
                   className={cn(
                     'inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-4 py-2 text-base font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     isActive
-                      ? 'bg-gradient-to-br from-gray-800 to-gray-500 text-white shadow-[0_8px_20px_-8px_rgb(0_0_0/0.65)] hover:from-gray-500 hover:to-gray-500'
+                      ? 'bg-[#161613] text-white hover:bg-[#161613]'
                       : 'bg-white text-foreground/70 ring-1 ring-inset ring-gray-900/10 hover:text-gray-900 hover:ring-gray-500/30'
                   )}
                 >
@@ -209,10 +187,9 @@ export function PortfolioView() {
               );
             })}
           </div>
-          <p className="text-base text-muted-foreground" aria-live="polite">
+          <p className="mt-4 text-base text-muted-foreground" aria-live="polite">
             Showing {filtered.length} {filtered.length === 1 ? 'project' : 'projects'}
           </p>
-        </div>
 
         {/* Project grid */}
         {filtered.length > 0 ? (

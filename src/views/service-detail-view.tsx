@@ -109,26 +109,26 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                 className="text-sm [&_ol]:text-sm"
                 items={[{ label: 'Services', href: '/services' }, { label: service.name }]}
               />
-              <p className="text-sm font-bold uppercase tracking-[0.22em] text-gray-800">
+              <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#6f6e66]">
                 {service.category === 'development' ? 'Development Service' : 'Growth Service'}
               </p>
-              <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              <h1 className="text-balance font-display text-4xl font-bold tracking-[-0.025em] sm:text-5xl lg:text-6xl">
                 {heroBefore}
-                <span className="text-gradient">{heroAccent}</span>
+                <span className="text-[#FF4D00]">{heroAccent}</span>
                 {heroAfter}
               </h1>
-              <p className="max-w-xl text-xl leading-relaxed text-muted-foreground">{service.heroSub}</p>
+              <p className="max-w-xl text-xl leading-relaxed text-[#6f6e66]">{service.heroSub}</p>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Button
-                  size="lg"
-                  asChild
+                <Link
+                  href="/contact"
+                  className="btn-primary-pill"
                   onClick={() => trackEvent('cta_click', { location: 'service-hero', service: slug })}
                 >
-                  <Link href="/contact">Get Free Quote</Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/pricing">View Pricing</Link>
-                </Button>
+                  Get Free Quote
+                </Link>
+                <Link href="/pricing" className="btn-secondary-pill">
+                  View Pricing
+                </Link>
               </div>
             </div>
           </Reveal>

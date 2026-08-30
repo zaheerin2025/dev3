@@ -20,7 +20,7 @@ import { Section } from '@/components/common/section';
 import { SectionHeading } from '@/components/common/section-heading';
 import { Reveal } from '@/components/common/reveal';
 import { Link } from '@/components/common/link';
-import { Breadcrumbs } from '@/components/common/breadcrumbs';
+import { PageHero } from '@/components/common/page-hero';
 import { FAQSection } from '@/components/common/faq-section';
 import { QuoteBuilder } from '@/components/common/quote-builder';
 import { ServiceIconGlyph } from '@/components/common/icon-map';
@@ -172,31 +172,13 @@ export function PricingView() {
     <>
       <JsonLd data={buildOfferCatalogSchema(tiers, blocks)} />
 
-      {/* Hero */}
-      <Section grid className="lg:py-20">
-        {/* Ambient glow orbs (decorative) */}
-        <span
-          className="glow-orb left-[-10rem] top-[-9rem] h-[26rem] w-[26rem] bg-gray-300/25"
-          aria-hidden="true"
-        />
-        <span
-          className="glow-orb right-[-11rem] top-1/3 h-96 w-96 bg-gray-300/20"
-          aria-hidden="true"
-        />
-        <div className="relative mx-auto max-w-3xl">
-          <Breadcrumbs items={[{ label: 'Pricing' }]} />
-          <p className="mt-6 text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
-            Simple, fixed pricing
-          </p>
-          <h1 className="mt-3 text-balance text-5xl font-bold tracking-tight sm:text-6xl">
-            Website &amp; <span className="text-gradient">Digital Pricing</span>
-          </h1>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground sm:text-xl">
-            Real prices, published up front. Pick a package, book a free call, and get a fixed,
-            itemized quote within one business day.
-          </p>
-        </div>
-      </Section>
+      {/* Hero — same left-aligned pattern as every page */}
+      <PageHero
+        eyebrow="Simple, fixed pricing"
+        title="Website & **Digital Pricing**"
+        description="Real prices, published up front. Pick a package, book a free call, and get a fixed, itemized quote within one business day."
+        crumbs={[{ label: 'Pricing' }]}
+      />
 
       {/* Packages */}
       <Section tinted>

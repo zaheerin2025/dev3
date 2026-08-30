@@ -890,3 +890,21 @@ Stage Summary:
 - Site now reads modern + colorful + cohesive + sleek: Space Grotesk display at much larger sizes sitewide, tangerine primary CTAs, 4-color ramp on tiles/pills/numbers/dots, full-bleed tangerine marquee + CTA panels, amber highlighter — all built from solid colors, 1px borders and transforms only (paint budget honored).
 - Functionality untouched: hash router, mega menu, quote builder + live estimates, leads API, 100 tools, blog, portfolio, pricing, admin editing, trackEvent, sticky footer, gated contact data.
 - Known: pre-existing dev-mode Radix accordion hydration warning; contact details still placeholders until owner sets them in admin; dev.sh health-check hardened.
+
+---
+Task ID: 31
+Agent: orchestrator (Z.ai main)
+Task: Hero upgrade (animated rotating services + languages rail), "Let's work together" band, real contacts in footer, CTA/footer separator, compact footer, unified page heroes.
+
+Work Log:
+- site.ts: configured REAL contacts — email info@developers3.com, new businessEmail marketing@developers3.com, whatsappNumber 923110671019 (+ whatsappDisplay "+92 311 0671019"). WhatsApp floating button, CTA WhatsApp line, footer contact block and contact-page methods all went live.
+- hero.tsx rewritten: mono eyebrow "Websites • Apps • Software • Marketing", always-visible jade "Available for new projects" pulse badge, H1 split into "We build / [rotator] / that win clients & grow business." with a 6-word CSS rotator (websites, mobile apps, software, marketing, e-commerce stores, business platforms) using .hero-rotator inline-grid + per-word negative delays (15.6s cycle); sr-only full sentence for screen readers, rotator aria-hidden.
+- Right hero rail (lg+): "Languages & Frameworks We Master" grid — Flutter (Dart) first, Laravel, CodeIgniter, PHP, Next.js, React, TypeScript, WordPress, Shopify, Tailwind CSS — plus amber Flutter-speciality sticker card; mobile gets wrapping language chips.
+- globals.css: retimed hero-word-cycle keyframes (visible 3-15%, fade-out by 16.5%) so any N>=6 words rotate without crossfade overlap.
+- New components/home/work-together-band.tsx replaces the single-phrase marqueeCta slider: full-bleed amber band, "Let's work together →" links to /contact, ink "Get a Free Quote" pill + "WhatsApp us" outline pill, transform-only hover.
+- Footer rebuilt: 4 columns (brand+availability / services 2-col index / company+legal incl. Pricing / Get in touch with WhatsApp, Email, Marketing & partnerships rows with tinted icon tiles), tangerine 2px top border as the separator from the CTA section, bg #0E0E10 vs CTA #131316, watermark wordmark removed so the footer fits one screen, footer.blurb now wired via effectiveValue.
+- New components/common/page-hero.tsx (breadcrumbs + eyebrow + H1 with **accent** + description + actions + optional right rail, tone white/cream) applied to: services-hub (stats as children), about (mission card as jade rail; story simplified), contact (real H1 + "What happens next" 3-step rail), portfolio (case studies moved into own Section with ink filter pills), blog, pricing, tools-hub (cream tone, search + pills as children, ramp category chips), legal. Retired glow-orb heroes and gray-gradient filter pills (portfolio/blog/tools CTA now ink/ramp).
+- service-detail-view hero CTAs switched from shadcn ink Buttons to tangerine btn-primary-pill/btn-secondary-pill for cohesion; eyebrow/h1/sub retinted to POP tokens.
+
+Stage Summary:
+- Verified via agent-browser (fresh browser, 0 console errors): hero rotator cycles one word at a time (opacity 1/0 verified), fits 390px with zero horizontal overflow; mega menu opens with ramp tiles; quote builder "Custom Websites" -> "$1,400 – $1,900"; work band + footer links carry wa.me/923110671019; footer sticky on desktop (9224px doc) and mobile (844px viewport); mobile menu renders 32 links with email; admin sign-in loads; all 8 inner pages share the left-aligned hero pattern; ESLint + tsc clean (examples/ pre-existing only).

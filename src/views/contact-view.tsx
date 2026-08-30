@@ -1,10 +1,20 @@
 'use client';
 
-import { ArrowUpRight, Clock, Mail, MessageCircle, Phone, type LucideIcon } from 'lucide-react';
+import {
+  ArrowUpRight,
+  CalendarCheck,
+  ClipboardList,
+  Clock,
+  Mail,
+  MessageCircle,
+  Phone,
+  Rocket,
+  type LucideIcon,
+} from 'lucide-react';
 import { Section } from '@/components/common/section';
-import { SectionHeading } from '@/components/common/section-heading';
 import { Reveal } from '@/components/common/reveal';
 import { FAQSection } from '@/components/common/faq-section';
+import { PageHero } from '@/components/common/page-hero';
 import { QuoteBuilder } from '@/components/common/quote-builder';
 import { JsonLd } from '@/components/common/json-ld';
 import { homeFaqs } from '@/data';
@@ -74,6 +84,25 @@ export function ContactView() {
     });
   }
 
+  /** "What happens next" — shown as the hero rail, mirrors our real process. */
+  const NEXT_STEPS: { icon: LucideIcon; title: string; hint: string }[] = [
+    {
+      icon: ClipboardList,
+      title: 'Send your brief',
+      hint: 'Two sentences are enough — the form below takes 2 minutes.',
+    },
+    {
+      icon: CalendarCheck,
+      title: 'Get a fixed quote',
+      hint: 'Itemized and free, within one business day.',
+    },
+    {
+      icon: Rocket,
+      title: 'Kick off with a senior',
+      hint: 'The engineer who scoped it is the one who builds it.',
+    },
+  ];
+
   return (
     <>
       <JsonLd
@@ -86,28 +115,43 @@ export function ContactView() {
         }}
       />
 
-      {/* Hero */}
-      <Section grid className="lg:py-20">
-        <span
-          className="glow-orb left-[-9rem] top-[-7rem] h-72 w-72 bg-gray-400/25"
-          aria-hidden="true"
-        />
-        <span
-          className="glow-orb right-[-7rem] top-16 h-64 w-64 bg-gray-400/20"
-          aria-hidden="true"
-        />
-        <h1 className="sr-only">
-          Contact Developers3 — Web, App &amp; Software Development Company
-        </h1>
-        <div className="relative mx-auto max-w-3xl">
-          <SectionHeading
-            eyebrow="Contact"
-            title="Let's talk about your **next project**"
-            description="Tell us what you're building and get a free, itemized quote within one business day. A senior engineer replies, not a salesperson."
-            className="mb-6 md:mb-8"
-          />
-        </div>
-      </Section>
+      {/* Hero — same left-aligned pattern as every page */}
+      <PageHero
+        eyebrow="Contact"
+        title="Let’s talk about your **next project**"
+        description="Tell us what you’re building and get a free, itemized quote within one business day. A senior engineer replies, not a salesperson."
+        crumbs={[{ label: 'Contact' }]}
+        aside={
+          <Reveal delay={120}>
+            <div className="card-surface flex flex-col gap-6 p-7 sm:p-8">
+              <p className="eyebrow">What happens next</p>
+              <ol className="flex flex-col gap-5">
+                {NEXT_STEPS.map((step, index) => (
+                  <li key={step.title} className="flex items-start gap-4">
+                    <span
+                      className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${
+                        index === 0
+                          ? 'bg-[#FF4D00] text-white'
+                          : index === 1
+                            ? 'bg-[#FFB020] text-[#161613]'
+                            : 'bg-[#0FA36B] text-white'
+                      }`}
+                    >
+                      <step.icon className="size-5" aria-hidden="true" />
+                    </span>
+                    <span className="flex flex-col gap-0.5">
+                      <span className="font-display text-base font-bold text-[#161613]">
+                        {step.title}
+                      </span>
+                      <span className="text-[15px] leading-snug text-[#6f6e66]">{step.hint}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </Reveal>
+        }
+      />
 
       {/* Contact methods (only real ones) + form */}
       <Section>

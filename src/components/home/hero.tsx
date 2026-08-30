@@ -1,9 +1,11 @@
 'use client';
 
+import * as React from 'react';
 import {
   ArrowDown,
   Handshake,
   KeyRound,
+  Smartphone,
   Users,
 } from 'lucide-react';
 import { Link } from '@/components/common/link';
@@ -24,25 +26,46 @@ const HERO_CHIPS = [
   { icon: KeyRound, label: 'You own the code' },
 ];
 
-/** Tech list shown in the hero meta rail. */
-const STACK = [
+/**
+ * What we build — the hero headline rotates through every service we
+ * deliver so the very first sentence tells the whole story.
+ */
+const ROTATOR_ITEMS = [
+  'websites',
+  'mobile apps',
+  'software',
+  'marketing',
+  'e-commerce stores',
+  'business platforms',
+];
+
+/** Seconds each phrase stays readable before the next one rises in. */
+const ROTATOR_SLOT = 2.6;
+
+/**
+ * Languages & frameworks we are expert in (right hero rail).
+ * Flutter sits first on purpose — cross-platform apps are our speciality.
+ */
+const LANGUAGES = [
+  'Flutter (Dart)',
+  'Laravel',
+  'CodeIgniter',
+  'PHP',
   'Next.js',
   'React',
   'TypeScript',
-  'Tailwind CSS',
-  'Shopify',
   'WordPress',
-  'SEO',
-  'UI/UX Design',
-  'E-Commerce',
-  'Web Apps',
+  'Shopify',
+  'Tailwind CSS',
 ];
 
 /**
- * HERO — big, confident split layout on paper: eyebrow, oversized
- * grotesk headline with a tangerine accent phrase, roomy sub and CTAs,
- * hairline fact row with ramp-colored icons, meta rail with a colorful
- * stack list. No decorative paint.
+ * HERO — big, confident split layout on paper: availability badge,
+ * oversized grotesk headline whose service word rotates (websites →
+ * apps → software → marketing → e-commerce stores → business platforms),
+ * roomy sub and CTAs, hairline fact row, and a right rail with the
+ * languages we master plus the Flutter speciality callout. No
+ * decorative paint — solid colors, hairlines and transform-only motion.
  */
 export function Hero() {
   const settings = useSiteSettings((s) => s.settings);
@@ -51,24 +74,62 @@ export function Hero() {
 
   return (
     <section id="hero" className="section-white relative overflow-hidden">
-      <div className="mx-auto w-full max-w-7xl px-4 pb-16 pt-14 sm:px-6 md:pb-24 md:pt-24 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-4 pb-16 pt-12 sm:px-6 md:pb-24 md:pt-16 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
           {/* Left — headline block */}
           <div className="lg:col-span-8">
             <p className="eyebrow inline-flex items-center gap-2.5">
               <span className="size-2 rounded-full bg-[#FF4D00]" aria-hidden="true" />
-              Web Design &amp; Development Studio
+              Websites • Apps • Software • Marketing
+            </p>
+
+            {/* Availability badge — always visible, both columns */}
+            <p className="mt-6 flex w-fit items-center gap-2.5 rounded-full border border-[#161613] bg-[#E3F5EC] px-4 py-2 text-sm font-bold text-[#161613]">
+              <span
+                className="size-2.5 rounded-full bg-[#0FA36B] animate-pulse-dot"
+                aria-hidden="true"
+              />
+              Available for new projects
             </p>
 
             <Editable id="hero.headline">
               {headlineOverride ? (
-                <h1 className="mt-7 max-w-4xl font-display text-[2.9rem] font-bold leading-[1.03] tracking-[-0.03em] text-[#161613] sm:text-6xl lg:text-[5.25rem]">
+                <h1 className="mt-6 max-w-4xl font-display text-[2.9rem] font-bold leading-[1.05] tracking-[-0.03em] text-[#161613] sm:text-6xl lg:text-[5rem]">
                   {headlineOverride}
                 </h1>
               ) : (
-                <h1 className="mt-7 max-w-4xl font-display text-[2.9rem] font-bold leading-[1.03] tracking-[-0.03em] text-[#161613] sm:text-6xl lg:text-[5.25rem]">
-                  We build websites that <em className="not-italic text-[#FF4D00]">win clients</em> and grow
-                  business
+                <h1 className="mt-6 max-w-4xl font-display text-[2.6rem] font-bold leading-[1.07] tracking-[-0.03em] text-[#161613] sm:text-6xl lg:text-[4.9rem]">
+                  {/* Screen readers get the full sentence once; the visual
+                      rotator below is decorative. */}
+                  <span className="sr-only">
+                    We build {ROTATOR_ITEMS.join(', ')} that win clients &amp; grow business.
+                  </span>
+                  <span aria-hidden="true">
+                    <span className="word-rise block" style={{ ['--rise-delay' as string]: '0ms' }}>
+                      We build
+                    </span>
+                    <span
+                      className="hero-rotator my-1 text-[2.2rem] text-[#FF4D00] sm:text-6xl lg:text-[4.75rem]"
+                    >
+                      {ROTATOR_ITEMS.map((item, i) => (
+                        <span
+                          key={item}
+                          style={{
+                            animationDuration: `${ROTATOR_ITEMS.length * ROTATOR_SLOT}s`,
+                            animationDelay: `${-i * ROTATOR_SLOT}s`,
+                          }}
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </span>
+                    <span
+                      className="word-rise block"
+                      style={{ ['--rise-delay' as string]: '140ms' }}
+                    >
+                      that win clients &amp; grow business.
+                    </span>
+                  </span>
                 </h1>
               )}
             </Editable>
@@ -79,7 +140,7 @@ export function Hero() {
               </p>
             </Editable>
 
-            <div className="mt-10 flex flex-wrap items-center gap-3.5">
+            <div className="mt-9 flex flex-wrap items-center gap-3.5">
               <Link
                 href="/contact"
                 className="btn-primary-pill"
@@ -97,35 +158,45 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right — meta rail (desktop) */}
-          <aside className="hidden lg:col-span-4 lg:flex lg:flex-col lg:gap-8 lg:border-l lg:border-[#e6e5de] lg:pl-10" aria-label="Studio notes">
-            <p className="inline-flex items-center gap-2.5 text-sm font-semibold uppercase tracking-[0.1em] text-[#161613]">
-              <span className="size-2.5 rounded-full bg-green-600" aria-hidden="true" />
-              Available for new projects
-            </p>
-
-            <div className="border-t border-[#e6e5de] pt-7" aria-label="Technologies and services we work with">
-              <p className="eyebrow">Stack &amp; Services</p>
+          {/* Right — expertise rail (desktop) */}
+          <aside
+            className="hidden lg:col-span-4 lg:flex lg:flex-col lg:gap-7 lg:border-l lg:border-[#e6e5de] lg:pl-10"
+            aria-label="Languages and frameworks we master"
+          >
+            <div className="border-t border-[#e6e5de] pt-6" aria-label="Technologies we work with">
+              <p className="eyebrow">Languages &amp; Frameworks We Master</p>
               <div className="mt-5 grid grid-cols-2 gap-x-5 gap-y-3">
-                {STACK.map((tech, i) => (
+                {LANGUAGES.map((lang, i) => (
                   <span
-                    key={tech}
-                    className="inline-flex items-center gap-2.5 text-[15px] font-medium text-[#6f6e66]"
+                    key={lang}
+                    className="inline-flex items-center gap-2.5 text-[15px] font-semibold text-[#161613]"
                   >
                     <span
                       className={`size-1.5 shrink-0 rounded-full ${ACCENT_DOT[i % ACCENT_DOT.length]}`}
                       aria-hidden="true"
                     />
-                    {tech}
+                    {lang}
                   </span>
                 ))}
               </div>
+            </div>
+
+            {/* Speciality callout — solid amber sticker card */}
+            <div className="flex items-start gap-3.5 rounded-2xl border border-[#161613] bg-[#FFD84D] p-5">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#161613] text-[#FFD84D]">
+                <Smartphone className="size-5" aria-hidden="true" />
+              </span>
+              <p className="text-[15px] font-semibold leading-snug text-[#161613]">
+                Cross-platform apps with{' '}
+                <span className="font-bold">Flutter (Dart)</span> — our speciality. One codebase,
+                every platform.
+              </p>
             </div>
           </aside>
         </div>
 
         {/* Hairline fact row — honest claims, no invented proof */}
-        <div className="mt-16 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-[#e6e5de] pt-7">
+        <div className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-[#e6e5de] pt-7">
           {HERO_CHIPS.map(({ icon: Icon, label }, i) => (
             <span
               key={label}
@@ -138,10 +209,18 @@ export function Hero() {
               {label}
             </span>
           ))}
-          {/* Stack fallback for small screens (rail is desktop-only) */}
-          <span className="sr-only" aria-label="Technologies and services we work with">
-            {STACK.join(', ')}
-          </span>
+          {/* Languages fallback for small screens (rail is desktop-only) */}
+          <div className="flex w-full flex-wrap items-center gap-2 lg:hidden" aria-label="Technologies we work with">
+            {LANGUAGES.map((lang) => (
+              <span
+                key={lang}
+                className="rounded-full border border-[#e6e5de] bg-white px-3.5 py-1.5 text-sm font-semibold text-[#161613]"
+              >
+                {lang}
+              </span>
+            ))}
+            <span className="sr-only">Cross-platform apps with Flutter (Dart) — our speciality.</span>
+          </div>
         </div>
       </div>
     </section>

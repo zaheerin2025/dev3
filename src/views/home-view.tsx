@@ -9,9 +9,10 @@ import { TrendingToolsSection } from '@/components/home/trending-tools-section';
 import { PromisesSection } from '@/components/home/promises-section';
 import { ProcessSection } from '@/components/home/process-section';
 import { VideoSection } from '@/components/home/video-section';
+import { WorkTogetherBand } from '@/components/home/work-together-band';
 import { CtaSection } from '@/components/home/cta-section';
 import { homeFaqs } from '@/data/company';
-import { marqueeCta, marqueeWork, marqueeWorkAccents } from '@/data/home-content';
+import { marqueeWork, marqueeWorkAccents } from '@/data/home-content';
 
 /**
  * HOME — the clean creative page: hero, marquees, services, work showcase,
@@ -30,7 +31,7 @@ export function HomeView() {
       <PromisesSection />
       <ProcessSection />
       <VideoSection />
-      <Marquee items={marqueeCta} variant="gradient" reverse speed="slow" />
+      <WorkTogetherBand />
       <section className="section-white py-20 md:py-24" id="faq">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <FAQSection

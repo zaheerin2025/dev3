@@ -1,7 +1,6 @@
 // Central site configuration for Developers3.
-// Identity fields below are intentionally EMPTY — no placeholder/fake data.
-// The owner enters real contact details in the admin panel (Site Content);
-// UI that depends on them stays hidden until real values exist.
+// Contact fields hold the owner's REAL details (also editable from the
+// admin panel, whose saved overrides always win over these defaults).
 
 export const site = {
   name: 'Developers3',
@@ -11,11 +10,13 @@ export const site = {
   tagline: 'Web, App & Software Development Company',
   description:
     'Developers3 is a full-service web development agency building custom websites, WordPress, e-commerce stores, mobile apps and software that convert. Get a free quote today.',
-  email: '',
+  email: 'info@developers3.com',
+  businessEmail: 'marketing@developers3.com',
   phoneDisplay: '',
   phoneHref: '',
   phoneIntl: '',
-  whatsappNumber: '',
+  whatsappNumber: '923110671019',
+  whatsappDisplay: '+92 311 0671019',
   whatsappMessage: "Hi Developers3! I'd like to discuss a project. Can we chat?",
   address: {
     street: '',

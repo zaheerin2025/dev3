@@ -492,10 +492,13 @@
   animation: hero-word-cycle 9.6s ease-in-out infinite;
   will-change: opacity, transform;
 }
+/* Timing fits any word count: each word must be fully hidden again
+   before the next word starts rising (fade ends at 16.5%, the next
+   word begins at 3% + 100/N % — safe for N >= 6). */
 @keyframes hero-word-cycle {
   0% { opacity: 0; transform: translateY(0.55em); }
-  3%, 21% { opacity: 1; transform: translateY(0); }
-  24.5%, 100% { opacity: 0; transform: translateY(-0.55em); }
+  3%, 15% { opacity: 1; transform: translateY(0); }
+  16.5%, 100% { opacity: 0; transform: translateY(-0.55em); }
 }
 
 /* Mobile menu staggered fade-in (animation-delay set inline per item) */

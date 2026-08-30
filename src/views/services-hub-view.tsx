@@ -1,17 +1,15 @@
 'use client';
 
 import { CalendarCheck, ReceiptText, Rocket, type LucideIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Section } from '@/components/common/section';
 import { SectionHeading } from '@/components/common/section-heading';
 import { Reveal } from '@/components/common/reveal';
 import { Link } from '@/components/common/link';
-import { Breadcrumbs } from '@/components/common/breadcrumbs';
+import { PageHero } from '@/components/common/page-hero';
 import { CTABand } from '@/components/common/cta-band';
 import { ServiceCard } from '@/components/common/service-card';
 import { StatGrid } from '@/components/common/stat-grid';
 import { services } from '@/data';
-import { site } from '@/lib/site';
 import { trackEvent } from '@/lib/analytics';
 
 const HUB_INTRO =
@@ -34,61 +32,34 @@ function ServicesHubView() {
 
   return (
     <>
-      {/* 1. HERO BAND */}
-      <Section grid id="services-hero" className="lg:py-20">
-        {/* Ambient glow orbs (decorative) */}
-        <span
-          className="glow-orb left-[-10rem] top-[-8rem] h-[28rem] w-[28rem] bg-gray-300/25"
-          aria-hidden="true"
+      {/* 1. HERO BAND — same left-aligned pattern as every page */}
+      <PageHero
+        eyebrow="Full-service digital agency"
+        title="Our Web & **Digital Services**"
+        description={HUB_INTRO}
+        crumbs={[{ label: 'Services' }]}
+        actions={
+          <>
+            <Link
+              href="/contact"
+              className="btn-primary-pill"
+              onClick={() => trackEvent('cta_click', { location: 'services_hub_hero' })}
+            >
+              Get Free Quote
+            </Link>
+            <Link href="/pricing" className="btn-secondary-pill">
+              View Pricing
+            </Link>
+          </>
+        }
+      >
+        <StatGrid
+          items={[
+            { value: String(services.length), label: 'Specialist services' },
+            { value: 'Free', label: 'Itemized quotes' },
+          ]}
         />
-        <span
-          className="glow-orb right-[-12rem] top-1/3 h-96 w-96 bg-gray-300/20"
-          aria-hidden="true"
-        />
-        <span
-          className="glow-orb bottom-[-12rem] left-1/4 h-80 w-80 bg-gray-200/30"
-          aria-hidden="true"
-        />
-        <div className="relative flex flex-col items-start">
-          <Breadcrumbs
-            className="text-sm [&_ol]:text-sm"
-            items={[{ label: 'Services' }]}
-          />
-          <Reveal className="mt-8 max-w-3xl">
-            <div className="flex flex-col items-start gap-6">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
-                Full-service digital agency
-              </p>
-              <h1 className="text-balance text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
-                Our Web &amp; <span className="text-gradient">Digital Services</span>
-              </h1>
-              <p className="text-lg leading-relaxed text-muted-foreground sm:text-xl">
-                {HUB_INTRO}
-              </p>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Button
-                  size="lg"
-                  asChild
-                  onClick={() => trackEvent('cta_click', { location: 'services_hub_hero' })}
-                >
-                  <Link href="/contact">Get Free Quote</Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/pricing">View Pricing</Link>
-                </Button>
-              </div>
-            </div>
-          </Reveal>
-          <Reveal delay={120} className="mt-14 w-full md:mt-16">
-            <StatGrid
-              items={[
-                { value: String(services.length), label: 'Specialist services' },
-                { value: 'Free', label: 'Itemized quotes' },
-              ]}
-            />
-          </Reveal>
-        </div>
-      </Section>
+      </PageHero>
 
       {/* 2. SERVICES LIST */}
       <Section id="services-list">

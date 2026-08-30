@@ -3,14 +3,14 @@
 import * as React from 'react';
 import { Search, Sparkle, X } from 'lucide-react';
 import { Link } from '@/components/common/link';
-import { Sticker } from '@/components/common/sticker';
-import { FloatingShapes } from '@/components/common/floating-shapes';
+import { PageHero } from '@/components/common/page-hero';
 import { Reveal } from '@/components/common/reveal';
 import { AdSlot } from '@/components/ads/ad-slot';
 import { ToolCard } from '@/components/tools/tool-card';
 import { toolDefinitions } from '@/components/tools/tool-renderer';
 import { TOOL_CATEGORIES, getCategory } from '@/data/tools/types';
 import { navigate, useRouterStore } from '@/lib/router';
+import { ACCENT_TILE, accentIndex } from '@/lib/accent';
 
 /**
  * /#/tools — the Tools Mania portal: 100 free tools, searchable and
@@ -57,57 +57,55 @@ export function ToolsHubView() {
 
   return (
     <div className="flex flex-col">
-      {/* Hero */}
-      <section className="section-cream relative overflow-hidden py-14 md:py-20">
-        <FloatingShapes variant="subtle" />
-        <div className="relative mx-auto w-full max-w-6xl px-4 text-center sm:px-6 lg:px-8">
-          <Sticker rotate={-2}>✦ Tools Mania — 100 Free Utilities</Sticker>
-          <h1 className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-bold leading-[1.08] tracking-tight text-[#0a0a0a] sm:text-6xl lg:text-7xl">
-            Free <span className="text-gradient">Tools</span> That Do{' '}
+      {/* Hero — same left-aligned pattern as every page */}
+      <PageHero
+        tone="cream"
+        eyebrow="Tools Mania — 100 Free Utilities"
+        title={
+          <>
+            Free <em className="not-italic text-[#FF4D00]">Tools</em> That Do{' '}
             <span className="highlighter">Real Work</span>
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[#4b5563] sm:text-xl">
-            One hundred professionally built utilities for websites, apps, developer work, social
-            media and business — no signup, no watermarks, no catch. Pick a tool and get it done.
-          </p>
-
-          {/* Search */}
-          <div className="relative mx-auto mt-8 max-w-xl">
-            <Search className="absolute left-5 top-1/2 size-5 -translate-y-1/2 text-gray-400" aria-hidden="true" />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search 100 tools — try “meta”, “invoice”, “QR”…"
-              aria-label="Search tools"
-              className="h-14 w-full rounded-full border-2 border-gray-200 bg-white pl-13 pr-12 text-base font-medium text-[#0a0a0a] shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-gray-500"
-            />
-            {query ? (
-              <button
-                type="button"
-                onClick={() => setQuery('')}
-                aria-label="Clear search"
-                className="absolute right-4 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200"
-              >
-                <X className="size-4" />
-              </button>
-            ) : null}
-          </div>
-
-          {/* Category pills */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5" role="group" aria-label="Filter by category">
-            <CategoryPill active={category === 'all'} onClick={() => selectCategory('all')} label={`All ${toolDefinitions.length}`} />
-            {TOOL_CATEGORIES.map((c) => (
-              <CategoryPill
-                key={c.id}
-                active={category === c.id}
-                onClick={() => selectCategory(c.id)}
-                label={c.short}
-              />
-            ))}
-          </div>
+          </>
+        }
+        description="One hundred professionally built utilities for websites, apps, developer work, social media and business — no signup, no watermarks, no catch. Pick a tool and get it done."
+        crumbs={[{ label: 'Free Tools' }]}
+      >
+        {/* Search */}
+        <div className="relative max-w-xl">
+          <Search className="absolute left-5 top-1/2 size-5 -translate-y-1/2 text-gray-400" aria-hidden="true" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search 100 tools — try “meta”, “invoice”, “QR”…"
+            aria-label="Search tools"
+            className="h-14 w-full rounded-full border-2 border-gray-200 bg-white pl-13 pr-12 text-base font-medium text-[#0a0a0a] shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-gray-500"
+          />
+          {query ? (
+            <button
+              type="button"
+              onClick={() => setQuery('')}
+              aria-label="Clear search"
+              className="absolute right-4 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200"
+            >
+              <X className="size-4" />
+            </button>
+          ) : null}
         </div>
-      </section>
+
+        {/* Category pills */}
+        <div className="mt-6 flex flex-wrap items-center gap-2.5" role="group" aria-label="Filter by category">
+          <CategoryPill active={category === 'all'} onClick={() => selectCategory('all')} label={`All ${toolDefinitions.length}`} />
+          {TOOL_CATEGORIES.map((c) => (
+            <CategoryPill
+              key={c.id}
+              active={category === c.id}
+              onClick={() => selectCategory(c.id)}
+              label={c.short}
+            />
+          ))}
+        </div>
+      </PageHero>
 
       {/* Grid */}
       <section className="section-white py-12 md:py-16">
@@ -179,7 +177,7 @@ export function ToolsHubView() {
                   onClick={() => { selectCategory(c.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                   className="card-soft card-hover flex h-full w-full flex-col rounded-[20px] p-6 text-left"
                 >
-                  <span className={`inline-flex w-fit rounded-full bg-gradient-to-r ${c.gradient} px-3.5 py-1.5 text-sm font-bold text-white`}>
+                  <span className={`inline-flex w-fit rounded-full px-3.5 py-1.5 text-sm font-bold ${ACCENT_TILE[accentIndex(c.id)]}`}>
                     {c.label}
                   </span>
                   <p className="mt-3 flex-1 text-base leading-relaxed text-[#4b5563]">{c.description}</p>
@@ -193,13 +191,13 @@ export function ToolsHubView() {
 
           {/* Bottom CTA */}
           <Reveal>
-            <div className="mt-12 overflow-hidden rounded-[24px] bg-gradient-to-r from-gray-800 to-gray-500 p-8 text-center text-white sm:p-12">
+            <div className="mt-12 rounded-[24px] bg-[#161613] p-8 text-center text-white sm:p-12">
               <h2 className="font-display text-3xl font-bold sm:text-5xl">Need this built for you?</h2>
-              <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
+              <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
                 These tools are free forever — but if you want a custom web platform, app or
                 marketing system for your business, that is literally what we do.
               </p>
-              <Link href="/contact" className="btn-secondary-pill mt-6">
+              <Link href="/contact" className="btn-primary-pill mt-6">
                 Get a Free Quote
               </Link>
             </div>

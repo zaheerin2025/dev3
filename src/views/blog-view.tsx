@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Section } from '@/components/common/section';
 import { Reveal } from '@/components/common/reveal';
 import { Link } from '@/components/common/link';
-import { Breadcrumbs } from '@/components/common/breadcrumbs';
+import { PageHero } from '@/components/common/page-hero';
 import { CTABand } from '@/components/common/cta-band';
 import { blogPosts, getTeamMember } from '@/data';
 import {
@@ -84,31 +84,13 @@ export function BlogView() {
 
   return (
     <>
-      {/* Hero */}
-      <Section grid className="lg:py-20">
-        {/* Ambient glow orbs (decorative) */}
-        <span
-          className="glow-orb left-[-10rem] top-[-9rem] h-[26rem] w-[26rem] bg-gray-300/25"
-          aria-hidden="true"
-        />
-        <span
-          className="glow-orb right-[-11rem] top-1/3 h-96 w-96 bg-gray-300/20"
-          aria-hidden="true"
-        />
-        <div className="relative mx-auto max-w-3xl">
-          <Breadcrumbs items={[{ label: 'Blog' }]} />
-          <p className="mt-6 text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
-            Insights &amp; guides
-          </p>
-          <h1 className="mt-4 text-balance text-5xl font-bold tracking-tight sm:text-6xl">
-            The Developers3 <span className="text-gradient">Blog</span>
-          </h1>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground sm:text-xl">
-            Practical guides on website costs, platforms, SEO, and app development — written by the
-            people who build and ship for a living.
-          </p>
-        </div>
-      </Section>
+      {/* Hero — same left-aligned pattern as every page */}
+      <PageHero
+        eyebrow="Insights & guides"
+        title="The Developers3 **Blog**"
+        description="Practical guides on website costs, platforms, SEO, and app development — written by the people who build and ship for a living."
+        crumbs={[{ label: 'Blog' }]}
+      />
 
       {/* Category filter + posts */}
       <Section>
@@ -122,7 +104,7 @@ export function BlogView() {
                 className={cn(
                   'inline-flex min-h-11 items-center rounded-full px-5 text-base font-medium transition-all',
                   category === 'all'
-                    ? 'bg-gradient-to-r from-gray-800 to-gray-500 text-white shadow-[0_8px_20px_-8px_rgb(0_0_0/0.65)]'
+                    ? 'bg-[#161613] text-white'
                     : 'bg-white text-foreground ring-1 ring-inset ring-gray-900/10 hover:bg-gray-100 hover:ring-gray-500/30'
                 )}
               >
