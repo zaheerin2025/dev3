@@ -110,13 +110,13 @@ export function CalcTool({ config }: { config: CalcConfig }) {
             <div className={`grid gap-4 ${result.stats.length > 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
               {result.stats.map((s) => (
                 <div key={s.label} className="card-soft p-5">
-                  <p className="font-display text-2xl font-bold sm:text-3xl">
+                  <p className="font-display text-3xl font-bold sm:text-4xl">
                     <span className={s.tone === 'good' ? 'text-gray-800' : s.tone === 'warn' ? 'text-gray-800' : s.tone === 'bad' ? 'text-gray-800' : 'text-gradient'}>
                       {s.value}
                     </span>
                   </p>
-                  <p className="mt-1 text-xs font-bold uppercase tracking-wide text-gray-500">{s.label}</p>
-                  {s.hint ? <p className="mt-1 text-xs text-muted-foreground">{s.hint}</p> : null}
+                  <p className="mt-1 text-sm font-bold uppercase tracking-wide text-gray-500">{s.label}</p>
+                  {s.hint ? <p className="mt-1 text-sm text-muted-foreground">{s.hint}</p> : null}
                 </div>
               ))}
             </div>
@@ -125,7 +125,7 @@ export function CalcTool({ config }: { config: CalcConfig }) {
 
             {result.breakdown && result.breakdown.length > 0 ? (
               <div className="overflow-hidden rounded-2xl border border-gray-200">
-                <table className="w-full text-left text-sm">
+                <table className="w-full text-left text-base">
                   <tbody>
                     {result.breakdown.map((row, i) => (
                       <tr key={row.label} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
@@ -141,7 +141,7 @@ export function CalcTool({ config }: { config: CalcConfig }) {
             {result.note ? <ToolNote>{result.note}</ToolNote> : null}
           </>
         ) : (
-          <p className="text-sm text-muted-foreground">Enter valid numbers to see results.</p>
+          <p className="text-base text-muted-foreground">Enter valid numbers to see results.</p>
         )}
       </div>
     </div>

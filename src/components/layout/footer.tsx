@@ -1,12 +1,13 @@
 'use client';
 
 import * as React from 'react';
-import { ArrowUp, Clock, Mail, Phone } from 'lucide-react';
+import { ArrowUp, Clock, Mail, Phone, Sparkle } from 'lucide-react';
 import { site } from '@/lib/site';
 import { useSiteSettings } from '@/lib/use-site-settings';
 import { services } from '@/data';
 import { Link } from '@/components/common/link';
 import { trackEvent } from '@/lib/analytics';
+import { ACCENT_DOT } from '@/lib/accent';
 
 const COMPANY_LINKS = [
   { label: 'About Us', href: '/about' },
@@ -22,10 +23,11 @@ const LEGAL_LINKS = [
   { label: 'Terms & Conditions', href: '/terms' },
 ];
 
-/** Micro section label used above each link column. */
-function ColumnLabel({ children }: { children: React.ReactNode }) {
+/** Micro section label used above each link column — ramp-colored dot marker. */
+function ColumnLabel({ children, accent = 0 }: { children: React.ReactNode; accent?: number }) {
   return (
-    <h3 className="mb-4 text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500">
+    <h3 className="mb-5 inline-flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-white/60">
+      <span className={`size-2 rounded-full ${ACCENT_DOT[accent % ACCENT_DOT.length]}`} aria-hidden="true" />
       {children}
     </h3>
   );
@@ -36,7 +38,7 @@ function FooterLink({ href, children, muted = false }: { href: string; children:
   return (
     <Link
       href={href}
-      className={`text-sm transition-colors hover:text-white ${
+      className={`text-[15px] transition-colors hover:text-white ${
         muted ? 'text-zinc-500' : 'text-zinc-400'
       }`}
     >
@@ -64,27 +66,27 @@ export function Footer() {
 
   return (
     <footer className="relative mt-auto overflow-hidden bg-[#131316] text-zinc-300">
-      <div className="mx-auto w-full max-w-7xl px-4 pb-6 pt-14 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-4 pb-6 pt-16 sm:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr]">
           {/* Brand */}
-          <div className="flex flex-col items-start gap-5">
-            <Link href="/" className="flex items-center gap-2.5" ariaLabel="Developers3 — home">
+          <div className="flex flex-col items-start gap-6">
+            <Link href="/" className="flex items-center gap-3" ariaLabel="Developers3 — home">
               <span
                 aria-hidden="true"
-                className="flex size-9 items-center justify-center rounded-lg bg-white text-base text-[#ff4d00]"
+                className="flex size-10 items-center justify-center rounded-xl bg-[#FF4D00] text-white"
               >
-                ✦
+                <Sparkle className="size-5" fill="currentColor" />
               </span>
-              <span className="font-display text-lg font-bold tracking-tight text-white">
+              <span className="font-display text-2xl font-bold tracking-tight text-white">
                 Developers3
               </span>
             </Link>
-            <p className="max-w-xs text-sm leading-relaxed text-zinc-400">
+            <p className="max-w-xs text-[15px] leading-relaxed text-zinc-400">
               Web, app &amp; software development company. Senior-only team, fixed
               quotes, and code you own — from first call to launch day.
             </p>
             {/* Availability status */}
-            <p className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-zinc-300">
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3.5 py-2 text-sm font-semibold text-zinc-300">
               <span className="size-2 rounded-full bg-green-500" aria-hidden="true" />
               Available for new projects
             </p>
@@ -92,11 +94,19 @@ export function Footer() {
 
           {/* Services */}
           <nav aria-label="Footer services">
-            <ColumnLabel>Services</ColumnLabel>
-            <ul className="flex flex-col gap-2.5">
-              {services.map((service) => (
+            <ColumnLabel accent={0}>Services</ColumnLabel>
+            <ul className="flex flex-col gap-3">
+              {services.map((service, index) => (
                 <li key={service.slug}>
-                  <FooterLink href={`/${service.slug}`}>{service.name}</FooterLink>
+                  <FooterLink href={`/${service.slug}`}>
+                    <span className="inline-flex items-center gap-2.5">
+                      <span
+                        className={`size-1.5 rounded-full ${ACCENT_DOT[index % ACCENT_DOT.length]}`}
+                        aria-hidden="true"
+                      />
+                      {service.name}
+                    </span>
+                  </FooterLink>
                 </li>
               ))}
             </ul>
@@ -104,8 +114,8 @@ export function Footer() {
 
           {/* Company + legal */}
           <nav aria-label="Footer company">
-            <ColumnLabel>Company</ColumnLabel>
-            <ul className="flex flex-col gap-2.5">
+            <ColumnLabel accent={2}>Company</ColumnLabel>
+            <ul className="flex flex-col gap-3">
               {COMPANY_LINKS.map((link) => (
                 <li key={`${link.label}-${link.href}`}>
                   <FooterLink href={link.href}>{link.label}</FooterLink>
@@ -124,14 +134,14 @@ export function Footer() {
 
         {/* Contact strip — only when real contact details exist */}
         {hasContact ? (
-          <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/10 pt-6 text-sm text-zinc-400">
+          <div className="mt-14 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-white/10 pt-6 text-[15px] text-zinc-400">
             {phoneDisplay ? (
               <a
                 href={phoneHref}
                 onClick={() => trackEvent('call_click', { location: 'footer' })}
                 className="inline-flex items-center gap-2.5 transition-colors hover:text-white"
               >
-                <Phone className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
+                <Phone className="size-4.5 shrink-0 text-[#FF4D00]" aria-hidden="true" />
                 {phoneDisplay}
               </a>
             ) : null}
@@ -141,13 +151,13 @@ export function Footer() {
                 onClick={() => trackEvent('email_click', { location: 'footer' })}
                 className="inline-flex items-center gap-2.5 transition-colors hover:text-white"
               >
-                <Mail className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
+                <Mail className="size-4.5 shrink-0 text-[#FF4D00]" aria-hidden="true" />
                 {email}
               </a>
             ) : null}
             {hours ? (
               <span className="inline-flex items-center gap-2.5">
-                <Clock className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
+                <Clock className="size-4.5 shrink-0 text-[#FF4D00]" aria-hidden="true" />
                 {hours}
               </span>
             ) : null}
@@ -155,17 +165,17 @@ export function Footer() {
         ) : null}
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
-          <p className="text-xs text-zinc-500">
+        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
+          <p className="text-sm text-zinc-500">
             © {year} {site.legalName}. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <p className="hidden text-xs text-zinc-500 sm:block">
+            <p className="hidden text-sm text-zinc-500 sm:block">
               Web • Apps • Software • SEO
             </p>
             <Link
               href="/admin"
-              className="text-xs text-zinc-500 transition-colors hover:text-white"
+              className="text-sm text-zinc-500 transition-colors hover:text-white"
             >
               Admin
             </Link>
@@ -173,9 +183,9 @@ export function Footer() {
               type="button"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               aria-label="Back to top"
-              className="flex size-10 items-center justify-center rounded-full border border-white/15 text-zinc-400 transition-colors hover:border-white hover:bg-white hover:text-zinc-900"
+              className="flex size-11 items-center justify-center rounded-full border border-white/15 text-zinc-400 transition-colors hover:border-[#FF4D00] hover:bg-[#FF4D00] hover:text-white"
             >
-              <ArrowUp className="size-4" aria-hidden="true" />
+              <ArrowUp className="size-4.5" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -183,7 +193,7 @@ export function Footer() {
 
       {/* Oversized watermark wordmark — solid color, zero paint cost */}
       <div aria-hidden="true" className="pointer-events-none select-none overflow-hidden">
-        <p className="mx-auto max-w-7xl px-4 text-center font-display text-[13.5vw] font-bold leading-[0.95] tracking-tight text-white/[0.045] sm:px-6 lg:px-8">
+        <p className="mx-auto max-w-7xl px-4 text-center font-display text-[13.5vw] font-bold leading-[0.95] tracking-tight text-white/[0.05] sm:px-6 lg:px-8">
           Developers3
         </p>
       </div>

@@ -22,8 +22,8 @@ export function CaseStudyView({ slug }: { slug: string }) {
   if (!study) {
     return (
       <Section>
-        <h1 className="text-3xl font-bold sm:text-4xl">Case study not found</h1>
-        <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+        <h1 className="text-4xl font-bold sm:text-5xl">Case study not found</h1>
+        <p className="mt-4 max-w-2xl text-xl text-muted-foreground">
           The case study you are looking for does not exist or may have moved. Browse our portfolio to
           see all client projects.
         </p>
@@ -69,23 +69,23 @@ export function CaseStudyView({ slug }: { slug: string }) {
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <span
               className={cn(
-                'inline-flex items-center rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide ring-1 ring-inset ring-white/20',
+                'inline-flex items-center rounded-full px-3.5 py-1.5 text-sm font-bold uppercase tracking-wide ring-1 ring-inset ring-white/20',
                 CATEGORY_STYLES[study.category]
               )}
             >
               {CATEGORY_LABELS[study.category]}
             </span>
-            <span className="inline-flex items-center rounded-full bg-gray-400/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-gray-200 ring-1 ring-inset ring-gray-300/25">
+            <span className="inline-flex items-center rounded-full bg-gray-400/10 px-3.5 py-1.5 text-sm font-semibold uppercase tracking-wide text-gray-200 ring-1 ring-inset ring-gray-300/25">
               {study.industry}
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-balance text-white sm:text-4xl md:text-5xl">
+          <h1 className="text-4xl font-bold text-balance text-white sm:text-5xl md:text-6xl">
             {study.title}
           </h1>
-          <p className="max-w-3xl text-base leading-relaxed text-gray-100/80 sm:text-lg">
+          <p className="max-w-3xl text-lg leading-relaxed text-gray-100/80 sm:text-xl">
             {study.summary}
           </p>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-100/60">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-base text-gray-100/60">
             <span>
               Client: <span className="font-medium text-white">{study.client}</span>
             </span>
@@ -118,10 +118,10 @@ export function CaseStudyView({ slug }: { slug: string }) {
             <div className="grid gap-6 sm:grid-cols-3 sm:gap-8">
               {study.results.slice(0, 3).map((result) => (
                 <div key={result.label}>
-                  <p className="text-gradient-soft font-display text-3xl font-extrabold sm:text-4xl">
+                  <p className="text-gradient-soft font-display text-4xl font-extrabold sm:text-5xl">
                     {result.metric}
                   </p>
-                  <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-200/60">
+                  <p className="mt-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-gray-200/60">
                     {result.label}
                   </p>
                 </div>
@@ -161,7 +161,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
                 aria-hidden="true"
               />
               <div>
-                <h2 className="text-2xl font-bold sm:text-3xl">The Challenge</h2>
+                <h2 className="text-3xl font-bold sm:text-4xl">The Challenge</h2>
                 <div className="mt-5 flex max-w-3xl flex-col gap-4">
                   {study.challenge.map((paragraph, index) => (
                     <p key={index} className="leading-relaxed text-muted-foreground">
@@ -179,7 +179,7 @@ export function CaseStudyView({ slug }: { slug: string }) {
                 aria-hidden="true"
               />
               <div>
-                <h2 className="text-2xl font-bold sm:text-3xl">Our Solution</h2>
+                <h2 className="text-3xl font-bold sm:text-4xl">Our Solution</h2>
                 <div className="mt-5 flex max-w-3xl flex-col gap-4">
                   {study.solution.map((paragraph, index) => (
                     <p key={index} className="leading-relaxed text-muted-foreground">
@@ -206,8 +206,8 @@ export function CaseStudyView({ slug }: { slug: string }) {
               delay={index * 80}
               className="card-surface rounded-2xl p-6 text-center"
             >
-              <p className="text-gradient font-display text-4xl font-extrabold">{result.metric}</p>
-              <p className="mt-2 text-sm text-muted-foreground">{result.label}</p>
+              <p className="text-gradient font-display text-5xl font-extrabold">{result.metric}</p>
+              <p className="mt-2 text-base text-muted-foreground">{result.label}</p>
             </Reveal>
           ))}
         </div>
@@ -244,14 +244,14 @@ export function CaseStudyView({ slug }: { slug: string }) {
                 aria-hidden="true"
               />
               <span
-                className="pointer-events-none absolute right-5 top-3 select-none font-display text-6xl font-black leading-none text-white/15"
+                className="pointer-events-none absolute right-5 top-3 select-none font-display text-7xl font-black leading-none text-white/15"
                 aria-hidden="true"
               >
                 {String(index + 1).padStart(2, '0')}
               </span>
               <div className="relative flex h-full flex-col justify-end gap-2 p-6 sm:p-7">
-                <h3 className="text-lg font-semibold text-white">{item.title}</h3>
-                <p className="text-sm leading-relaxed text-white/85">{item.blurb}</p>
+                <h3 className="text-xl font-semibold text-white">{item.title}</h3>
+                <p className="text-base leading-relaxed text-white/85">{item.blurb}</p>
               </div>
             </Reveal>
           ))}

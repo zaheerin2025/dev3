@@ -11,15 +11,15 @@ interface SectionHeadingProps {
 }
 
 /**
- * Supports **italic accent** markup: pass `**words**` inside the title to
- * render those words as serif italics (the editorial accent — zero paint).
+ * Supports **accent** markup: pass `**words**` inside the title to render
+ * those words in the brand accent (tangerine on light, amber on ink).
  */
-function renderTitle(title: string) {
+function renderTitle(title: string, dark?: boolean) {
   const parts = title.split('**');
   if (parts.length === 1) return title;
   return parts.map((part, index) =>
     index % 2 === 1 ? (
-      <em key={index} className="italic">
+      <em key={index} className={dark ? 'not-italic text-[#FFB020]' : 'not-italic text-[#FF4D00]'}>
         {part}
       </em>
     ) : (
@@ -29,9 +29,9 @@ function renderTitle(title: string) {
 }
 
 /**
- * Editorial section heading: mono eyebrow with a signal dot, oversized
- * serif display title and a muted description. Left-aligned by default;
- * pass `align="center"` for the centered variant.
+ * Section heading: eyebrow with a tangerine dot, oversized grotesk title
+ * with accent words, and a roomy muted description. Left-aligned by
+ * default; pass `align="center"` for the centered variant.
  */
 export function SectionHeading({
   eyebrow,
@@ -56,22 +56,22 @@ export function SectionHeading({
             align === 'center' && 'justify-center'
           )}
         >
-          <span className="size-1.5 rounded-full bg-[#ff4d00]" aria-hidden="true" />
+          <span className="size-2 rounded-full bg-[#FF4D00]" aria-hidden="true" />
           {eyebrow}
         </p>
       ) : null}
       <h2
         className={cn(
-          'font-display text-3xl font-medium leading-[1.1] tracking-[-0.01em] text-balance sm:text-4xl lg:text-5xl',
+          'font-display text-4xl font-bold leading-[1.05] tracking-[-0.025em] text-balance sm:text-5xl lg:text-6xl',
           dark ? 'text-white' : 'text-[#161613]'
         )}
       >
-        {renderTitle(title)}
+        {renderTitle(title, dark)}
       </h2>
       {description ? (
         <p
           className={cn(
-            'mt-4 text-base leading-relaxed sm:text-lg',
+            'mt-5 text-lg leading-relaxed sm:text-xl',
             dark ? 'text-white/60' : 'text-[#6f6e66]'
           )}
         >

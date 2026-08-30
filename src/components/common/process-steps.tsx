@@ -46,7 +46,7 @@ export function ProcessSteps({ steps, dark, className }: ProcessStepsProps) {
               {/* Badge on the line */}
               <span
                 className={cn(
-                  'relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl font-display text-sm font-bold',
+                  'relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl font-display text-base font-bold',
                   dark
                     ? 'bg-gradient-to-br from-gray-400 to-gray-500 text-[#0a0a0a] shadow-[0_0_24px_-4px_rgb(0_0_0/0.6)]'
                     : 'bg-gradient-to-br from-gray-500 to-gray-800 text-white shadow-[0_8px_20px_-8px_rgb(0_0_0/0.7)]'
@@ -60,12 +60,12 @@ export function ProcessSteps({ steps, dark, className }: ProcessStepsProps) {
                   'flex flex-col gap-1.5 rounded-2xl p-1 pt-1 lg:mt-5 lg:p-0',
                 )}
               >
-                <h3 className={cn('text-lg font-semibold lg:pt-3', dark ? 'text-white' : 'text-foreground')}>
+                <h3 className={cn('text-xl font-semibold lg:pt-3', dark ? 'text-white' : 'text-foreground')}>
                   {step.title}
                 </h3>
                 <p
                   className={cn(
-                    'text-sm leading-relaxed',
+                    'text-base leading-relaxed',
                     dark ? 'text-gray-100/70' : 'text-muted-foreground'
                   )}
                 >

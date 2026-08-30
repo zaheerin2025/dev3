@@ -11,6 +11,7 @@ import { featuredServices, services } from '@/data';
 import { Link } from '@/components/common/link';
 import { ServiceIconGlyph } from '@/components/common/icon-map';
 import { MobileMenu } from '@/components/layout/mobile-menu';
+import { ACCENT_TILE } from '@/lib/accent';
 import { cn } from '@/lib/utils';
 
 interface HeaderProps {
@@ -46,25 +47,26 @@ export function Logo({ className }: { className?: string }) {
     >
       <span
         aria-hidden="true"
-        className="flex size-8 items-center justify-center rounded-md bg-[#161613]"
+        className="flex size-9 items-center justify-center rounded-xl bg-[#161613]"
       >
-        <Sparkle className="size-4 text-[#ff4d00]" fill="currentColor" />
+        <Sparkle className="size-4.5 text-[#FF4D00]" fill="currentColor" />
       </span>
-      <span className="font-display text-xl font-semibold tracking-tight text-[#161613]">
+      <span className="font-display text-[22px] font-bold tracking-tight text-[#161613]">
         Developers3
       </span>
     </Link>
   );
 }
 
-/** Mono micro-label nav link styling — shared by every desktop item. */
+/** Sans nav link styling — shared by every desktop item (readable, modern). */
 const NAV_LINK_CLASS =
-  'relative inline-flex h-16 items-center font-mono text-xs uppercase tracking-[0.14em] transition-colors hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]';
+  'relative inline-flex h-20 items-center text-[15px] font-semibold transition-colors hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00]';
 
 /**
- * HEADER — editorial paper bar: solid background (no backdrop blur —
- * cheaper paint), mono uppercase nav, serif logotype, hairline bottom
- * rule. Services opens the featured-services dropdown.
+ * HEADER — clean paper bar: solid background (no backdrop blur — cheaper
+ * paint), roomy 80px height, sans nav links, grotesk logotype, tangerine
+ * active marker. Services opens the featured-services dropdown with the
+ * 4-color accent ramp on the icon tiles.
  */
 export function Header({ path }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -80,7 +82,7 @@ export function Header({ path }: HeaderProps) {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-[#e6e5de] bg-[#fafaf7]">
-        <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <Logo />
 
           {/* Desktop nav */}
@@ -89,18 +91,18 @@ export function Header({ path }: HeaderProps) {
               <DropdownMenuTrigger asChild>
                 <button
                   className={cn(
-                    'group relative inline-flex h-16 items-center gap-1.5 font-mono text-xs uppercase tracking-[0.14em] transition-colors hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]',
+                    'group relative inline-flex h-20 items-center gap-1.5 text-[15px] font-semibold transition-colors hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00]',
                     servicesActive || megaOpen ? 'text-[#161613]' : 'text-[#6f6e66]',
                   )}
                 >
                   Services
                   <ChevronDown
-                    className="size-3.5 text-[#b3b2a8] transition-transform duration-200 group-data-[state=open]:rotate-180"
+                    className="size-4 text-[#b3b2a8] transition-transform duration-200 group-data-[state=open]:rotate-180"
                     aria-hidden="true"
                   />
                   {(servicesActive || megaOpen) && (
                     <span
-                      className="absolute inset-x-0 bottom-4 mx-auto h-px w-4 bg-[#ff4d00]"
+                      className="absolute inset-x-0 bottom-0 mx-auto h-[3px] w-6 rounded-full bg-[#FF4D00]"
                       aria-hidden="true"
                     />
                   )}
@@ -111,26 +113,26 @@ export function Header({ path }: HeaderProps) {
               <DropdownMenuContent
                 align="start"
                 sideOffset={10}
-                className="w-[540px] rounded-xl border border-[#e6e5de] bg-white p-2 shadow-[0_16px_40px_-24px_rgba(22,22,19,0.35)]"
+                className="w-[560px] rounded-2xl border border-[#e6e5de] bg-white p-2.5 shadow-[0_24px_48px_-24px_rgba(22,22,19,0.35)]"
               >
                 {/* Panel header row */}
-                <div className="flex items-center justify-between gap-3 px-3 pb-1.5 pt-2">
+                <div className="flex items-center justify-between gap-3 px-3 pb-2 pt-2">
                   <span className="eyebrow inline-flex items-center gap-2">
-                    <Sparkle className="size-3 text-[#ff4d00]" fill="currentColor" aria-hidden="true" />
+                    <Sparkle className="size-3.5 text-[#FF4D00]" fill="currentColor" aria-hidden="true" />
                     Featured services
                   </span>
                   <Link
                     href="/services"
-                    className="inline-flex items-center gap-1 text-xs font-bold text-[#161613] transition-colors hover:text-[#ff4d00] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]"
+                    className="inline-flex items-center gap-1 text-sm font-bold text-[#161613] transition-colors hover:text-[#FF4D00] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00]"
                   >
                     All services
-                    <ArrowRight className="size-3.5" aria-hidden="true" />
+                    <ArrowRight className="size-4" aria-hidden="true" />
                   </Link>
                 </div>
 
                 {/* Featured service rows */}
                 <div className="flex flex-col">
-                  {featuredServices.map((service) => {
+                  {featuredServices.map((service, index) => {
                     const href = `/${service.slug}`;
                     const active = path === href;
                     return (
@@ -138,22 +140,27 @@ export function Header({ path }: HeaderProps) {
                         key={service.slug}
                         href={href}
                         className={cn(
-                          'group flex min-h-[52px] items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-[#f4f3ed] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]',
-                          active && 'bg-[#f4f3ed]',
+                          'group flex min-h-[60px] items-center gap-4 rounded-xl px-3 py-3 transition-colors hover:bg-[#f1f0ea] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00]',
+                          active && 'bg-[#f1f0ea]',
                         )}
                         aria-current={active ? 'page' : undefined}
                       >
-                        <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-[#161613] text-[#fafaf7]">
+                        <span
+                          className={cn(
+                            'flex size-11 shrink-0 items-center justify-center rounded-xl',
+                            ACCENT_TILE[index % ACCENT_TILE.length],
+                          )}
+                        >
                           <ServiceIconGlyph icon={service.icon} className="size-5" />
                         </span>
                         <span className="min-w-0 flex-1">
-                          <span className="block font-display text-base font-semibold text-[#161613]">
+                          <span className="block font-display text-[17px] font-semibold text-[#161613]">
                             {service.name}
                           </span>
-                          <span className="block truncate text-xs text-[#6f6e66]">{service.tagline}</span>
+                          <span className="block truncate text-sm text-[#6f6e66]">{service.tagline}</span>
                         </span>
                         <ArrowRight
-                          className="size-4 shrink-0 -translate-x-1 text-[#ff4d00] opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
+                          className="size-4 shrink-0 -translate-x-1 text-[#FF4D00] opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
                           aria-hidden="true"
                         />
                       </Link>
@@ -162,8 +169,8 @@ export function Header({ path }: HeaderProps) {
                 </div>
 
                 {/* Bottom action row */}
-                <div className="mt-1 border-t border-[#e6e5de] px-3 py-3">
-                  <div className="flex items-center justify-end gap-2">
+                <div className="mt-1.5 border-t border-[#e6e5de] px-3 py-3.5">
+                  <div className="flex items-center justify-end gap-2.5">
                     <Link href="/services" className="btn-secondary-pill-sm">
                       All services
                     </Link>
@@ -190,7 +197,7 @@ export function Header({ path }: HeaderProps) {
                   {item.label}
                   {active && (
                     <span
-                      className="absolute inset-x-0 bottom-4 mx-auto h-px w-4 bg-[#ff4d00]"
+                      className="absolute inset-x-0 bottom-0 mx-auto h-[3px] w-6 rounded-full bg-[#FF4D00]"
                       aria-hidden="true"
                     />
                   )}
@@ -212,7 +219,7 @@ export function Header({ path }: HeaderProps) {
             onClick={() => setMobileOpen(true)}
             aria-label="Open menu"
             aria-expanded={mobileOpen}
-            className="flex size-11 items-center justify-center rounded-md border border-[#d6d5cc] text-[#161613] transition-colors duration-200 hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8] lg:hidden"
+            className="flex size-11 items-center justify-center rounded-xl border border-[#d6d5cc] text-[#161613] transition-colors duration-200 hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00] lg:hidden"
           >
             <Menu className="size-5" aria-hidden="true" />
           </button>

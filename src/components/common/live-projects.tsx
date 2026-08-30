@@ -43,7 +43,7 @@ export function LiveProjects() {
 
   if (items === null) {
     return (
-      <div className="flex items-center justify-center gap-2 py-10 text-sm text-gray-400">
+      <div className="flex items-center justify-center gap-2 py-10 text-base text-gray-400">
         <Loader2 className="size-4 animate-spin" aria-hidden="true" />
         Loading live projects…
       </div>
@@ -60,11 +60,11 @@ export function LiveProjects() {
             <Sticker>✦ Live Builds</Sticker>
             <h2
               id="live-builds-heading"
-              className="text-balance font-display text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl"
+              className="text-balance font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl"
             >
               Launched, live &amp; <span className="text-gradient-soft">taking customers</span>
             </h2>
-            <p className="max-w-2xl text-lg leading-relaxed text-gray-400">
+            <p className="max-w-2xl text-xl leading-relaxed text-gray-400">
               Real client sites you can visit right now — every one designed, built and shipped by
               our team. Click through and see them working in the wild.
             </p>
@@ -106,30 +106,30 @@ function LiveProjectCard({ item, index }: { item: PublicPortfolio; index: number
             />
           ) : (
             <div className="flex size-full items-center justify-center bg-gradient-to-br from-gray-800/10 to-gray-500/10">
-              <span className="font-display text-4xl font-bold text-gray-800/30">
+              <span className="font-display text-5xl font-bold text-gray-800/30">
                 {item.title.slice(0, 2).toUpperCase()}
               </span>
             </div>
           )}
-          <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-[#0a0a0a]/85 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white backdrop-blur">
+          <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-[#0a0a0a]/85 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white backdrop-blur">
             {item.category}
           </span>
         </div>
         <div className="px-3 pb-3 pt-4">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="min-w-0 truncate font-display text-lg font-bold text-[#0a0a0a] transition-colors group-hover:text-gray-800">
+            <h3 className="min-w-0 truncate font-display text-xl font-bold text-[#0a0a0a] transition-colors group-hover:text-gray-800">
               {item.title}
             </h3>
             <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gray-500/10 text-gray-800 transition-transform duration-300 group-hover:rotate-45">
               <ExternalLink className="size-4" aria-hidden="true" />
             </span>
           </div>
-          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-[#4b5563]">
+          <p className="mt-1.5 line-clamp-2 text-base leading-relaxed text-[#4b5563]">
             {item.description}
           </p>
-          <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-gray-800">
+          <span className="mt-3 inline-flex items-center gap-1.5 text-base font-semibold text-gray-800">
             Visit live site
-            <span className="text-xs font-normal text-[#4b5563]/60">
+            <span className="text-sm font-normal text-[#4b5563]/60">
               {item.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
             </span>
           </span>

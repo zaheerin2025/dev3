@@ -68,7 +68,7 @@ export function AdSlot({ format = 'leaderboard', className }: { format?: AdForma
           className
         )}
       >
-        <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">
+        <span className="text-xs font-bold uppercase tracking-[0.18em] text-gray-400">
           Advertisement
         </span>
       </div>

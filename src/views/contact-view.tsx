@@ -132,11 +132,11 @@ export function ContactView() {
                       aria-hidden="true"
                     />
                   </span>
-                  <p className="text-sm text-muted-foreground">{method.description}</p>
-                  <span className="truncate text-sm font-semibold text-gray-800">
+                  <p className="text-base text-muted-foreground">{method.description}</p>
+                  <span className="truncate text-base font-semibold text-gray-800">
                     {method.action}
                   </span>
-                  <span className="mt-auto inline-flex items-center gap-1.5 border-t border-border/70 pt-3 text-xs text-muted-foreground">
+                  <span className="mt-auto inline-flex items-center gap-1.5 border-t border-border/70 pt-3 text-sm text-muted-foreground">
                     <Clock className="h-3.5 w-3.5 shrink-0 text-gray-800" aria-hidden="true" />
                     {method.note}
                   </span>

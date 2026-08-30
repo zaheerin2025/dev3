@@ -1,9 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { Mail, Phone, X } from 'lucide-react';
+import { Mail, Phone, Sparkle, X } from 'lucide-react';
 import { site } from '@/lib/site';
 import { Link } from '@/components/common/link';
+import { ACCENT_TEXT } from '@/lib/accent';
 
 const MENU_LINKS = [
   { label: 'Services', href: '/services' },
@@ -20,9 +21,9 @@ interface MobileMenuProps {
 }
 
 /**
- * Full-screen mobile navigation overlay — editorial paper sheet with
- * serif display links, mono index numbers and hairline rules. Rendered
- * conditionally by the header; staggered fade-in via `.menu-fade`.
+ * Full-screen mobile navigation overlay — paper sheet with oversized
+ * grotesk links and index numbers cycling through the accent ramp.
+ * Rendered conditionally by the header; staggered fade-in via `.menu-fade`.
  */
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
   // Lock body scroll while the menu is open.
@@ -61,15 +62,15 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             href="/"
             ariaLabel="Developers3 — home"
             onClick={onClose}
-            className="flex items-center gap-2.5 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]"
+            className="flex items-center gap-2.5 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00]"
           >
             <span
               aria-hidden="true"
-              className="flex size-8 items-center justify-center rounded-md bg-[#161613]"
+              className="flex size-9 items-center justify-center rounded-xl bg-[#161613]"
             >
-              <span className="text-sm text-[#ff4d00]" aria-hidden="true">✦</span>
+              <Sparkle className="size-4.5 text-[#FF4D00]" fill="currentColor" />
             </span>
-            <span className="font-display text-xl font-semibold tracking-tight text-[#161613]">
+            <span className="font-display text-[22px] font-bold tracking-tight text-[#161613]">
               Developers3
             </span>
           </Link>
@@ -77,28 +78,35 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             type="button"
             onClick={onClose}
             aria-label="Close menu"
-            className="flex size-11 items-center justify-center rounded-md border border-[#d6d5cc] text-[#161613] transition-colors duration-200 hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]"
+            className="flex size-11 items-center justify-center rounded-xl border border-[#d6d5cc] text-[#161613] transition-colors duration-200 hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00]"
           >
             <X className="size-5" aria-hidden="true" />
           </button>
         </div>
 
-        {/* Big staggered serif links with hairline rules */}
+        {/* Big staggered grotesk links with hairline rules */}
         <nav aria-label="Mobile navigation" className="mt-10 flex flex-col">
           {MENU_LINKS.map((item, index) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className="menu-fade group flex items-baseline gap-4 border-t border-[#e6e5de] py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8]"
+              className="menu-fade group flex items-center gap-4 border-t border-[#e6e5de] py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00]"
               style={{ animationDelay: `${index * 70}ms` }}
             >
-              <span className="font-mono text-xs text-[#ff4d00]" aria-hidden="true">
+              <span
+                className={`${ACCENT_TEXT[index % ACCENT_TEXT.length]} font-mono text-sm font-bold`}
+                aria-hidden="true"
+              >
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <span className="font-display text-4xl font-medium text-[#161613] transition-colors duration-200 group-hover:italic group-hover:text-[#ff4d00]">
+              <span className="flex-1 font-display text-[2.5rem] font-bold leading-tight tracking-tight text-[#161613] transition-colors duration-200 group-hover:text-[#FF4D00]">
                 {item.label}
               </span>
+              <span
+                className="size-2.5 rounded-full bg-[#e6e5de] transition-colors duration-200 group-hover:bg-[#FF4D00]"
+                aria-hidden="true"
+              />
             </Link>
           ))}
         </nav>
@@ -108,17 +116,17 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
           className="menu-fade mt-auto flex flex-col gap-6 pt-12"
           style={{ animationDelay: `${MENU_LINKS.length * 70}ms` }}
         >
-          <Link href="/contact" onClick={onClose} className="btn-primary-pill-sm w-full">
+          <Link href="/contact" onClick={onClose} className="btn-primary-pill w-full">
             Start Your Project
           </Link>
           {site.phoneDisplay || site.email ? (
-            <div className="flex flex-col gap-3 text-sm font-medium text-[#6f6e66]">
+            <div className="flex flex-col gap-3 text-base font-medium text-[#6f6e66]">
               {site.phoneDisplay ? (
                 <a
                   href={site.phoneHref}
                   className="inline-flex items-center gap-2.5 transition-colors hover:text-[#161613]"
                 >
-                  <Phone className="size-4 shrink-0 text-[#b3b2a8]" aria-hidden="true" />
+                  <Phone className="size-4.5 shrink-0 text-[#FF4D00]" aria-hidden="true" />
                   {site.phoneDisplay}
                 </a>
               ) : null}
@@ -127,7 +135,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                   href={`mailto:${site.email}`}
                   className="inline-flex items-center gap-2.5 transition-colors hover:text-[#161613]"
                 >
-                  <Mail className="size-4 shrink-0 text-[#b3b2a8]" aria-hidden="true" />
+                  <Mail className="size-4.5 shrink-0 text-[#FF4D00]" aria-hidden="true" />
                   {site.email}
                 </a>
               ) : null}

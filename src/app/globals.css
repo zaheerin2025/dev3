@@ -7,7 +7,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-display: var(--font-space-grotesk), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --color-signal: var(--signal);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -46,15 +46,16 @@
 }
 
 /* ============================================================
-   PAPER & INK — editorial studio design system.
-   Typography-led: Fraunces serif display + Inter text + mono
-   micro-labels. Warm paper surfaces, ink sections, hairline
-   rules, one micro accent (--signal). Performance budget:
-   solid colors and 1px borders only — no blur, no gradients,
-   no large shadows, no paint-heavy animation.
+   POP — modern, colorful, cohesive, sleek design system.
+   White/paper surfaces, ink typography set LARGE in Space
+   Grotesk, one disciplined 4-color accent ramp (tangerine
+   #FF4D00 · amber #FFB020 · jade #0FA36B · iris #7A5AF8) and
+   full-bleed color moments. Performance budget: solid colors
+   and 1px borders only — no blur, no gradients, no large
+   shadows, no paint-heavy animation.
    ============================================================ */
 :root {
-  --radius: 0.5rem;
+  --radius: 0.75rem;
   --background: #fafaf7;
   --foreground: #161613;
   --signal: #ff4d00;
@@ -73,12 +74,12 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: #e6e5de;
   --input: #e6e5de;
-  --ring: #b3b2a8;
-  --chart-1: #27272a;
-  --chart-2: #52525b;
-  --chart-3: #71717a;
-  --chart-4: #a1a1aa;
-  --chart-5: #d4d4d8;
+  --ring: #ff4d00;
+  --chart-1: #ff4d00;
+  --chart-2: #ffb020;
+  --chart-3: #0fa36b;
+  --chart-4: #7a5af8;
+  --chart-5: #161613;
   --sidebar: #ffffff;
   --sidebar-foreground: #161613;
   --sidebar-primary: #161613;
@@ -86,7 +87,7 @@
   --sidebar-accent: #f1f0ea;
   --sidebar-accent-foreground: #1f1f1b;
   --sidebar-border: #e6e5de;
-  --sidebar-ring: #b3b2a8;
+  --sidebar-ring: #ff4d00;
 }
 
 .dark {
@@ -108,12 +109,12 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: #e6e5de;
   --input: #e6e5de;
-  --ring: #b3b2a8;
-  --chart-1: #27272a;
-  --chart-2: #52525b;
-  --chart-3: #71717a;
-  --chart-4: #a1a1aa;
-  --chart-5: #d4d4d8;
+  --ring: #ff4d00;
+  --chart-1: #ff4d00;
+  --chart-2: #ffb020;
+  --chart-3: #0fa36b;
+  --chart-4: #7a5af8;
+  --chart-5: #161613;
   --sidebar: #ffffff;
   --sidebar-foreground: #161613;
   --sidebar-primary: #161613;
@@ -121,7 +122,7 @@
   --sidebar-accent: #f1f0ea;
   --sidebar-accent-foreground: #1f1f1b;
   --sidebar-border: #e6e5de;
-  --sidebar-ring: #b3b2a8;
+  --sidebar-ring: #ff4d00;
 }
 
 @layer base {
@@ -138,8 +139,8 @@
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-display;
-    letter-spacing: -0.01em;
-    font-weight: 500;
+    letter-spacing: -0.02em;
+    font-weight: 600;
   }
   ::selection {
     background: #ff4d00;
@@ -160,10 +161,10 @@
     color: #f4f4f1;
   }
   .section-tint {
-    background-color: #f4f3ed;
+    background-color: #f1f0ea;
   }
   .section-cream {
-    background-color: #f4f3ed;
+    background-color: #f1f0ea;
   }
   .section-white {
     background-color: #fafaf7;
@@ -189,35 +190,35 @@
   }
 
   /* =============================================
-     TYPOGRAPHY ACCENTS — editorial italics
+     TYPOGRAPHY ACCENTS — vivid accent words
      ============================================= */
   .text-balance {
     text-wrap: balance;
   }
-  /* Accent words on light surfaces → serif italic (same ink) */
+  /* Accent words on light surfaces → tangerine */
   .text-gradient {
-    color: inherit;
-    font-style: italic;
+    color: #ff4d00;
+    font-style: normal;
   }
-  /* Accent words on dark surfaces → italic white */
+  /* Accent words on dark surfaces → amber */
   .text-gradient-soft {
-    color: #ffffff;
-    font-style: italic;
+    color: #ffb020;
+    font-style: normal;
   }
   .text-gradient-animate {
-    color: inherit;
-    font-style: italic;
+    color: #ff4d00;
+    font-style: normal;
   }
   .text-glow {
     text-shadow: none;
   }
 
-  /* Mono micro-label — the editorial eyebrow */
+  /* Mono micro-label — the eyebrow (readable at 12px) */
   .eyebrow {
     font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 11px;
-    line-height: 1;
-    letter-spacing: 0.22em;
+    font-size: 12px;
+    line-height: 1.2;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: #6f6e66;
   }
@@ -227,7 +228,7 @@
      ============================================= */
   .card-surface {
     background-color: #ffffff;
-    border-radius: 0.75rem;
+    border-radius: 1rem;
     border: 1px solid #e6e5de;
   }
   .card-hover {
@@ -237,7 +238,7 @@
       background-color 0.25s ease;
   }
   .card-hover:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     border-color: #161613;
   }
   .card-3d {
@@ -247,7 +248,7 @@
       background-color 0.25s ease;
   }
   .card-3d:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     border-color: #161613;
   }
   .glass-chip {
@@ -262,13 +263,13 @@
     position: relative;
     background: #e6e5de;
     padding: 1px;
-    border-radius: 0.75rem;
+    border-radius: 1rem;
   }
   .icon-tile {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
     background-color: #161613;
     color: #fafaf7;
   }
@@ -345,40 +346,45 @@
 }
 
 /* ============================================================
-   CREATIVE LAYER — editorial equivalents (same class names)
+   CREATIVE LAYER — POP equivalents (same class names)
    ============================================================ */
 
 .btn-primary-pill {
-  @apply inline-flex items-center justify-center gap-2 rounded-full bg-[#161613] px-7 py-3.5 text-sm font-bold text-[#fafaf7] transition-colors duration-200 hover:bg-[#3a3a35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8] focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-[#FF4D00] px-8 py-4 text-base font-bold text-white transition-colors duration-200 hover:bg-[#D63E00] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00] focus-visible:ring-offset-2;
 }
 .btn-primary-pill-sm {
-  @apply inline-flex items-center justify-center gap-2 rounded-full bg-[#161613] px-5 py-2.5 text-sm font-bold text-[#fafaf7] transition-colors duration-200 hover:bg-[#3a3a35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8] focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-[#FF4D00] px-5 py-2.5 text-[15px] font-bold text-white transition-colors duration-200 hover:bg-[#D63E00] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00] focus-visible:ring-offset-2;
 }
 .btn-secondary-pill {
-  @apply inline-flex items-center justify-center gap-2 rounded-full border border-[#d6d5cc] bg-transparent px-7 py-3.5 text-sm font-bold text-[#161613] transition-colors duration-200 hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8] focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#161613] bg-transparent px-8 py-[14px] text-base font-bold text-[#161613] transition-colors duration-200 hover:bg-[#161613] hover:text-[#fafaf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00] focus-visible:ring-offset-2;
 }
 .btn-secondary-pill-sm {
-  @apply inline-flex items-center justify-center gap-2 rounded-full border border-[#d6d5cc] bg-transparent px-5 py-2 text-sm font-bold text-[#161613] transition-colors duration-200 hover:border-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b3b2a8] focus-visible:ring-offset-2;
+  @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#161613] bg-transparent px-5 py-2 text-[15px] font-bold text-[#161613] transition-colors duration-200 hover:bg-[#161613] hover:text-[#fafaf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00] focus-visible:ring-offset-2;
 }
 .btn-ghost-dark {
-  @apply inline-flex items-center justify-center gap-2 rounded-full bg-transparent px-6 py-3 text-sm font-bold text-white ring-1 ring-white/25 transition-colors duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white;
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-transparent px-8 py-4 text-base font-bold text-white ring-1 ring-white/30 transition-colors duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white;
 }
 
 .card-soft {
-  @apply rounded-xl border border-[#e6e5de] bg-white;
+  @apply rounded-2xl border border-[#e6e5de] bg-white;
 }
 
 .gradient-border {
   background: #e6e5de;
   padding: 2px;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
 }
 
-/* Sticker pill — mono editorial badge */
+/* Sticker pill — amber highlight badge (colorful pop, solid paint) */
 .sticker {
   font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-  @apply inline-flex items-center gap-1.5 rounded-full border border-[#161613] bg-[#fafaf7] px-3.5 py-1.5 text-[10px] uppercase text-[#161613];
-  letter-spacing: 0.14em;
+  @apply inline-flex items-center gap-1.5 rounded-full border border-[#161613] bg-[#FFD84D] px-3.5 py-1.5 text-xs uppercase text-[#161613];
+  letter-spacing: 0.1em;
+}
+/* Ink variant (used where amber would blend into the surface) */
+.sticker-ink {
+  background-color: #161613;
+  color: #fafaf7;
 }
 
 /* Tilts disabled */
@@ -390,13 +396,18 @@
   transition: transform 0.25s ease, border-color 0.25s ease;
 }
 .tilt-hover:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 
-/* Highlighter removed → editorial italic */
+/* Highlighter — solid amber marker behind key words */
 .highlighter {
-  background-image: none;
-  font-style: italic;
+  background-color: #ffd84d;
+  color: #161613;
+  font-style: normal;
+  padding: 0.06em 0.22em;
+  border-radius: 0.3em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 /* Dashed divider — warm hairline */
@@ -427,7 +438,7 @@
   animation: none;
 }
 
-/* Marquee (kept — functional separator, ink band with serif items) */
+/* Marquee (kept — functional separator, now a full-bleed tangerine band) */
 @keyframes marquee-x {
   from {
     transform: translateX(0);
@@ -468,9 +479,7 @@
 }
 
 /* Hero rotating headline slot — inline-grid keeps width fixed to the
-   widest word (zero layout shift); each child fades up, holds ~2.4s,
-   fades away on a 9.6s loop with per-word inline animation-delay.
-   Transform/opacity only — compositor-cheap. */
+   widest word (zero layout shift); transform/opacity only. */
 .hero-rotator {
   display: inline-grid;
   vertical-align: bottom;

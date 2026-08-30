@@ -73,8 +73,8 @@ export function ServiceDetailView({ slug }: { slug: string }) {
   if (!service) {
     return (
       <Section>
-        <h1 className="text-3xl font-bold sm:text-4xl">Service not found</h1>
-        <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+        <h1 className="text-4xl font-bold sm:text-5xl">Service not found</h1>
+        <p className="mt-4 max-w-2xl text-xl text-muted-foreground">
           The service you are looking for does not exist or may have moved. Explore our full range of services from the homepage.
         </p>
         <Button asChild className="mt-6">
@@ -106,18 +106,18 @@ export function ServiceDetailView({ slug }: { slug: string }) {
           <Reveal>
             <div className="flex flex-col items-start gap-5">
               <Breadcrumbs
-                className="text-xs [&_ol]:text-xs"
+                className="text-sm [&_ol]:text-sm"
                 items={[{ label: 'Services', href: '/services' }, { label: service.name }]}
               />
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
+              <p className="text-sm font-bold uppercase tracking-[0.22em] text-gray-800">
                 {service.category === 'development' ? 'Development Service' : 'Growth Service'}
               </p>
-              <h1 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
                 {heroBefore}
                 <span className="text-gradient">{heroAccent}</span>
                 {heroAfter}
               </h1>
-              <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">{service.heroSub}</p>
+              <p className="max-w-xl text-xl leading-relaxed text-muted-foreground">{service.heroSub}</p>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <Button
                   size="lg"
@@ -149,13 +149,13 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                   <span className="icon-tile h-16 w-16 shrink-0">
                     <ServiceIconGlyph icon={service.icon} className="h-8 w-8" />
                   </span>
-                  <h2 className="text-2xl font-bold text-white">{service.name}</h2>
+                  <h2 className="text-3xl font-bold text-white">{service.name}</h2>
                 </div>
                 <ul className="relative flex flex-col gap-2.5">
                   {service.offerings.slice(0, 3).map((offering) => (
                     <li
                       key={offering.title}
-                      className="flex items-center gap-2.5 rounded-xl bg-white/5 px-4 py-2.5 text-sm font-medium text-slate-100 ring-1 ring-inset ring-white/10"
+                      className="flex items-center gap-2.5 rounded-xl bg-white/5 px-4 py-2.5 text-base font-medium text-slate-100 ring-1 ring-inset ring-white/10"
                     >
                       <Check className="h-4 w-4 shrink-0 text-gray-300" aria-hidden="true" />
                       {offering.title}
@@ -163,10 +163,10 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                   ))}
                 </ul>
                 <div className="relative mt-auto border-t border-white/10 pt-5">
-                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-gray-300/80">
+                  <p className="text-sm font-bold uppercase tracking-[0.14em] text-gray-300/80">
                     Starting at
                   </p>
-                  <p className="text-gradient-soft mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+                  <p className="text-gradient-soft mt-1 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
                     {service.startingPrice}
                   </p>
                 </div>
@@ -188,7 +188,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
             <Reveal key={offering.title} delay={(index % 3) * 60} className="h-full">
               <div className="card-surface card-hover relative h-full rounded-[1.25rem] p-6">
                 <span
-                  className="absolute right-6 top-5 font-display text-sm font-bold tracking-[0.2em] text-gray-900/15"
+                  className="absolute right-6 top-5 font-display text-base font-bold tracking-[0.2em] text-gray-900/15"
                   aria-hidden="true"
                 >
                   {String(index + 1).padStart(2, '0')}
@@ -197,7 +197,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                   <Check className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <h3 className="mt-4 font-semibold text-foreground">{offering.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{offering.description}</p>
+                <p className="mt-2 text-base leading-relaxed text-muted-foreground">{offering.description}</p>
               </div>
             </Reveal>
           ))}
@@ -225,7 +225,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                     </span>
                     <div>
                       <h3 className="font-semibold text-foreground">{benefit.title}</h3>
-                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                      <p className="mt-1 text-base leading-relaxed text-muted-foreground">
                         {benefit.description}
                       </p>
                     </div>
@@ -295,20 +295,20 @@ export function ServiceDetailView({ slug }: { slug: string }) {
               />
               <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_auto]">
                 <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-800">Pricing</p>
-                  <h2 className="mt-4 text-2xl font-bold text-balance sm:text-3xl">{service.name} Pricing</h2>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-800">Pricing</p>
+                  <h2 className="mt-4 text-3xl font-bold text-balance sm:text-4xl">{service.name} Pricing</h2>
                   <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <span className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                    <span className="text-base font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                       Starting at
                     </span>
-                    <span className="text-gradient font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
+                    <span className="text-gradient font-display text-5xl font-extrabold tracking-tight sm:text-6xl">
                       {service.startingPrice}
                     </span>
                   </p>
                   <p className="mt-3 max-w-xl leading-relaxed text-muted-foreground">{service.pricingNote}</p>
                   <ul className="mt-6 flex flex-col gap-3">
                     {PRICING_GUARANTEES.map((item) => (
-                      <li key={item} className="flex items-start gap-3 text-sm">
+                      <li key={item} className="flex items-start gap-3 text-base">
                         <Check className="mt-0.5 h-4 w-4 shrink-0 text-gray-800" aria-hidden="true" />
                         <span className="text-foreground">{item}</span>
                       </li>
@@ -356,10 +356,10 @@ export function ServiceDetailView({ slug }: { slug: string }) {
       <Section tinted>
         <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
           <Reveal>
-            <h2 className="text-3xl font-bold text-balance sm:text-4xl">
+            <h2 className="text-4xl font-bold text-balance sm:text-5xl">
               Get Your Free <span className="text-gradient">{service.shortName}</span> Quote
             </h2>
-            <p className="mt-4 max-w-xl text-lg leading-relaxed text-muted-foreground">
+            <p className="mt-4 max-w-xl text-xl leading-relaxed text-muted-foreground">
               Tell us about your project — we reply within one business day with a fixed, itemized quote.
             </p>
             <ul className="mt-8 flex flex-col gap-4">
@@ -368,7 +368,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-inset ring-gray-800/15">
                     <Check className="h-4 w-4 text-gray-800" aria-hidden="true" />
                   </span>
-                  <span className="text-sm font-medium text-foreground">{promise}</span>
+                  <span className="text-base font-medium text-foreground">{promise}</span>
                 </li>
               ))}
             </ul>

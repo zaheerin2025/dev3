@@ -51,18 +51,18 @@ function ServicesHubView() {
         />
         <div className="relative flex flex-col items-start">
           <Breadcrumbs
-            className="text-xs [&_ol]:text-xs"
+            className="text-sm [&_ol]:text-sm"
             items={[{ label: 'Services' }]}
           />
           <Reveal className="mt-8 max-w-3xl">
             <div className="flex flex-col items-start gap-6">
-              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-800">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
                 Full-service digital agency
               </p>
-              <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              <h1 className="text-balance text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
                 Our Web &amp; <span className="text-gradient">Digital Services</span>
               </h1>
-              <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
+              <p className="text-lg leading-relaxed text-muted-foreground sm:text-xl">
                 {HUB_INTRO}
               </p>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -137,7 +137,7 @@ function ServicesHubView() {
       {/* 3. HOW ENGAGEMENTS WORK */}
       <Section tinted>
         <Reveal className="mx-auto max-w-4xl">
-          <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          <p className="text-center text-sm font-semibold uppercase tracking-widest text-muted-foreground">
             How engagements work
           </p>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
@@ -150,11 +150,11 @@ function ServicesHubView() {
                   <step.icon className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <span className="flex flex-col">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-gray-800">
+                  <span className="text-xs font-bold uppercase tracking-[0.12em] text-gray-800">
                     Step {index + 1}
                   </span>
-                  <span className="text-sm font-semibold text-foreground">{step.label}</span>
-                  <span className="text-xs text-muted-foreground">{step.hint}</span>
+                  <span className="text-base font-semibold text-foreground">{step.label}</span>
+                  <span className="text-sm text-muted-foreground">{step.hint}</span>
                 </span>
               </div>
             ))}

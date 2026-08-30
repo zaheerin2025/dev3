@@ -87,18 +87,18 @@ const SUPPORT_CARDS = [
 function TierContent({ tier }: { tier: PricingTier }) {
   return (
     <div className="flex h-full flex-col gap-4">
-      <h3 className="font-display text-xl font-semibold">{tier.name}</h3>
+      <h3 className="font-display text-2xl font-semibold">{tier.name}</h3>
       <p>
-        <span className="text-gradient font-display text-4xl font-bold tracking-tight">
+        <span className="text-gradient font-display text-5xl font-bold tracking-tight">
           {tier.price}
         </span>{' '}
-        <span className="text-sm text-muted-foreground">{tier.period}</span>
+        <span className="text-base text-muted-foreground">{tier.period}</span>
       </p>
-      <p className="text-sm italic text-muted-foreground">Best for: {tier.bestFor}</p>
-      <p className="text-sm">{tier.blurb}</p>
+      <p className="text-base italic text-muted-foreground">Best for: {tier.bestFor}</p>
+      <p className="text-base">{tier.blurb}</p>
       <ul className="flex flex-col gap-2.5">
         {tier.features.map((feature) => (
-          <li key={feature} className="flex items-start gap-2.5 text-sm">
+          <li key={feature} className="flex items-start gap-2.5 text-base">
             <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-800 ring-1 ring-inset ring-gray-800/15">
               <Check className="h-3 w-3" aria-hidden="true" />
             </span>
@@ -185,13 +185,13 @@ export function PricingView() {
         />
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'Pricing' }]} />
-          <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-800">
+          <p className="mt-6 text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
             Simple, fixed pricing
           </p>
-          <h1 className="mt-3 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
+          <h1 className="mt-3 text-balance text-5xl font-bold tracking-tight sm:text-6xl">
             Website &amp; <span className="text-gradient">Digital Pricing</span>
           </h1>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+          <p className="mt-4 text-lg leading-relaxed text-muted-foreground sm:text-xl">
             Real prices, published up front. Pick a package, book a free call, and get a fixed,
             itemized quote within one business day.
           </p>
@@ -211,7 +211,7 @@ export function PricingView() {
               {tier.highlighted ? (
                 <div className="relative h-full lg:scale-[1.04]">
                   <div className="gradient-frame h-full shadow-[0_28px_56px_-28px_rgb(0_0_0/0.5)]">
-                    <span className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-gray-500 to-gray-400 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg">
+                    <span className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-gray-500 to-gray-400 px-4 py-1.5 text-sm font-bold uppercase tracking-wider text-white shadow-lg">
                       Most Popular
                     </span>
                     <div className="h-full rounded-[1.45rem] bg-gradient-to-b from-gray-100/80 to-white p-8">
@@ -231,7 +231,7 @@ export function PricingView() {
         {/* How it works — 3-step strip */}
         <Reveal className="mt-10">
           <div className="card-surface rounded-[1.5rem] p-6 sm:p-8">
-            <h3 className="text-center font-display text-lg font-bold sm:text-xl">
+            <h3 className="text-center font-display text-xl font-bold sm:text-2xl">
               How it works in <span className="text-gradient">3 steps</span>
             </h3>
             <ol className="mt-6 grid gap-5 sm:grid-cols-3 sm:gap-4">
@@ -241,12 +241,12 @@ export function PricingView() {
                   className="flex items-center gap-3.5 sm:flex-col sm:gap-3 sm:text-center"
                 >
                   <span
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-500 to-gray-400 font-display text-base font-bold text-white shadow-[0_8px_20px_-8px_rgb(0_0_0/0.6)]"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-500 to-gray-400 font-display text-lg font-bold text-white shadow-[0_8px_20px_-8px_rgb(0_0_0/0.6)]"
                     aria-hidden="true"
                   >
                     {index + 1}
                   </span>
-                  <span className="text-sm font-semibold sm:text-[15px]">{step}</span>
+                  <span className="text-base font-semibold sm:text-base">{step}</span>
                 </li>
               ))}
             </ol>
@@ -255,35 +255,35 @@ export function PricingView() {
 
         {/* Comparison table */}
         <Reveal className="mt-12">
-          <h3 className="mb-6 text-center text-2xl font-bold text-balance sm:text-3xl">
+          <h3 className="mb-6 text-center text-3xl font-bold text-balance sm:text-4xl">
             Compare Packages <span className="text-gradient">Side by Side</span>
           </h3>
           <div className="card-surface overflow-hidden rounded-[1.5rem]">
             <div className="custom-scrollbar overflow-x-auto">
-              <table className="w-full min-w-[640px] text-left text-sm">
+              <table className="w-full min-w-[640px] text-left text-base">
                 <thead className="bg-gray-100/70">
                   <tr>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-900"
+                      className="whitespace-nowrap px-6 py-4 text-sm font-semibold uppercase tracking-wider text-gray-900"
                     >
                       Feature
                     </th>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-900"
+                      className="whitespace-nowrap px-6 py-4 text-sm font-semibold uppercase tracking-wider text-gray-900"
                     >
                       Starter
                     </th>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-900"
+                      className="whitespace-nowrap px-6 py-4 text-sm font-semibold uppercase tracking-wider text-gray-900"
                     >
                       Business
                     </th>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-900"
+                      className="whitespace-nowrap px-6 py-4 text-sm font-semibold uppercase tracking-wider text-gray-900"
                     >
                       E-commerce / Custom
                     </th>
@@ -342,7 +342,7 @@ export function PricingView() {
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
                   <h3 className="mt-4 font-semibold">{mover.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-1.5 text-base leading-relaxed text-muted-foreground">
                     {mover.text}
                   </p>
                 </div>
@@ -367,16 +367,16 @@ export function PricingView() {
                   <ServiceIconGlyph icon={block.icon} className="h-5 w-5" />
                 </span>
                 <h3 className="font-semibold">{block.name}</h3>
-                <p className="text-sm text-muted-foreground">{block.blurb}</p>
+                <p className="text-base text-muted-foreground">{block.blurb}</p>
                 <p>
-                  <span className="font-display text-lg font-bold text-gray-800">
+                  <span className="font-display text-xl font-bold text-gray-800">
                     From {block.startingAt}
                   </span>{' '}
-                  <span className="text-xs text-muted-foreground">{block.unit}</span>
+                  <span className="text-sm text-muted-foreground">{block.unit}</span>
                 </p>
                 <Link
                   href={`/${block.serviceSlug}`}
-                  className="mt-auto inline-flex min-h-11 items-center text-sm font-semibold text-gray-800 transition-colors hover:text-gray-900"
+                  className="mt-auto inline-flex min-h-11 items-center text-base font-semibold text-gray-800 transition-colors hover:text-gray-900"
                 >
                   Learn more →
                 </Link>
@@ -389,7 +389,7 @@ export function PricingView() {
       {/* Guarantees + FAQ */}
       <Section>
         <Reveal className="mb-10 text-center">
-          <h2 className="text-2xl font-bold text-balance sm:text-3xl">
+          <h2 className="text-3xl font-bold text-balance sm:text-4xl">
             Every Project, <span className="text-gradient">Protected</span>
           </h2>
         </Reveal>
@@ -404,7 +404,7 @@ export function PricingView() {
                   </span>
                   <div>
                     <h3 className="font-semibold">{card.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    <p className="mt-1 text-base leading-relaxed text-muted-foreground">
                       {card.text}
                     </p>
                   </div>
@@ -422,10 +422,10 @@ export function PricingView() {
       <Section tinted>
         <div className="grid items-start gap-10 lg:grid-cols-2">
           <Reveal>
-            <h2 className="text-3xl font-bold text-balance sm:text-4xl">
+            <h2 className="text-4xl font-bold text-balance sm:text-5xl">
               Get Your <span className="text-gradient">Custom Quote</span>
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+            <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
               Tell us what you need and we will send an itemized, fixed quote — usually within one
               business day.
             </p>
@@ -440,7 +440,7 @@ export function PricingView() {
                     <span className="icon-tile h-10 w-10 shrink-0">
                       <Icon className="h-5 w-5" aria-hidden="true" />
                     </span>
-                    <span className="text-sm font-medium">{item}</span>
+                    <span className="text-base font-medium">{item}</span>
                   </li>
                 );
               })}

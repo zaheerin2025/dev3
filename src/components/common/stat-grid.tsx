@@ -7,7 +7,7 @@ interface StatGridProps {
   className?: string;
 }
 
-/** Row of big gradient stat numbers with labels. */
+/** Row of big accent stat numbers with labels — flat surfaces only. */
 export function StatGrid({ items, dark, className }: StatGridProps) {
   return (
     <div
@@ -21,15 +21,15 @@ export function StatGrid({ items, dark, className }: StatGridProps) {
           key={item.label}
           delay={index * 80}
           className={cn(
-            'group flex flex-col items-center gap-1.5 rounded-2xl px-4 py-7 text-center transition-transform duration-300 hover:-translate-y-1',
+            'group flex flex-col items-center gap-2 rounded-2xl px-4 py-8 text-center transition-transform duration-300 hover:-translate-y-1',
             dark
-              ? 'bg-white/[0.05] ring-1 ring-inset ring-gray-400/20'
-              : 'bg-gradient-to-b from-white to-gray-100/60 ring-1 ring-inset ring-gray-800/12 shadow-[0_1px_2px_rgb(5_19_14/0.04)]'
+              ? 'bg-white/[0.05] ring-1 ring-inset ring-white/15'
+              : 'bg-white ring-1 ring-inset ring-[#e6e5de]'
           )}
         >
           <span
             className={cn(
-              'font-display text-4xl font-extrabold tracking-tight sm:text-[2.6rem]',
+              'font-display text-4xl font-bold tracking-tight sm:text-5xl',
               dark ? 'text-gradient-soft' : 'text-gradient'
             )}
           >
@@ -37,8 +37,8 @@ export function StatGrid({ items, dark, className }: StatGridProps) {
           </span>
           <span
             className={cn(
-              'text-[13px] font-medium',
-              dark ? 'text-gray-100/70' : 'text-muted-foreground'
+              'text-sm font-medium sm:text-[15px]',
+              dark ? 'text-white/60' : 'text-muted-foreground'
             )}
           >
             {item.label}

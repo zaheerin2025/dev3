@@ -71,7 +71,7 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
     }
     return (
       <Section className="py-24 text-center">
-        <h1 className="text-3xl font-bold sm:text-4xl">Post not found</h1>
+        <h1 className="text-4xl font-bold sm:text-5xl">Post not found</h1>
         <p className="mt-4 text-muted-foreground">
           The article you are looking for doesn&rsquo;t exist or has moved.
         </p>
@@ -97,33 +97,33 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]} />
           <div className="mt-6 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-800 ring-1 ring-inset ring-gray-800/20">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-800/20">
               <span className="h-1.5 w-1.5 rounded-full bg-gray-500" aria-hidden="true" />
               {post.category}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-gray-900/10">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-sm font-medium text-muted-foreground ring-1 ring-inset ring-gray-900/10">
               <Clock className="h-3.5 w-3.5 text-gray-800" aria-hidden="true" />
               {post.readTime}
             </span>
           </div>
-          <h1 className="mt-4 max-w-3xl text-balance text-3xl font-bold tracking-tight sm:text-4xl lg:text-[2.75rem]">
+          <h1 className="mt-4 max-w-3xl text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-[2.75rem]">
             {post.title}
           </h1>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{post.excerpt}</p>
+          <p className="mt-4 text-xl leading-relaxed text-muted-foreground">{post.excerpt}</p>
           <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="flex items-center gap-2.5">
               <Avatar className="h-10 w-10 ring-2 ring-gray-100">
-                <AvatarFallback className="bg-gray-100 text-xs font-bold text-gray-800">
+                <AvatarFallback className="bg-gray-100 text-sm font-bold text-gray-800">
                   {author?.initials ?? 'D3'}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm">
+              <span className="text-base">
                 <span className="block font-semibold">{author?.name ?? 'Developers3 Team'}</span>
-                {author ? <span className="block text-xs text-muted-foreground">{author.role}</span> : null}
+                {author ? <span className="block text-sm text-muted-foreground">{author.role}</span> : null}
               </span>
             </span>
             <span className="text-muted-foreground" aria-hidden="true">·</span>
-            <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1.5 text-base text-muted-foreground">
               <CalendarDays className="h-4 w-4" aria-hidden="true" />
               {format(new Date(post.date), 'MMMM d, yyyy')}
             </span>
@@ -169,7 +169,7 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
                   >
                     <h2
                       id={`${slugify(section.heading)}-title`}
-                      className="scroll-mt-28 text-2xl font-bold text-balance"
+                      className="scroll-mt-28 text-3xl font-bold text-balance"
                     >
                       {section.heading}
                     </h2>
@@ -198,7 +198,7 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
           {/* Sticky sidebar */}
           <aside className="hidden flex-col gap-4 lg:sticky lg:top-24 lg:flex">
             <div className="card-surface rounded-2xl p-5">
-              <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+              <h2 className="text-base font-semibold uppercase tracking-widest text-muted-foreground">
                 On this page
               </h2>
               <hr className="divider-gradient mt-3" />
@@ -210,9 +210,9 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
                     onClick={() =>
                       document.getElementById(slugify(section.heading))?.scrollIntoView({ behavior: 'smooth' })
                     }
-                    className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-muted-foreground transition-colors hover:bg-gray-100 hover:text-gray-900"
+                    className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-base text-muted-foreground transition-colors hover:bg-gray-100 hover:text-gray-900"
                   >
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-xs font-bold text-gray-800 ring-1 ring-inset ring-gray-800/15 transition-colors group-hover:bg-gray-800 group-hover:text-white">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-sm font-bold text-gray-800 ring-1 ring-inset ring-gray-800/15 transition-colors group-hover:bg-gray-800 group-hover:text-white">
                       {index + 1}
                     </span>
                     <span className="leading-snug">{section.heading}</span>
@@ -222,7 +222,7 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
             </div>
 
             <div className="rounded-2xl border border-gray-800/10 bg-gray-100 p-5">
-              <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-gray-900">
+              <h2 className="flex items-center gap-2 text-base font-semibold uppercase tracking-widest text-gray-900">
                 <ListChecks className="h-4 w-4" aria-hidden="true" />
                 Key takeaways
               </h2>
@@ -230,7 +230,7 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
                 {post.keyTakeaways.map((takeaway, index) => (
                   <li key={index} className="flex items-start gap-2.5">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-gray-800" aria-hidden="true" />
-                    <span className="text-sm leading-relaxed">{takeaway}</span>
+                    <span className="text-base leading-relaxed">{takeaway}</span>
                   </li>
                 ))}
               </ul>
@@ -255,13 +255,13 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
               </Avatar>
             )}
             <div>
-              <h2 className="text-base font-semibold">
+              <h2 className="text-lg font-semibold">
                 Written by {author?.name ?? 'the Developers3 Team'}
               </h2>
               {author ? (
                 <>
-                  <p className="text-sm font-medium text-gray-800">{author.role}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{author.bio}</p>
+                  <p className="text-base font-medium text-gray-800">{author.role}</p>
+                  <p className="mt-1 text-base leading-relaxed text-muted-foreground">{author.bio}</p>
                 </>
               ) : null}
             </div>
@@ -290,13 +290,13 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
             />
             <div className="relative grid items-center gap-6 sm:grid-cols-[1fr_auto]">
               <div>
-                <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-gray-100 ring-1 ring-inset ring-white/20">
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-gray-100 ring-1 ring-inset ring-white/20">
                   Related service
                 </span>
-                <h2 className="mt-3 text-xl font-bold text-balance sm:text-2xl">
+                <h2 className="mt-3 text-2xl font-bold text-balance sm:text-3xl">
                   {relatedService ? `${relatedService.name} — done for you` : 'Need this built for you?'}
                 </h2>
-                <p className="mt-2 text-sm leading-relaxed text-gray-100/85">
+                <p className="mt-2 text-base leading-relaxed text-gray-100/85">
                   The team that wrote this guide builds these every week. Get a free quote.
                 </p>
               </div>
@@ -348,7 +348,7 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
                           {related.title}
                         </Link>
                       </h3>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-sm text-muted-foreground">
                         {format(new Date(related.date), 'MMM d, yyyy')} · {related.readTime}
                       </span>
                     </div>
@@ -397,35 +397,35 @@ function DbPostArticle({ post }: { post: DbPost }) {
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]} />
           <div className="mt-6 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-gray-800 ring-1 ring-inset ring-gray-800/20">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-800/20">
               <span className="h-1.5 w-1.5 rounded-full bg-gray-500" aria-hidden="true" />
               {post.category}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-gray-900/10">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-sm font-medium text-muted-foreground ring-1 ring-inset ring-gray-900/10">
               <Clock className="h-3.5 w-3.5 text-gray-800" aria-hidden="true" />
               {post.readTime} min read
             </span>
           </div>
-          <h1 className="mt-4 max-w-3xl text-balance text-3xl font-bold tracking-tight sm:text-4xl lg:text-[2.75rem]">
+          <h1 className="mt-4 max-w-3xl text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-[2.75rem]">
             {post.title}
           </h1>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{post.excerpt}</p>
+          <p className="mt-4 text-xl leading-relaxed text-muted-foreground">{post.excerpt}</p>
           <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="flex items-center gap-2.5">
               <Avatar className="h-10 w-10 ring-2 ring-gray-100">
-                <AvatarFallback className="bg-gray-100 text-xs font-bold text-gray-800">
+                <AvatarFallback className="bg-gray-100 text-sm font-bold text-gray-800">
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm">
+              <span className="text-base">
                 <span className="block font-semibold">{post.authorName}</span>
-                <span className="block text-xs text-muted-foreground">{post.authorRole}</span>
+                <span className="block text-sm text-muted-foreground">{post.authorRole}</span>
               </span>
             </span>
             <span className="text-muted-foreground" aria-hidden="true">
               ·
             </span>
-            <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1.5 text-base text-muted-foreground">
               <CalendarDays className="h-4 w-4" aria-hidden="true" />
               {format(new Date(post.createdAt), 'MMMM d, yyyy')}
             </span>
@@ -478,7 +478,7 @@ function DbPostArticle({ post }: { post: DbPost }) {
                       {section.heading ? (
                         <h2
                           id={`${id}-title`}
-                          className="scroll-mt-28 text-2xl font-bold text-balance"
+                          className="scroll-mt-28 text-3xl font-bold text-balance"
                         >
                           {section.heading}
                         </h2>
@@ -501,7 +501,7 @@ function DbPostArticle({ post }: { post: DbPost }) {
           {headingSections.length > 0 ? (
             <aside className="hidden flex-col gap-4 lg:sticky lg:top-24 lg:flex">
               <div className="card-surface rounded-2xl p-5">
-                <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+                <h2 className="text-base font-semibold uppercase tracking-widest text-muted-foreground">
                   On this page
                 </h2>
                 <hr className="divider-gradient mt-3" />
@@ -517,9 +517,9 @@ function DbPostArticle({ post }: { post: DbPost }) {
                             .getElementById(id)
                             ?.scrollIntoView({ behavior: 'smooth' })
                         }
-                        className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-muted-foreground transition-colors hover:bg-gray-100 hover:text-gray-900"
+                        className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-base text-muted-foreground transition-colors hover:bg-gray-100 hover:text-gray-900"
                       >
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-xs font-bold text-gray-800 ring-1 ring-inset ring-gray-800/15 transition-colors group-hover:bg-gray-800 group-hover:text-white">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-sm font-bold text-gray-800 ring-1 ring-inset ring-gray-800/15 transition-colors group-hover:bg-gray-800 group-hover:text-white">
                           {index + 1}
                         </span>
                         <span className="leading-snug">{section.heading}</span>
@@ -541,9 +541,9 @@ function DbPostArticle({ post }: { post: DbPost }) {
               </AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="text-base font-semibold">Written by {post.authorName}</h2>
-              <p className="text-sm font-medium text-gray-800">{post.authorRole}</p>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              <h2 className="text-lg font-semibold">Written by {post.authorName}</h2>
+              <p className="text-base font-medium text-gray-800">{post.authorRole}</p>
+              <p className="mt-1 text-base leading-relaxed text-muted-foreground">
                 Part of the Developers3 team, sharing practical notes from real client projects.
               </p>
             </div>

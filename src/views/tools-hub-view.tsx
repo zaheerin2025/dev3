@@ -62,11 +62,11 @@ export function ToolsHubView() {
         <FloatingShapes variant="subtle" />
         <div className="relative mx-auto w-full max-w-6xl px-4 text-center sm:px-6 lg:px-8">
           <Sticker rotate={-2}>✦ Tools Mania — 100 Free Utilities</Sticker>
-          <h1 className="mx-auto mt-6 max-w-4xl text-balance text-4xl font-bold leading-[1.08] tracking-tight text-[#0a0a0a] sm:text-5xl lg:text-6xl">
+          <h1 className="mx-auto mt-6 max-w-4xl text-balance text-5xl font-bold leading-[1.08] tracking-tight text-[#0a0a0a] sm:text-6xl lg:text-7xl">
             Free <span className="text-gradient">Tools</span> That Do{' '}
             <span className="highlighter">Real Work</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#4b5563] sm:text-lg">
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[#4b5563] sm:text-xl">
             One hundred professionally built utilities for websites, apps, developer work, social
             media and business — no signup, no watermarks, no catch. Pick a tool and get it done.
           </p>
@@ -80,7 +80,7 @@ export function ToolsHubView() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search 100 tools — try “meta”, “invoice”, “QR”…"
               aria-label="Search tools"
-              className="h-14 w-full rounded-full border-2 border-gray-200 bg-white pl-13 pr-12 text-[15px] font-medium text-[#0a0a0a] shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-gray-500"
+              className="h-14 w-full rounded-full border-2 border-gray-200 bg-white pl-13 pr-12 text-base font-medium text-[#0a0a0a] shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-gray-500"
             />
             {query ? (
               <button
@@ -112,7 +112,7 @@ export function ToolsHubView() {
       {/* Grid */}
       <section className="section-white py-12 md:py-16">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-          <p className="mb-6 text-sm font-semibold text-gray-500" aria-live="polite">
+          <p className="mb-6 text-base font-semibold text-gray-500" aria-live="polite">
             Showing <span className="font-bold text-[#0a0a0a]">{filtered.length}</span> tool{filtered.length === 1 ? '' : 's'}
             {category !== 'all' ? <> in <span className="font-bold text-[#0a0a0a]">{getCategory(category).label}</span></> : null}
             {query ? <> matching “{query}”</> : null}
@@ -121,8 +121,8 @@ export function ToolsHubView() {
           {filtered.length === 0 ? (
             <div className="card-soft mx-auto max-w-md p-10 text-center">
               <Sparkle className="mx-auto size-8 fill-gray-300 text-gray-300" aria-hidden="true" />
-              <p className="mt-3 font-display text-lg font-bold text-[#0a0a0a]">No tools match “{query}”</p>
-              <p className="mt-1 text-sm text-muted-foreground">Try a shorter keyword, or clear the filters.</p>
+              <p className="mt-3 font-display text-xl font-bold text-[#0a0a0a]">No tools match “{query}”</p>
+              <p className="mt-1 text-base text-muted-foreground">Try a shorter keyword, or clear the filters.</p>
               <button
                 type="button"
                 onClick={() => { setQuery(''); setCategory('all'); }}
@@ -168,7 +168,7 @@ export function ToolsHubView() {
       <div aria-hidden="true" className="dashed-divider mx-auto max-w-6xl" />
       <section className="section-cream py-12 md:py-16">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-          <h2 className="font-display text-2xl font-bold text-[#0a0a0a] sm:text-3xl">
+          <h2 className="font-display text-3xl font-bold text-[#0a0a0a] sm:text-4xl">
             Explore the <span className="text-gradient">tool library</span>
           </h2>
           <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -179,11 +179,11 @@ export function ToolsHubView() {
                   onClick={() => { selectCategory(c.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                   className="card-soft card-hover flex h-full w-full flex-col rounded-[20px] p-6 text-left"
                 >
-                  <span className={`inline-flex w-fit rounded-full bg-gradient-to-r ${c.gradient} px-3.5 py-1.5 text-xs font-bold text-white`}>
+                  <span className={`inline-flex w-fit rounded-full bg-gradient-to-r ${c.gradient} px-3.5 py-1.5 text-sm font-bold text-white`}>
                     {c.label}
                   </span>
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-[#4b5563]">{c.description}</p>
-                  <span className="mt-3 text-xs font-bold text-gray-800">
+                  <p className="mt-3 flex-1 text-base leading-relaxed text-[#4b5563]">{c.description}</p>
+                  <span className="mt-3 text-sm font-bold text-gray-800">
                     {toolDefinitions.filter((d) => d.meta.category === c.id).length} tools →
                   </span>
                 </button>
@@ -194,8 +194,8 @@ export function ToolsHubView() {
           {/* Bottom CTA */}
           <Reveal>
             <div className="mt-12 overflow-hidden rounded-[24px] bg-gradient-to-r from-gray-800 to-gray-500 p-8 text-center text-white sm:p-12">
-              <h2 className="font-display text-2xl font-bold sm:text-4xl">Need this built for you?</h2>
-              <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/85 sm:text-base">
+              <h2 className="font-display text-3xl font-bold sm:text-5xl">Need this built for you?</h2>
+              <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
                 These tools are free forever — but if you want a custom web platform, app or
                 marketing system for your business, that is literally what we do.
               </p>
@@ -216,7 +216,7 @@ function CategoryPill({ active, onClick, label }: { active: boolean; onClick: ()
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`rounded-full px-5 py-2.5 text-sm font-bold transition-all ${
+      className={`rounded-full px-5 py-2.5 text-base font-bold transition-all ${
         active
           ? 'bg-[#0a0a0a] text-white shadow-md'
           : 'border-2 border-gray-200 bg-white text-gray-600 hover:border-zinc-200 hover:text-[#0a0a0a]'

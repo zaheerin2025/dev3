@@ -293,7 +293,7 @@ function PillButton({ children, onClick, variant = 'primary', disabled, classNam
         variant === 'primary' && 'btn-primary-pill-sm',
         variant === 'secondary' && 'btn-secondary-pill-sm',
         variant === 'ghost' &&
-          'inline-flex items-center justify-center gap-2 rounded-full border-2 border-dashed border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-800',
+          'inline-flex items-center justify-center gap-2 rounded-full border-2 border-dashed border-gray-300 bg-white px-5 py-2.5 text-base font-bold text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-800',
         disabled && 'pointer-events-none opacity-40',
         className,
       )}
@@ -320,7 +320,7 @@ function LabeledSlider({ label, value, onChange, min, max, step = 1, format, hel
           aria-label={label}
           className="min-w-0 flex-1"
         />
-        <span className="w-20 shrink-0 rounded-lg bg-gray-100 px-2 py-1 text-center font-mono text-xs font-bold text-[#0a0a0a]">
+        <span className="w-20 shrink-0 rounded-lg bg-gray-100 px-2 py-1 text-center font-mono text-sm font-bold text-[#0a0a0a]">
           {format ? format(value) : value}
         </span>
       </div>
@@ -346,7 +346,7 @@ function ColorField({ label, value, onChange, help, className }: {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           aria-label={`${label} — hex value`}
-          className="h-11 min-w-0 flex-1 rounded-xl border-gray-200 bg-white font-mono text-sm text-[#0a0a0a]"
+          className="h-11 min-w-0 flex-1 rounded-xl border-gray-200 bg-white font-mono text-base text-[#0a0a0a]"
         />
       </div>
     </FieldShell>
@@ -390,8 +390,8 @@ function FileDrop({ onFiles, accept, multiple, title, hint, icon, compact, class
         onChange={(e) => { pick(e.target.files); e.target.value = ''; }}
       />
       <span className={cn('text-gray-800', compact ? '[&_svg]:size-5' : '[&_svg]:size-8')}>{icon ?? <Upload aria-hidden />}</span>
-      <span className={cn('font-bold text-[#0a0a0a]', compact ? 'text-xs' : 'text-sm sm:text-base')}>{title}</span>
-      {hint ? <span className="text-xs text-muted-foreground">{hint}</span> : null}
+      <span className={cn('font-bold text-[#0a0a0a]', compact ? 'text-sm' : 'text-base sm:text-lg')}>{title}</span>
+      {hint ? <span className="text-sm text-muted-foreground">{hint}</span> : null}
     </div>
   );
 }
@@ -527,7 +527,7 @@ const WebpConverterTool = () => {
                 help="80–85 is the sweet spot for photos; go lower for thumbnails, higher for graphics with text."
               />
             ) : (
-              <p className="rounded-xl bg-gray-100 px-4 py-3 text-xs text-gray-900">PNG is lossless — the quality slider does not apply.</p>
+              <p className="rounded-xl bg-gray-100 px-4 py-3 text-sm text-gray-900">PNG is lossless — the quality slider does not apply.</p>
             )}
             <div className="flex flex-wrap items-center gap-3">
               <PillButton onClick={convert} disabled={busy}>
@@ -822,7 +822,7 @@ const StoreResizerTool = () => {
             <div className="card-soft p-2">
               { }
               <img src={src.url} alt="Uploaded screenshot" className="mx-auto max-h-64 w-auto rounded-lg" />
-              <p className="mt-1 truncate text-center text-xs text-muted-foreground">{src.name} · {src.img.naturalWidth}×{src.img.naturalHeight}</p>
+              <p className="mt-1 truncate text-center text-sm text-muted-foreground">{src.name} · {src.img.naturalWidth}×{src.img.naturalHeight}</p>
             </div>
             <div className="flex flex-col gap-3">
               <SelectInput
@@ -856,22 +856,22 @@ const StoreResizerTool = () => {
               return (
                 <div key={preset.id} className="card-soft flex flex-col gap-2 p-3">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-bold text-[#0a0a0a]">{preset.label}</p>
-                    <span className="rounded-full bg-gray-100 px-2 py-0.5 font-mono text-[10px] font-bold text-gray-800">{preset.w}×{preset.h}</span>
+                    <p className="text-base font-bold text-[#0a0a0a]">{preset.label}</p>
+                    <span className="rounded-full bg-gray-100 px-2 py-0.5 font-mono text-xs font-bold text-gray-800">{preset.w}×{preset.h}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">{preset.note}</p>
+                  <p className="text-sm text-muted-foreground">{preset.note}</p>
                   <div className="flex items-center justify-center overflow-hidden rounded-xl border border-gray-100" style={CHECKER_STYLE}>
                     {r ? (
                        
                       <img src={r.url} alt={`${preset.label} render`} className="max-h-64 w-auto" />
                     ) : (
-                      <div className="flex h-40 items-center px-6 text-center text-xs text-gray-400">
+                      <div className="flex h-40 items-center px-6 text-center text-sm text-gray-400">
                         {raw === 'error' ? 'Export failed for this size' : working ? 'Rendering…' : 'Press “Generate all store sizes”'}
                       </div>
                     )}
                   </div>
                   {r ? (
-                    <PillButton variant="secondary" className="!py-2 !text-xs" onClick={() => downloadBlob(`screenshot-${preset.id}.png`, r.blob)}>
+                    <PillButton variant="secondary" className="!py-2 !text-sm" onClick={() => downloadBlob(`screenshot-${preset.id}.png`, r.blob)}>
                       <Download className="size-4" /> Download PNG · {fmtBytes(r.bytes)}
                     </PillButton>
                   ) : null}
@@ -1667,16 +1667,16 @@ const ScreenRecorderToGifTool = () => {
         <div className="card-soft flex flex-col gap-3 p-5">
           <div className="flex items-center gap-2">
             <Video className="size-5 text-gray-800" aria-hidden />
-            <h3 className="font-display text-lg font-bold text-[#0a0a0a]">Record the screen</h3>
+            <h3 className="font-display text-xl font-bold text-[#0a0a0a]">Record the screen</h3>
           </div>
           {supported ? (
             <>
-              <p className="text-sm leading-relaxed text-gray-600">
+              <p className="text-base leading-relaxed text-gray-600">
                 Pick a tab, window or the whole screen when the browser asks. Recording auto-stops after 30 seconds, or stop it here — sharing bar “Stop” works too.
               </p>
               {recording ? (
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm font-bold text-gray-800">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-base font-bold text-gray-800">
                     <span className="size-2.5 animate-pulse rounded-full bg-gray-500" aria-hidden /> REC {mmss}
                   </span>
                   <PillButton variant="secondary" onClick={stopRecording}><Square className="size-4" /> Stop & use take</PillButton>
@@ -1696,7 +1696,7 @@ const ScreenRecorderToGifTool = () => {
         <div className="card-soft flex flex-col gap-3 p-5">
           <div className="flex items-center gap-2">
             <Film className="size-5 text-gray-800" aria-hidden />
-            <h3 className="font-display text-lg font-bold text-[#0a0a0a]">Or upload existing footage</h3>
+            <h3 className="font-display text-xl font-bold text-[#0a0a0a]">Or upload existing footage</h3>
           </div>
           <FileDrop
             compact
@@ -1719,11 +1719,11 @@ const ScreenRecorderToGifTool = () => {
       {source ? (
         <div className="card-soft flex flex-col gap-4 p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="text-sm font-bold text-[#0a0a0a]">
+            <p className="text-base font-bold text-[#0a0a0a]">
               Source ready: {source.label}
               {source.kind === 'video' ? ` — ${source.duration.toFixed(1)}s at ${source.w}×${source.h}` : ` — ${source.w}×${source.h}`}
             </p>
-            <span className="text-xs text-muted-foreground">First 60 seconds / 300 frames max per GIF</span>
+            <span className="text-sm text-muted-foreground">First 60 seconds / 300 frames max per GIF</span>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <SelectInput label="Frame rate" value={fps} onChange={setFps} options={GIF_FPS_OPTIONS} />
@@ -1731,7 +1731,7 @@ const ScreenRecorderToGifTool = () => {
           </div>
           {building ? (
             <div className="flex flex-col gap-2">
-              <p className="text-sm font-bold text-[#0a0a0a]" role="status">{statusMsg || 'Working…'}</p>
+              <p className="text-base font-bold text-[#0a0a0a]" role="status">{statusMsg || 'Working…'}</p>
               <div className="h-2 overflow-hidden rounded-full bg-gray-200" aria-hidden>
                 <div className="h-full rounded-full bg-gradient-to-r from-gray-800 to-gray-500 transition-all" style={{ width: `${Math.round(progress * 100)}%` }} />
               </div>
@@ -1757,7 +1757,7 @@ const ScreenRecorderToGifTool = () => {
             <PillButton onClick={() => downloadBlob('screen-recording.gif', gif.blob)}>
               <Download className="size-4" /> Download GIF · {fmtBytes(gif.bytes)}
             </PillButton>
-            <span className="text-xs text-muted-foreground">Looping is built in — GIFs replay automatically everywhere.</span>
+            <span className="text-sm text-muted-foreground">Looping is built in — GIFs replay automatically everywhere.</span>
           </div>
         </div>
       ) : null}
@@ -2044,7 +2044,7 @@ const WireframeSketcherTool = () => {
               type="button"
               onClick={() => setDevice(d)}
               aria-pressed={device === d}
-              className={cn('px-4 py-2 text-xs font-bold transition-colors', device === d ? 'bg-[#0a0a0a] text-white' : 'bg-white text-[#0a0a0a] hover:bg-gray-100')}
+              className={cn('px-4 py-2 text-sm font-bold transition-colors', device === d ? 'bg-[#0a0a0a] text-white' : 'bg-white text-[#0a0a0a] hover:bg-gray-100')}
             >
               {WF_DEVICES[d].label}
             </button>
@@ -2058,14 +2058,14 @@ const WireframeSketcherTool = () => {
       </div>
 
       <div>
-        <Label className="mb-2 block text-sm font-bold text-[#0a0a0a]">Click a block to drop it in, then drag to arrange</Label>
+        <Label className="mb-2 block text-base font-bold text-[#0a0a0a]">Click a block to drop it in, then drag to arrange</Label>
         <div className="flex flex-wrap gap-2">
           {WF_BLOCK_DEFS.map((d) => (
             <button
               key={d.type}
               type="button"
               onClick={() => addBlock(d.type)}
-              className="rounded-full border-2 border-gray-200 bg-white px-3.5 py-1.5 text-xs font-bold text-gray-700 transition-colors hover:border-gray-400 hover:text-gray-800"
+              className="rounded-full border-2 border-gray-200 bg-white px-3.5 py-1.5 text-sm font-bold text-gray-700 transition-colors hover:border-gray-400 hover:text-gray-800"
             >
               + {d.label}
             </button>
@@ -2112,7 +2112,7 @@ const WireframeSketcherTool = () => {
               </div>
             ))}
             {blocks.length === 0 ? (
-              <p className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-gray-400">
+              <p className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center text-base text-gray-400">
                 Empty canvas — add blocks above, then drag them into place.
               </p>
             ) : null}
@@ -2290,7 +2290,7 @@ const UserFlowMapperTool = () => {
             key={t}
             type="button"
             onClick={() => addNode(t)}
-            className={cn('rounded-full px-4 py-2 text-xs font-bold transition-transform hover:scale-105', FLOW_TYPE_STYLES[t].pill)}
+            className={cn('rounded-full px-4 py-2 text-sm font-bold transition-transform hover:scale-105', FLOW_TYPE_STYLES[t].pill)}
           >
             + {FLOW_TYPE_STYLES[t].label}
           </button>
@@ -2300,7 +2300,7 @@ const UserFlowMapperTool = () => {
           onClick={() => { setConnectMode((v) => !v); setConnectFrom(null); }}
           aria-pressed={connectMode}
           className={cn(
-            'inline-flex items-center gap-1.5 rounded-full border-2 px-4 py-2 text-xs font-bold transition-colors',
+            'inline-flex items-center gap-1.5 rounded-full border-2 px-4 py-2 text-sm font-bold transition-colors',
             connectMode ? 'border-gray-800 bg-gray-800 text-white' : 'border-gray-200 bg-white text-gray-700 hover:border-gray-400',
           )}
         >
@@ -2520,8 +2520,8 @@ const ColorConverterTool = () => {
           role="img"
           aria-label={`Color preview ${hex}`}
         >
-          <p className={cn('font-mono text-2xl font-bold', lightText ? 'text-[#0a0a0a]' : 'text-white')}>{hex}</p>
-          <p className={cn('mt-1 text-xs font-semibold', lightText ? 'text-[#0a0a0a]/70' : 'text-white/70')}>
+          <p className={cn('font-mono text-3xl font-bold', lightText ? 'text-[#0a0a0a]' : 'text-white')}>{hex}</p>
+          <p className={cn('mt-1 text-sm font-semibold', lightText ? 'text-[#0a0a0a]/70' : 'text-white/70')}>
             {rgb.r} {rgb.g} {rgb.b} · HSL {hsl.h}° {hsl.s}% {hsl.l}%
           </p>
         </div>
@@ -2535,7 +2535,7 @@ const ColorConverterTool = () => {
                   onChange={(e) => onChange(f.key, e.target.value)}
                   onBlur={clearDraft(f.key)}
                   aria-label={`${f.label} color value`}
-                  className="h-11 min-w-0 flex-1 rounded-xl border-gray-200 bg-white font-mono text-sm text-[#0a0a0a]"
+                  className="h-11 min-w-0 flex-1 rounded-xl border-gray-200 bg-white font-mono text-base text-[#0a0a0a]"
                 />
                 <button
                   type="button"
@@ -2548,7 +2548,7 @@ const ColorConverterTool = () => {
               </div>
             </FieldShell>
           ))}
-          <p className="sm:col-span-2 text-xs text-muted-foreground">
+          <p className="sm:col-span-2 text-sm text-muted-foreground">
             Edit any field — the others update live. Invalid input is simply ignored until it parses.
           </p>
         </div>
@@ -2556,8 +2556,8 @@ const ColorConverterTool = () => {
 
       <div>
         <div className="mb-2 flex items-center justify-between">
-          <Label className="text-sm font-bold text-[#0a0a0a]">Shade & tint scale</Label>
-          <span className="text-xs text-muted-foreground">Click a step to make it the working color</span>
+          <Label className="text-base font-bold text-[#0a0a0a]">Shade & tint scale</Label>
+          <span className="text-sm text-muted-foreground">Click a step to make it the working color</span>
         </div>
         <div className="grid grid-cols-6 gap-2 sm:grid-cols-11">
           {SHADE_STEPS.map((s) => {
@@ -2572,7 +2572,7 @@ const ColorConverterTool = () => {
                 className="group flex h-14 flex-col justify-end rounded-xl border border-black/10 transition-transform hover:scale-105 sm:h-16"
                 style={{ backgroundColor: c }}
               >
-                <span className={cn('rounded-bl-xl px-1 pb-0.5 text-[10px] font-bold', perceivedBrightness(hexToRgb(c) ?? rgb) > 150 ? 'text-black/70' : 'text-white/85')}>
+                <span className={cn('rounded-bl-xl px-1 pb-0.5 text-xs font-bold', perceivedBrightness(hexToRgb(c) ?? rgb) > 150 ? 'text-black/70' : 'text-white/85')}>
                   {s.label}
                 </span>
               </button>
@@ -2644,7 +2644,7 @@ const GradientGeneratorTool = () => {
       />
 
       <div>
-        <Label className="mb-2 block text-sm font-bold text-[#0a0a0a]">Preset gallery</Label>
+        <Label className="mb-2 block text-base font-bold text-[#0a0a0a]">Preset gallery</Label>
         <div className="flex flex-wrap gap-2">
           {GRADIENT_PRESETS.map((p) => (
             <button
@@ -2652,7 +2652,7 @@ const GradientGeneratorTool = () => {
               type="button"
               onClick={() => applyPreset(p)}
               title={`${p.name} — click to load`}
-              className="group flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white py-1 pl-1 pr-3.5 text-xs font-bold text-gray-700 transition-colors hover:border-gray-400"
+              className="group flex items-center gap-2 rounded-full border-2 border-gray-200 bg-white py-1 pl-1 pr-3.5 text-sm font-bold text-gray-700 transition-colors hover:border-gray-400"
             >
               <span className="size-6 rounded-full border border-black/10" style={{ backgroundImage: `linear-gradient(90deg, ${p.colors[0]}, ${p.colors[1]})` }} aria-hidden />
               {p.name}
@@ -2670,7 +2670,7 @@ const GradientGeneratorTool = () => {
                 type="button"
                 onClick={() => setKind(k)}
                 aria-pressed={kind === k}
-                className={cn('px-5 py-2 text-xs font-bold capitalize transition-colors', kind === k ? 'bg-[#0a0a0a] text-white' : 'bg-white text-[#0a0a0a] hover:bg-gray-100')}
+                className={cn('px-5 py-2 text-sm font-bold capitalize transition-colors', kind === k ? 'bg-[#0a0a0a] text-white' : 'bg-white text-[#0a0a0a] hover:bg-gray-100')}
               >
                 {k}
               </button>
@@ -2713,7 +2713,7 @@ const GradientGeneratorTool = () => {
 
       <div>
         <div className="mb-2 flex items-center justify-between gap-3">
-          <Label className="text-sm font-bold text-[#0a0a0a]">Generated CSS</Label>
+          <Label className="text-base font-bold text-[#0a0a0a]">Generated CSS</Label>
           <CopyButton value={css} label="Copy CSS" />
         </div>
         <OutputBox value={css} language="css" />
@@ -2743,7 +2743,7 @@ function ShadowLayerEditor({ layer, onChange, title }: {
 }) {
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4">
-      <p className="font-display text-sm font-bold text-[#0a0a0a]">{title}</p>
+      <p className="font-display text-base font-bold text-[#0a0a0a]">{title}</p>
       <div className="grid gap-3 sm:grid-cols-2">
         <LabeledSlider label="Offset X" value={layer.x} onChange={(v) => onChange({ x: v })} min={-60} max={60} format={(v) => `${v}px`} />
         <LabeledSlider label="Offset Y" value={layer.y} onChange={(v) => onChange({ y: v })} min={-60} max={60} format={(v) => `${v}px`} />
@@ -2796,7 +2796,7 @@ const BoxShadowGeneratorTool = () => {
 
       <div>
         <div className="mb-2 flex items-center justify-between gap-3">
-          <Label className="text-sm font-bold text-[#0a0a0a]">Generated CSS</Label>
+          <Label className="text-base font-bold text-[#0a0a0a]">Generated CSS</Label>
           <CopyButton value={fullCss} label="Copy CSS" />
         </div>
         <OutputBox value={fullCss} language="css" />
@@ -2858,7 +2858,7 @@ const BorderRadiusTool = () => {
               type="button"
               onClick={() => setMode(m)}
               aria-pressed={mode === m}
-              className={cn('px-5 py-2 text-xs font-bold capitalize transition-colors', mode === m ? 'bg-[#0a0a0a] text-white' : 'bg-white text-[#0a0a0a] hover:bg-gray-100')}
+              className={cn('px-5 py-2 text-sm font-bold capitalize transition-colors', mode === m ? 'bg-[#0a0a0a] text-white' : 'bg-white text-[#0a0a0a] hover:bg-gray-100')}
             >
               {m === 'corners' ? 'Per-corner (px)' : 'Organic blob (%)'}
             </button>
@@ -2884,7 +2884,7 @@ const BorderRadiusTool = () => {
             { title: 'Vertical radii (same order)', values: blobV, set: setBlobV },
           ].map((group) => (
             <div key={group.title} className="rounded-2xl border border-gray-200 bg-white p-4">
-              <p className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-500">{group.title}</p>
+              <p className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-500">{group.title}</p>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {group.values.map((v, i) => (
                   <LabeledSlider key={i} label={CORNER_NAMES[i]} value={v} onChange={(nv) => group.set(group.values.map((old, idx) => (idx === i ? nv : old)))} min={0} max={100} format={(nv) => `${nv}%`} />
@@ -2898,7 +2898,7 @@ const BorderRadiusTool = () => {
                 key={p.name}
                 type="button"
                 onClick={() => { setBlobH([...p.h]); setBlobV([...p.v]); }}
-                className="rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition-colors hover:border-gray-400 hover:text-gray-800"
+                className="rounded-full border-2 border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-700 transition-colors hover:border-gray-400 hover:text-gray-800"
               >
                 {p.name}
               </button>
@@ -2909,7 +2909,7 @@ const BorderRadiusTool = () => {
 
       <div>
         <div className="mb-2 flex items-center justify-between gap-3">
-          <Label className="text-sm font-bold text-[#0a0a0a]">Generated CSS</Label>
+          <Label className="text-base font-bold text-[#0a0a0a]">Generated CSS</Label>
           <CopyButton value={fullCss} label="Copy CSS" />
         </div>
         <OutputBox value={fullCss} language="css" />
@@ -3052,7 +3052,7 @@ const InstagramGridPlannerTool = () => {
               type="button"
               onClick={() => setAspect(a)}
               aria-pressed={aspect === a}
-              className={cn('px-4 py-2 text-xs font-bold transition-colors', aspect === a ? 'bg-[#0a0a0a] text-white' : 'bg-white text-[#0a0a0a] hover:bg-gray-100')}
+              className={cn('px-4 py-2 text-sm font-bold transition-colors', aspect === a ? 'bg-[#0a0a0a] text-white' : 'bg-white text-[#0a0a0a] hover:bg-gray-100')}
             >
               {a === '1:1' ? 'Square tiles' : '2:3 portrait'}
             </button>
@@ -3060,7 +3060,7 @@ const InstagramGridPlannerTool = () => {
         </div>
         <PillButton variant="ghost" onClick={alternateTones} disabled={filled < 3}><Sparkles className="size-4" /> Alternate light/dark</PillButton>
         <PillButton onClick={exportGrid} disabled={!filled || busy}><Download className="size-4" /> {busy ? 'Exporting…' : 'Export grid PNG'}</PillButton>
-        <span className="text-xs font-bold text-gray-500">{filled}/9 tiles placed</span>
+        <span className="text-sm font-bold text-gray-500">{filled}/9 tiles placed</span>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-[1fr_260px]">
@@ -3086,7 +3086,7 @@ const InstagramGridPlannerTool = () => {
                     <img src={tile.url} alt="" className="h-full w-full object-cover" />
                   )
                 ) : (
-                  <span className="text-xs font-bold text-gray-400">{i + 1}</span>
+                  <span className="text-sm font-bold text-gray-400">{i + 1}</span>
                 )}
               </button>
               {tile ? (
@@ -3114,11 +3114,11 @@ const InstagramGridPlannerTool = () => {
           />
           <div className="rounded-2xl border border-gray-200 bg-white p-3">
             <ColorField label="Solid tile color" value={placeholderColor} onChange={setPlaceholderColor} />
-            <PillButton variant="secondary" className="mt-2 w-full !text-xs" onClick={addColorTile} disabled={filled >= 9}>
+            <PillButton variant="secondary" className="mt-2 w-full !text-sm" onClick={addColorTile} disabled={filled >= 9}>
               <Plus className="size-4" /> Add solid tile
             </PillButton>
           </div>
-          <p className="text-xs leading-relaxed text-muted-foreground">
+          <p className="text-sm leading-relaxed text-muted-foreground">
             “Alternate light/dark” sorts tiles by brightness and lays them out in a snake pattern so neighbours contrast — the classic checkerboard trick for
             cohesive feeds.
           </p>
@@ -3179,7 +3179,7 @@ const YouTubeThumbnailDownloaderTool = () => {
         onSubmit={(e) => { e.preventDefault(); if (parsed) setActiveId(parsed); }}
         className="flex flex-col gap-1.5"
       >
-        <Label className="text-sm font-bold text-[#0a0a0a]">YouTube URL or video ID</Label>
+        <Label className="text-base font-bold text-[#0a0a0a]">YouTube URL or video ID</Label>
         <div className="flex gap-2">
           <Input
             value={input}
@@ -3190,24 +3190,24 @@ const YouTubeThumbnailDownloaderTool = () => {
             }}
             placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
             aria-label="YouTube URL or video ID"
-            className="h-11 min-w-0 flex-1 rounded-xl border-gray-200 bg-white font-mono text-sm text-[#0a0a0a] placeholder:text-gray-400"
+            className="h-11 min-w-0 flex-1 rounded-xl border-gray-200 bg-white font-mono text-base text-[#0a0a0a] placeholder:text-gray-400"
           />
           <PillButton type="submit" disabled={!parsed} ariaLabel="Fetch thumbnails">
             <Youtube className="size-4" /> Get thumbnails
           </PillButton>
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Watch links, Shorts, youtu.be shares, embed URLs or a bare 11-character ID all work — thumbnails are read straight from the public CDN.
         </p>
         {input.trim() && !parsed ? (
-          <p className="text-xs font-semibold text-gray-800">No video ID found yet — paste a full YouTube link or an 11-character ID.</p>
+          <p className="text-sm font-semibold text-gray-800">No video ID found yet — paste a full YouTube link or an 11-character ID.</p>
         ) : null}
       </form>
 
       {activeId ? (
         <>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 font-mono text-xs font-bold text-[#0a0a0a]">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 font-mono text-sm font-bold text-[#0a0a0a]">
               <Youtube className="size-3.5 text-gray-800" aria-hidden /> {activeId}
             </span>
             <CopyButton value={watchUrl} label="Copy video link" />
@@ -3219,7 +3219,7 @@ const YouTubeThumbnailDownloaderTool = () => {
 
           <div className="flex items-center gap-2">
             <Grid3x3 className="size-4 text-gray-800" aria-hidden />
-            <Label className="text-sm font-bold text-[#0a0a0a]">Every size on the CDN</Label>
+            <Label className="text-base font-bold text-[#0a0a0a]">Every size on the CDN</Label>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -3232,7 +3232,7 @@ const YouTubeThumbnailDownloaderTool = () => {
                     {st === 'missing' ? (
                       <div className="flex flex-col items-center gap-1 p-3 text-center">
                         <X className="size-5 text-gray-300" aria-hidden />
-                        <p className="text-xs font-semibold text-gray-400">Not available for this video</p>
+                        <p className="text-sm font-semibold text-gray-400">Not available for this video</p>
                       </div>
                     ) : (
                        
@@ -3249,10 +3249,10 @@ const YouTubeThumbnailDownloaderTool = () => {
                     {st === 'unknown' ? <span className="absolute inset-0 animate-pulse bg-gray-100/80" aria-hidden /> : null}
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-bold text-[#0a0a0a]">{v.label}</p>
-                    <span className="rounded-full bg-gray-100 px-2 py-0.5 font-mono text-[10px] font-bold text-gray-800">{v.dims}</span>
+                    <p className="text-base font-bold text-[#0a0a0a]">{v.label}</p>
+                    <span className="rounded-full bg-gray-100 px-2 py-0.5 font-mono text-xs font-bold text-gray-800">{v.dims}</span>
                   </div>
-                  <p className="text-xs text-muted-foreground">{v.note}</p>
+                  <p className="text-sm text-muted-foreground">{v.note}</p>
                   {st === 'ok' ? (
                     <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
                       <CopyButton value={url} label="Copy URL" className="!px-3 !py-1.5" />
@@ -3260,7 +3260,7 @@ const YouTubeThumbnailDownloaderTool = () => {
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-full border-2 border-zinc-200 bg-white px-3 py-1.5 text-xs font-bold text-[#0a0a0a] transition-colors hover:bg-[#0a0a0a] hover:text-white"
+                        className="inline-flex items-center gap-1.5 rounded-full border-2 border-zinc-200 bg-white px-3 py-1.5 text-sm font-bold text-[#0a0a0a] transition-colors hover:bg-[#0a0a0a] hover:text-white"
                       >
                         <ExternalLink className="size-3.5" aria-hidden /> Open
                       </a>
@@ -3274,8 +3274,8 @@ const YouTubeThumbnailDownloaderTool = () => {
       ) : (
         <div className="card-soft flex flex-col items-center gap-2 p-10 text-center">
           <Youtube className="size-10 text-gray-300" aria-hidden />
-          <p className="text-sm font-bold text-[#0a0a0a]">Thumbnails appear here</p>
-          <p className="max-w-md text-xs text-muted-foreground">
+          <p className="text-base font-bold text-[#0a0a0a]">Thumbnails appear here</p>
+          <p className="max-w-md text-sm text-muted-foreground">
             Paste a link above — the tool probes maxres, sd, hq and mq in one pass and hides the sizes a video does not have.
           </p>
         </div>
@@ -3438,10 +3438,10 @@ const GiveawayWinnerPickerTool = () => {
       {result ? (
         <div className="card-soft p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="flex items-center gap-2 font-display text-lg font-bold text-[#0a0a0a]">
+            <p className="flex items-center gap-2 font-display text-xl font-bold text-[#0a0a0a]">
               <PartyPopper className="size-5 text-gray-800" aria-hidden /> Your winners
             </p>
-            <p className="text-xs font-semibold text-gray-500">Drawn {result.at}</p>
+            <p className="text-sm font-semibold text-gray-500">Drawn {result.at}</p>
           </div>
           <ol className="mt-4 flex flex-col gap-2" aria-live="polite" role="list">
             {result.winners.map((w, i) => (
@@ -3456,15 +3456,15 @@ const GiveawayWinnerPickerTool = () => {
               >
                 <span
                   className={cn(
-                    'flex size-9 shrink-0 items-center justify-center rounded-full font-display text-sm font-bold text-white',
+                    'flex size-9 shrink-0 items-center justify-center rounded-full font-display text-base font-bold text-white',
                     i === 0 ? 'bg-gradient-to-br from-gray-800 to-gray-500' : 'bg-[#0a0a0a]',
                   )}
                 >
                   {i + 1}
                 </span>
-                <span className="min-w-0 flex-1 truncate text-sm font-bold text-[#0a0a0a]">{w.name}</span>
+                <span className="min-w-0 flex-1 truncate text-base font-bold text-[#0a0a0a]">{w.name}</span>
                 {w.weight > 1 ? (
-                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold text-gray-800">won with {w.weight} entries</span>
+                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-800">won with {w.weight} entries</span>
                 ) : null}
               </li>
             ))}
@@ -3474,7 +3474,7 @@ const GiveawayWinnerPickerTool = () => {
               <RefreshCw className="size-4" /> Draw again
             </PillButton>
             <CopyButton value={winnersText} label="Copy winners + timestamp" />
-            {revealed < result.winners.length ? <span className="text-xs text-gray-400" role="status">Revealing…</span> : null}
+            {revealed < result.winners.length ? <span className="text-sm text-gray-400" role="status">Revealing…</span> : null}
           </div>
         </div>
       ) : null}
@@ -3568,30 +3568,30 @@ function InvoiceDoc({ data }: { data: InvoiceData }) {
     >
       <div className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-zinc-200 pb-5">
         <div className="min-w-0">
-          <p className="font-display text-2xl font-bold">{data.business.name || 'Your business'}</p>
-          <p className="mt-1 whitespace-pre-line text-xs leading-relaxed text-gray-500">{data.business.details || 'Your address, email and phone'}</p>
+          <p className="font-display text-3xl font-bold">{data.business.name || 'Your business'}</p>
+          <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-gray-500">{data.business.details || 'Your address, email and phone'}</p>
         </div>
         <div className="text-right">
-          <span className="inline-block rounded-full bg-gray-800 px-4 py-1.5 font-display text-sm font-bold tracking-[0.2em] text-white">INVOICE</span>
-          <p className="mt-2 font-mono text-sm font-bold">{data.invoiceNo || '—'}</p>
+          <span className="inline-block rounded-full bg-gray-800 px-4 py-1.5 font-display text-base font-bold tracking-[0.2em] text-white">INVOICE</span>
+          <p className="mt-2 font-mono text-base font-bold">{data.invoiceNo || '—'}</p>
         </div>
       </div>
 
       <div className="grid gap-5 py-5 sm:grid-cols-2">
         <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Bill to</p>
-          <p className="mt-1 text-sm font-bold">{data.client.name || 'Client name'}</p>
-          <p className="mt-1 whitespace-pre-line text-xs leading-relaxed text-gray-500">{data.client.details}</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Bill to</p>
+          <p className="mt-1 text-base font-bold">{data.client.name || 'Client name'}</p>
+          <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-gray-500">{data.client.details}</p>
         </div>
         <div className="sm:text-right">
-          <p className="text-xs text-gray-500">Issued: <span className="font-bold text-[#0a0a0a]">{docDate(data.issueDate)}</span></p>
-          <p className="mt-1 text-xs text-gray-500">Due: <span className="font-bold text-[#0a0a0a]">{docDate(data.dueDate)}</span></p>
+          <p className="text-sm text-gray-500">Issued: <span className="font-bold text-[#0a0a0a]">{docDate(data.issueDate)}</span></p>
+          <p className="mt-1 text-sm text-gray-500">Due: <span className="font-bold text-[#0a0a0a]">{docDate(data.dueDate)}</span></p>
         </div>
       </div>
 
-      <table className="w-full border-collapse text-xs">
+      <table className="w-full border-collapse text-sm">
         <thead>
-          <tr className="border-b-2 border-gray-200 text-left text-[10px] uppercase tracking-widest text-gray-400">
+          <tr className="border-b-2 border-gray-200 text-left text-xs uppercase tracking-widest text-gray-400">
             <th className="py-2 font-bold">Description</th>
             <th className="py-2 text-right font-bold">Qty</th>
             <th className="py-2 text-right font-bold">Rate</th>
@@ -3613,16 +3613,16 @@ function InvoiceDoc({ data }: { data: InvoiceData }) {
         </tbody>
       </table>
 
-      <div className="ml-auto mt-5 w-full max-w-60 space-y-1.5 text-xs">
+      <div className="ml-auto mt-5 w-full max-w-60 space-y-1.5 text-sm">
         <p className="flex justify-between"><span className="text-gray-500">Subtotal</span><span className="font-bold tabular-nums">{docMoney(data.currency, t.subtotal)}</span></p>
         <p className="flex justify-between"><span className="text-gray-500">Tax ({t.taxPct}%)</span><span className="font-bold tabular-nums">{docMoney(data.currency, t.tax)}</span></p>
-        <p className="flex justify-between border-t-2 border-zinc-200 pt-2 font-display text-base font-bold"><span>Total</span><span className="tabular-nums">{docMoney(data.currency, t.total)}</span></p>
+        <p className="flex justify-between border-t-2 border-zinc-200 pt-2 font-display text-lg font-bold"><span>Total</span><span className="tabular-nums">{docMoney(data.currency, t.total)}</span></p>
       </div>
 
       {data.notes.trim() ? (
         <div className="mt-7 border-t border-gray-200 pt-4">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Notes</p>
-          <p className="mt-1 whitespace-pre-line text-xs leading-relaxed text-gray-600">{data.notes}</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Notes</p>
+          <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-gray-600">{data.notes}</p>
         </div>
       ) : null}
     </div>
@@ -3760,8 +3760,8 @@ const InvoiceGeneratorTool = () => {
 
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <Label className="text-sm font-bold text-[#0a0a0a]">Line items</Label>
-              <span className="text-xs font-bold text-gray-400">{items.length} item{items.length === 1 ? '' : 's'}</span>
+              <Label className="text-base font-bold text-[#0a0a0a]">Line items</Label>
+              <span className="text-sm font-bold text-gray-400">{items.length} item{items.length === 1 ? '' : 's'}</span>
             </div>
             {items.map((it, i) => {
               const lineTotal = docNum(it.qty) * docNum(it.rate);
@@ -3773,7 +3773,7 @@ const InvoiceGeneratorTool = () => {
                       onChange={(e) => updateItem(it.id, { desc: e.target.value })}
                       placeholder={`Item ${i + 1} description`}
                       aria-label={`Item ${i + 1} description`}
-                      className="h-10 min-w-0 flex-1 rounded-lg border-gray-200 bg-white text-sm"
+                      className="h-10 min-w-0 flex-1 rounded-lg border-gray-200 bg-white text-base"
                     />
                     <button
                       type="button"
@@ -3787,25 +3787,25 @@ const InvoiceGeneratorTool = () => {
                   </div>
                   <div className="mt-2 grid grid-cols-2 gap-2">
                     <div>
-                      <Label className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-gray-400">Qty</Label>
+                      <Label className="mb-1 block text-xs font-bold uppercase tracking-wide text-gray-400">Qty</Label>
                       <Input
                         type="number" inputMode="decimal" min="0" step="any" value={it.qty}
                         onChange={(e) => updateItem(it.id, { qty: e.target.value })}
                         aria-label={`Item ${i + 1} quantity`}
-                        className="h-10 rounded-lg border-gray-200 bg-white text-sm"
+                        className="h-10 rounded-lg border-gray-200 bg-white text-base"
                       />
                     </div>
                     <div>
-                      <Label className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-gray-400">Rate</Label>
+                      <Label className="mb-1 block text-xs font-bold uppercase tracking-wide text-gray-400">Rate</Label>
                       <Input
                         type="number" inputMode="decimal" min="0" step="any" value={it.rate}
                         onChange={(e) => updateItem(it.id, { rate: e.target.value })}
                         placeholder="0.00"
                         aria-label={`Item ${i + 1} rate`}
-                        className="h-10 rounded-lg border-gray-200 bg-white text-sm"
+                        className="h-10 rounded-lg border-gray-200 bg-white text-base"
                       />
                     </div>
-                    <p className="col-span-2 text-right text-xs font-bold text-[#0a0a0a]">= {docMoney(currency || '$', lineTotal)}</p>
+                    <p className="col-span-2 text-right text-sm font-bold text-[#0a0a0a]">= {docMoney(currency || '$', lineTotal)}</p>
                   </div>
                 </div>
               );
@@ -3826,7 +3826,7 @@ const InvoiceGeneratorTool = () => {
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Frame className="size-4 text-gray-800" aria-hidden />
-            <Label className="text-sm font-bold text-[#0a0a0a]">Live document preview</Label>
+            <Label className="text-base font-bold text-[#0a0a0a]">Live document preview</Label>
           </div>
           <div className="custom-scrollbar overflow-x-auto rounded-2xl border border-gray-200 bg-gray-100 p-3 sm:p-5">
             <InvoiceDoc data={data} />
@@ -3836,7 +3836,7 @@ const InvoiceGeneratorTool = () => {
               <Printer className="size-4" /> Print / Save as PDF
             </PillButton>
             <CopyButton value={invoiceText()} label="Copy as text" />
-            <span className="text-xs text-muted-foreground">Printing hides everything except the invoice — pick “Save as PDF” as the destination.</span>
+            <span className="text-sm text-muted-foreground">Printing hides everything except the invoice — pick “Save as PDF” as the destination.</span>
           </div>
         </div>
       </div>
@@ -3883,33 +3883,33 @@ function QuoteDoc({ data }: { data: QuoteData }) {
       <div className="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-gray-800 to-gray-500 px-6 py-5 text-white sm:px-9">
         <div className="flex items-center gap-2.5">
           <Ticket className="size-5" aria-hidden />
-          <span className="font-display text-xl font-bold tracking-[0.14em]">QUOTATION</span>
+          <span className="font-display text-2xl font-bold tracking-[0.14em]">QUOTATION</span>
         </div>
-        <div className="text-right text-xs">
+        <div className="text-right text-sm">
           <p className="font-mono font-bold">{data.quoteNo || '—'}</p>
           <p className="opacity-90">Valid until {docDate(data.validUntil)}</p>
         </div>
       </div>
 
       <div className="p-6 sm:p-9">
-        {data.projectName.trim() ? <p className="font-display text-lg font-bold">{data.projectName}</p> : null}
+        {data.projectName.trim() ? <p className="font-display text-xl font-bold">{data.projectName}</p> : null}
 
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
           <div className="min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Prepared for</p>
-            <p className="mt-1 text-sm font-bold">{data.client.name || 'Client name'}</p>
-            <p className="mt-1 whitespace-pre-line text-xs leading-relaxed text-gray-500">{data.client.details}</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Prepared for</p>
+            <p className="mt-1 text-base font-bold">{data.client.name || 'Client name'}</p>
+            <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-gray-500">{data.client.details}</p>
           </div>
           <div className="sm:text-right">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Prepared by</p>
-            <p className="mt-1 text-sm font-bold">{data.business.name || 'Your business'}</p>
-            <p className="mt-1 whitespace-pre-line text-xs leading-relaxed text-gray-500">{data.business.details}</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Prepared by</p>
+            <p className="mt-1 text-base font-bold">{data.business.name || 'Your business'}</p>
+            <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-gray-500">{data.business.details}</p>
           </div>
         </div>
 
-        <table className="mt-6 w-full border-collapse text-xs">
+        <table className="mt-6 w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b-2 border-gray-200 text-left text-[10px] uppercase tracking-widest text-gray-400">
+            <tr className="border-b-2 border-gray-200 text-left text-xs uppercase tracking-widest text-gray-400">
               <th className="py-2 font-bold">Service</th>
               <th className="py-2 text-right font-bold">Basis</th>
               <th className="py-2 text-right font-bold">Amount</th>
@@ -3931,16 +3931,16 @@ function QuoteDoc({ data }: { data: QuoteData }) {
           </tbody>
         </table>
 
-        <div className="ml-auto mt-5 w-full max-w-60 space-y-1.5 text-xs">
+        <div className="ml-auto mt-5 w-full max-w-60 space-y-1.5 text-sm">
           <p className="flex justify-between"><span className="text-gray-500">Subtotal</span><span className="font-bold tabular-nums">{docMoney(data.currency, t.subtotal)}</span></p>
           <p className="flex justify-between"><span className="text-gray-500">Discount ({t.pct}%)</span><span className="font-bold tabular-nums text-gray-800">−{docMoney(data.currency, t.discount)}</span></p>
-          <p className="flex justify-between border-t-2 border-gray-800 pt-2 font-display text-base font-bold text-gray-800"><span>Total</span><span className="tabular-nums">{docMoney(data.currency, t.total)}</span></p>
+          <p className="flex justify-between border-t-2 border-gray-800 pt-2 font-display text-lg font-bold text-gray-800"><span>Total</span><span className="tabular-nums">{docMoney(data.currency, t.total)}</span></p>
         </div>
 
         {data.terms.trim() ? (
           <div className="mt-7 border-t border-gray-200 pt-4">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Terms</p>
-            <p className="mt-1 whitespace-pre-line text-xs leading-relaxed text-gray-600">{data.terms}</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-gray-400">Terms</p>
+            <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-gray-600">{data.terms}</p>
           </div>
         ) : null}
       </div>
@@ -4073,8 +4073,8 @@ const QuoteEstimateGeneratorTool = () => {
 
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <Label className="text-sm font-bold text-[#0a0a0a]">Service lines</Label>
-              <span className="text-xs font-bold text-gray-400">{lines.length} line{lines.length === 1 ? '' : 's'}</span>
+              <Label className="text-base font-bold text-[#0a0a0a]">Service lines</Label>
+              <span className="text-sm font-bold text-gray-400">{lines.length} line{lines.length === 1 ? '' : 's'}</span>
             </div>
             {lines.map((l, i) => {
               const total = quoteLineTotal(l);
@@ -4086,7 +4086,7 @@ const QuoteEstimateGeneratorTool = () => {
                       onChange={(e) => updateLine(l.id, { desc: e.target.value })}
                       placeholder={`Service ${i + 1} description`}
                       aria-label={`Service ${i + 1} description`}
-                      className="h-10 min-w-0 flex-1 rounded-lg border-gray-200 bg-white text-sm"
+                      className="h-10 min-w-0 flex-1 rounded-lg border-gray-200 bg-white text-base"
                     />
                     <button
                       type="button"
@@ -4107,7 +4107,7 @@ const QuoteEstimateGeneratorTool = () => {
                           onClick={() => updateLine(l.id, { mode: m })}
                           aria-pressed={l.mode === m}
                           className={cn(
-                            'px-3 py-1.5 text-[11px] font-bold transition-colors',
+                            'px-3 py-1.5 text-xs font-bold transition-colors',
                             l.mode === m ? 'bg-gray-800 text-white' : 'bg-white text-gray-600 hover:bg-gray-50',
                           )}
                         >
@@ -4121,15 +4121,15 @@ const QuoteEstimateGeneratorTool = () => {
                           type="number" inputMode="decimal" min="0" step="any" value={l.hours}
                           onChange={(e) => updateLine(l.id, { hours: e.target.value })}
                           aria-label={`Service ${i + 1} hours`}
-                          className="h-10 w-full min-w-0 rounded-lg border-gray-200 bg-white text-sm"
+                          className="h-10 w-full min-w-0 rounded-lg border-gray-200 bg-white text-base"
                         />
-                        <span className="text-xs font-bold text-gray-400">×</span>
+                        <span className="text-sm font-bold text-gray-400">×</span>
                         <Input
                           type="number" inputMode="decimal" min="0" step="any" value={l.rate}
                           onChange={(e) => updateLine(l.id, { rate: e.target.value })}
                           placeholder="rate"
                           aria-label={`Service ${i + 1} hourly rate`}
-                          className="h-10 w-full min-w-0 rounded-lg border-gray-200 bg-white text-sm"
+                          className="h-10 w-full min-w-0 rounded-lg border-gray-200 bg-white text-base"
                         />
                       </div>
                     ) : (
@@ -4138,10 +4138,10 @@ const QuoteEstimateGeneratorTool = () => {
                         onChange={(e) => updateLine(l.id, { amount: e.target.value })}
                         placeholder="Fixed amount"
                         aria-label={`Service ${i + 1} fixed amount`}
-                        className="h-10 min-w-0 flex-1 rounded-lg border-gray-200 bg-white text-sm"
+                        className="h-10 min-w-0 flex-1 rounded-lg border-gray-200 bg-white text-base"
                       />
                     )}
-                    <span className="ml-auto shrink-0 text-xs font-bold text-gray-800">= {docMoney(currency || '$', total)}</span>
+                    <span className="ml-auto shrink-0 text-sm font-bold text-gray-800">= {docMoney(currency || '$', total)}</span>
                   </div>
                 </div>
               );
@@ -4168,7 +4168,7 @@ const QuoteEstimateGeneratorTool = () => {
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <Frame className="size-4 text-gray-800" aria-hidden />
-            <Label className="text-sm font-bold text-[#0a0a0a]">Live quote preview</Label>
+            <Label className="text-base font-bold text-[#0a0a0a]">Live quote preview</Label>
           </div>
           <div className="custom-scrollbar overflow-x-auto rounded-2xl border border-gray-200 bg-gray-100 p-3 sm:p-5">
             <QuoteDoc data={data} />
@@ -4178,7 +4178,7 @@ const QuoteEstimateGeneratorTool = () => {
               <Printer className="size-4" /> Print / Save as PDF
             </PillButton>
             <CopyButton value={quoteText()} label="Copy as text" />
-            <span className="text-xs text-muted-foreground">The emerald header keeps estimates visually separate from invoices in the same email thread.</span>
+            <span className="text-sm text-muted-foreground">The emerald header keeps estimates visually separate from invoices in the same email thread.</span>
           </div>
         </div>
       </div>
@@ -4222,12 +4222,12 @@ const PushNotificationTesterTool = () => {
     <img src={iconUrl} alt="" className="size-10 rounded-xl object-cover" onError={() => setIconBroken(true)} />
   ) : (
     <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-gray-800 to-gray-500 text-white" aria-hidden="true">
-      {iconUrl ? <span className="text-sm font-bold">{initial}</span> : <Box className="size-5" />}
+      {iconUrl ? <span className="text-base font-bold">{initial}</span> : <Box className="size-5" />}
     </span>
   );
 
   const counterClass = (len: number, limit: number) =>
-    cn('text-right text-xs font-bold', len > limit ? 'text-gray-800' : 'text-gray-400');
+    cn('text-right text-sm font-bold', len > limit ? 'text-gray-800' : 'text-gray-400');
 
   const loadSample = () => {
     setTitle(PUSH_SAMPLE.title);
@@ -4259,7 +4259,7 @@ const PushNotificationTesterTool = () => {
               rows={4}
               placeholder="What happened, and why it matters…"
               aria-label="Notification body"
-              className="resize-y rounded-xl border-gray-200 bg-white text-sm text-[#0a0a0a] placeholder:text-gray-400"
+              className="resize-y rounded-xl border-gray-200 bg-white text-base text-[#0a0a0a] placeholder:text-gray-400"
             />
             <p className={counterClass(body.length, PUSH_BODY_LIMIT)}>{body.length} / {PUSH_BODY_LIMIT}</p>
           </FieldShell>
@@ -4279,7 +4279,7 @@ const PushNotificationTesterTool = () => {
                   type="button"
                   onClick={() => setTheme(t)}
                   aria-pressed={theme === t}
-                  className={cn('px-5 py-2 text-xs font-bold capitalize transition-colors', theme === t ? 'bg-[#0a0a0a] text-white' : 'bg-white text-[#0a0a0a] hover:bg-gray-100')}
+                  className={cn('px-5 py-2 text-sm font-bold capitalize transition-colors', theme === t ? 'bg-[#0a0a0a] text-white' : 'bg-white text-[#0a0a0a] hover:bg-gray-100')}
                 >
                   {t}
                 </button>
@@ -4292,47 +4292,47 @@ const PushNotificationTesterTool = () => {
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <LayoutGrid className="size-4 text-gray-800" aria-hidden />
-            <Label className="text-sm font-bold text-[#0a0a0a]">Three surfaces, one message</Label>
+            <Label className="text-base font-bold text-[#0a0a0a]">Three surfaces, one message</Label>
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
             {/* Android lockscreen */}
             <div className="flex flex-col gap-2">
-              <p className="flex items-center gap-1.5 text-xs font-bold text-gray-500"><Smartphone className="size-3.5" aria-hidden /> Android lockscreen</p>
+              <p className="flex items-center gap-1.5 text-sm font-bold text-gray-500"><Smartphone className="size-3.5" aria-hidden /> Android lockscreen</p>
               <div className={cn('flex min-h-72 flex-col rounded-3xl p-4 shadow-inner', wall)}>
-                <p className="text-center font-display text-4xl font-light tracking-wide text-white drop-shadow">10:08</p>
-                <p className="text-center text-xs font-semibold text-white/70">Mon, January 1</p>
+                <p className="text-center font-display text-5xl font-light tracking-wide text-white drop-shadow">10:08</p>
+                <p className="text-center text-sm font-semibold text-white/70">Mon, January 1</p>
                 <div className={cn('mt-auto rounded-3xl p-4', theme === 'dark' ? 'bg-[#1c1c1e]/95 text-white ring-1 ring-white/10' : 'bg-white/95 text-neutral-900 shadow-lg')}>
                   <div className="flex items-center gap-2">
                     {appIcon}
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-xs font-bold">{appName || 'Your App'}</p>
-                      <p className={cn('text-[10px]', theme === 'dark' ? 'text-white/60' : 'text-neutral-500')}>now · Alerts</p>
+                      <p className="truncate text-sm font-bold">{appName || 'Your App'}</p>
+                      <p className={cn('text-xs', theme === 'dark' ? 'text-white/60' : 'text-neutral-500')}>now · Alerts</p>
                     </div>
                   </div>
-                  {title.trim() ? <p className="mt-2 text-[15px] font-semibold leading-snug">{title}</p> : <p className="mt-2 text-[15px] font-semibold italic opacity-40">Title appears here</p>}
-                  {body.trim() ? <p className="mt-1 text-[13px] leading-relaxed opacity-90">{body}</p> : <p className="mt-1 text-[13px] italic opacity-40">Body appears here</p>}
+                  {title.trim() ? <p className="mt-2 text-base font-semibold leading-snug">{title}</p> : <p className="mt-2 text-base font-semibold italic opacity-40">Title appears here</p>}
+                  {body.trim() ? <p className="mt-1 text-sm leading-relaxed opacity-90">{body}</p> : <p className="mt-1 text-sm italic opacity-40">Body appears here</p>}
                 </div>
               </div>
             </div>
 
             {/* iOS banner */}
             <div className="flex flex-col gap-2">
-              <p className="flex items-center gap-1.5 text-xs font-bold text-gray-500"><Bell className="size-3.5" aria-hidden /> iOS banner</p>
+              <p className="flex items-center gap-1.5 text-sm font-bold text-gray-500"><Bell className="size-3.5" aria-hidden /> iOS banner</p>
               <div className={cn('flex min-h-72 flex-col rounded-3xl p-4 shadow-inner', wall)}>
                 <div className={cn('rounded-[22px] p-3 backdrop-blur-md', theme === 'dark' ? 'bg-[#2c2c2e]/90 text-white ring-1 ring-white/10' : 'bg-white/85 text-neutral-900 shadow-lg ring-1 ring-black/5')}>
                   <div className="flex items-start gap-2.5">
                     {appIcon}
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
-                        <p className="truncate text-[13px] font-bold">{title.trim() || 'Title appears here'}</p>
-                        <span className={cn('shrink-0 text-[10px]', theme === 'dark' ? 'text-white/60' : 'text-neutral-500')}>now</span>
+                        <p className="truncate text-sm font-bold">{title.trim() || 'Title appears here'}</p>
+                        <span className={cn('shrink-0 text-xs', theme === 'dark' ? 'text-white/60' : 'text-neutral-500')}>now</span>
                       </div>
-                      {body.trim() ? <p className="mt-0.5 line-clamp-2 text-xs leading-snug opacity-90">{body}</p> : <p className="mt-0.5 text-xs italic opacity-40">Body — clamps to two lines</p>}
+                      {body.trim() ? <p className="mt-0.5 line-clamp-2 text-sm leading-snug opacity-90">{body}</p> : <p className="mt-0.5 text-sm italic opacity-40">Body — clamps to two lines</p>}
                     </div>
                   </div>
                 </div>
-                <p className={cn('mt-3 text-center text-[10px] font-semibold', theme === 'dark' ? 'text-white/50' : 'text-neutral-600/70')}>
+                <p className={cn('mt-3 text-center text-xs font-semibold', theme === 'dark' ? 'text-white/50' : 'text-neutral-600/70')}>
                   Long-press to expand — banners clamp at ~2 lines
                 </p>
               </div>
@@ -4340,17 +4340,17 @@ const PushNotificationTesterTool = () => {
 
             {/* Desktop Chrome */}
             <div className="flex flex-col gap-2">
-              <p className="flex items-center gap-1.5 text-xs font-bold text-gray-500"><MousePointer2 className="size-3.5" aria-hidden /> Desktop Chrome</p>
+              <p className="flex items-center gap-1.5 text-sm font-bold text-gray-500"><MousePointer2 className="size-3.5" aria-hidden /> Desktop Chrome</p>
               <div className={cn('flex min-h-72 items-center rounded-3xl p-4 shadow-inner', wall)}>
                 <div className={cn('w-full rounded-xl p-3.5', theme === 'dark' ? 'bg-[#202020] text-white ring-1 ring-white/15' : 'bg-white text-neutral-900 shadow-2xl ring-1 ring-black/10')}>
                   <div className="flex items-start gap-3">
                     {appIcon}
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold">{title.trim() || 'Title appears here'}</p>
-                      {body.trim() ? <p className="mt-0.5 line-clamp-3 text-xs leading-snug opacity-85">{body}</p> : <p className="mt-0.5 text-xs italic opacity-40">Body — clamps to three lines</p>}
+                      <p className="truncate text-base font-semibold">{title.trim() || 'Title appears here'}</p>
+                      {body.trim() ? <p className="mt-0.5 line-clamp-3 text-sm leading-snug opacity-85">{body}</p> : <p className="mt-0.5 text-sm italic opacity-40">Body — clamps to three lines</p>}
                     </div>
                   </div>
-                  <p className={cn('mt-2 text-[10px] font-semibold', theme === 'dark' ? 'text-white/50' : 'text-neutral-500')}>{(appName || 'Your App')} · via Chrome</p>
+                  <p className={cn('mt-2 text-xs font-semibold', theme === 'dark' ? 'text-white/50' : 'text-neutral-500')}>{(appName || 'Your App')} · via Chrome</p>
                 </div>
               </div>
             </div>

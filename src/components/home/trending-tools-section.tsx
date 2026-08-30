@@ -55,7 +55,7 @@ export function TrendingToolsSection() {
               Browse All 100 Tools
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
-            <p className="font-mono text-xs uppercase tracking-[0.14em] text-[#6f6e66]">
+            <p className="text-sm uppercase tracking-[0.14em] text-[#6f6e66]">
               No signup. No watermarks. No &ldquo;free trial&rdquo; that expires in 7 days.
             </p>
           </div>

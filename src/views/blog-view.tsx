@@ -36,11 +36,11 @@ function AuthorLine({ item, className }: { item: BlogListItem; className?: strin
   return (
     <span className={cn('flex items-center gap-2', className)}>
       <Avatar className="h-8 w-8 ring-2 ring-gray-100">
-        <AvatarFallback className="bg-gray-100 text-xs font-bold text-gray-800">
+        <AvatarFallback className="bg-gray-100 text-sm font-bold text-gray-800">
           {initials}
         </AvatarFallback>
       </Avatar>
-      <span className="text-xs font-medium text-foreground/80">{name}</span>
+      <span className="text-sm font-medium text-foreground/80">{name}</span>
     </span>
   );
 }
@@ -97,13 +97,13 @@ export function BlogView() {
         />
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'Blog' }]} />
-          <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-800">
+          <p className="mt-6 text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
             Insights &amp; guides
           </p>
-          <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
+          <h1 className="mt-4 text-balance text-5xl font-bold tracking-tight sm:text-6xl">
             The Developers3 <span className="text-gradient">Blog</span>
           </h1>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+          <p className="mt-4 text-lg leading-relaxed text-muted-foreground sm:text-xl">
             Practical guides on website costs, platforms, SEO, and app development — written by the
             people who build and ship for a living.
           </p>
@@ -120,7 +120,7 @@ export function BlogView() {
                 onClick={() => selectCategory('all')}
                 aria-pressed={category === 'all'}
                 className={cn(
-                  'inline-flex min-h-11 items-center rounded-full px-5 text-sm font-medium transition-all',
+                  'inline-flex min-h-11 items-center rounded-full px-5 text-base font-medium transition-all',
                   category === 'all'
                     ? 'bg-gradient-to-r from-gray-800 to-gray-500 text-white shadow-[0_8px_20px_-8px_rgb(0_0_0/0.65)]'
                     : 'bg-white text-foreground ring-1 ring-inset ring-gray-900/10 hover:bg-gray-100 hover:ring-gray-500/30'
@@ -135,7 +135,7 @@ export function BlogView() {
                   onClick={() => selectCategory(cat)}
                   aria-pressed={category === cat}
                   className={cn(
-                    'inline-flex min-h-11 items-center rounded-full px-5 text-sm font-medium capitalize transition-all',
+                    'inline-flex min-h-11 items-center rounded-full px-5 text-base font-medium capitalize transition-all',
                     category === cat
                       ? 'bg-gradient-to-r from-gray-800 to-gray-500 text-white shadow-[0_8px_20px_-8px_rgb(0_0_0/0.65)]'
                       : 'bg-white text-foreground ring-1 ring-inset ring-gray-900/10 hover:bg-gray-100 hover:ring-gray-500/30'
@@ -172,41 +172,41 @@ export function BlogView() {
                     <Quote className="h-16 w-16 text-white/40" aria-hidden="true" />
                   </span>
                 </div>
-                <span className="absolute left-4 top-4 z-10 rounded-md bg-white px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-gray-800 shadow-sm">
+                <span className="absolute left-4 top-4 z-10 rounded-md bg-white px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-gray-800 shadow-sm">
                   {featured.category}
                 </span>
               </Link>
               <div className="flex flex-col gap-4 p-6 sm:p-8">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-gray-400 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0a0a0a]">
+                  <span className="rounded-full bg-gray-400 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#0a0a0a]">
                     Featured
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-800 ring-1 ring-inset ring-gray-800/15">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-800/15">
                     {featured.category}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-muted-foreground ring-1 ring-inset ring-gray-900/10">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-sm font-medium text-muted-foreground ring-1 ring-inset ring-gray-900/10">
                     <Clock className="h-3.5 w-3.5 text-gray-800" aria-hidden="true" />
                     {featured.readTime}
                   </span>
                 </div>
-                <h2 className="text-2xl font-bold text-balance sm:text-3xl">
+                <h2 className="text-3xl font-bold text-balance sm:text-4xl">
                   <Link href={`/blog/${featured.slug}`} className="transition-colors hover:text-gray-900">
                     {featured.title}
                   </Link>
                 </h2>
-                <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
                   {featured.excerpt}
                 </p>
                 <div className="flex flex-wrap items-center gap-3">
                   <AuthorLine item={featured} />
-                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
                     <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
                     {format(new Date(featured.date), 'MMMM d, yyyy')}
                   </span>
                 </div>
                 <Link
                   href={`/blog/${featured.slug}`}
-                  className="group/link mt-auto inline-flex min-h-11 w-fit items-center gap-2.5 text-sm font-semibold text-gray-800 transition-colors hover:text-gray-900"
+                  className="group/link mt-auto inline-flex min-h-11 w-fit items-center gap-2.5 text-base font-semibold text-gray-800 transition-colors hover:text-gray-900"
                 >
                   Read article
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-800 transition-colors group-hover/link:bg-gray-800 group-hover/link:text-white">
@@ -240,13 +240,13 @@ export function BlogView() {
                         <Newspaper className="h-10 w-10 text-white/40" aria-hidden="true" />
                       </span>
                     </div>
-                    <span className="absolute left-3 top-3 z-10 rounded-md bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-800 shadow-sm">
+                    <span className="absolute left-3 top-3 z-10 rounded-md bg-white px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-gray-800 shadow-sm">
                       {post.category}
                     </span>
                   </div>
                 </Link>
                 <div className="flex flex-1 flex-col gap-3 p-6">
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     {format(new Date(post.date), 'MMM d, yyyy')} · {post.readTime}
                   </p>
                   <h3 className="line-clamp-2 font-semibold leading-snug">
@@ -254,13 +254,13 @@ export function BlogView() {
                       {post.title}
                     </Link>
                   </h3>
-                  <p className="line-clamp-2 text-sm text-muted-foreground">{post.excerpt}</p>
+                  <p className="line-clamp-2 text-base text-muted-foreground">{post.excerpt}</p>
                   <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-2">
                     <AuthorLine item={post} />
                     <Link
                       href={`/blog/${post.slug}`}
                       aria-label={`Read more: ${post.title}`}
-                      className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-gray-800 transition-colors hover:text-gray-900"
+                      className="inline-flex min-h-11 items-center gap-1.5 text-base font-semibold text-gray-800 transition-colors hover:text-gray-900"
                     >
                       Read more
                       <ArrowRight className="h-4 w-4" aria-hidden="true" />

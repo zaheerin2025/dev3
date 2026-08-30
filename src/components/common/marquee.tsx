@@ -3,24 +3,23 @@ import { cn } from '@/lib/utils';
 
 interface MarqueeProps {
   items: string[];
-  /** dark = ink band (only variant) */
+  /** kept for API compat — every variant renders the tangerine band */
   variant?: 'dark' | 'gradient';
   reverse?: boolean;
   speed?: 'normal' | 'slow';
-  /** indexes of items rendered brighter (dark variant) */
+  /** indexes of items rendered in ink (contrast pop on tangerine) */
   accentIndexes?: number[];
   className?: string;
 }
 
 /**
- * Infinite scrolling marquee strip used as a section separator — ink
- * band, serif display items, sparkle separators, hairline rules.
- * Content is duplicated exactly twice inside a w-max track that
- * translates -50%, producing a seamless loop.
+ * Infinite scrolling marquee strip used as a section separator — the
+ * full-bleed tangerine band: white grotesk items, ink accents, sparkle
+ * separators. Content is duplicated exactly twice inside a w-max track
+ * that translates -50%, producing a seamless loop (transform-only).
  */
 export function Marquee({
   items,
-  variant = 'dark',
   reverse = false,
   speed = 'normal',
   accentIndexes = [],
@@ -32,18 +31,13 @@ export function Marquee({
         <span key={`${item}-${i}`} className="flex items-center">
           <span
             className={cn(
-              'px-5 font-display text-lg font-medium tracking-[-0.01em] md:px-7 md:text-2xl',
-              variant === 'dark' && accentIndexes.includes(i) && 'italic text-white',
+              'px-5 font-display text-xl font-bold uppercase tracking-tight md:px-7 md:text-2xl',
+              accentIndexes.includes(i) && 'text-[#161613]',
             )}
           >
             {item}
           </span>
-          <Sparkle
-            className={cn(
-              'size-3.5 shrink-0 md:size-4',
-              variant === 'dark' ? 'fill-[#ff4d00] text-[#ff4d00]' : 'fill-white/60 text-white/60',
-            )}
-          />
+          <Sparkle className="size-4 shrink-0 fill-white text-white md:size-4.5" />
         </span>
       ))}
     </div>
@@ -52,8 +46,7 @@ export function Marquee({
   return (
     <div
       className={cn(
-        'marquee-hover-pause relative overflow-hidden border-y border-white/10 py-4 md:py-5',
-        'bg-[#131316] text-white',
+        'marquee-hover-pause relative overflow-hidden border-y border-[#D63E00] bg-[#FF4D00] py-4 text-white md:py-5',
         className,
       )}
     >

@@ -144,7 +144,7 @@ export function GeneratorTool({ config }: { config: GeneratorConfig }) {
       {/* Output */}
       <div className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0a0a0a]">
+          <p className="inline-flex items-center gap-1.5 text-base font-bold text-[#0a0a0a]">
             <Sparkle className="size-4 fill-gray-300 text-gray-300" />
             {config.outputLabel}
           </p>
@@ -165,7 +165,7 @@ export function GeneratorTool({ config }: { config: GeneratorConfig }) {
                 key={tKey}
                 type="button"
                 onClick={() => setTab(tKey)}
-                className={`rounded-full px-4 py-1.5 text-xs font-bold transition-colors ${
+                className={`rounded-full px-4 py-1.5 text-sm font-bold transition-colors ${
                   tab === tKey ? 'bg-[#0a0a0a] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >

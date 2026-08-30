@@ -19,9 +19,9 @@ interface CTABandProps {
 }
 
 /**
- * Call-to-action panel used before footers — flat ink canvas, hairline
- * frame, serif headline and paper pill. Solid colors only, zero paint
- * effects (no glows, no dot textures, no backdrop blur).
+ * Call-to-action panel used before footers — the full-bleed tangerine
+ * moment: solid brand color, oversized grotesk headline, paper pill.
+ * Solid colors only, zero paint effects.
  */
 export function CTABand({
   title = 'Start Your Project Today',
@@ -36,32 +36,32 @@ export function CTABand({
   return (
     <section className={cn('relative w-full px-4 pb-16 pt-4 sm:px-6 md:pb-24 lg:px-8', className)}>
       <div className="relative mx-auto max-w-7xl">
-        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#131316] px-6 py-16 text-center sm:px-12 md:py-20">
+        <div className="relative overflow-hidden rounded-3xl bg-[#FF4D00] px-6 py-16 text-center sm:px-12 md:py-24">
           <div className="relative flex flex-col items-center gap-7">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-white/70">
-              <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-green-500" aria-hidden="true" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/30 px-4 py-2 font-mono text-xs uppercase tracking-[0.18em] text-white">
+              <span className="h-2 w-2 animate-pulse-dot rounded-full bg-white" aria-hidden="true" />
               Free consultation
             </span>
-            <h2 className="max-w-3xl text-balance font-display text-3xl font-medium leading-[1.1] tracking-[-0.01em] text-white sm:text-4xl lg:text-5xl">
+            <h2 className="max-w-3xl text-balance font-display text-4xl font-bold leading-[1.05] tracking-[-0.025em] text-white sm:text-5xl lg:text-6xl">
               {title}
             </h2>
-            <p className="max-w-2xl text-base leading-relaxed text-white/60 sm:text-lg">{description}</p>
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+            <p className="max-w-2xl text-lg leading-relaxed text-white/85 sm:text-xl">{description}</p>
+            <div className="flex flex-wrap items-center justify-center gap-3.5 pt-1">
               <Button
                 size="lg"
-                className="h-12 rounded-full bg-[#fafaf7] px-7 text-[#161613] shadow-none hover:bg-white"
+                className="h-14 rounded-full bg-white px-9 text-base font-bold text-[#161613] shadow-none hover:bg-[#161613] hover:text-white"
                 asChild
                 onClick={() => trackEvent('cta_click', { location: 'cta_band', target: primaryHref })}
               >
                 <Link href={primaryHref}>
                   {primaryLabel}
-                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
+                  <ArrowRight className="ml-1.5 h-5 w-5" aria-hidden="true" />
                 </Link>
               </Button>
               {secondaryHref ? (
                 <Button
                   size="lg"
-                  className="h-12 rounded-full border border-white/25 bg-transparent px-7 text-white shadow-none hover:bg-white/10"
+                  className="h-14 rounded-full border-2 border-white/60 bg-transparent px-9 text-base font-bold text-white shadow-none hover:border-white hover:bg-white/10"
                   variant="ghost"
                   asChild
                 >
@@ -71,7 +71,7 @@ export function CTABand({
               {showWhatsapp ? (
                 <Button
                   size="lg"
-                  className="h-12 rounded-full border border-white/25 bg-transparent px-7 text-white shadow-none hover:bg-white/10"
+                  className="h-14 rounded-full border-2 border-white/60 bg-transparent px-9 text-base font-bold text-white shadow-none hover:border-white hover:bg-white/10"
                   variant="ghost"
                   asChild
                 >
@@ -81,7 +81,7 @@ export function CTABand({
                     rel="noopener noreferrer"
                     onClick={() => trackEvent('whatsapp_click', { location: 'cta_band' })}
                   >
-                    <MessageCircle className="mr-1 h-4 w-4" aria-hidden="true" />
+                    <MessageCircle className="mr-1.5 h-5 w-5" aria-hidden="true" />
                     WhatsApp Us
                   </a>
                 </Button>

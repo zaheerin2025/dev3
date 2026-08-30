@@ -48,16 +48,16 @@ export function VideoSection() {
       <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-start gap-4">
           <p className="eyebrow inline-flex items-center gap-2.5">
-            <span className="size-1.5 rounded-full bg-[#ff4d00]" aria-hidden="true" />
+            <span className="size-2 rounded-full bg-[#FF4D00]" aria-hidden="true" />
             Latest Video
           </p>
           <Editable id="video.title">
             <h2
               id="latest-video-heading"
-              className="text-balance font-display text-3xl font-medium tracking-[-0.01em] text-[#161613] sm:text-4xl lg:text-5xl"
+              className="text-balance font-display text-4xl font-bold tracking-[-0.025em] text-[#161613] sm:text-5xl"
             >
               {head ? `${head} ` : ''}
-              <em className="italic">{tail}</em>
+              <em className="not-italic text-[#FF4D00]">{tail}</em>
             </h2>
           </Editable>
         </div>

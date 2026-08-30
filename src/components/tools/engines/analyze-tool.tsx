@@ -42,13 +42,13 @@ export function AnalyzeTool({ config }: { config: AnalyzeToolConfig }) {
       <div className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           {config.inputLabel ? (
-            <p className="text-sm font-bold text-[#0a0a0a]">{config.inputLabel}</p>
+            <p className="text-base font-bold text-[#0a0a0a]">{config.inputLabel}</p>
           ) : <span />}
           {config.sample ? (
             <button
               type="button"
               onClick={() => setText(config.sample!)}
-              className="rounded-full border-2 border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 transition-colors hover:border-zinc-200 hover:text-[#0a0a0a]"
+              className="rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-bold text-gray-600 transition-colors hover:border-zinc-200 hover:text-[#0a0a0a]"
             >
               Load sample
             </button>
@@ -69,9 +69,9 @@ export function AnalyzeTool({ config }: { config: AnalyzeToolConfig }) {
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {result.stats.map((s) => (
                 <div key={s.label} className="card-soft p-4 text-center">
-                  <p className="font-display text-2xl font-bold">{s.value}</p>
-                  <p className="mt-1 text-xs font-bold uppercase tracking-wide text-gray-500">{s.label}</p>
-                  {s.hint ? <p className="mt-1 text-[11px] text-muted-foreground">{s.hint}</p> : null}
+                  <p className="font-display text-3xl font-bold">{s.value}</p>
+                  <p className="mt-1 text-sm font-bold uppercase tracking-wide text-gray-500">{s.label}</p>
+                  {s.hint ? <p className="mt-1 text-xs text-muted-foreground">{s.hint}</p> : null}
                 </div>
               ))}
             </div>
@@ -81,11 +81,11 @@ export function AnalyzeTool({ config }: { config: AnalyzeToolConfig }) {
 
           {result.table ? (
             <div className="custom-scrollbar overflow-x-auto rounded-2xl border border-gray-200">
-              <table className="w-full min-w-[480px] text-left text-sm">
+              <table className="w-full min-w-[480px] text-left text-base">
                 <thead>
                   <tr className="bg-[#0a0a0a] text-white">
                     {result.table.head.map((h) => (
-                      <th key={h} className="px-4 py-3 text-xs font-bold uppercase tracking-wide">{h}</th>
+                      <th key={h} className="px-4 py-3 text-sm font-bold uppercase tracking-wide">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -103,7 +103,7 @@ export function AnalyzeTool({ config }: { config: AnalyzeToolConfig }) {
           ) : null}
 
           {result.note ? (
-            <p className="rounded-xl bg-gray-100 px-4 py-3 text-xs leading-relaxed text-gray-900">{result.note}</p>
+            <p className="rounded-xl bg-gray-100 px-4 py-3 text-sm leading-relaxed text-gray-900">{result.note}</p>
           ) : null}
         </div>
       ) : null}

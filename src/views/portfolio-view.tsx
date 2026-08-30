@@ -51,17 +51,17 @@ function WebsiteGrid({ items }: { items: PortfolioItem[] }) {
                   className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
                 />
               ) : (
-                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+                <div className="flex h-full items-center justify-center text-base text-muted-foreground">
                   {item.category}
                 </div>
               )}
             </div>
             <div className="flex flex-1 flex-col p-6">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-800">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-800">
                 {item.category}
               </p>
-              <h3 className="mt-2 text-lg font-bold leading-snug">{item.title}</h3>
-              <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+              <h3 className="mt-2 text-xl font-bold leading-snug">{item.title}</h3>
+              <p className="mt-2 line-clamp-3 text-base leading-relaxed text-muted-foreground">
                 {item.description}
               </p>
               <div className="mt-auto pt-5">
@@ -70,7 +70,7 @@ function WebsiteGrid({ items }: { items: PortfolioItem[] }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackEvent('portfolio_visit', { title: item.title })}
-                  className="inline-flex min-h-[44px] items-center gap-1.5 text-sm font-bold text-gray-800 transition-colors hover:text-gray-900"
+                  className="inline-flex min-h-[44px] items-center gap-1.5 text-base font-bold text-gray-800 transition-colors hover:text-gray-900"
                 >
                   Visit website
                   <ExternalLink className="h-4 w-4" aria-hidden="true" />
@@ -148,13 +148,13 @@ export function PortfolioView() {
         />
         <Reveal className="relative mx-auto max-w-3xl text-center">
           <div className="flex flex-col items-center gap-5">
-            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-800">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
               Featured Work
             </p>
-            <h1 className="text-balance text-4xl font-bold tracking-tight sm:text-5xl">
+            <h1 className="text-balance text-5xl font-bold tracking-tight sm:text-6xl">
               Our <span className="text-gradient">Portfolio</span>
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-xl text-muted-foreground">
               Real projects for real clients — live websites you can visit right now, plus case
               studies with measurable results and the full story behind them.
             </p>
@@ -175,7 +175,7 @@ export function PortfolioView() {
 
         {/* Case studies filter bar */}
         <div className="relative mt-16 flex flex-col items-center gap-4">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-gray-800">
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
             Case Studies
           </p>
           <div
@@ -195,21 +195,21 @@ export function PortfolioView() {
                     trackEvent('portfolio_filter', { category: filter.value });
                   }}
                   className={cn(
-                    'inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                    'inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-full px-4 py-2 text-base font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     isActive
                       ? 'bg-gradient-to-br from-gray-800 to-gray-500 text-white shadow-[0_8px_20px_-8px_rgb(0_0_0/0.65)] hover:from-gray-500 hover:to-gray-500'
                       : 'bg-white text-foreground/70 ring-1 ring-inset ring-gray-900/10 hover:text-gray-900 hover:ring-gray-500/30'
                   )}
                 >
                   {filter.label}
-                  <span className={cn('text-xs', isActive ? 'opacity-80' : 'opacity-60')}>
+                  <span className={cn('text-sm', isActive ? 'opacity-80' : 'opacity-60')}>
                     {counts[filter.value]}
                   </span>
                 </button>
               );
             })}
           </div>
-          <p className="text-sm text-muted-foreground" aria-live="polite">
+          <p className="text-base text-muted-foreground" aria-live="polite">
             Showing {filtered.length} {filtered.length === 1 ? 'project' : 'projects'}
           </p>
         </div>

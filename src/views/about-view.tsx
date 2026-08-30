@@ -27,13 +27,13 @@ export function AboutView() {
         <div className="relative mx-auto max-w-3xl">
           <Breadcrumbs items={[{ label: 'About Us' }]} />
           <Reveal className="mt-6">
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-800">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-gray-800">
               About us
             </p>
-            <h1 className="text-4xl font-bold text-balance sm:text-5xl lg:text-[3.25rem] lg:leading-[1.12]">
+            <h1 className="text-5xl font-bold text-balance sm:text-6xl lg:text-[3.25rem] lg:leading-[1.12]">
               About <span className="text-gradient">Developers3</span>
             </h1>
-            <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className="mt-5 text-lg leading-relaxed text-muted-foreground sm:text-xl">
               A senior-only web, app &amp; software studio — with one rule: treat
               every client&rsquo;s business like our own.
             </p>
@@ -55,8 +55,8 @@ export function AboutView() {
                   key={index}
                   className={
                     index === 0
-                      ? 'text-base/relaxed text-foreground/85 first-letter:float-left first-letter:mr-3 first-letter:font-display first-letter:text-6xl first-letter:font-bold first-letter:leading-[0.85] first-letter:text-gray-800 sm:text-[17px] sm:leading-8'
-                      : 'text-base/relaxed text-muted-foreground sm:text-[17px] sm:leading-8'
+                      ? 'text-lg/relaxed text-foreground/85 first-letter:float-left first-letter:mr-3 first-letter:font-display first-letter:text-7xl first-letter:font-bold first-letter:leading-[0.85] first-letter:text-gray-800 sm:text-[17px] sm:leading-8'
+                      : 'text-lg/relaxed text-muted-foreground sm:text-[17px] sm:leading-8'
                   }
                 >
                   {paragraph}
@@ -78,10 +78,10 @@ export function AboutView() {
                 <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 text-white ring-1 ring-inset ring-white/25">
                   <Quote className="h-5 w-5" aria-hidden="true" />
                 </span>
-                <h2 className="text-sm font-semibold uppercase tracking-widest text-gray-100">
+                <h2 className="text-base font-semibold uppercase tracking-widest text-gray-100">
                   Our mission
                 </h2>
-                <p className="text-lg font-medium leading-relaxed">
+                <p className="text-xl font-medium leading-relaxed">
                   Make agency-quality digital products accessible to every serious small business —
                   with transparent pricing, senior craft, and results you can measure.
                 </p>
@@ -108,7 +108,7 @@ export function AboutView() {
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
                   <h3 className="font-semibold">{value.title}</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
+                  <p className="text-base leading-relaxed text-muted-foreground">
                     {value.description}
                   </p>
                 </div>

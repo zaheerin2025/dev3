@@ -59,7 +59,7 @@ export function CopyButton({ value, className, label = 'Copy' }: { value: string
       onClick={() => copy(value)}
       disabled={!value}
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border-2 border-zinc-200 bg-white px-4 py-2 text-xs font-bold text-[#0a0a0a] transition-all hover:bg-[#0a0a0a] hover:text-white disabled:opacity-40',
+        'inline-flex items-center gap-1.5 rounded-full border-2 border-zinc-200 bg-white px-4 py-2 text-sm font-bold text-[#0a0a0a] transition-all hover:bg-[#0a0a0a] hover:text-white disabled:opacity-40',
         className
       )}
     >
@@ -80,7 +80,7 @@ export function DownloadButton({
       onClick={() => downloadText(filename, content, mime)}
       disabled={!content}
       className={cn(
-        'btn-primary-pill-sm !px-4 !py-2 !text-xs',
+        'btn-primary-pill-sm !px-4 !py-2 !text-sm',
         className
       )}
     >
@@ -95,9 +95,9 @@ export function DownloadButton({
 export function FieldShell({ label, help, children, className }: { label: string; help?: string; children: React.ReactNode; className?: string }) {
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      <Label className="text-sm font-bold text-[#0a0a0a]">{label}</Label>
+      <Label className="text-base font-bold text-[#0a0a0a]">{label}</Label>
       {children}
-      {help ? <p className="text-xs text-muted-foreground">{help}</p> : null}
+      {help ? <p className="text-sm text-muted-foreground">{help}</p> : null}
     </div>
   );
 }
@@ -136,7 +136,7 @@ export function NumberInput({ label, value, onChange, placeholder, min, max, ste
           className="h-11 rounded-xl border-gray-200 bg-white pr-14 text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
         />
         {suffix ? (
-          <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">{suffix}</span>
+          <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">{suffix}</span>
         ) : null}
       </div>
     </FieldShell>
@@ -169,8 +169,8 @@ export function ToggleInput({ label, checked, onChange, help, className }: {
   return (
     <div className={cn('flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white px-4 py-3', className)}>
       <div>
-        <Label className="text-sm font-bold text-[#0a0a0a]">{label}</Label>
-        {help ? <p className="mt-0.5 text-xs text-muted-foreground">{help}</p> : null}
+        <Label className="text-base font-bold text-[#0a0a0a]">{label}</Label>
+        {help ? <p className="mt-0.5 text-sm text-muted-foreground">{help}</p> : null}
       </div>
       <Switch checked={checked} onCheckedChange={onChange} />
     </div>
@@ -187,7 +187,7 @@ export function TextAreaInput({ label, value, onChange, placeholder, rows = 6, h
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={rows}
-        className="resize-y rounded-xl border-gray-200 bg-white font-mono text-[13px] leading-relaxed text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
+        className="resize-y rounded-xl border-gray-200 bg-white font-mono text-sm leading-relaxed text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
       />
     </FieldShell>
   );
@@ -199,7 +199,7 @@ export function OutputBox({ value, language = 'text', scroll }: { value: string;
   return (
     <pre
       className={cn(
-        'custom-scrollbar overflow-auto rounded-xl border border-gray-200 bg-[#0a0a0a] p-4 font-mono text-[13px] leading-relaxed text-gray-100',
+        'custom-scrollbar overflow-auto rounded-xl border border-gray-200 bg-[#0a0a0a] p-4 font-mono text-sm leading-relaxed text-gray-100',
         scroll && 'max-h-[460px]'
       )}
     >
@@ -216,9 +216,9 @@ export function StatCard({ label, value, hint, tone = 'default' }: {
     tone === 'good' ? 'text-gray-800' : tone === 'warn' ? 'text-gray-800' : tone === 'bad' ? 'text-gray-800' : 'text-gradient';
   return (
     <div className="card-soft p-4 text-center sm:p-5">
-      <p className="font-display text-2xl font-bold sm:text-3xl"><span className={toneClass}>{value}</span></p>
-      <p className="mt-1 text-xs font-bold uppercase tracking-wide text-gray-500">{label}</p>
-      {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
+      <p className="font-display text-3xl font-bold sm:text-4xl"><span className={toneClass}>{value}</span></p>
+      <p className="mt-1 text-sm font-bold uppercase tracking-wide text-gray-500">{label}</p>
+      {hint ? <p className="mt-1 text-sm text-muted-foreground">{hint}</p> : null}
     </div>
   );
 }
@@ -232,15 +232,15 @@ export function Verdict({ tone, title, message }: { tone: 'good' | 'warn' | 'bad
         : 'border-gray-200 bg-gray-100 text-gray-900';
   return (
     <div className={cn('rounded-2xl border-2 p-4 sm:p-5', styles)} role="status">
-      <p className="font-display text-lg font-bold">{title}</p>
-      <p className="mt-1 text-sm leading-relaxed opacity-90">{message}</p>
+      <p className="font-display text-xl font-bold">{title}</p>
+      <p className="mt-1 text-base leading-relaxed opacity-90">{message}</p>
     </div>
   );
 }
 
 export function ToolNote({ children }: { children: React.ReactNode }) {
   return (
-    <p className="rounded-xl bg-gray-100 px-4 py-3 text-xs leading-relaxed text-gray-900">
+    <p className="rounded-xl bg-gray-100 px-4 py-3 text-sm leading-relaxed text-gray-900">
       {children}
     </p>
   );

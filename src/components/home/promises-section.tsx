@@ -4,6 +4,8 @@ import { CalendarCheck2, MessageSquareText, ShieldCheck } from 'lucide-react';
 import { SectionHeading } from '@/components/common/section-heading';
 import { Reveal } from '@/components/common/reveal';
 import { Sticker } from '@/components/common/sticker';
+import { ACCENT_DOT, ACCENT_TILE } from '@/lib/accent';
+import { cn } from '@/lib/utils';
 
 /**
  * Working principles — replaces the old testimonials band. Every claim
@@ -32,12 +34,12 @@ const PROMISES = [
 ];
 
 /**
- * HOW WE WORK — tinted paper band, three promise cards with ink icon
- * tiles; the middle card carries the in-writing sticker on an ink rule.
+ * HOW WE WORK — tinted band, three promise cards with ramp-colored icon
+ * tiles; the middle card carries the ink "In writing" sticker.
  */
 export function PromisesSection() {
   return (
-    <section id="how-we-work" className="section-tint py-20 md:py-24">
+    <section id="how-we-work" className="section-tint py-20 md:py-28">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="How We Work"
@@ -45,22 +47,27 @@ export function PromisesSection() {
           description="Instead of cherry-picked quotes, here is exactly what working with us is like — the same rules on every project, small or large."
         />
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-3">
           {PROMISES.map((promise, i) => (
             <Reveal key={promise.title} delay={i * 90} className="h-full">
               <article className="card-soft relative flex h-full flex-col p-8">
                 {i === 1 && (
-                  <Sticker className="absolute -top-3 right-6 bg-[#161613] text-[#fafaf7]">
+                  <Sticker className="sticker-ink absolute -top-3 right-6 border-[#161613]">
                     In writing
                   </Sticker>
                 )}
-                <span className="icon-tile size-11">
-                  <promise.icon className="size-5" aria-hidden="true" />
+                <span
+                  className={cn(
+                    'flex size-12 items-center justify-center rounded-xl',
+                    ACCENT_TILE[i % ACCENT_TILE.length],
+                  )}
+                >
+                  <promise.icon className="size-5.5" aria-hidden="true" />
                 </span>
-                <h3 className="mt-6 font-display text-2xl font-medium text-[#161613]">{promise.title}</h3>
-                <p className="mt-3 leading-relaxed text-[#6f6e66]">{promise.body}</p>
-                <p className="mt-auto inline-flex items-center gap-2 pt-6 font-mono text-xs uppercase tracking-[0.14em] text-[#6f6e66]">
-                  <span className="size-1 rounded-full bg-[#ff4d00]" aria-hidden="true" />
+                <h3 className="mt-7 font-display text-2xl font-semibold tracking-tight text-[#161613]">{promise.title}</h3>
+                <p className="mt-3 text-[15px] leading-relaxed text-[#6f6e66] md:text-base">{promise.body}</p>
+                <p className="mt-auto inline-flex items-center gap-2.5 pt-7 font-mono text-xs uppercase tracking-[0.14em] text-[#6f6e66]">
+                  <span className={cn('size-2 rounded-full', ACCENT_DOT[i % ACCENT_DOT.length])} aria-hidden="true" />
                   {promise.sticker}
                 </p>
               </article>

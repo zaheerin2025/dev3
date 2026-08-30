@@ -39,15 +39,16 @@ export function FAQSection({ faqs, title = 'Frequently Asked Questions', descrip
         key={index}
         value={faq.question}
         className={cn(
-          'mb-3 rounded-xl border px-5 transition-colors',
+          'mb-3 rounded-2xl border px-6 transition-colors',
           dark
-            ? 'border-white/10 bg-white/[0.03] data-[state=open]:border-white/30'
-            : 'border-[#e6e5de] bg-white data-[state=open]:border-[#161613]'
+            ? 'border-white/10 bg-white/[0.03] data-[state=open]:border-[#FFB020]'
+            : 'border-[#e6e5de] bg-white data-[state=open]:border-[#FF4D00]'
         )}
       >
         <AccordionTrigger
           className={cn(
-            'text-left font-display text-lg font-medium hover:no-underline',
+            'py-5 text-left font-display text-xl font-semibold tracking-tight hover:no-underline md:text-2xl',
+            '[&[data-state=open]>svg]:text-[#FF4D00]',
             dark ? 'text-white hover:text-white' : 'text-[#161613] hover:text-[#161613]'
           )}
         >
@@ -55,7 +56,7 @@ export function FAQSection({ faqs, title = 'Frequently Asked Questions', descrip
         </AccordionTrigger>
         <AccordionContent
           className={cn(
-            'text-[15px] leading-relaxed',
+            'text-base leading-relaxed md:text-lg',
             dark ? 'text-white/60' : 'text-[#6f6e66]'
           )}
         >
@@ -74,9 +75,9 @@ export function FAQSection({ faqs, title = 'Frequently Asked Questions', descrip
       <JsonLd data={buildFaqPageSchema(faqs)} />
       {title ? (
         <Reveal className="mb-10 text-center">
-          <h2 className={cn('font-display text-3xl font-medium tracking-[-0.01em] sm:text-4xl', dark ? 'text-white' : 'text-[#161613]')}>{title}</h2>
+          <h2 className={cn('font-display text-4xl font-bold tracking-[-0.025em] sm:text-5xl', dark ? 'text-white' : 'text-[#161613]')}>{title}</h2>
           {description ? (
-            <p className={cn('mt-3 text-[#6f6e66]', dark && 'text-white/60')}>{description}</p>
+            <p className={cn('mt-4 text-lg text-[#6f6e66]', dark && 'text-white/60')}>{description}</p>
           ) : null}
         </Reveal>
       ) : null}

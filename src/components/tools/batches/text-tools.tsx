@@ -1555,13 +1555,13 @@ const RegexTesterTool = () => {
       />
 
       {error !== '' ? (
-        <p className="rounded-xl bg-gray-100 px-4 py-3 text-xs font-bold text-gray-800">Invalid pattern — {error}</p>
+        <p className="rounded-xl bg-gray-100 px-4 py-3 text-sm font-bold text-gray-800">Invalid pattern — {error}</p>
       ) : null}
 
       {!error && test.trim() !== '' ? (
         <div className="flex flex-col gap-2">
-          <p className="text-sm font-bold text-[#0a0a0a]">Highlighted test string</p>
-          <pre className="custom-scrollbar max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-gray-200 bg-white p-4 font-mono text-[13px] leading-relaxed text-[#0a0a0a]">
+          <p className="text-base font-bold text-[#0a0a0a]">Highlighted test string</p>
+          <pre className="custom-scrollbar max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-gray-200 bg-white p-4 font-mono text-sm leading-relaxed text-[#0a0a0a]">
             {highlighted}
           </pre>
         </div>
@@ -1570,12 +1570,12 @@ const RegexTesterTool = () => {
       {!error && matches.length > 0 ? (
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-bold text-[#0a0a0a]">Matches ({matches.length.toLocaleString()})</p>
-            {matches.length > 100 ? <p className="text-xs text-muted-foreground">Showing the first 100</p> : null}
+            <p className="text-base font-bold text-[#0a0a0a]">Matches ({matches.length.toLocaleString()})</p>
+            {matches.length > 100 ? <p className="text-sm text-muted-foreground">Showing the first 100</p> : null}
           </div>
           <div className="custom-scrollbar max-h-72 overflow-auto rounded-xl border border-gray-200">
             {shown.map((m, i) => (
-              <div key={i} className="border-b border-gray-100 px-4 py-2.5 font-mono text-xs text-[#374151] last:border-b-0">
+              <div key={i} className="border-b border-gray-100 px-4 py-2.5 font-mono text-sm text-[#374151] last:border-b-0">
                 <span className="mr-2 font-bold text-gray-800">#{i + 1}</span>
                 <span className="mr-2 text-gray-400">@ {m.index}</span>
                 <span className="font-bold">“{m.text.length > 80 ? m.text.slice(0, 77) + '…' : m.text}”</span>
@@ -1591,7 +1591,7 @@ const RegexTesterTool = () => {
       ) : null}
 
       {!error && test.trim() !== '' && matches.length === 0 ? (
-        <p className="rounded-xl bg-gray-100 px-4 py-3 text-xs font-bold text-gray-800">No matches — adjust the pattern or add the /i flag.</p>
+        <p className="rounded-xl bg-gray-100 px-4 py-3 text-sm font-bold text-gray-800">No matches — adjust the pattern or add the /i flag.</p>
       ) : null}
 
       <ToolNote>
@@ -1710,7 +1710,7 @@ const DiffCheckerTool = () => {
         <Verdict tone="good" title="No differences" message="Both versions match exactly under the current comparison settings." />
       ) : (
         <div className="custom-scrollbar overflow-x-auto rounded-2xl border border-gray-200 bg-white">
-          <div className="min-w-[520px] font-mono text-[13px] leading-relaxed">
+          <div className="min-w-[520px] font-mono text-sm leading-relaxed">
             {rows.map((r, i) => (
               <div
                 key={i}
@@ -1896,7 +1896,7 @@ const EmojiPickerTool = () => {
           help="Each niche gets hand-picked sets — no generic emoji walls."
         />
         <div className="flex items-end">
-          <p className="text-xs leading-relaxed text-muted-foreground" aria-live="polite">
+          <p className="text-sm leading-relaxed text-muted-foreground" aria-live="polite">
             {lastCopied !== '' ? (
               <span className="font-bold text-gray-800">Copied! {lastCopied} is on your clipboard.</span>
             ) : (
@@ -1908,7 +1908,7 @@ const EmojiPickerTool = () => {
 
       {data.groups.map((group) => (
         <div key={group.g} className="flex flex-col gap-2.5">
-          <p className="text-xs font-bold uppercase tracking-wide text-gray-500">{group.g}</p>
+          <p className="text-sm font-bold uppercase tracking-wide text-gray-500">{group.g}</p>
           <div className="flex flex-wrap gap-2">
             {group.e.map((emoji) => (
               <button
@@ -1917,7 +1917,7 @@ const EmojiPickerTool = () => {
                 onClick={() => grab(emoji)}
                 title={'Copy ' + emoji}
                 className={
-                  'flex size-13 items-center justify-center rounded-2xl border-2 text-2xl transition-all hover:-translate-y-0.5 hover:border-zinc-200 ' +
+                  'flex size-13 items-center justify-center rounded-2xl border-2 text-3xl transition-all hover:-translate-y-0.5 hover:border-zinc-200 ' +
                   (lastCopied === emoji ? 'border-gray-500 bg-gray-100' : 'border-gray-200 bg-white')
                 }
               >
@@ -1929,13 +1929,13 @@ const EmojiPickerTool = () => {
       ))}
 
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Combo suggestions</p>
+        <p className="text-sm font-bold uppercase tracking-wide text-gray-500">Combo suggestions</p>
         {data.combos.map((combo) => {
           const [emojis, meaning] = combo.split(' — ');
           return (
             <div key={combo} className="flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
-              <p className="text-sm text-[#374151]">
-                <span className="mr-2 text-lg">{emojis}</span>
+              <p className="text-base text-[#374151]">
+                <span className="mr-2 text-xl">{emojis}</span>
                 {meaning ? <span className="text-gray-500">— {meaning}</span> : null}
               </p>
               <CopyButton value={emojis ?? combo} label="Copy combo" />
@@ -1996,11 +1996,11 @@ const ReadingTimeTool = () => {
 
       <div className="grid gap-4 lg:grid-cols-4">
         <div className="card-soft flex flex-col items-center justify-center p-6 text-center lg:p-8">
-          <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Estimated read</p>
-          <p className="font-display mt-2 text-5xl font-bold">
+          <p className="text-sm font-bold uppercase tracking-wide text-gray-500">Estimated read</p>
+          <p className="font-display mt-2 text-6xl font-bold">
             <span className="text-gradient">{wordCount > 0 ? fmtDuration(seconds) : '—'}</span>
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">at {wpm} words per minute</p>
+          <p className="mt-2 text-base text-muted-foreground">at {wpm} words per minute</p>
         </div>
         <StatCard label="Words counted" value={wordCount.toLocaleString()} hint={pastedWords > 0 ? 'from pasted text' : 'manual entry'} />
         <StatCard

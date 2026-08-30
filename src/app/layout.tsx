@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -16,11 +16,10 @@ const inter = Inter({
   display: "swap",
 });
 
-/* Editorial serif display — variable weight incl. italics, self-hosted. */
-const fraunces = Fraunces({
+/* POP display face — geometric grotesk for big, sleek headlines. */
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  style: ["normal", "italic"],
-  variable: "--font-fraunces",
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -101,7 +100,7 @@ export default function RootLayout({
 const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? 'ca-pub-1264514278457797';
 
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         {children}
         <Toaster />

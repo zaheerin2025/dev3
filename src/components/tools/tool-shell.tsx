@@ -31,7 +31,7 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
         </div>
         <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
           {/* Breadcrumb */}
-          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-xs font-semibold text-gray-500">
+          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-sm font-semibold text-gray-500">
             <Link href="/" className="transition-colors hover:text-[#0a0a0a]">Home</Link>
             <ChevronRight className="size-3" aria-hidden="true" />
             <Link href="/tools" className="transition-colors hover:text-[#0a0a0a]">Tools</Link>
@@ -43,10 +43,10 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
 
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <Sticker>✦ 100% Free</Sticker>
-            <span className={`rounded-full px-3.5 py-1.5 text-xs font-bold ${category.pill}`}>{category.label}</span>
+            <span className={`rounded-full px-3.5 py-1.5 text-sm font-bold ${category.pill}`}>{category.label}</span>
           </div>
 
-          <h1 className="mt-5 flex flex-wrap items-center gap-3 text-balance text-3xl font-bold tracking-tight text-[#0a0a0a] sm:text-4xl lg:text-5xl">
+          <h1 className="mt-5 flex flex-wrap items-center gap-3 text-balance text-4xl font-bold tracking-tight text-[#0a0a0a] sm:text-5xl lg:text-6xl">
             <span
               className={`inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${category.gradient} text-white shadow-lg sm:size-13`}
               aria-hidden="true"
@@ -55,7 +55,7 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
             </span>
             {meta.name}
           </h1>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-[#4b5563] sm:text-lg">{doc.longDescription}</p>
+          <p className="mt-4 max-w-3xl text-lg leading-relaxed text-[#4b5563] sm:text-xl">{doc.longDescription}</p>
         </div>
       </section>
 
@@ -77,17 +77,17 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
           {/* How to use */}
           <div className="mt-12 grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
             <div>
-              <h2 className="flex items-center gap-2 font-display text-2xl font-bold text-[#0a0a0a]">
+              <h2 className="flex items-center gap-2 font-display text-3xl font-bold text-[#0a0a0a]">
                 <Sparkle className="size-5 fill-gray-300 text-gray-300" aria-hidden="true" />
                 How to use the {meta.name}
               </h2>
               <ol className="mt-5 flex flex-col gap-4">
                 {doc.howTo.map((step, i) => (
                   <li key={i} className="flex items-start gap-3.5">
-                    <span className={`flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${category.gradient} font-display text-sm font-bold text-white`}>
+                    <span className={`flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${category.gradient} font-display text-base font-bold text-white`}>
                       {i + 1}
                     </span>
-                    <p className="pt-1 text-sm leading-relaxed text-[#4b5563] sm:text-[15px]">{step}</p>
+                    <p className="pt-1 text-base leading-relaxed text-[#4b5563] sm:text-base">{step}</p>
                   </li>
                 ))}
               </ol>
@@ -97,12 +97,12 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
             <div className="flex flex-col gap-6">
               <AdSlot format="rectangle" />
               <div className="card-soft p-6">
-                <h3 className="font-display text-lg font-bold text-[#0a0a0a]">Why this tool is free</h3>
-                <p className="mt-2 text-sm leading-relaxed text-[#4b5563]">
+                <h3 className="font-display text-xl font-bold text-[#0a0a0a]">Why this tool is free</h3>
+                <p className="mt-2 text-base leading-relaxed text-[#4b5563]">
                   Developers3 builds websites, apps and marketing systems for a living. These
                   utilities are the same ones our team uses daily — shared freely, supported by ads.
                 </p>
-                <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-gray-800 hover:underline">
+                <Link href="/contact" className="mt-4 inline-flex items-center gap-2 text-base font-bold text-gray-800 hover:underline">
                   Need help with a project? Talk to us →
                 </Link>
               </div>
@@ -111,7 +111,7 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
 
           {/* FAQ */}
           <div className="mt-14">
-            <h2 className="font-display text-2xl font-bold text-[#0a0a0a]">
+            <h2 className="font-display text-3xl font-bold text-[#0a0a0a]">
               {meta.name} — FAQs
             </h2>
             <Accordion type="single" collapsible className="mt-5 flex flex-col gap-3">
@@ -121,10 +121,10 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
                   value={`faq-${i}`}
                   className="card-soft rounded-2xl border px-5"
                 >
-                  <AccordionTrigger className="text-left text-sm font-bold text-[#0a0a0a] hover:no-underline sm:text-base">
+                  <AccordionTrigger className="text-left text-base font-bold text-[#0a0a0a] hover:no-underline sm:text-lg">
                     {faq.q}
                   </AccordionTrigger>
-                  <AccordionContent className="text-sm leading-relaxed text-[#4b5563]">{faq.a}</AccordionContent>
+                  <AccordionContent className="text-base leading-relaxed text-[#4b5563]">{faq.a}</AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
@@ -133,8 +133,8 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
           {/* Related tools */}
           <div className="mt-14">
             <div className="flex items-end justify-between gap-4">
-              <h2 className="font-display text-2xl font-bold text-[#0a0a0a]">Related free tools</h2>
-              <Link href="/tools" className="text-sm font-bold text-gray-800 hover:underline">
+              <h2 className="font-display text-3xl font-bold text-[#0a0a0a]">Related free tools</h2>
+              <Link href="/tools" className="text-base font-bold text-gray-800 hover:underline">
                 Browse all 100 →
               </Link>
             </div>
@@ -146,7 +146,7 @@ export function ToolShell({ tool, related }: { tool: ToolDefinition; related: To
           </div>
 
           {/* Trust strip */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 rounded-2xl bg-gray-50 px-6 py-5 text-xs font-semibold text-gray-500">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 rounded-2xl bg-gray-50 px-6 py-5 text-sm font-semibold text-gray-500">
             {['No signup required', 'Runs in your browser where possible', 'Nothing stored on our servers', 'Free forever'].map((item) => (
               <span key={item} className="inline-flex items-center gap-1.5">
                 <CircleCheck className="size-4 text-gray-500" aria-hidden="true" />

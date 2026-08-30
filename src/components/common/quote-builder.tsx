@@ -132,7 +132,7 @@ function PillChoice({
       id={`${idPrefix}-${value}`}
       onClick={onSelect}
       className={cn(
-        'group relative flex min-h-[44px] w-full items-center justify-between gap-2 rounded-full border-2 px-4 py-2 text-left text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2',
+        'group relative flex min-h-[44px] w-full items-center justify-between gap-2 rounded-full border-2 px-4 py-2 text-left text-base font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2',
         selected
           ? 'border-zinc-200 bg-[#0a0a0a] text-white shadow-[0_8px_20px_-10px_rgb(10_10_10/0.6)]'
           : 'border-gray-200 bg-white text-[#0a0a0a] hover:-translate-y-0.5 hover:border-gray-400'
@@ -151,11 +151,11 @@ function PillChoice({
           </span>
         ) : null}
         <span className="min-w-0">
-          <span className="block text-[13px] font-semibold leading-snug">{label}</span>
+          <span className="block text-sm font-semibold leading-snug">{label}</span>
           {hint ? (
             <span
               className={cn(
-                'block text-[11px] font-medium leading-tight',
+                'block text-xs font-medium leading-tight',
                 selected ? 'text-white/60' : 'text-muted-foreground'
               )}
             >
@@ -167,7 +167,7 @@ function PillChoice({
       {badge ? (
         <span
           className={cn(
-            'shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold',
+            'shrink-0 rounded-full px-2 py-0.5 text-xs font-bold',
             selected ? 'bg-white/15 text-white' : 'bg-gray-100 text-gray-800'
           )}
         >
@@ -198,13 +198,13 @@ function ChoiceGroup({
           <Icon className="size-4" />
         </span>
         <div className="min-w-0">
-          <h3 className="font-display text-base font-bold text-[#0a0a0a]">
-            <span className="mr-2 text-xs font-bold uppercase tracking-[0.18em] text-gray-800" aria-hidden="true">
+          <h3 className="font-display text-lg font-bold text-[#0a0a0a]">
+            <span className="mr-2 text-sm font-bold uppercase tracking-[0.18em] text-gray-800" aria-hidden="true">
               {step}
             </span>
             {title}
           </h3>
-          {hint ? <p className="text-xs leading-relaxed text-muted-foreground">{hint}</p> : null}
+          {hint ? <p className="text-sm leading-relaxed text-muted-foreground">{hint}</p> : null}
         </div>
       </div>
       {children}
@@ -232,7 +232,7 @@ function AddonChip({
       id={`${idPrefix}-${addon.value}`}
       onClick={onToggle}
       className={cn(
-        'flex min-h-[44px] items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2',
+        'flex min-h-[44px] items-center gap-2 rounded-full border-2 px-4 py-2 text-base font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2',
         selected
           ? 'border-gray-800 bg-gray-800 text-white shadow-[0_8px_20px_-10px_rgb(0_0_0/0.7)]'
           : 'border-gray-200 bg-white text-[#0a0a0a] hover:-translate-y-0.5 hover:border-gray-400'
@@ -250,7 +250,7 @@ function AddonChip({
       <span className="min-w-0 truncate">{addon.label}</span>
       <span
         className={cn(
-          'shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold',
+          'shrink-0 rounded-full px-2 py-0.5 text-xs font-bold',
           selected ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-800'
         )}
       >
@@ -277,18 +277,18 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <Label htmlFor={id} className="text-sm font-bold text-[#0a0a0a]">
+      <Label htmlFor={id} className="text-base font-bold text-[#0a0a0a]">
         {label}
         {required ? (
           <span className="ml-0.5 text-gray-800" aria-hidden="true">
             *
           </span>
         ) : null}
-        {optional ? <span className="ml-1 text-xs font-normal text-muted-foreground">(optional)</span> : null}
+        {optional ? <span className="ml-1 text-sm font-normal text-muted-foreground">(optional)</span> : null}
       </Label>
       {children}
       {error ? (
-        <p id={`${id}-error`} className="text-xs font-medium text-destructive">
+        <p id={`${id}-error`} className="text-sm font-medium text-destructive">
           {error}
         </p>
       ) : null}
@@ -304,13 +304,13 @@ function SuccessPanel({ leadId, onReset }: { leadId: string | null; onReset: () 
           <CheckCircle2 className="h-14 w-14 text-gray-800" />
         </span>
       </span>
-      <h3 className="font-display text-2xl font-bold text-[#0a0a0a]">Quote request received!</h3>
-      <p className="max-w-md text-sm leading-relaxed text-[#4b5563] sm:text-base">
+      <h3 className="font-display text-3xl font-bold text-[#0a0a0a]">Quote request received!</h3>
+      <p className="max-w-md text-base leading-relaxed text-[#4b5563] sm:text-lg">
         We&rsquo;ll review your configuration and reply within one business day with a fixed,
         itemized quote — the number we agree on is the number you pay.
       </p>
       {leadId ? (
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Reference: <span className="font-mono font-semibold text-gray-800">{leadId}</span>
         </p>
       ) : null}
@@ -343,10 +343,10 @@ function EstimateContent({ estimate, compact }: { estimate: { low: number; high:
   if (!estimate) {
     return (
       <div className={cn('flex flex-col gap-2', compact && 'gap-1')}>
-        <p className={cn('font-display font-extrabold tracking-tight', compact ? 'text-2xl text-white' : 'text-3xl text-white')}>
+        <p className={cn('font-display font-extrabold tracking-tight', compact ? 'text-3xl text-white' : 'text-4xl text-white')}>
           Custom quote
         </p>
-        <p className={cn('leading-relaxed', compact ? 'text-xs text-white/60' : 'text-sm text-white/60')}>
+        <p className={cn('leading-relaxed', compact ? 'text-sm text-white/60' : 'text-base text-white/60')}>
           Pick a service to see a live estimate — or tell us what you need and we&rsquo;ll scope it
           with you on a free call.
         </p>
@@ -356,17 +356,17 @@ function EstimateContent({ estimate, compact }: { estimate: { low: number; high:
 
   return (
     <div className="flex flex-col gap-2">
-      <p className={cn('text-gradient font-display font-extrabold tracking-tight', compact ? 'text-2xl sm:text-3xl' : 'text-4xl')}>
+      <p className={cn('text-gradient font-display font-extrabold tracking-tight', compact ? 'text-3xl sm:text-4xl' : 'text-5xl')}>
         ${estimate.low.toLocaleString('en-US')} – ${estimate.high.toLocaleString('en-US')}
-        <span className="text-lg font-bold">{estimate.suffix}</span>
+        <span className="text-xl font-bold">{estimate.suffix}</span>
       </p>
-      <p className={cn('font-semibold uppercase tracking-[0.14em]', compact ? 'text-[10px] text-white/50' : 'text-xs text-white/50')}>
+      <p className={cn('font-semibold uppercase tracking-[0.14em]', compact ? 'text-xs text-white/50' : 'text-sm text-white/50')}>
         {estimate.caption} · guidance range
       </p>
       {!compact ? (
         <ul className="mt-3 flex flex-col gap-1.5">
           {estimate.lines.map((line) => (
-            <li key={line.label} className="flex items-center justify-between gap-3 text-[13px]">
+            <li key={line.label} className="flex items-center justify-between gap-3 text-sm">
               <span className="min-w-0 truncate text-white/60">{line.label}</span>
               <span
                 className={cn(
@@ -766,7 +766,7 @@ export function QuoteBuilder({
           aria-describedby={errors.notes ? `${idPrefix}-notes-error` : `${idPrefix}-notes-hint`}
           className={cn(inputClass, 'h-auto min-h-[110px] py-3')}
         />
-        <div id={`${idPrefix}-notes-hint`} className="flex items-center justify-between text-[11px] text-muted-foreground">
+        <div id={`${idPrefix}-notes-hint`} className="flex items-center justify-between text-xs text-muted-foreground">
           <span>{config ? 'Optional — your configuration already tells us a lot.' : 'Goals, scope, links all help.'}</span>
           <span className={cn('tabular-nums', form.notes.length >= NOTES_MAX - 40 && 'text-destructive')} aria-live="polite">
             {form.notes.length}/{NOTES_MAX}
@@ -813,7 +813,7 @@ export function QuoteBuilder({
   );
 
   const consentCopy = (
-    <p className="text-xs leading-relaxed text-muted-foreground">
+    <p className="text-sm leading-relaxed text-muted-foreground">
       By submitting, you agree to our{' '}
       <Link
         href="/privacy-policy"
@@ -853,7 +853,7 @@ export function QuoteBuilder({
             <div className="bg-[#0a0a0a] p-6 sm:p-7">
               <div className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-gray-300" aria-hidden="true" />
-                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-200">Instant estimate</p>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-200">Instant estimate</p>
               </div>
               <div className="mt-3">
                 <EstimateContent estimate={estimate} compact />
@@ -875,7 +875,7 @@ export function QuoteBuilder({
       <aside className="relative flex flex-col gap-6 overflow-hidden rounded-t-[24px] bg-[#0a0a0a] p-6 text-white sm:p-8 lg:sticky lg:top-28 lg:self-start lg:rounded-b-none lg:rounded-l-[24px]">
         <span className="blob -right-16 top-6 size-56 bg-gradient-to-br from-gray-800 to-gray-500" aria-hidden="true" />
         <div className="relative z-10 flex flex-col gap-5">
-          <p className="flex w-fit items-center gap-2 text-xs font-semibold text-gray-200">
+          <p className="flex w-fit items-center gap-2 text-sm font-semibold text-gray-200">
             <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-gray-300" aria-hidden="true" />
             Instant estimate · updates live
           </p>
@@ -890,14 +890,14 @@ export function QuoteBuilder({
               'Fixed, itemized quote before we start',
               'NDA on request',
             ].map((promise) => (
-              <li key={promise} className="flex items-center gap-2.5 text-sm text-white/75">
+              <li key={promise} className="flex items-center gap-2.5 text-base text-white/75">
                 <BadgeCheck className="size-4 shrink-0 text-gray-300" aria-hidden="true" />
                 {promise}
               </li>
             ))}
           </ul>
 
-          <p className="mt-auto rounded-2xl bg-white/5 p-4 text-[13px] leading-relaxed text-white/60 ring-1 ring-inset ring-white/10">
+          <p className="mt-auto rounded-2xl bg-white/5 p-4 text-sm leading-relaxed text-white/60 ring-1 ring-inset ring-white/10">
             The estimate is a guidance range. After a short scoping call you get one fixed number —
             the price we agree is the price you pay.
           </p>

@@ -263,7 +263,7 @@ function LabeledSlider({ label, value, onChange, min, max, step = 1, format, hel
           aria-label={label}
           className="min-w-0 flex-1"
         />
-        <span className="w-20 shrink-0 rounded-lg bg-gray-100 px-2 py-1 text-center font-mono text-xs font-bold text-[#0a0a0a]">
+        <span className="w-20 shrink-0 rounded-lg bg-gray-100 px-2 py-1 text-center font-mono text-sm font-bold text-[#0a0a0a]">
           {format ? format(value) : value}
         </span>
       </div>
@@ -288,7 +288,7 @@ function ColorInput({ label, value, onChange, className }: {
         <Input
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="h-9 rounded-lg border-gray-200 bg-white font-mono text-xs"
+          className="h-9 rounded-lg border-gray-200 bg-white font-mono text-sm"
         />
       </div>
     </FieldShell>
@@ -303,8 +303,8 @@ function CheckRow({ tone, label, detail }: { tone: 'good' | 'warn' | 'bad'; labe
     <div className="flex items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
       <Icon className={cn('mt-0.5 size-4.5 shrink-0', color)} aria-hidden="true" />
       <div className="min-w-0">
-        <p className="text-sm font-bold text-[#0a0a0a]">{label}</p>
-        {detail ? <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{detail}</p> : null}
+        <p className="text-base font-bold text-[#0a0a0a]">{label}</p>
+        {detail ? <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">{detail}</p> : null}
       </div>
     </div>
   );
@@ -397,7 +397,7 @@ function renderUptime(d: UptimeData): React.ReactNode {
     <>
       <div className="flex flex-wrap items-center gap-3">
         <StatusPill ok={ok}>{ok ? 'Online' : `HTTP ${d.status}`}</StatusPill>
-        <span className="truncate text-sm text-gray-500">{d.finalUrl}</span>
+        <span className="truncate text-base text-gray-500">{d.finalUrl}</span>
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard label="Status code" value={d.status} tone={ok ? 'good' : 'bad'} hint={d.statusText || '—'} />
@@ -463,7 +463,7 @@ function renderHeaders(d: HeadersData): React.ReactNode {
     <>
       <div className="flex flex-wrap items-center gap-3">
         <StatusPill ok={d.status >= 200 && d.status < 400}>HTTP {d.status}</StatusPill>
-        <span className="truncate text-sm text-gray-500">{d.url}</span>
+        <span className="truncate text-base text-gray-500">{d.url}</span>
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard label="Security score" value={`${score}/6`} tone={scoreTone} hint="recommended headers present" />
@@ -493,7 +493,7 @@ function renderHeaders(d: HeadersData): React.ReactNode {
         }
       />
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-bold text-[#0a0a0a]">Security headers</p>
+        <p className="text-base font-bold text-[#0a0a0a]">Security headers</p>
         {(['content-security-policy', 'strict-transport-security', 'x-frame-options', 'x-content-type-options', 'referrer-policy', 'permissions-policy'] as const).map((h) => {
           const has = d.present.includes(h);
           const critical = h === 'content-security-policy' || h === 'strict-transport-security' || h === 'x-frame-options';
@@ -509,10 +509,10 @@ function renderHeaders(d: HeadersData): React.ReactNode {
       </div>
       {d.headerList.length > 0 ? (
         <div className="flex flex-col gap-2">
-          <p className="text-sm font-bold text-[#0a0a0a]">All response headers received</p>
+          <p className="text-base font-bold text-[#0a0a0a]">All response headers received</p>
           <div className="custom-scrollbar overflow-hidden rounded-2xl border border-gray-200">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+            <table className="w-full text-left text-base">
+              <thead className="bg-gray-50 text-sm uppercase tracking-wide text-gray-500">
                 <tr>
                   <th className="px-4 py-2.5 font-bold">Header</th>
                   <th className="px-4 py-2.5 font-bold">Value</th>
@@ -521,8 +521,8 @@ function renderHeaders(d: HeadersData): React.ReactNode {
               <tbody>
                 {d.headerList.map((h) => (
                   <tr key={h.name} className="border-t border-gray-100 align-top">
-                    <td className="px-4 py-2.5 font-mono text-xs font-bold text-gray-800">{h.name}</td>
-                    <td className="break-all px-4 py-2.5 font-mono text-xs text-[#374151]">{h.value}</td>
+                    <td className="px-4 py-2.5 font-mono text-sm font-bold text-gray-800">{h.name}</td>
+                    <td className="break-all px-4 py-2.5 font-mono text-sm text-[#374151]">{h.value}</td>
                   </tr>
                 ))}
               </tbody>
@@ -586,13 +586,13 @@ function renderRedirects(d: RedirectsData): React.ReactNode {
           return (
             <li key={`${hop.url}-${i}`} className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3">
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-800">{i + 1}</span>
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-800">{i + 1}</span>
                 <StatusPill ok={isRedirect ? null : hop.status > 0}>{hop.status > 0 ? `HTTP ${hop.status}` : 'No response'}</StatusPill>
-                <span className="min-w-0 flex-1 break-all font-mono text-xs text-[#374151]">{hop.url}</span>
-                <span className="text-xs text-gray-400">{hop.ms.toLocaleString()} ms</span>
+                <span className="min-w-0 flex-1 break-all font-mono text-sm text-[#374151]">{hop.url}</span>
+                <span className="text-sm text-gray-400">{hop.ms.toLocaleString()} ms</span>
               </div>
               {isRedirect ? (
-                <div className="flex items-center gap-2 pl-4 text-xs text-gray-800">
+                <div className="flex items-center gap-2 pl-4 text-sm text-gray-800">
                   <ArrowRight className="size-3.5 shrink-0" aria-hidden="true" />
                   <span className="break-all font-mono">{hop.location}</span>
                 </div>
@@ -653,23 +653,23 @@ function renderOg(d: OgData): React.ReactNode {
       )}
       <div className="grid gap-5 lg:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Google-style search snippet</p>
+          <p className="text-sm font-bold uppercase tracking-wide text-gray-500">Google-style search snippet</p>
           <div className="rounded-2xl border border-gray-200 bg-white p-5">
             <div className="flex items-center gap-2.5">
-              <span className="flex size-7 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-800">{(siteName || host || '?').charAt(0).toUpperCase()}</span>
+              <span className="flex size-7 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-800">{(siteName || host || '?').charAt(0).toUpperCase()}</span>
               <div className="min-w-0 leading-tight">
-                <p className="truncate text-sm text-[#0a0a0a]">{siteName || host || 'your-site.com'}</p>
-                <p className="truncate text-xs text-gray-500">{host}{path}</p>
+                <p className="truncate text-base text-[#0a0a0a]">{siteName || host || 'your-site.com'}</p>
+                <p className="truncate text-sm text-gray-500">{host}{path}</p>
               </div>
             </div>
-            <p className="mt-2 truncate text-xl text-[#1a0dab]">{title || 'No title found — add a title or og:title tag'}</p>
-            <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-gray-600">
+            <p className="mt-2 truncate text-2xl text-[#1a0dab]">{title || 'No title found — add a title or og:title tag'}</p>
+            <p className="mt-1 line-clamp-2 text-base leading-relaxed text-gray-600">
               {description || 'No description found — add a meta description or og:description tag so searchers see a summary here.'}
             </p>
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Social share card (Facebook / X / LinkedIn)</p>
+          <p className="text-sm font-bold uppercase tracking-wide text-gray-500">Social share card (Facebook / X / LinkedIn)</p>
           <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
             {d.ogImage ? (
                
@@ -680,12 +680,12 @@ function renderOg(d: OgData): React.ReactNode {
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
               />
             ) : (
-              <div className="flex aspect-[1.91/1] w-full items-center justify-center bg-gray-100 text-sm text-gray-400">no og:image</div>
+              <div className="flex aspect-[1.91/1] w-full items-center justify-center bg-gray-100 text-base text-gray-400">no og:image</div>
             )}
             <div className="p-4">
-              <p className="text-xs uppercase tracking-wide text-gray-500">{siteName || host || 'your-site.com'}</p>
+              <p className="text-sm uppercase tracking-wide text-gray-500">{siteName || host || 'your-site.com'}</p>
               <p className="mt-1 line-clamp-2 font-bold text-[#0a0a0a]">{title || 'Missing og:title'}</p>
-              <p className="mt-1 line-clamp-2 text-sm text-gray-500">{description || 'Missing og:description'}</p>
+              <p className="mt-1 line-clamp-2 text-base text-gray-500">{description || 'Missing og:description'}</p>
             </div>
           </div>
         </div>
@@ -698,14 +698,14 @@ function renderOg(d: OgData): React.ReactNode {
         </div>
       ) : null}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-bold text-[#0a0a0a]">Raw tag values found</p>
+        <p className="text-base font-bold text-[#0a0a0a]">Raw tag values found</p>
         <div className="custom-scrollbar overflow-hidden rounded-2xl border border-gray-200">
-          <table className="w-full text-left text-sm">
+          <table className="w-full text-left text-base">
             <tbody>
               {tagRows.map((r) => (
                 <tr key={r.name} className="border-t border-gray-100 first:border-t-0">
-                  <td className="w-44 px-4 py-2.5 font-mono text-xs font-bold text-gray-800">{r.name}</td>
-                  <td className={cn('px-4 py-2.5 text-xs', r.value ? 'text-[#374151]' : 'italic text-gray-400')}>{r.value || 'not set'}</td>
+                  <td className="w-44 px-4 py-2.5 font-mono text-sm font-bold text-gray-800">{r.name}</td>
+                  <td className={cn('px-4 py-2.5 text-sm', r.value ? 'text-[#374151]' : 'italic text-gray-400')}>{r.value || 'not set'}</td>
                 </tr>
               ))}
             </tbody>
@@ -746,10 +746,10 @@ function renderLinks(d: LinksData): React.ReactNode {
       )}
       {d.broken.length > 0 ? (
         <div className="flex flex-col gap-2">
-          <p className="text-sm font-bold text-[#0a0a0a]">Broken links</p>
+          <p className="text-base font-bold text-[#0a0a0a]">Broken links</p>
           <div className="custom-scrollbar overflow-hidden rounded-2xl border border-gray-200">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+            <table className="w-full text-left text-base">
+              <thead className="bg-gray-50 text-sm uppercase tracking-wide text-gray-500">
                 <tr>
                   <th className="px-4 py-2.5 font-bold">Status</th>
                   <th className="px-4 py-2.5 font-bold">URL</th>
@@ -759,7 +759,7 @@ function renderLinks(d: LinksData): React.ReactNode {
                 {d.broken.map((b) => (
                   <tr key={b.url} className="border-t border-gray-100">
                     <td className="px-4 py-2.5"><StatusPill ok={false}>{b.status === 0 ? 'timeout' : `HTTP ${b.status}`}</StatusPill></td>
-                    <td className="break-all px-4 py-2.5 font-mono text-xs text-[#374151]">{b.url}</td>
+                    <td className="break-all px-4 py-2.5 font-mono text-sm text-[#374151]">{b.url}</td>
                   </tr>
                 ))}
               </tbody>
@@ -869,7 +869,7 @@ const IpLookupTool = () => {
             autoCorrect="off"
             spellCheck={false}
             aria-label="IP address or domain to look up"
-            className="h-13 rounded-full border-2 border-gray-200 bg-white pl-11 pr-4 text-[15px] text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
+            className="h-13 rounded-full border-2 border-gray-200 bg-white pl-11 pr-4 text-base text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
           />
         </div>
         <button type="submit" disabled={loading} className="btn-primary-pill sm:!px-8">
@@ -889,9 +889,9 @@ const IpLookupTool = () => {
         <>
           <div className="card-soft flex flex-col items-center gap-3 p-6 text-center sm:flex-row sm:justify-between sm:text-left">
             <div>
-              <p className="text-xs font-bold uppercase tracking-wide text-gray-500">{query.trim() ? 'Lookup result' : 'Your public IP address'}</p>
-              <p className="mt-1 font-mono text-3xl font-bold text-gradient">{data.ip}</p>
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="text-sm font-bold uppercase tracking-wide text-gray-500">{query.trim() ? 'Lookup result' : 'Your public IP address'}</p>
+              <p className="mt-1 font-mono text-4xl font-bold text-gradient">{data.ip}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
                 {data.type ?? 'IP'} {data.continent ? `· ${data.continent}` : ''}
               </p>
             </div>
@@ -1081,7 +1081,7 @@ const SocialHandleTool = () => {
             autoCorrect="off"
             spellCheck={false}
             aria-label="Username handle to check"
-            className="h-13 rounded-full border-2 border-gray-200 bg-white pl-11 pr-4 text-[15px] text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
+            className="h-13 rounded-full border-2 border-gray-200 bg-white pl-11 pr-4 text-base text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
           />
         </div>
         <button type="submit" disabled={running || !clean || invalid} className="btn-primary-pill sm:!px-8">
@@ -1095,7 +1095,7 @@ const SocialHandleTool = () => {
         </button>
       </form>
       {invalid ? (
-        <p className="rounded-xl bg-gray-100 px-4 py-3 text-xs font-medium text-gray-900" role="alert">
+        <p className="rounded-xl bg-gray-100 px-4 py-3 text-sm font-medium text-gray-900" role="alert">
           Handles work best with letters, numbers, dots and underscores (max ~30 chars). Spaces and most symbols are not accepted by the platforms.
         </p>
       ) : null}
@@ -1106,12 +1106,12 @@ const SocialHandleTool = () => {
           const url = p.build(clean || 'handle');
           return (
             <div key={p.id} className="flex flex-wrap items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3">
-              <span className="w-28 shrink-0 text-sm font-bold text-[#0a0a0a]">{p.label}</span>
+              <span className="w-28 shrink-0 text-base font-bold text-[#0a0a0a]">{p.label}</span>
               <a
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="min-w-0 flex-1 truncate font-mono text-xs text-gray-800 underline decoration-gray-200 hover:decoration-gray-500"
+                className="min-w-0 flex-1 truncate font-mono text-sm text-gray-800 underline decoration-gray-200 hover:decoration-gray-500"
               >
                 {url}
               </a>
@@ -1126,8 +1126,8 @@ const SocialHandleTool = () => {
                         ? "Couldn't verify"
                         : 'Not checked'}
               </StatusPill>
-              {s?.ms !== undefined ? <span className="w-16 text-right text-xs text-gray-400">{s.ms.toLocaleString()} ms</span> : null}
-              {s?.note ? <p className="w-full text-xs text-gray-800">{s.note}</p> : null}
+              {s?.ms !== undefined ? <span className="w-16 text-right text-sm text-gray-400">{s.ms.toLocaleString()} ms</span> : null}
+              {s?.note ? <p className="w-full text-sm text-gray-800">{s.note}</p> : null}
             </div>
           );
         })}
@@ -1668,10 +1668,10 @@ const PasswordGenerator = () => {
 
       <div className="card-soft flex flex-col gap-2 p-5">
         <div className="flex items-baseline justify-between gap-3">
-          <p className="text-sm font-bold text-[#0a0a0a]">
+          <p className="text-base font-bold text-[#0a0a0a]">
             Entropy: <span className="text-gradient">{entropy.toFixed(0)} bits</span>
           </p>
-          <p className={cn('text-sm font-bold', strength.tone === 'good' ? 'text-gray-800' : strength.tone === 'warn' ? 'text-gray-800' : 'text-gray-800')}>
+          <p className={cn('text-base font-bold', strength.tone === 'good' ? 'text-gray-800' : strength.tone === 'warn' ? 'text-gray-800' : 'text-gray-800')}>
             {strength.label}
           </p>
         </div>
@@ -1681,7 +1681,7 @@ const PasswordGenerator = () => {
             style={{ width: `${strength.width}%` }}
           />
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Pool of {pool.length || 0} characters → {length} × log₂({pool.length || 0}) bits of guessing difficulty. Pure math, not a marketing color bar.
         </p>
       </div>
@@ -1690,7 +1690,7 @@ const PasswordGenerator = () => {
         <div className="flex flex-col gap-2">
           {passwords.map((pw, i) => (
             <div key={`${i}-${pw}`} className="flex flex-wrap items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3">
-              <span className="min-w-0 flex-1 break-all font-mono text-sm font-bold text-[#0a0a0a]">{pw}</span>
+              <span className="min-w-0 flex-1 break-all font-mono text-base font-bold text-[#0a0a0a]">{pw}</span>
               <CopyButton value={pw} />
             </div>
           ))}
@@ -1775,8 +1775,8 @@ const HashGenerator = () => {
       <div className="flex flex-col gap-2">
         {HASH_ALGOS.map((alg) => (
           <div key={alg} className="flex flex-wrap items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3">
-            <span className="w-20 shrink-0 text-sm font-bold text-gray-800">{alg}</span>
-            <span className="min-w-0 flex-1 break-all font-mono text-xs text-[#374151]">
+            <span className="w-20 shrink-0 text-base font-bold text-gray-800">{alg}</span>
+            <span className="min-w-0 flex-1 break-all font-mono text-sm text-[#374151]">
               {computing && text ? 'computing…' : hashes[alg] || '—'}
             </span>
             <CopyButton value={hashes[alg] ?? ''} />
@@ -1842,9 +1842,9 @@ const TimestampConverter = () => {
   return (
     <div className="flex flex-col gap-6">
       <div className="card-soft flex flex-col gap-2 p-6">
-        <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Right now (live)</p>
-        <p className="font-mono text-4xl font-bold text-gradient">{Math.floor(now / 1000).toLocaleString()}</p>
-        <p className="font-mono text-sm text-gray-500">seconds · milliseconds {now.toLocaleString()} · ISO {new Date(now).toISOString()}</p>
+        <p className="text-sm font-bold uppercase tracking-wide text-gray-500">Right now (live)</p>
+        <p className="font-mono text-5xl font-bold text-gradient">{Math.floor(now / 1000).toLocaleString()}</p>
+        <p className="font-mono text-base text-gray-500">seconds · milliseconds {now.toLocaleString()} · ISO {new Date(now).toISOString()}</p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -1860,7 +1860,7 @@ const TimestampConverter = () => {
             Insert now
           </button>
           {tsInput && !parsed ? (
-            <p className="rounded-xl bg-gray-100 px-4 py-3 text-xs font-medium text-gray-900" role="alert">
+            <p className="rounded-xl bg-gray-100 px-4 py-3 text-sm font-medium text-gray-900" role="alert">
               That does not look like a plain Unix timestamp — digits only, with or without a minus sign.
             </p>
           ) : null}
@@ -2110,8 +2110,8 @@ const RichSnippetTester = () => {
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm font-bold text-[#0a0a0a]">JSON-LD markup</p>
-          <button type="button" onClick={() => setInput(RICH_SNIPPET_SAMPLE)} className="rounded-full border-2 border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 transition-colors hover:border-zinc-200 hover:text-[#0a0a0a]">
+          <p className="text-base font-bold text-[#0a0a0a]">JSON-LD markup</p>
+          <button type="button" onClick={() => setInput(RICH_SNIPPET_SAMPLE)} className="rounded-full border-2 border-gray-200 px-4 py-2 text-sm font-bold text-gray-600 transition-colors hover:border-zinc-200 hover:text-[#0a0a0a]">
             Load sample
           </button>
         </div>
@@ -2149,32 +2149,32 @@ const RichSnippetTester = () => {
           />
           <div className="grid gap-5 lg:grid-cols-2">
             <div className="flex flex-col gap-2">
-              <p className="text-sm font-bold text-[#0a0a0a]">Property checklist</p>
+              <p className="text-base font-bold text-[#0a0a0a]">Property checklist</p>
               {report.items.map((item, i) => (
                 <CheckRow key={`${item.label}-${i}`} tone={item.tone} label={item.label} detail={item.detail} />
               ))}
             </div>
             <div className="flex flex-col gap-3">
-              <p className="text-sm font-bold text-[#0a0a0a]">Rough result preview</p>
+              <p className="text-base font-bold text-[#0a0a0a]">Rough result preview</p>
               <div className="rounded-2xl border border-gray-200 bg-white p-5">
                 <div className="flex items-center gap-2.5">
-                  <span className="flex size-7 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-800">D</span>
+                  <span className="flex size-7 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-800">D</span>
                   <div className="leading-tight">
-                    <p className="text-sm text-[#0a0a0a]">your-site.com</p>
-                    <p className="text-xs text-gray-500">https://your-site.com › page</p>
+                    <p className="text-base text-[#0a0a0a]">your-site.com</p>
+                    <p className="text-sm text-gray-500">https://your-site.com › page</p>
                   </div>
                 </div>
-                <p className="mt-2 truncate text-xl text-[#1a0dab]">{report.previewTitle || 'Untitled result'}</p>
-                <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-gray-600">{report.previewDesc || 'No description provided in the markup.'}</p>
+                <p className="mt-2 truncate text-2xl text-[#1a0dab]">{report.previewTitle || 'Untitled result'}</p>
+                <p className="mt-1 line-clamp-2 text-base leading-relaxed text-gray-600">{report.previewDesc || 'No description provided in the markup.'}</p>
               </div>
               {report.faqs.length > 0 ? (
                 <div className="rounded-2xl border border-gray-200 bg-white p-5">
-                  <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-500">FAQ dropdown preview</p>
+                  <p className="mb-2 text-sm font-bold uppercase tracking-wide text-gray-500">FAQ dropdown preview</p>
                   <div className="flex flex-col divide-y divide-gray-100">
                     {report.faqs.slice(0, 5).map((f) => (
                       <div key={f.q} className="py-2.5 first:pt-0 last:pb-0">
-                        <p className="text-sm font-bold text-[#0a0a0a]">{f.q}</p>
-                        <p className="mt-1 line-clamp-3 text-sm text-gray-600">{f.a}</p>
+                        <p className="text-base font-bold text-[#0a0a0a]">{f.q}</p>
+                        <p className="mt-1 line-clamp-3 text-base text-gray-600">{f.a}</p>
                       </div>
                     ))}
                   </div>
@@ -2301,7 +2301,7 @@ const YoutubeTagExtractor = () => {
             autoCorrect="off"
             spellCheck={false}
             aria-label="YouTube URL or video ID"
-            className="h-13 rounded-full border-2 border-gray-200 bg-white pl-11 pr-4 text-[15px] text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
+            className="h-13 rounded-full border-2 border-gray-200 bg-white pl-11 pr-4 text-base text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-gray-500 focus-visible:ring-gray-500"
           />
         </div>
         <button type="submit" disabled={phase === 'working'} className="btn-primary-pill sm:!px-8">
@@ -2320,18 +2320,18 @@ const YoutubeTagExtractor = () => {
       {phase === 'done' ? (
         <>
           <div className="card-soft p-5">
-            <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Video</p>
-            <p className="mt-1 font-mono text-sm text-gray-800">{videoId}</p>
+            <p className="text-sm font-bold uppercase tracking-wide text-gray-500">Video</p>
+            <p className="mt-1 font-mono text-base text-gray-800">{videoId}</p>
             {title ? <p className="mt-1 font-bold text-[#0a0a0a]">{title}</p> : null}
-            {author ? <p className="mt-0.5 text-sm text-gray-500">by {author}</p> : null}
+            {author ? <p className="mt-0.5 text-base text-gray-500">by {author}</p> : null}
             {!title ? (
-              <p className="mt-1 text-sm text-gray-800">The title could not be fetched (the video may be private, age-restricted or region-blocked) — paste it manually below to power the keyword generator.</p>
+              <p className="mt-1 text-base text-gray-800">The title could not be fetched (the video may be private, age-restricted or region-blocked) — paste it manually below to power the keyword generator.</p>
             ) : null}
           </div>
 
           {tags && tags.length > 0 ? (
             <div className="flex flex-col gap-2">
-              <p className="text-sm font-bold text-[#0a0a0a]">Tags recovered from the video page</p>
+              <p className="text-base font-bold text-[#0a0a0a]">Tags recovered from the video page</p>
               <OutputBox value={tags.join(', ')} scroll />
               <div className="flex flex-wrap gap-2">
                 <CopyButton value={tags.join(', ')} label="Copy tags" />
@@ -2369,7 +2369,7 @@ const YoutubeTagExtractor = () => {
             {suggestions.length > 0 ? (
               <>
                 <OutputBox value={suggestions.join(', ')} scroll />
-                <p className="text-xs text-muted-foreground" aria-live="polite">
+                <p className="text-sm text-muted-foreground" aria-live="polite">
                   {suggestions.length} keywords · {keywordString.length}/500 characters of YouTube&apos;s tag budget used.
                 </p>
               </>
@@ -2530,7 +2530,7 @@ const QrCodeGenerator = () => {
             aria-pressed={mode === m.id}
             onClick={() => setMode(m.id)}
             className={cn(
-              'rounded-full border-2 px-5 py-2.5 text-sm font-bold transition-all',
+              'rounded-full border-2 px-5 py-2.5 text-base font-bold transition-all',
               mode === m.id ? 'border-zinc-200 bg-[#0a0a0a] text-white' : 'border-gray-200 bg-white text-gray-600 hover:border-zinc-200 hover:text-[#0a0a0a]',
             )}
           >
@@ -2594,7 +2594,7 @@ const QrCodeGenerator = () => {
             {payload && !qrError ? (
               <canvas ref={canvasRef} className="max-w-full rounded-xl" aria-label="QR code preview" />
             ) : (
-              <div className="flex aspect-square w-full max-w-[320px] items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-6 text-center text-sm text-gray-400">
+              <div className="flex aspect-square w-full max-w-[320px] items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-6 text-center text-base text-gray-400">
                 {qrError ? qrError : 'Fill the fields above — the QR code renders here live.'}
               </div>
             )}
@@ -2607,7 +2607,7 @@ const QrCodeGenerator = () => {
               </button>
             </div>
           </div>
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             Encodes {payload.length.toLocaleString()} characters at EC level {ec}. Scan-test from arm&apos;s length before printing.
           </p>
         </div>
@@ -2808,7 +2808,7 @@ const BarcodeGenerator = () => {
         <div className="flex flex-col items-center gap-4">
           <div className="card-soft flex w-full items-center justify-center overflow-x-auto p-6">
             {problem ? (
-              <div className="flex aspect-[5/2] w-full max-w-md items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-100 p-6 text-center text-sm font-medium text-gray-800">
+              <div className="flex aspect-[5/2] w-full max-w-md items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-100 p-6 text-center text-base font-medium text-gray-800">
                 {problem}
               </div>
             ) : (
@@ -2823,7 +2823,7 @@ const BarcodeGenerator = () => {
               Download SVG
             </button>
           </div>
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             {activeFormat?.id} · {value.length} characters rendered as crisp vector bars.
           </p>
         </div>

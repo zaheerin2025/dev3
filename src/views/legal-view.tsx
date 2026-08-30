@@ -31,8 +31,8 @@ export function LegalView({ kind }: LegalViewProps) {
         <Breadcrumbs items={[{ label: config.label }]} />
         <Reveal className="mt-6">
           <article className="card-surface rounded-[1.5rem] p-6 sm:p-10">
-            <h1 className="text-3xl font-bold text-balance sm:text-4xl">{config.label}</h1>
-            <p className="mt-4 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+            <h1 className="text-4xl font-bold text-balance sm:text-5xl">{config.label}</h1>
+            <p className="mt-4 flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
               <CalendarDays className="h-3.5 w-3.5 text-gray-800" aria-hidden="true" />
               Last updated: {legalLastUpdated}
             </p>
@@ -45,13 +45,13 @@ export function LegalView({ kind }: LegalViewProps) {
                 >
                   <h2
                     id={`legal-${kind}-${index}`}
-                    className="mb-3 mt-10 text-xl font-bold text-balance sm:text-2xl"
+                    className="mb-3 mt-10 text-2xl font-bold text-balance sm:text-3xl"
                   >
                     {section.heading}
                   </h2>
                   <div className="space-y-4">
                     {section.paragraphs.map((paragraph, pIndex) => (
-                      <p key={pIndex} className="text-base leading-8 text-foreground/85">
+                      <p key={pIndex} className="text-lg leading-8 text-foreground/85">
                         {paragraph}
                       </p>
                     ))}

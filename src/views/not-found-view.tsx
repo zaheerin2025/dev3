@@ -28,9 +28,9 @@ export function NotFoundView({ path }: NotFoundViewProps) {
         <p className="font-display text-[6rem] font-black leading-none text-gradient sm:text-[8rem]">
           404
         </p>
-        <h1 className="mt-4 text-3xl font-bold text-balance sm:text-4xl">Page Not Found</h1>
-        <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-          The page <code className="rounded bg-muted px-1.5 py-0.5 text-sm">{path ?? '/'}</code>{' '}
+        <h1 className="mt-4 text-4xl font-bold text-balance sm:text-5xl">Page Not Found</h1>
+        <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+          The page <code className="rounded bg-muted px-1.5 py-0.5 text-base">{path ?? '/'}</code>{' '}
           doesn&rsquo;t exist or has moved. Let&rsquo;s get you back on track.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -50,13 +50,13 @@ export function NotFoundView({ path }: NotFoundViewProps) {
 
         {services.length > 0 ? (
           <div className="mt-12">
-            <p className="text-sm font-medium text-muted-foreground">Popular services:</p>
+            <p className="text-base font-medium text-muted-foreground">Popular services:</p>
             <div className="mt-3 flex flex-wrap items-center justify-center gap-2.5">
               {services.slice(0, 5).map((service) => (
                 <Link
                   key={service.slug}
                   href={`/${service.slug}`}
-                  className="inline-flex min-h-[44px] items-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-800/15 transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-100 hover:ring-gray-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+                  className="inline-flex min-h-[44px] items-center rounded-full bg-white px-4 py-2 text-base font-semibold text-gray-900 ring-1 ring-inset ring-gray-800/15 transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-100 hover:ring-gray-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
                 >
                   {service.shortName}
                 </Link>
@@ -65,7 +65,7 @@ export function NotFoundView({ path }: NotFoundViewProps) {
           </div>
         ) : null}
 
-        <p className="mt-8 text-sm text-muted-foreground">
+        <p className="mt-8 text-base text-muted-foreground">
           Still lost?{' '}
           <Link href="/contact" className="font-semibold text-gray-800 hover:underline">
             Contact us

@@ -97,18 +97,18 @@ function Field({
 }) {
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      <Label htmlFor={id} className="text-sm font-medium">
+      <Label htmlFor={id} className="text-base font-medium">
         {label}
         {required ? (
           <span className="ml-0.5 text-gray-800" aria-hidden="true">
             *
           </span>
         ) : null}
-        {optional ? <span className="ml-1 text-xs font-normal text-muted-foreground">(optional)</span> : null}
+        {optional ? <span className="ml-1 text-sm font-normal text-muted-foreground">(optional)</span> : null}
       </Label>
       {children}
       {error ? (
-        <p id={`${id}-error`} className="mt-1 text-xs text-destructive">
+        <p id={`${id}-error`} className="mt-1 text-sm text-destructive">
           {error}
         </p>
       ) : null}
@@ -145,20 +145,20 @@ function SuccessPanel({
         </span>
       </span>
       <h3
-        className={cn('text-2xl font-bold', dark ? 'text-white' : 'text-foreground')}
+        className={cn('text-3xl font-bold', dark ? 'text-white' : 'text-foreground')}
       >
         Request received — thank you!
       </h3>
       <p
         className={cn(
-          'max-w-md text-sm leading-relaxed sm:text-base',
+          'max-w-md text-base leading-relaxed sm:text-lg',
           dark ? 'text-slate-300' : 'text-muted-foreground'
         )}
       >
         We&rsquo;ll reply within one business day with next steps and a fixed quote.
       </p>
       {leadId ? (
-        <p className={cn('text-xs', dark ? 'text-slate-400' : 'text-muted-foreground')}>
+        <p className={cn('text-sm', dark ? 'text-slate-400' : 'text-muted-foreground')}>
           Reference: <span className="font-mono font-semibold text-gray-800">{leadId}</span>
         </p>
       ) : null}
@@ -442,7 +442,7 @@ export function LeadForm({
       />
       <div
         id={`lead-message-${source}-hint`}
-        className="flex items-center justify-between text-[11px] text-muted-foreground"
+        className="flex items-center justify-between text-xs text-muted-foreground"
       >
         <span>Min. {MESSAGE_MIN} characters — goals, scope, links all help.</span>
         <span
@@ -474,7 +474,7 @@ export function LeadForm({
   const consentCopy = (
     <p
       className={cn(
-        'text-xs leading-relaxed',
+        'text-sm leading-relaxed',
         dark ? 'text-slate-400' : 'text-muted-foreground'
       )}
     >
@@ -558,7 +558,7 @@ export function LeadForm({
             <h3 className={cn('font-semibold', dark ? 'text-white' : 'text-foreground')}>
               Get your free quote
             </h3>
-            <p className={cn('text-sm', dark ? 'text-slate-300' : 'text-muted-foreground')}>
+            <p className={cn('text-base', dark ? 'text-slate-300' : 'text-muted-foreground')}>
               Fixed price, no obligation — reply within one business day.
             </p>
           </div>
@@ -697,7 +697,7 @@ function LeadRail() {
     <aside className="section-dark-deep bg-dots-dark relative hidden overflow-hidden lg:flex lg:flex-col">
       <span className="glow-orb -right-20 top-10 h-72 w-72 bg-gray-500/25" aria-hidden="true" />
       <div className="relative z-10 flex h-full flex-col gap-7 p-8">
-        <p className="flex w-fit items-center gap-2 text-xs font-medium text-gray-200">
+        <p className="flex w-fit items-center gap-2 text-sm font-medium text-gray-200">
           <span
             className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-gray-300"
             aria-hidden="true"
@@ -706,8 +706,8 @@ function LeadRail() {
         </p>
 
         <div>
-          <h3 className="text-2xl font-bold text-white">Tell us about your project</h3>
-          <p className="mt-2 text-sm leading-relaxed text-slate-300">
+          <h3 className="text-3xl font-bold text-white">Tell us about your project</h3>
+          <p className="mt-2 text-base leading-relaxed text-slate-300">
             A few lines are enough — we reply with a fixed quote and a clear plan.
           </p>
         </div>
@@ -730,10 +730,10 @@ function LeadRail() {
                 <row.icon className="h-[18px] w-[18px]" />
               </span>
               <span className="min-w-0">
-                <span className="block text-[11px] font-medium uppercase tracking-[0.12em] text-slate-400">
+                <span className="block text-xs font-medium uppercase tracking-[0.12em] text-slate-400">
                   {row.label}
                 </span>
-                <span className="block truncate text-sm font-semibold text-white">
+                <span className="block truncate text-base font-semibold text-white">
                   {row.value}
                 </span>
               </span>
@@ -743,7 +743,7 @@ function LeadRail() {
         ) : null}
 
         <div className="mt-auto flex flex-col gap-5">
-          <p className="text-sm leading-relaxed text-slate-300">
+          <p className="text-base leading-relaxed text-slate-300">
             Senior people on every project, fixed quotes before we start, and code
             you own — that is how every build runs here.
           </p>
