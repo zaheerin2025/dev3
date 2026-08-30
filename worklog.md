@@ -748,3 +748,18 @@ Stage Summary:
 - Functionality 100% intact: hash router, mega menu, quote builder + live estimates, tools, admin editable, newsletter, SEO.
 - three/@react-three/fiber/@react-three/drei remain in package.json (unused, tree-shaken) for a future 3D styling pass if requested.
 - Known: dev-mode "1 Issue" badge = pre-existing Radix accordion hydration warning (documented Task 25); real contact details still placeholders in site.ts / admin Site Content.
+
+---
+Task ID: 27
+Agent: orchestrator (Z.ai main)
+Task: Redesign footer + its styling with zero expensive paint (user: "no paint is required that make website slow")
+
+Work Log:
+- Rewrote src/components/layout/footer.tsx: sharper 4-column grid (brand+status+socials / services / company / contact+newsletter), new bottom bar with Admin link + back-to-top button, availability chip (green dot), and an oversized "Developers3" watermark wordmark at the very bottom (solid color text = zero paint cost).
+- Performance rules applied: solid colors and 1px borders ONLY — no backdrop-filter, no filter/blur, no large box-shadows, no gradient paints. All hover states are color transitions or cheap transforms. Focus rings minimal. Newsletter submit is a plain white pill; spinner is a border-based CSS spinner.
+- Newsletter form reimplemented on plain <input>/<button> (same id footer-newsletter, same validation, same /api/newsletter fetch, toast + trackEvent unchanged). Admin-editable contact overrides, socials, services/company link maps, legal links, sticky mt-auto — all preserved.
+- Verified (agent-browser): desktop 1440x900 footer screenshot (all columns, watermark, back-to-top), mobile 390x844 (no horizontal overflow; footer bottom == document height → sticky, no gap), console errors: none. ESLint clean, tsc clean (examples/ pre-existing only).
+
+Stage Summary:
+- Footer redesigned: modern editorial dark footer, crisp hairlines, typography-led, watermark brand mark — with a strict no-expensive-paint budget (no blur/filters/shadows/gradients).
+- Functionality unchanged: newsletter API, analytics, admin-editable contacts, all links, responsive single-column mobile layout.

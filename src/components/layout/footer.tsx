@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import {
+  ArrowUp,
   Clock,
-  Loader2,
   Facebook,
   Github,
   Instagram,
@@ -13,8 +13,6 @@ import {
   Phone,
   Twitter,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { site } from '@/lib/site';
 import { useSiteSettings } from '@/lib/use-site-settings';
@@ -36,6 +34,10 @@ const LEGAL_LINKS = [
   { label: 'Terms & Conditions', href: '/terms' },
 ];
 
+/**
+ * Newsletter form — unchanged behavior (validation, /api/newsletter,
+ * toast, analytics), restyled with solid colors only.
+ */
 function NewsletterForm() {
   const { toast } = useToast();
   const [email, setEmail] = React.useState('');
@@ -72,11 +74,11 @@ function NewsletterForm() {
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-2.5" aria-label="Newsletter signup">
-      <label htmlFor="footer-newsletter" className="text-sm font-bold text-white">
+      <label htmlFor="footer-newsletter" className="text-sm font-semibold text-white">
         Growth tips in your inbox
       </label>
       <div className="flex gap-2">
-        <Input
+        <input
           id="footer-newsletter"
           type="email"
           value={email}
@@ -84,26 +86,56 @@ function NewsletterForm() {
           placeholder="you@company.com"
           autoComplete="email"
           required
-          className="min-h-[44px] rounded-full border-white/15 bg-white/10 text-white placeholder:text-white/40 focus-visible:border-zinc-400/60 focus-visible:ring-zinc-400/30"
+          className="h-11 w-full min-w-0 rounded-full border border-white/15 bg-white/[0.06] px-4 text-sm text-white placeholder:text-zinc-500 transition-colors focus:border-zinc-300 focus:outline-none"
         />
-        <Button
+        <button
           type="submit"
           disabled={loading}
-          className="btn-primary-pill-sm min-h-[44px] shrink-0"
+          className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-5 text-sm font-bold text-zinc-900 transition-colors hover:bg-zinc-300 disabled:opacity-60"
         >
-          {loading ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : 'Subscribe'}
-        </Button>
+          {loading ? (
+            <span className="size-4 animate-spin rounded-full border-2 border-zinc-400 border-t-zinc-900" aria-hidden="true" />
+          ) : (
+            'Subscribe'
+          )}
+        </button>
       </div>
-      <p className="text-xs leading-relaxed text-white/50">
+      <p className="text-xs leading-relaxed text-zinc-500">
         One practical web/SEO tip per month. Unsubscribe anytime.
       </p>
     </form>
   );
 }
 
+/** Micro section label used above each link column. */
+function ColumnLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <h3 className="mb-4 text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-500">
+      {children}
+    </h3>
+  );
+}
+
+/** Standard footer text link — color-only hover (cheap). */
+function FooterLink({ href, children, muted = false }: { href: string; children: React.ReactNode; muted?: boolean }) {
+  return (
+    <Link
+      href={href}
+      className={`text-sm transition-colors hover:text-white ${
+        muted ? 'text-zinc-500' : 'text-zinc-400'
+      }`}
+    >
+      {children}
+    </Link>
+  );
+}
+
 /**
- * FOOTER — flat dark section, plain columns, functional newsletter.
- * Sticks to the bottom via the site shell's `mt-auto`.
+ * FOOTER — redesigned for speed and clarity.
+ * Performance rules: solid colors and 1px borders only — no backdrop blur,
+ * no filter effects, no large shadows, no gradient paint. Hover states use
+ * color/transform transitions only (compositor-friendly). Sticky to the
+ * bottom via the site shell's `mt-auto`.
  */
 export function Footer() {
   const year = new Date().getFullYear();
@@ -114,25 +146,32 @@ export function Footer() {
   const email = settings['contact.email'] || site.email;
 
   return (
-    <footer className="relative mt-auto overflow-hidden section-black text-white">
-      <div className="relative mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
+    <footer className="relative mt-auto overflow-hidden bg-[#0b0b0d] text-zinc-300">
+      <div className="mx-auto w-full max-w-7xl px-4 pb-6 pt-14 sm:px-6 lg:px-8">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.35fr_0.85fr_0.85fr_1.3fr]">
           {/* Brand */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col items-start gap-5">
             <Link href="/" className="flex items-center gap-2.5" ariaLabel="Developers3 — home">
               <span
                 aria-hidden="true"
-                className="flex size-9 items-center justify-center rounded-lg bg-white/10"
+                className="flex size-9 items-center justify-center rounded-lg bg-white text-base text-zinc-900"
               >
-                <span className="text-base" aria-hidden="true">✦</span>
+                ✦
               </span>
               <span className="font-display text-lg font-bold tracking-tight text-white">
                 Developers3
               </span>
             </Link>
-            <p className="max-w-xs text-sm leading-relaxed text-white/60">
-              {site.tagline}
+            <p className="max-w-xs text-sm leading-relaxed text-zinc-400">
+              Web, app &amp; software development company. Senior-only team, fixed
+              quotes, and code you own — from first call to launch day.
             </p>
+            {/* Availability status */}
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-zinc-300">
+              <span className="size-2 rounded-full bg-green-500" aria-hidden="true" />
+              Available for new projects
+            </p>
+            {/* Socials */}
             <div className="flex items-center gap-2">
               {[
                 { icon: Linkedin, href: site.socials.linkedin, label: 'LinkedIn' },
@@ -147,7 +186,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Developers3 on ${label}`}
-                  className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/70 ring-1 ring-inset ring-white/15 transition-colors duration-200 hover:bg-white/20 hover:text-white"
+                  className="flex size-10 items-center justify-center rounded-full border border-white/15 text-zinc-400 transition-colors hover:border-white hover:bg-white hover:text-zinc-900"
                 >
                   <Icon className="size-4" aria-hidden="true" />
                 </a>
@@ -157,18 +196,11 @@ export function Footer() {
 
           {/* Services */}
           <nav aria-label="Footer services">
-            <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-zinc-400">
-              Services
-            </h3>
+            <ColumnLabel>Services</ColumnLabel>
             <ul className="flex flex-col gap-2.5">
               {services.map((service) => (
                 <li key={service.slug}>
-                  <Link
-                    href={`/${service.slug}`}
-                    className="text-sm text-white/60 transition-colors hover:text-white"
-                  >
-                    {service.name}
-                  </Link>
+                  <FooterLink href={`/${service.slug}`}>{service.name}</FooterLink>
                 </li>
               ))}
             </ul>
@@ -176,47 +208,35 @@ export function Footer() {
 
           {/* Company + legal */}
           <nav aria-label="Footer company">
-            <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-zinc-400">
-              Company
-            </h3>
+            <ColumnLabel>Company</ColumnLabel>
             <ul className="flex flex-col gap-2.5">
               {COMPANY_LINKS.map((link) => (
                 <li key={`${link.label}-${link.href}`}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-white/60 transition-colors hover:text-white"
-                  >
-                    {link.label}
-                  </Link>
+                  <FooterLink href={link.href}>{link.label}</FooterLink>
                 </li>
               ))}
               {LEGAL_LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-white/40 transition-colors hover:text-white"
-                  >
+                  <FooterLink href={link.href} muted>
                     {link.label}
-                  </Link>
+                  </FooterLink>
                 </li>
               ))}
             </ul>
           </nav>
 
           {/* Contact + newsletter */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
             <div>
-              <h3 className="mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-zinc-400">
-                Get in touch
-              </h3>
-              <ul className="flex flex-col gap-3 text-sm text-white/60">
+              <ColumnLabel>Get in touch</ColumnLabel>
+              <ul className="flex flex-col gap-3 text-sm text-zinc-400">
                 <li>
                   <a
                     href={phoneHref}
                     onClick={() => trackEvent('call_click', { location: 'footer' })}
                     className="inline-flex items-center gap-2.5 transition-colors hover:text-white"
                   >
-                    <Phone className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
+                    <Phone className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
                     {phoneDisplay}
                   </a>
                 </li>
@@ -226,18 +246,18 @@ export function Footer() {
                     onClick={() => trackEvent('email_click', { location: 'footer' })}
                     className="inline-flex items-center gap-2.5 transition-colors hover:text-white"
                   >
-                    <Mail className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
+                    <Mail className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
                     {email}
                   </a>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <MapPin className="mt-0.5 size-4 shrink-0 text-zinc-400" aria-hidden="true" />
+                  <MapPin className="mt-0.5 size-4 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>
                     {site.address.street}, {site.address.city}, {site.address.state} {site.address.zip}
                   </span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Clock className="size-4 shrink-0 text-zinc-400" aria-hidden="true" />
+                  <Clock className="size-4 shrink-0 text-zinc-500" aria-hidden="true" />
                   <span>{site.hours}</span>
                 </li>
               </ul>
@@ -246,22 +266,38 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
-          <p className="text-xs text-white/40">
+          <p className="text-xs text-zinc-500">
             © {year} {site.legalName}. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <p className="text-xs text-white/40">
-              Web • Apps • Software • SEO — built with performance in mind.
+            <p className="hidden text-xs text-zinc-500 sm:block">
+              Web • Apps • Software • SEO
             </p>
             <Link
               href="/admin"
-              className="text-xs text-white/40 transition-colors hover:text-white"
+              className="text-xs text-zinc-500 transition-colors hover:text-white"
             >
               Admin
             </Link>
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              aria-label="Back to top"
+              className="flex size-10 items-center justify-center rounded-full border border-white/15 text-zinc-400 transition-colors hover:border-white hover:bg-white hover:text-zinc-900"
+            >
+              <ArrowUp className="size-4" aria-hidden="true" />
+            </button>
           </div>
         </div>
+      </div>
+
+      {/* Oversized watermark wordmark — solid color, zero paint cost */}
+      <div aria-hidden="true" className="pointer-events-none select-none overflow-hidden">
+        <p className="mx-auto max-w-7xl px-4 text-center font-display text-[13.5vw] font-bold leading-[0.95] tracking-tight text-white/[0.045] sm:px-6 lg:px-8">
+          Developers3
+        </p>
       </div>
     </footer>
   );
