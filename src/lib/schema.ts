@@ -17,6 +17,18 @@ export function buildOrganizationSchema() {
     url: site.url,
     logo: abs('/logo.svg'),
     description: site.description,
+    // Regions we genuinely serve — mirrored by the visible homepage copy
+    // (SeoContentSection) so structured data never claims more than the
+    // page states.
+    areaServed: [
+      'United States',
+      'United Kingdom',
+      'Canada',
+      'Germany',
+      'France',
+      'Europe',
+      'Asia',
+    ],
     ...(site.founded ? { foundingDate: String(site.founded) } : {}),
     ...(site.email ? { email: site.email } : {}),
     ...(site.phoneIntl ? { telephone: site.phoneIntl } : {}),

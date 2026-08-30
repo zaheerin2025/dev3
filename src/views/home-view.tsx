@@ -11,6 +11,7 @@ import { ProcessSection } from '@/components/home/process-section';
 import { VideoSection } from '@/components/home/video-section';
 import { WorkTogetherBand } from '@/components/home/work-together-band';
 import { CtaSection } from '@/components/home/cta-section';
+import { SeoContentSection } from '@/components/home/seo-content-section';
 import { homeFaqs } from '@/data/company';
 import { marqueeWork, marqueeWorkAccents } from '@/data/home-content';
 
@@ -42,6 +43,9 @@ export function HomeView() {
         </div>
       </section>
       <CtaSection />
+      {/* Bottom-most content block — international/SEO copy sits directly
+          above the footer, matching how users scan the end of a page. */}
+      <SeoContentSection />
     </div>
   );
 }

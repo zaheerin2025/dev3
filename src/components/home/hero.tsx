@@ -45,11 +45,19 @@ const ROTATOR_ITEMS = [
 const ROTATOR_SLOT = 2.6;
 
 /**
- * Mobile app capabilities — shown in the amber callout card, covering
- * the full stack from languages to store deployment.
+ * Mobile app capabilities — shown as clean chips in the amber callout
+ * card, covering the full stack from languages to store deployment.
  */
-const MOBILE_STACK =
-  'Flutter • Dart • Kotlin • Java • Firebase • Supabase • Play Store • App Store';
+const MOBILE_STACK_ITEMS = [
+  'Flutter',
+  'Dart',
+  'Kotlin',
+  'Java',
+  'Firebase',
+  'Supabase',
+  'Play Store',
+  'App Store',
+];
 
 /**
  * Languages & frameworks we are expert in (right hero rail).
@@ -86,7 +94,7 @@ export function Hero() {
 
   return (
     <section id="hero" className="section-white relative overflow-hidden">
-      <div className="mx-auto w-full max-w-7xl px-4 pb-16 pt-12 sm:px-6 md:pb-24 md:pt-16 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-4 pb-12 pt-8 sm:px-6 md:pb-14 md:pt-10 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
           {/* Left — headline block */}
           <div className="lg:col-span-8">
@@ -97,11 +105,11 @@ export function Hero() {
 
             <Editable id="hero.headline">
               {headlineOverride ? (
-                <h1 className="mt-6 max-w-4xl font-display text-[2.9rem] font-bold leading-[1.05] tracking-[-0.03em] text-[#161613] sm:text-6xl lg:text-[5rem]">
+                <h1 className="mt-5 max-w-4xl font-display text-[2.9rem] font-bold leading-[1.05] tracking-[-0.03em] text-[#161613] sm:text-6xl lg:text-[5rem]">
                   {headlineOverride}
                 </h1>
               ) : (
-                <h1 className="mt-6 max-w-4xl font-display text-[2.6rem] font-bold leading-[1.07] tracking-[-0.03em] text-[#161613] sm:text-6xl lg:text-[4.9rem]">
+                <h1 className="mt-5 max-w-4xl font-display text-[2.6rem] font-bold leading-[1.07] tracking-[-0.03em] text-[#161613] sm:text-6xl lg:text-[4.9rem]">
                   {/* Screen readers get the full sentence once; the visual
                       rotator below is decorative. */}
                   <span className="sr-only">
@@ -139,12 +147,12 @@ export function Hero() {
             </Editable>
 
             <Editable id="hero.subheadline">
-              <p className="mt-7 max-w-2xl text-xl leading-relaxed text-[#6f6e66]">
+              <p className="mt-5 max-w-2xl text-xl leading-relaxed text-[#6f6e66]">
                 {subheadline}
               </p>
             </Editable>
 
-            <div className="mt-9 flex flex-wrap items-center gap-3.5">
+            <div className="mt-7 flex flex-wrap items-center gap-3.5">
               <Link
                 href="/contact"
                 className="btn-primary-pill"
@@ -185,25 +193,32 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Mobile stack callout — solid amber sticker card */}
+            {/* Mobile stack callout — amber sticker card with clean chips */}
             <div className="flex items-start gap-3.5 rounded-2xl border border-[#161613] bg-[#FFD84D] p-5">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#161613] text-[#FFD84D]">
                 <Smartphone className="size-5" aria-hidden="true" />
               </span>
               <div className="min-w-0">
                 <p className="text-[15px] font-bold leading-snug text-[#161613]">
-                  Mobile App Technologies &amp; Deployment:-
+                  Mobile App Technologies &amp; Deployment
                 </p>
-                <p className="mt-1.5 text-[15px] font-semibold leading-snug text-[#161613]/80">
-                  {MOBILE_STACK}
-                </p>
+                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {MOBILE_STACK_ITEMS.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-[#161613]/15 bg-white/70 px-2.5 py-1 text-[13px] font-semibold leading-none text-[#161613]"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </aside>
         </div>
 
         {/* Hairline fact row — honest claims, no invented proof */}
-        <div className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-[#e6e5de] pt-7">
+        <div className="mt-10 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-[#e6e5de] pt-6">
           {HERO_CHIPS.map(({ icon: Icon, label }, i) => (
             <span
               key={label}
