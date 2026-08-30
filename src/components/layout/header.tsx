@@ -83,7 +83,18 @@ export function Header({ path }: HeaderProps) {
     <>
       <header className="sticky top-0 z-50 w-full border-b border-[#e6e5de] bg-[#fafaf7]">
         <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <Logo />
+          {/* Left group — logo + availability status (relocated from the
+              hero so the badge stays visible without adding hero height) */}
+          <div className="flex items-center gap-7">
+            <Logo />
+            <p className="hidden items-center gap-2 text-[13px] font-semibold text-[#6f6e66] xl:inline-flex">
+              <span
+                className="size-2 rounded-full bg-[#0FA36B] animate-pulse-dot"
+                aria-hidden="true"
+              />
+              Available for new projects
+            </p>
+          </div>
 
           {/* Desktop nav */}
           <nav aria-label="Main navigation" className="hidden items-center gap-8 lg:flex">

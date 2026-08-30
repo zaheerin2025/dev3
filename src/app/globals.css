@@ -479,11 +479,12 @@
 }
 
 /* Hero rotating headline slot — inline-grid keeps width fixed to the
-   widest word (zero layout shift); transform/opacity only. */
+   widest phrase (zero layout shift); phrases share one left edge with
+   the static lines; transform/opacity only. */
 .hero-rotator {
   display: inline-grid;
   vertical-align: bottom;
-  justify-items: center;
+  justify-items: start;
 }
 .hero-rotator > span {
   grid-area: 1 / 1;
@@ -494,7 +495,8 @@
 }
 /* Timing fits any word count: each word must be fully hidden again
    before the next word starts rising (fade ends at 16.5%, the next
-   word begins at 3% + 100/N % — safe for N >= 6). */
+   word begins at 3% + 100/N %). Checked for the current N = 7
+   (16.5% < 3% + 14.3% — no overlap); keep N <= 7 for this curve. */
 @keyframes hero-word-cycle {
   0% { opacity: 0; transform: translateY(0.55em); }
   3%, 15% { opacity: 1; transform: translateY(0); }

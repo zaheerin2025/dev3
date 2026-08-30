@@ -5,7 +5,8 @@ import { ArrowUp, Mail, MessageCircle, Sparkle, Target } from 'lucide-react';
 import { site } from '@/lib/site';
 import { useSiteSettings } from '@/lib/use-site-settings';
 import { effectiveValue } from '@/lib/content-schema';
-import { services } from '@/data';
+import { getService } from '@/data';
+import type { Service } from '@/lib/types';
 import { Link } from '@/components/common/link';
 import { trackEvent } from '@/lib/analytics';
 import { ACCENT_DOT } from '@/lib/accent';
@@ -23,6 +24,22 @@ const LEGAL_LINKS = [
   { label: 'Privacy Policy', href: '/privacy-policy' },
   { label: 'Terms & Conditions', href: '/terms' },
 ];
+
+/**
+ * The 5 core services — short, professional, guaranteed single-line
+ * menu (the full catalogue lives on /services).
+ */
+const FOOTER_SERVICE_SLUGS = [
+  'custom-website-development',
+  'mobile-app-development',
+  'software-development',
+  'ecommerce-development',
+  'google-ads-management',
+] as const;
+
+const FOOTER_SERVICES = FOOTER_SERVICE_SLUGS
+  .map((slug) => getService(slug))
+  .filter((s): s is Service => Boolean(s));
 
 /** Micro section label used above each link column — ramp-colored dot marker. */
 function ColumnLabel({ children, accent = 0 }: { children: React.ReactNode; accent?: number }) {
@@ -95,14 +112,14 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Services — two-column index keeps the footer short */}
+          {/* Services — 5 core services, one clean single-line column */}
           <nav aria-label="Footer services">
             <ColumnLabel accent={0}>Services</ColumnLabel>
-            <ul className="grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
-              {services.map((service, index) => (
+            <ul className="flex flex-col gap-2.5">
+              {FOOTER_SERVICES.map((service, index) => (
                 <li key={service.slug}>
                   <FooterLink href={`/${service.slug}`}>
-                    <span className="inline-flex items-center gap-2">
+                    <span className="inline-flex items-center gap-2 whitespace-nowrap">
                       <span
                         className={`size-1.5 shrink-0 rounded-full ${ACCENT_DOT[index % ACCENT_DOT.length]}`}
                         aria-hidden="true"
@@ -186,7 +203,7 @@ export function Footer() {
                     </span>
                     <span className="flex flex-col">
                       <span className="font-semibold text-zinc-200">
-                        Marketing, promotions &amp; partnerships
+                        Marketing &amp; Partnerships
                       </span>
                       <span className="break-all group-hover:text-white">{businessEmail}</span>
                     </span>

@@ -27,20 +27,29 @@ const HERO_CHIPS = [
 ];
 
 /**
- * What we build — the hero headline rotates through every service we
- * deliver so the very first sentence tells the whole story.
+ * Business needs the hero headline rotates through — sandwiched between
+ * the two static lines "Your Business Needs" (top) and "We Make It
+ * Happen" (bottom) so every combination reads as one confident sentence.
  */
 const ROTATOR_ITEMS = [
-  'websites',
-  'mobile apps',
-  'software',
-  'marketing',
-  'e-commerce stores',
-  'business platforms',
+  'A Better Website',
+  'More Customers',
+  'A Mobile App',
+  'Google Ads',
+  'Meta Ads',
+  'AI Automation',
+  'Better Visibility',
 ];
 
 /** Seconds each phrase stays readable before the next one rises in. */
 const ROTATOR_SLOT = 2.6;
+
+/**
+ * Mobile app capabilities — shown in the amber callout card, covering
+ * the full stack from languages to store deployment.
+ */
+const MOBILE_STACK =
+  'Flutter • Dart • Kotlin • Java • Firebase • Supabase • Play Store • App Store';
 
 /**
  * Languages & frameworks we are expert in (right hero rail).
@@ -60,12 +69,15 @@ const LANGUAGES = [
 ];
 
 /**
- * HERO — big, confident split layout on paper: availability badge,
- * oversized grotesk headline whose service word rotates (websites →
- * apps → software → marketing → e-commerce stores → business platforms),
- * roomy sub and CTAs, hairline fact row, and a right rail with the
- * languages we master plus the Flutter speciality callout. No
- * decorative paint — solid colors, hairlines and transform-only motion.
+ * HERO — big, confident split layout on paper: oversized grotesk
+ * headline reading "Your Business Needs [rotating need] We Make It
+ * Happen" (needs rotate: better website → customers → app → ads →
+ * automation → visibility), roomy sub and CTAs, hairline fact row, and
+ * a right rail with the languages we master plus the mobile app
+ * technologies & deployment callout. The availability badge lives in
+ * the top navigation, NOT here, so the hero stays compact and fits the
+ * initial viewport. No decorative paint — solid colors, hairlines and
+ * transform-only motion.
  */
 export function Hero() {
   const settings = useSiteSettings((s) => s.settings);
@@ -83,15 +95,6 @@ export function Hero() {
               Websites • Apps • Software • Marketing
             </p>
 
-            {/* Availability badge — always visible, both columns */}
-            <p className="mt-6 flex w-fit items-center gap-2.5 rounded-full border border-[#161613] bg-[#E3F5EC] px-4 py-2 text-sm font-bold text-[#161613]">
-              <span
-                className="size-2.5 rounded-full bg-[#0FA36B] animate-pulse-dot"
-                aria-hidden="true"
-              />
-              Available for new projects
-            </p>
-
             <Editable id="hero.headline">
               {headlineOverride ? (
                 <h1 className="mt-6 max-w-4xl font-display text-[2.9rem] font-bold leading-[1.05] tracking-[-0.03em] text-[#161613] sm:text-6xl lg:text-[5rem]">
@@ -102,14 +105,15 @@ export function Hero() {
                   {/* Screen readers get the full sentence once; the visual
                       rotator below is decorative. */}
                   <span className="sr-only">
-                    We build {ROTATOR_ITEMS.join(', ')} that win clients &amp; grow business.
+                    Your business needs a better website, more customers, a mobile app, Google
+                    Ads, Meta Ads, AI automation or better visibility — we make it happen.
                   </span>
                   <span aria-hidden="true">
                     <span className="word-rise block" style={{ ['--rise-delay' as string]: '0ms' }}>
-                      We build
+                      Your Business Needs
                     </span>
                     <span
-                      className="hero-rotator my-1 text-[2.2rem] text-[#FF4D00] sm:text-6xl lg:text-[4.75rem]"
+                      className="hero-rotator my-1 text-[1.9rem] text-[#FF4D00] sm:text-5xl lg:text-[4.4rem]"
                     >
                       {ROTATOR_ITEMS.map((item, i) => (
                         <span
@@ -127,7 +131,7 @@ export function Hero() {
                       className="word-rise block"
                       style={{ ['--rise-delay' as string]: '140ms' }}
                     >
-                      that win clients &amp; grow business.
+                      We Make It Happen
                     </span>
                   </span>
                 </h1>
@@ -181,16 +185,19 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Speciality callout — solid amber sticker card */}
+            {/* Mobile stack callout — solid amber sticker card */}
             <div className="flex items-start gap-3.5 rounded-2xl border border-[#161613] bg-[#FFD84D] p-5">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#161613] text-[#FFD84D]">
                 <Smartphone className="size-5" aria-hidden="true" />
               </span>
-              <p className="text-[15px] font-semibold leading-snug text-[#161613]">
-                Cross-platform apps with{' '}
-                <span className="font-bold">Flutter (Dart)</span> — our speciality. One codebase,
-                every platform.
-              </p>
+              <div className="min-w-0">
+                <p className="text-[15px] font-bold leading-snug text-[#161613]">
+                  Mobile App Technologies &amp; Deployment:-
+                </p>
+                <p className="mt-1.5 text-[15px] font-semibold leading-snug text-[#161613]/80">
+                  {MOBILE_STACK}
+                </p>
+              </div>
             </div>
           </aside>
         </div>
@@ -219,7 +226,10 @@ export function Hero() {
                 {lang}
               </span>
             ))}
-            <span className="sr-only">Cross-platform apps with Flutter (Dart) — our speciality.</span>
+            <span className="sr-only">
+              Mobile App Technologies &amp; Deployment: Flutter, Dart, Kotlin, Java, Firebase,
+              Supabase, Play Store, App Store.
+            </span>
           </div>
         </div>
       </div>

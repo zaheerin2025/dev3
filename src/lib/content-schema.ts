@@ -34,7 +34,7 @@ export const CONTENT_FIELDS: ContentField[] = [
     page: 'home',
     group: 'Hero',
     type: 'text',
-    defaultValue: 'We Build Websites That Win Clients And Grow Business',
+    defaultValue: 'Your Business Needs A Better Website — We Make It Happen',
     hint: 'Shown as the home page H1. Saved text replaces the animated default headline.',
     visual: true,
   },
