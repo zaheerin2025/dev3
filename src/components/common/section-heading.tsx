@@ -49,7 +49,7 @@ export function SectionHeading({
         <p
           className={cn(
             'mb-4 text-[11px] font-bold uppercase tracking-[0.22em]',
-            dark ? 'text-cyan-300' : 'text-blue-600'
+            dark ? 'text-pink-300' : 'text-purple-600'
           )}
         >
           {eyebrow}
@@ -67,7 +67,7 @@ export function SectionHeading({
         <p
           className={cn(
             'mt-4 text-base leading-relaxed sm:text-lg',
-            dark ? 'text-blue-100/70' : 'text-muted-foreground'
+            dark ? 'text-purple-100/70' : 'text-muted-foreground'
           )}
         >
           {description}

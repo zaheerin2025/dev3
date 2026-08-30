@@ -1,31 +1,39 @@
 'use client';
 
 import * as React from 'react';
-import { ArrowRight, ChevronDown, Clock, Mail, Menu, Phone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowRight, ChevronDown, Clock, Menu, Phone, Sparkle } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { cn } from '@/lib/utils';
 import { site } from '@/lib/site';
 import { featuredServices, services } from '@/data';
 import { Link } from '@/components/common/link';
 import { ServiceIconGlyph } from '@/components/common/icon-map';
+import { MobileMenu } from '@/components/layout/mobile-menu';
+import { cn } from '@/lib/utils';
 
 interface HeaderProps {
   path: string;
 }
 
+/** Same link set as the full-screen mobile menu — desktop and mobile stay in sync. */
 const MAIN_NAV = [
-  { label: 'Tools', href: '/tools' },
-  { label: 'Portfolio', href: '/portfolio' },
+  { label: 'Work', href: '/portfolio' },
+  { label: 'Free Tools', href: '/tools' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'About', href: '/about' },
-  { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: '/contact' },
+] as const;
+
+/** Colorful icon tiles for the services dropdown (cycle per row). */
+const SERVICE_TILE_GRADIENTS = [
+  'from-purple-500 to-pink-500',
+  'from-blue-500 to-cyan-400',
+  'from-pink-500 to-orange-400',
+  'from-emerald-500 to-lime-400',
+  'from-violet-500 to-fuchsia-500',
 ];
 
 function isActive(path: string, href: string): boolean {
@@ -38,21 +46,33 @@ function isActive(path: string, href: string): boolean {
   return path === href;
 }
 
-function Logo({ dark }: { dark?: boolean }) {
+/** Colorful logo lockup — same as the one in the full-screen mobile menu. */
+export function Logo({ className }: { className?: string }) {
   return (
     <Link
       href="/"
-      className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+      className={cn('flex items-center gap-2.5 transition-opacity hover:opacity-80', className)}
       ariaLabel="Developers3 — home"
     >
-      <img src="/logo.svg" alt="" width={34} height={34} className="h-9 w-9" />
-      <span className={cn('font-display text-lg font-bold tracking-tight', dark ? 'text-white' : 'text-foreground')}>
+      <span
+        aria-hidden="true"
+        className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 shadow-[0_4px_14px_rgba(124,58,237,0.35)]"
+      >
+        <Sparkle className="size-5 text-white" />
+      </span>
+      <span className="font-display text-lg font-bold tracking-tight text-[#0a0a0a]">
         Developers<span className="text-gradient">3</span>
+        <span aria-hidden="true" className="ml-0.5 inline-block size-1.5 rounded-full bg-yellow-300" />
       </span>
     </Link>
   );
 }
 
+/**
+ * COLORFUL HEADER — sticky white bar with a 2px ink edge, Sparkle logo,
+ * bold editorial nav with purple hover, neo-brutalist services dropdown,
+ * gradient pill CTA and the full-screen mobile menu overlay.
+ */
 export function Header({ path }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [megaOpen, setMegaOpen] = React.useState(false);
@@ -65,55 +85,59 @@ export function Header({ path }: HeaderProps) {
   }, [path]);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/85 backdrop-blur-xl">
+    <>
+      <header className="sticky top-0 z-50 w-full border-b-2 border-[#0a0a0a] bg-white/95 backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Logo />
 
-        {/* Desktop nav — editorial text links with active underline */}
+        {/* Desktop nav — bold ink links with purple hover + gradient active dot */}
         <nav aria-label="Main navigation" className="hidden items-center gap-7 lg:flex">
           <DropdownMenu modal={false} open={megaOpen} onOpenChange={setMegaOpen}>
             <DropdownMenuTrigger asChild>
               <button
                 className={cn(
-                  'group relative inline-flex h-16 items-center gap-1.5 text-sm font-medium transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                  servicesActive || megaOpen ? 'text-foreground' : 'text-foreground/65'
+                  'group relative inline-flex h-16 items-center gap-1 text-[15px] font-bold transition-colors hover:text-purple-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500',
+                  servicesActive || megaOpen ? 'text-purple-600' : 'text-[#0a0a0a]'
                 )}
               >
                 Services
                 <ChevronDown
-                  className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180"
+                  className="size-4 text-gray-500 transition-transform duration-200 group-data-[state=open]:rotate-180"
                   aria-hidden="true"
                 />
                 {(servicesActive || megaOpen) && (
                   <span
-                    className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500"
+                    className="absolute inset-x-0 bottom-3 mx-auto h-1 w-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-500"
                     aria-hidden="true"
                   />
                 )}
               </button>
             </DropdownMenuTrigger>
+
+            {/* Neo-brutalist services panel — 2px ink border + hard offset shadow */}
             <DropdownMenuContent
               align="start"
-              sideOffset={10}
-              className="w-[560px] rounded-2xl border-border bg-popover p-2 shadow-2xl"
+              sideOffset={12}
+              className="w-[540px] rounded-2xl border-2 border-[#0a0a0a] bg-white p-2 shadow-[8px_8px_0_#0a0a0a]"
             >
               {/* Panel header row */}
-              <div className="flex items-center justify-between gap-3 px-3 pb-1 pt-2">
-                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+              <div className="flex items-center justify-between gap-3 px-3 pb-1.5 pt-2">
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-[0.14em] text-gray-500">
+                  <Sparkle className="size-3.5 fill-pink-400 text-pink-400" aria-hidden="true" />
                   Featured services
-                </p>
+                </span>
                 <Link
                   href="/services"
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-purple-600 transition-colors hover:text-pink-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                 >
                   All services
-                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  <ArrowRight className="size-3.5" aria-hidden="true" />
                 </Link>
               </div>
 
               {/* Featured service rows */}
               <div className="flex flex-col">
-                {featuredServices.map((service) => {
+                {featuredServices.map((service, index) => {
                   const href = `/${service.slug}`;
                   const active = path === href;
                   return (
@@ -121,29 +145,32 @@ export function Header({ path }: HeaderProps) {
                       key={service.slug}
                       href={href}
                       className={cn(
-                        'group flex min-h-[44px] items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-accent/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                        active && 'bg-accent text-accent-foreground'
+                        'group flex min-h-[52px] items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-purple-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500',
+                        active && 'bg-purple-50'
                       )}
                       aria-current={active ? 'page' : undefined}
                     >
-                      <span className="icon-tile h-10 w-10 shrink-0 !rounded-xl">
-                        <ServiceIconGlyph icon={service.icon} className="h-5 w-5" />
+                      <span
+                        className={cn(
+                          'flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-md',
+                          SERVICE_TILE_GRADIENTS[index % SERVICE_TILE_GRADIENTS.length]
+                        )}
+                      >
+                        <ServiceIconGlyph icon={service.icon} className="size-5" />
                       </span>
                       <span className="min-w-0 flex-1">
                         <span
                           className={cn(
-                            'block text-sm font-semibold text-foreground group-hover:text-blue-700',
-                            active && 'text-blue-700'
+                            'block text-sm font-bold text-[#0a0a0a] transition-colors group-hover:text-purple-600',
+                            active && 'text-purple-600'
                           )}
                         >
                           {service.name}
                         </span>
-                        <span className="block text-xs text-muted-foreground line-clamp-1">
-                          {service.tagline}
-                        </span>
+                        <span className="block truncate text-xs text-gray-500">{service.tagline}</span>
                       </span>
                       <ArrowRight
-                        className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 -translate-x-1 transition-all group-hover:translate-x-0 group-hover:opacity-100"
+                        className="size-4 shrink-0 -translate-x-1 text-purple-600 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100"
                         aria-hidden="true"
                       />
                     </Link>
@@ -152,26 +179,26 @@ export function Header({ path }: HeaderProps) {
               </div>
 
               {/* Bottom action row */}
-              <div className="mt-1 border-t border-border">
-                <div className="flex flex-wrap items-center justify-between gap-3 px-3 py-2.5">
+              <div className="mt-1 border-t-2 border-dashed border-gray-200 px-3 py-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <a
                       href={site.phoneHref}
-                      className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg text-xs font-medium text-foreground transition-colors hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg text-xs font-bold text-[#0a0a0a] transition-colors hover:text-purple-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                       aria-label={`Call us at ${site.phoneDisplay}`}
                     >
-                      <Phone className="h-4 w-4 text-blue-600" aria-hidden="true" />
+                      <Phone className="size-4 text-purple-600" aria-hidden="true" />
                       {site.phoneDisplay}
                     </a>
-                    <span className="text-[11px] text-muted-foreground">Mon–Fri, 9–6 PT</span>
+                    <span className="text-[11px] font-medium text-gray-500">{site.hours}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href="/services">All services</Link>
-                    </Button>
-                    <Button size="sm" asChild>
-                      <Link href="/contact">Free quote</Link>
-                    </Button>
+                    <Link href="/services" className="btn-secondary-pill-sm">
+                      All services
+                    </Link>
+                    <Link href="/contact" className="btn-primary-pill-sm">
+                      Free quote
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -185,15 +212,15 @@ export function Header({ path }: HeaderProps) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'relative inline-flex h-16 items-center text-sm font-medium transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                  active ? 'text-foreground' : 'text-foreground/65'
+                  'relative inline-flex h-16 items-center text-[15px] font-bold transition-colors hover:text-purple-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500',
+                  active ? 'text-purple-600' : 'text-[#0a0a0a]'
                 )}
                 aria-current={active ? 'page' : undefined}
               >
                 {item.label}
                 {active && (
                   <span
-                    className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500"
+                    className="absolute inset-x-0 bottom-3 mx-auto h-1 w-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-500"
                     aria-hidden="true"
                   />
                 )}
@@ -202,112 +229,30 @@ export function Header({ path }: HeaderProps) {
           })}
         </nav>
 
+        {/* Desktop CTA */}
         <div className="hidden lg:block">
-          <Button asChild className="min-h-[44px]">
-            <Link href="/contact">Get Free Quote</Link>
-          </Button>
+          <Link href="/contact" className="btn-primary-pill-sm">
+            🚀 Start Your Project
+          </Link>
         </div>
 
-        {/* Mobile menu */}
-        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="lg:hidden" aria-label="Open menu">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="flex w-full max-w-xs flex-col gap-6 overflow-y-auto p-6">
-            <SheetHeader className="p-0">
-              <SheetTitle className="text-left">
-                <Logo />
-              </SheetTitle>
-            </SheetHeader>
-            <nav aria-label="Mobile navigation" className="flex flex-col gap-0.5">
-              <Link
-                href="/"
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  'rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-accent/60',
-                  path === '/' ? 'bg-accent/70 font-semibold text-foreground' : 'text-foreground'
-                )}
-              >
-                Home
-              </Link>
-              <p className="px-3 pb-1 pt-3 text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
-                Services
-              </p>
-              {featuredServices.map((service) => {
-                const href = `/${service.slug}`;
-                const active = path === href;
-                return (
-                  <Link
-                    key={service.slug}
-                    href={href}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      'flex min-h-[44px] items-center gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-accent/60',
-                      active ? 'bg-accent/70 font-semibold text-foreground' : 'text-foreground/85'
-                    )}
-                    aria-current={active ? 'page' : undefined}
-                  >
-                    <span className="icon-tile h-9 w-9 shrink-0 !rounded-lg">
-                      <ServiceIconGlyph icon={service.icon} className="h-4 w-4" />
-                    </span>
-                    <span className="text-[15px] font-medium">{service.name}</span>
-                  </Link>
-                );
-              })}
-              <Link
-                href="/services"
-                onClick={() => setMobileOpen(false)}
-                className="flex min-h-[44px] items-center gap-2 rounded-xl px-3 py-3 text-[15px] font-semibold text-blue-700 transition-colors hover:bg-blue-50"
-              >
-                Browse all {services.length} services
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-              <p className="px-3 pb-1 pt-3 text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
-                Company
-              </p>
-              {MAIN_NAV.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={cn(
-                    'rounded-lg px-3 py-2.5 text-[15px] font-medium transition-colors hover:bg-accent/60',
-                    isActive(path, item.href) ? 'bg-accent/70 font-semibold text-foreground' : 'text-foreground/85'
-                  )}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-            <div className="mt-auto flex flex-col gap-3 border-t border-border pt-4">
-              <Button asChild className="min-h-[44px] w-full" onClick={() => setMobileOpen(false)}>
-                <Link href="/contact">Get Free Quote</Link>
-              </Button>
-              <a
-                href={site.phoneHref}
-                onClick={() => setMobileOpen(false)}
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-xl px-3 text-sm font-medium text-foreground/85 transition-colors hover:bg-blue-50"
-              >
-                <Phone className="h-4 w-4 text-blue-600" aria-hidden="true" />
-                {site.phoneDisplay}
-              </a>
-              <a
-                href={`mailto:${site.email}`}
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-xl px-3 text-sm font-medium text-foreground/85 transition-colors hover:bg-blue-50"
-              >
-                <Mail className="h-4 w-4 text-blue-600" aria-hidden="true" />
-                {site.email}
-              </a>
-              <span className="inline-flex items-center gap-2 px-3 text-xs text-muted-foreground">
-                <Clock className="h-4 w-4 text-blue-600" aria-hidden="true" />
-                {site.hours}
-              </span>
-            </div>
-          </SheetContent>
-        </Sheet>
+        {/* Mobile hamburger — matches the round ink button inside the overlay */}
+        <button
+          type="button"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open menu"
+          aria-expanded={mobileOpen}
+          className="flex size-11 items-center justify-center rounded-full border-2 border-[#0a0a0a] text-[#0a0a0a] transition-colors duration-200 hover:bg-[#0a0a0a] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 lg:hidden"
+        >
+          <Menu className="size-5" aria-hidden="true" />
+        </button>
       </div>
-    </header>
+      </header>
+
+      {/* Full-screen colorful mobile navigation overlay — rendered OUTSIDE the
+          sticky header because its backdrop-filter would otherwise become the
+          containing block for this fixed-position overlay. */}
+      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
+    </>
   );
 }

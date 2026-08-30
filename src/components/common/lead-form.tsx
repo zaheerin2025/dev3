@@ -107,7 +107,7 @@ function Field({
       <Label htmlFor={id} className="text-sm font-medium">
         {label}
         {required ? (
-          <span className="ml-0.5 text-blue-600" aria-hidden="true">
+          <span className="ml-0.5 text-purple-600" aria-hidden="true">
             *
           </span>
         ) : null}
@@ -148,7 +148,7 @@ function SuccessPanel({
             dark ? 'bg-white/10' : 'bg-white'
           )}
         >
-          <CheckCircle2 className="h-14 w-14 text-blue-600" />
+          <CheckCircle2 className="h-14 w-14 text-purple-600" />
         </span>
       </span>
       <h3
@@ -166,7 +166,7 @@ function SuccessPanel({
       </p>
       {leadId ? (
         <p className={cn('text-xs', dark ? 'text-slate-400' : 'text-muted-foreground')}>
-          Reference: <span className="font-mono font-semibold text-blue-700">{leadId}</span>
+          Reference: <span className="font-mono font-semibold text-purple-700">{leadId}</span>
         </p>
       ) : null}
       <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
@@ -486,7 +486,7 @@ export function LeadForm({
       By submitting, you agree to our{' '}
       <Link
         href="/privacy"
-        className="font-medium text-blue-700 underline decoration-blue-300 underline-offset-2 hover:text-blue-800"
+        className="font-medium text-purple-700 underline decoration-purple-300 underline-offset-2 hover:text-purple-800"
       >
         Privacy Policy
       </Link>
@@ -552,7 +552,7 @@ export function LeadForm({
         )}
       >
         <span
-          className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-500"
+          className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500"
           aria-hidden="true"
         />
         <div className="flex items-center gap-3">
@@ -683,11 +683,11 @@ const RAIL_CONTACT_ROWS = [
 function LeadRail() {
   return (
     <aside className="section-dark-deep bg-dots-dark relative hidden overflow-hidden lg:flex lg:flex-col">
-      <span className="glow-orb -right-20 top-10 h-72 w-72 bg-blue-500/25" aria-hidden="true" />
+      <span className="glow-orb -right-20 top-10 h-72 w-72 bg-purple-500/25" aria-hidden="true" />
       <div className="relative z-10 flex h-full flex-col gap-7 p-8">
-        <p className="flex w-fit items-center gap-2 text-xs font-medium text-cyan-200">
+        <p className="flex w-fit items-center gap-2 text-xs font-medium text-pink-200">
           <span
-            className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-cyan-300"
+            className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-pink-300"
             aria-hidden="true"
           />
           Average response: under 4h
@@ -711,7 +711,7 @@ function LeadRail() {
               className="group flex items-center gap-3 rounded-xl p-1.5 transition-colors hover:bg-white/5"
             >
               <span
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-cyan-300 transition-colors group-hover:bg-white/15"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-pink-300 transition-colors group-hover:bg-white/15"
                 aria-hidden="true"
               >
                 <row.icon className="h-[18px] w-[18px]" />

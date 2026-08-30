@@ -373,7 +373,7 @@ function EstimateContent({ estimate, compact }: { estimate: { low: number; high:
                   'shrink-0 font-mono font-semibold tabular-nums',
                   line.tone === 'base' && 'text-white',
                   line.tone === 'up' && 'text-emerald-300',
-                  line.tone === 'down' && 'text-cyan-300',
+                  line.tone === 'down' && 'text-pink-300',
                   line.tone === 'neutral' && 'text-white/80'
                 )}
               >
@@ -870,7 +870,7 @@ export function QuoteBuilder({
   // NOTE: no overflow-hidden on the card — it would break the rail's sticky
   // positioning, so each side rounds its own outer corners instead.
   return (
-    <div className={cn('card-soft grid grid-cols-1 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]', className)} data-slot="quote-builder">
+    <div className={cn('card-soft grid grid-cols-1 lg-split-quote', className)} data-slot="quote-builder">
       {/* Estimate rail — dark, sticky on desktop, stacks above the form on mobile */}
       <aside className="relative flex flex-col gap-6 overflow-hidden rounded-t-[24px] bg-[#0a0a0a] p-6 text-white sm:p-8 lg:sticky lg:top-28 lg:self-start lg:rounded-b-none lg:rounded-l-[24px]">
         <span className="blob -right-16 top-6 size-56 bg-gradient-to-br from-purple-600 to-pink-500" aria-hidden="true" />
@@ -909,3 +909,4 @@ export function QuoteBuilder({
     </div>
   );
 }
+
