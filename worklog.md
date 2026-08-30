@@ -784,3 +784,26 @@ Work Log:
 Stage Summary:
 - Site now contains ZERO fabricated identity, social proof, metrics, or contact data. Everything shown is either functional (forms/tools) or verifiable fact. Real data activates via /#/admin → Site Content.
 - Broken: nothing. Kept intact: hash router, quote builder + estimates, leads API, tools, blog, portfolio (sample content), pricing, admin.
+
+---
+Task ID: 29
+Agent: orchestrator (Z.ai main)
+Task: Full visual redesign of the website only (user: "can you redesign website design only?") — keep 100% functionality, keep the no-expensive-paint budget established in Task 27.
+
+Work Log:
+- Chose "Paper & Ink" editorial direction, extending the accepted footer aesthetic sitewide: typography-led (no color dependence), warm paper #fafaf7, ink canvases #131316, hairline rules #e6e5de, ONE micro accent --signal #ff4d00 (selection color, eyebrow dots, logo star, active nav underline, arrows). History-aware: avoids every rejected palette (blue/colorful/pink-yellow/emerald/NEBULA) and reuses the accepted dark-editorial footer language.
+- Fonts: layout.tsx swapped Poppins -> Fraunces (variable, normal+italic, next/font/google, self-hosted) as --font-display; Inter stays for body/UI; mono = system stack (no extra download). Network check confirmed fonts.googleapis.com reachable; Fraunces verified in served HTML class + CSS chunk (15 refs).
+- globals.css fully rewritten: same legacy utility names, new editorial mappings (text-gradient/-soft/-animate -> serif italic accent words, highlighter -> italic, .eyebrow mono micro-label utility, card-soft/card-surface flat white + hairline (no shadows), btn pills ink #161613 with warm hover #3a3a35, sticker -> straight mono uppercase badge, glow-orb/blob/noise disabled, radius token 0.75rem->0.5rem, warm tint #f4f3ed for section-cream/-tint, custom-scrollbar warm gray, reduced-motion extended to pulse-dot).
+- Header/mobile-menu rewritten: solid paper header (backdrop-blur REMOVED per paint budget), mono uppercase 12px nav, serif logotype, signal hairline active underline, dropdown panel hairline+small shadow; mobile menu = editorial index (serif links, mono signal numbers, hairline rules). Same nav sets, mega menu logic, Escape/scroll-lock byte-preserved.
+- Hero rebuilt: left-aligned 12-col split — mono eyebrow with signal dot, Fraunces headline with italic "win clients", sub, CTAs, hairline fact row (honest chips, icons in signal), desktop-only meta rail (availability + mono stack list; sr-only stack fallback on mobile). Editable ids + trackEvent preserved.
+- section-heading default align flipped center->left sitewide; **words** now render as serif <em> italics; eyebrow = mono + signal dot. Marquee restyled (serif items, signal sparkles, hairline borders). Sticker default rotate 0.
+- Home sections: services (hairline cards, ink icon tiles, mono index -> signal on hover, no gradient bar), work stays ink (hairline frames, mono category pills, image zoom = transform only, FloatingShapesDark import dropped), trending tools moved to paper (rhythm paper->ink->paper), promises on tint (ink sticker variant), process rebuilt as 4 ruled ink rows (giant ghost serif numbers), video framed hairline, CTA = ink canvas + paper pill (emoji rocket/phone removed per no-fake-tone policy).
+- Footer: bg aligned #0b0b0d -> #131316, logo sparkle -> signal. Brand marks logo.svg + icon.svg -> ink tile + signal 4-point star.
+- Shared cards restyled: tool-card (ink tile, mono FREE badge, serif names), service-card (mono price pill, no gradient bar), case-study-card (CATEGORY_STYLES restored as uniform ink/90 pills — case-study-view import kept working), cta-band (flat ink panel, removed glow orbs/dot texture/backdrop-blur, paper pill buttons). FAQ accordion: hairline cards, serif questions, open state = ink border (no shadows).
+- Verification: fresh .next + dev restart (first background instance reaped by sandbox mid-compile — foreground run confirmed 200 + font compile 11.2s; relaunched detached OK). agent-browser: desktop 1440x900 hero/services/work/promises/process/FAQ/CTA/footer screenshots, mega menu opens, FAQ expands, contact quote builder "Custom Websites" -> live estimate "$1,400 – $1,900" on ink panel, pricing + tools hub + about inherit system, footer sticky (bottom == docH, docH 8133), mobile 390x844 zero horizontal overflow, mobile menu index renders, console errors: none. ESLint clean, tsc clean. Commit fe8debe (23 files, +441/-521).
+
+Stage Summary:
+- Site has a complete, cohesive editorial identity ("Paper & Ink"): Fraunces serif display + Inter + mono labels, paper/ink rhythm with hairline structure, single micro accent — designed to be read as intentional, not unfinished.
+- Performance contract honored sitewide: no backdrop-filter, no gradients, no large shadows, no filter effects; only cheap transform/opacity transitions + the transform-based marquee/reveal/rotator.
+- Functionality untouched: hash router, mega menu, quote builder + live estimates, tools, blog, portfolio, pricing, admin editing, trackEvent, sticky footer.
+- Known: pre-existing Radix accordion dev-mode hydration warning (Task 25); contact details still placeholders until owner sets them in admin; case-study cover images still emerald-tinted artwork (content, not styling).
