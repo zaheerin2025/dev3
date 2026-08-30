@@ -16,9 +16,11 @@ import { ContactView } from '@/views/contact-view';
 import { BlogView } from '@/views/blog-view';
 import { BlogPostView } from '@/views/blog-post-view';
 import { AdminView } from '@/views/admin-view';
+import { ToolsHubView } from '@/views/tools-hub-view';
+import { ToolView } from '@/views/tool-view';
 import { LegalView } from '@/views/legal-view';
 import { blogPosts, caseStudies, services } from '@/data';
-import { pathFromLocation, useRouterStore } from '@/lib/router';
+import { routeFromLocation, useRouterStore } from '@/lib/router';
 import { getRouteSeo, resolveRoute } from '@/lib/routes';
 import { useSiteSettings } from '@/lib/use-site-settings';
 import { site } from '@/lib/site';
@@ -27,7 +29,7 @@ const routeData = { services, caseStudies, blogPosts };
 
 export function SiteApp() {
   const path = useRouterStore((s) => s.path);
-  const setPath = useRouterStore((s) => s.setPath);
+  const setRoute = useRouterStore((s) => s.setRoute);
   const loadSettings = useSiteSettings((s) => s.load);
 
   // Load admin-editable site settings once (hero copy, contacts, pricing…).
@@ -39,13 +41,15 @@ export function SiteApp() {
   // Hash → state sync (initial load + back/forward + link clicks)
   React.useEffect(() => {
     const applyHash = () => {
-      setPath(pathFromLocation());
-      window.scrollTo({ top: 0, behavior: 'auto' });
+      const { path: nextPath, query } = routeFromLocation();
+      const prevPath = useRouterStore.getState().path;
+      setRoute(nextPath, query);
+      if (nextPath !== prevPath) window.scrollTo({ top: 0, behavior: 'auto' });
     };
     applyHash();
     window.addEventListener('hashchange', applyHash);
     return () => window.removeEventListener('hashchange', applyHash);
-  }, [setPath]);
+  }, [setRoute]);
 
   const match = React.useMemo(() => resolveRoute(path, routeData), [path]);
 
@@ -102,6 +106,12 @@ export function SiteApp() {
       break;
     case 'admin':
       view = <AdminView />;
+      break;
+    case 'tools-hub':
+      view = <ToolsHubView />;
+      break;
+    case 'tool':
+      view = <ToolView slug={match.slug} />;
       break;
     case 'privacy':
       view = <LegalView kind="privacy" />;

@@ -1,11 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { Inbox } from 'lucide-react';
+import { ExternalLink, Inbox } from 'lucide-react';
 import { CaseStudyCard, CATEGORY_LABELS } from '@/components/common/case-study-card';
 import { CTABand } from '@/components/common/cta-band';
 import { Reveal } from '@/components/common/reveal';
 import { Section } from '@/components/common/section';
+import { SectionHeading } from '@/components/common/section-heading';
 import { caseStudies } from '@/data';
 import { cn } from '@/lib/utils';
 import { trackEvent } from '@/lib/analytics';
@@ -21,9 +22,95 @@ const FILTERS: { value: CategoryFilter; label: string }[] = [
   { value: 'marketing', label: CATEGORY_LABELS.marketing },
 ];
 
-/** Portfolio hub with category filtering and links to full case studies. */
+interface PortfolioItem {
+  id: string;
+  title: string;
+  url: string;
+  description: string;
+  category: string;
+  imageUrl: string | null;
+  order: number;
+  published: boolean;
+}
+
+/** Client websites straight from the database (managed in /#/admin → Portfolio). */
+function WebsiteGrid({ items }: { items: PortfolioItem[] }) {
+  if (items.length === 0) return null;
+  return (
+    <div className="relative mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {items.map((item, index) => (
+        <Reveal key={item.id} delay={(index % 3) * 60}>
+          <article className="card-surface card-hover group flex h-full flex-col overflow-hidden rounded-3xl">
+            <div className="relative aspect-[16/10] overflow-hidden bg-blue-50">
+              {item.imageUrl ? (
+                 
+                <img
+                  src={item.imageUrl}
+                  alt={`${item.title} website screenshot`}
+                  loading="lazy"
+                  className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+                  {item.category}
+                </div>
+              )}
+            </div>
+            <div className="flex flex-1 flex-col p-6">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-600">
+                {item.category}
+              </p>
+              <h3 className="mt-2 text-lg font-bold leading-snug">{item.title}</h3>
+              <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                {item.description}
+              </p>
+              <div className="mt-auto pt-5">
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('portfolio_visit', { title: item.title })}
+                  className="inline-flex min-h-[44px] items-center gap-1.5 text-sm font-bold text-blue-600 transition-colors hover:text-blue-800"
+                >
+                  Visit website
+                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                </a>
+              </div>
+            </div>
+          </article>
+        </Reveal>
+      ))}
+    </div>
+  );
+}
+
+/** Portfolio hub: live client websites (from the DB) + full case studies. */
 export function PortfolioView() {
   const [active, setActive] = React.useState<CategoryFilter>('all');
+  const [sites, setSites] = React.useState<PortfolioItem[] | null>(null);
+
+  // Load admin-managed client websites; empty/failed fetch → static fallback only.
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const response = await fetch('/api/public/portfolios', { cache: 'no-store' });
+        const payload = (await response.json().catch(() => null)) as {
+          ok?: boolean;
+          portfolios?: PortfolioItem[];
+        } | null;
+        if (!cancelled && payload?.ok && Array.isArray(payload.portfolios)) {
+          // The API already returns only published items, newest ordering applied.
+          setSites(payload.portfolios);
+        }
+      } catch {
+        // Static case studies remain the content.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const counts = React.useMemo(() => {
     const map: Record<CategoryFilter, number> = {
@@ -68,15 +155,29 @@ export function PortfolioView() {
               Our <span className="text-gradient">Portfolio</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Real projects for real clients — every case study below includes measurable results and the
-              full story behind them. Click any project to read the complete write-up, from challenge to
-              solution to outcome.
+              Real projects for real clients — live websites you can visit right now, plus case
+              studies with measurable results and the full story behind them.
             </p>
           </div>
         </Reveal>
 
-        {/* Filter bar */}
-        <div className="relative mt-12 flex flex-col items-center gap-4">
+        {/* Live client websites (admin-managed) */}
+        {sites && sites.length > 0 ? (
+          <div className="relative mt-14">
+            <SectionHeading
+              eyebrow="Client Websites"
+              title="Live Sites We **Built & Shipped**"
+              description="Real, working websites — open any of them and kick the tires."
+            />
+            <WebsiteGrid items={sites} />
+          </div>
+        ) : null}
+
+        {/* Case studies filter bar */}
+        <div className="relative mt-16 flex flex-col items-center gap-4">
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-blue-600">
+            Case Studies
+          </p>
           <div
             role="group"
             aria-label="Filter projects by category"
@@ -141,3 +242,5 @@ export function PortfolioView() {
     </>
   );
 }
+
+export default PortfolioView;

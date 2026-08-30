@@ -1,0 +1,646 @@
+     1→'use client';
+     2→
+     3→import * as React from 'react';
+     4→import Image from 'next/image';
+     5→import {
+     6→  ArrowLeft,
+     7→  ArrowRight,
+     8→  CalendarDays,
+     9→  Check,
+    10→  Clock,
+    11→  ListChecks,
+    12→  Loader2,
+    13→  Newspaper,
+    14→} from 'lucide-react';
+    15→import { format } from 'date-fns';
+    16→import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+    17→import { Sticker } from '@/components/common/sticker';
+    18→import { FloatingShapesDark } from '@/components/common/floating-shapes';
+    19→import { Reveal } from '@/components/common/reveal';
+    20→import { SectionHeading } from '@/components/common/section-heading';
+    21→import { Link } from '@/components/common/link';
+    22→import { Breadcrumbs } from '@/components/common/breadcrumbs';
+    23→import { CTABand } from '@/components/common/cta-band';
+    24→import { JsonLd } from '@/components/common/json-ld';
+    25→import { blogPosts, getBlogPost, getService, getTeamMember } from '@/data';
+    26→import {
+    27→  DB_POST_GRADIENT,
+    28→  fetchPublicDbPosts,
+    29→  parseDbSections,
+    30→  type DbPost,
+    31→} from '@/lib/blog-db';
+    32→import { buildArticleSchema } from '@/lib/schema';
+    33→import { cn } from '@/lib/utils';
+    34→
+    35→/** Deterministic heading → element id helper for the in-page table of contents. */
+    36→function slugify(heading: string): string {
+    37→  return heading
+    38→    .toLowerCase()
+    39→    .replace(/[^a-z0-9]+/g, '-')
+    40→    .replace(/(^-|-$)/g, '');
+    41→}
+    42→
+    43→/** Renders the last word of the title with the light gradient (dark hero). */
+    44→function GradientLastWord({ title }: { title: string }) {
+    45→  const splitAt = title.lastIndexOf(' ');
+    46→  if (splitAt === -1) return <span className="text-gradient-soft">{title}</span>;
+    47→  return (
+    48→    <>
+    49→      {title.slice(0, splitAt + 1)}
+    50→      <span className="text-gradient-soft">{title.slice(splitAt + 1)}</span>
+    51→    </>
+    52→  );
+    53→}
+    54→
+    55→/** Meta pill for the dark hero (category / read time). */
+    56→function DarkMetaPill({ children }: { children: React.ReactNode }) {
+    57→  return (
+    58→    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-inset ring-white/20">
+    59→      {children}
+    60→    </span>
+    61→  );
+    62→}
+    63→
+    64→interface BlogPostViewProps {
+    65→  slug: string;
+    66→}
+    67→
+    68→/** /blog/[slug] — full article with TOC, author box, and related service CTA. */
+    69→export function BlogPostView({ slug }: BlogPostViewProps) {
+    70→  const staticPost = getBlogPost(slug);
+    71→  // Admin-created posts live in the DB (they may override a static slug):
+    72→  // undefined = fetch in flight, null = no DB post for this slug.
+    73→  const [dbPost, setDbPost] = React.useState<DbPost | null | undefined>(undefined);
+    74→
+    75→  React.useEffect(() => {
+    76→    let cancelled = false;
+    77→    setDbPost(undefined);
+    78→    fetchPublicDbPosts(slug).then((posts) => {
+    79→      if (!cancelled) setDbPost(posts?.[0] ?? null);
+    80→    });
+    81→    return () => {
+    82→      cancelled = true;
+    83→    };
+    84→  }, [slug]);
+    85→
+    86→  if (dbPost) {
+    87→    return <DbPostArticle post={dbPost} />;
+    88→  }
+    89→
+    90→  if (!staticPost) {
+    91→    // Unknown slug: wait for the DB lookup before showing the not-found state.
+    92→    if (dbPost === undefined) {
+    93→      return (
+    94→        <section className="section-cream py-24 text-center">
+    95→          <Loader2
+    96→            className="mx-auto h-6 w-6 animate-spin text-purple-500"
+    97→            aria-hidden="true"
+    98→          />
+    99→        </section>
+   100→      );
+   101→    }
+   102→    return (
+   103→      <section className="section-cream relative overflow-hidden py-24 text-center">
+   104→        <div className="mx-auto w-full max-w-2xl px-4">
+   105→          <Sticker>✦ 404</Sticker>
+   106→          <h1 className="mt-6 font-display text-3xl font-bold text-[#0a0a0a] sm:text-4xl">
+   107→            Post not found
+   108→          </h1>
+   109→          <p className="mt-4 text-[#4b5563]">
+   110→            The article you are looking for doesn&rsquo;t exist or has moved.
+   111→          </p>
+   112→          <Link href="/blog" className="btn-primary-pill-sm mt-8">
+   113→            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+   114→            Back to the Blog
+   115→          </Link>
+   116→        </div>
+   117→      </section>
+   118→    );
+   119→  }
+   120→
+   121→  const post = staticPost;
+   122→
+   123→  const author = getTeamMember(post.authorId);
+   124→  const relatedService = getService(post.relatedServiceSlug);
+   125→  const relatedPosts = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 2);
+   126→
+   127→  return (
+   128→    <>
+   129→      <JsonLd data={buildArticleSchema(post, author)} />
+   130→
+   131→      {/* Hero — black showcase band */}
+   132→      <section className="section-black relative overflow-hidden py-16 md:py-20">
+   133→        <FloatingShapesDark />
+   134→        <div className="relative mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8">
+   135→          <Link
+   136→            href="/blog"
+   137→            className="group inline-flex items-center gap-2 text-sm font-bold text-white/70 transition-colors hover:text-white"
+   138→          >
+   139→            <ArrowLeft
+   140→              className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5"
+   141→              aria-hidden="true"
+   142→            />
+   143→            Back to Blog
+   144→          </Link>
+   145→          <Breadcrumbs
+   146→            className="mt-4 [&_[data-slot=breadcrumb-link]]:text-white/60 [&_[data-slot=breadcrumb-link]]:hover:text-white [&_[data-slot=breadcrumb-page]]:text-white [&_[data-slot=breadcrumb-separator]]:text-white/40 [&_[data-slot=breadcrumb-list]]:text-white/60"
+   147→            items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]}
+   148→          />
+   149→          <div className="mt-6 flex flex-wrap items-center gap-2">
+   150→            <DarkMetaPill>
+   151→              <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" aria-hidden="true" />
+   152→              {post.category}
+   153→            </DarkMetaPill>
+   154→            <DarkMetaPill>
+   155→              <Clock className="h-3.5 w-3.5 text-purple-300" aria-hidden="true" />
+   156→              {post.readTime}
+   157→            </DarkMetaPill>
+   158→          </div>
+   159→          <h1 className="mt-5 max-w-3xl text-balance font-display text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
+   160→            <GradientLastWord title={post.title} />
+   161→          </h1>
+   162→          <p className="mt-4 text-lg leading-relaxed text-white/70">{post.excerpt}</p>
+   163→          <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2">
+   164→            <span className="flex items-center gap-2.5">
+   165→              <Avatar className="h-10 w-10 ring-2 ring-white/25">
+   166→                <AvatarFallback className="bg-purple-500/30 text-xs font-bold text-purple-100">
+   167→                  {author?.initials ?? 'D3'}
+   168→                </AvatarFallback>
+   169→              </Avatar>
+   170→              <span className="text-sm">
+   171→                <span className="block font-semibold text-white">
+   172→                  {author?.name ?? 'Developers3 Team'}
+   173→                </span>
+   174→                {author ? (
+   175→                  <span className="block text-xs text-white/60">{author.role}</span>
+   176→                ) : null}
+   177→              </span>
+   178→            </span>
+   179→            <span className="text-white/40" aria-hidden="true">·</span>
+   180→            <span className="flex items-center gap-1.5 text-sm text-white/60">
+   181→              <CalendarDays className="h-4 w-4" aria-hidden="true" />
+   182→              {format(new Date(post.date), 'MMMM d, yyyy')}
+   183→            </span>
+   184→          </div>
+   185→        </div>
+   186→      </section>
+   187→
+   188→      {/* Gradient cover band */}
+   189→      <div className="section-cream px-4 pb-0 pt-2 sm:px-6 lg:px-8">
+   190→        <Reveal>
+   191→          <div className="gradient-frame mx-auto max-w-7xl shadow-[0_32px_64px_-32px_rgba(124,58,237,0.35)]">
+   192→            <div
+   193→              className={cn(
+   194→                'relative h-44 overflow-hidden rounded-[23px] bg-gradient-to-br md:h-60',
+   195→                post.coverGradient
+   196→              )}
+   197→            >
+   198→              <span
+   199→                className="glow-orb -right-10 -top-14 h-56 w-56 bg-white/25"
+   200→                aria-hidden="true"
+   201→              />
+   202→              <div className="bg-dots-dark absolute inset-0 opacity-30" aria-hidden="true" />
+   203→              <Newspaper
+   204→                className="absolute bottom-4 right-4 h-14 w-14 text-white/30"
+   205→                aria-hidden="true"
+   206→              />
+   207→            </div>
+   208→          </div>
+   209→        </Reveal>
+   210→      </div>
+   211→
+   212→      {/* Body */}
+   213→      <section className="section-white relative overflow-hidden py-16 md:py-24">
+   214→        <div className="mx-auto grid w-full max-w-7xl items-start gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_280px] lg:px-8">
+   215→          <article className="card-soft rounded-[24px] p-6 sm:p-10">
+   216→            <div className="flex flex-col gap-10">
+   217→              {post.sections.map((section, index) => (
+   218→                <Reveal key={section.heading} delay={Math.min(index * 60, 180)}>
+   219→                  <section
+   220→                    id={slugify(section.heading)}
+   221→                    aria-labelledby={`${slugify(section.heading)}-title`}
+   222→                    className="scroll-mt-28"
+   223→                  >
+   224→                    <h2
+   225→                      id={`${slugify(section.heading)}-title`}
+   226→                      className="scroll-mt-28 font-display text-2xl font-bold text-balance text-[#0a0a0a]"
+   227→                    >
+   228→                      {section.heading}
+   229→                    </h2>
+   230→                    <div className="mt-4 space-y-5">
+   231→                      {section.paragraphs.map((paragraph, pIndex) => (
+   232→                        <p key={pIndex} className="leading-8 text-[#4b5563]">
+   233→                          {paragraph}
+   234→                        </p>
+   235→                      ))}
+   236→                    </div>
+   237→                    {section.bullets && section.bullets.length > 0 ? (
+   238→                      <ul className="mt-5 list-disc space-y-2 pl-5 marker:text-purple-500">
+   239→                        {section.bullets.map((bullet, bIndex) => (
+   240→                          <li key={bIndex} className="leading-7 text-[#4b5563]">
+   241→                            {bullet}
+   242→                          </li>
+   243→                        ))}
+   244→                      </ul>
+   245→                    ) : null}
+   246→                  </section>
+   247→                </Reveal>
+   248→              ))}
+   249→            </div>
+   250→          </article>
+   251→
+   252→          {/* Sticky sidebar */}
+   253→          <aside className="hidden flex-col gap-4 lg:sticky lg:top-24 lg:flex">
+   254→            <div className="card-soft rounded-2xl p-5">
+   255→              <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-muted-foreground">
+   256→                On this page
+   257→              </h2>
+   258→              <hr className="divider-gradient mt-3" />
+   259→              <nav aria-label="Article table of contents" className="mt-3 flex flex-col gap-0.5">
+   260→                {post.sections.map((section, index) => (
+   261→                  <button
+   262→                    key={section.heading}
+   263→                    type="button"
+   264→                    onClick={() =>
+   265→                      document.getElementById(slugify(section.heading))?.scrollIntoView({ behavior: 'smooth' })
+   266→                    }
+   267→                    className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-[#4b5563] transition-colors hover:bg-purple-50 hover:text-purple-800"
+   268→                  >
+   269→                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-xs font-bold text-purple-700 ring-1 ring-inset ring-purple-600/15 transition-colors group-hover:bg-purple-600 group-hover:text-white">
+   270→                      {index + 1}
+   271→                    </span>
+   272→                    <span className="leading-snug">{section.heading}</span>
+   273→                  </button>
+   274→                ))}
+   275→              </nav>
+   276→            </div>
+   277→
+   278→            {/* Key takeaways — 2px gradient border card */}
+   279→            <div className="gradient-border p-5">
+   280→              <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-purple-600">
+   281→                <ListChecks className="h-4 w-4" aria-hidden="true" />
+   282→                Key takeaways
+   283→              </h2>
+   284→              <ul className="mt-3 flex flex-col gap-2.5">
+   285→                {post.keyTakeaways.map((takeaway, index) => (
+   286→                  <li key={index} className="flex items-start gap-2.5">
+   287→                    <span
+   288→                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-pink-500 text-white"
+   289→                      aria-hidden="true"
+   290→                    >
+   291→                      <Check className="h-3 w-3" />
+   292→                    </span>
+   293→                    <span className="text-sm leading-relaxed text-[#4b5563]">{takeaway}</span>
+   294→                  </li>
+   295→                ))}
+   296→              </ul>
+   297→            </div>
+   298→          </aside>
+   299→        </div>
+   300→
+   301→        {/* Author box */}
+   302→        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+   303→          <Reveal className="mt-14">
+   304→            <div className="card-soft flex items-start gap-4 rounded-[20px] p-6 sm:items-center">
+   305→              {author ? (
+   306→                <Image
+   307→                  src={author.photo}
+   308→                  alt={`Portrait of ${author.name}`}
+   309→                  width={64}
+   310→                  height={64}
+   311→                  className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-purple-100"
+   312→                />
+   313→              ) : (
+   314→                <Avatar className="h-16 w-16 ring-2 ring-purple-100">
+   315→                  <AvatarFallback className="bg-purple-100 font-bold text-purple-700">
+   316→                    D3
+   317→                  </AvatarFallback>
+   318→                </Avatar>
+   319→              )}
+   320→              <div>
+   321→                <h2 className="font-display text-base font-bold text-[#0a0a0a]">
+   322→                  Written by {author?.name ?? 'the Developers3 Team'}
+   323→                </h2>
+   324→                {author ? (
+   325→                  <>
+   326→                    <p className="text-sm font-bold text-purple-700">{author.role}</p>
+   327→                    <p className="mt-1 text-sm leading-relaxed text-[#4b5563]">{author.bio}</p>
+   328→                  </>
+   329→                ) : null}
+   330→              </div>
+   331→            </div>
+   332→          </Reveal>
+   333→
+   334→          {/* Related service CTA — gradient band */}
+   335→          <Reveal className="mt-6">
+   336→            <div className="relative overflow-hidden rounded-[24px] bg-gradient-to-br from-purple-600 to-pink-500 p-8 text-white shadow-[0_28px_56px_-28px_rgba(124,58,237,0.55)] sm:p-10">
+   337→              {/* Ambient glows + texture */}
+   338→              <span
+   339→                className="glow-orb -right-12 -top-16 h-64 w-64 bg-pink-400/40"
+   340→                aria-hidden="true"
+   341→              />
+   342→              <span
+   343→                className="glow-orb -bottom-20 -left-10 h-56 w-56 bg-purple-400/40"
+   344→                aria-hidden="true"
+   345→              />
+   346→              <span
+   347→                className="absolute inset-0 opacity-40"
+   348→                style={{
+   349→                  backgroundImage: 'radial-gradient(rgb(255 255 255 / 0.12) 1px, transparent 1px)',
+   350→                  backgroundSize: '22px 22px',
+   351→                }}
+   352→                aria-hidden="true"
+   353→              />
+   354→              <div className="relative grid items-center gap-6 sm:grid-cols-[1fr_auto]">
+   355→                <div>
+   356→                  <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-white ring-1 ring-inset ring-white/25">
+   357→                    Related service
+   358→                  </span>
+   359→                  <h2 className="mt-3 font-display text-xl font-bold text-balance text-white sm:text-2xl">
+   360→                    {relatedService
+   361→                      ? `${relatedService.name} — done for you`
+   362→                      : 'Need this built for you?'}
+   363→                  </h2>
+   364→                  <p className="mt-2 text-sm leading-relaxed text-white/85">
+   365→                    The team that wrote this guide builds these every week. Get a free quote.
+   366→                  </p>
+   367→                </div>
+   368→                <Link
+   369→                  href={`/${post.relatedServiceSlug}`}
+   370→                  className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-base font-bold text-[#0a0a0a] shadow-lg shadow-black/20 transition-transform duration-300 hover:scale-[1.04] sm:w-auto"
+   371→                >
+   372→                  {relatedService ? `Explore ${relatedService.shortName}` : 'Get Free Quote'}
+   373→                  <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
+   374→                </Link>
+   375→              </div>
+   376→            </div>
+   377→          </Reveal>
+   378→
+   379→          {/* Related posts */}
+   380→          {relatedPosts.length > 0 ? (
+   381→            <div className="mt-16">
+   382→              <SectionHeading title="Keep Reading" align="left" className="mb-8" />
+   383→              <div className="grid gap-6 sm:grid-cols-2">
+   384→                {relatedPosts.map((related, index) => (
+   385→                  <Reveal key={related.slug} delay={index * 70} className="h-full">
+   386→                    <article className="card-soft card-hover group flex h-full flex-col overflow-hidden rounded-[20px]">
+   387→                      <Link
+   388→                        href={`/blog/${related.slug}`}
+   389→                        aria-label={`Read article: ${related.title}`}
+   390→                        className="block"
+   391→                      >
+   392→                        <div className="relative h-32 overflow-hidden">
+   393→                          <div
+   394→                            className={cn(
+   395→                              'absolute inset-0 bg-gradient-to-br transition-transform duration-500 group-hover:scale-105',
+   396→                              related.coverGradient
+   397→                            )}
+   398→                          >
+   399→                            <div className="bg-dots-dark absolute inset-0 opacity-30" aria-hidden="true" />
+   400→                            <Newspaper
+   401→                              className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 text-white/40"
+   402→                              aria-hidden="true"
+   403→                            />
+   404→                          </div>
+   405→                        </div>
+   406→                      </Link>
+   407→                      <div className="flex flex-1 flex-col gap-2 p-5">
+   408→                        <h3 className="font-display text-base font-bold leading-snug text-[#0a0a0a]">
+   409→                          <Link
+   410→                            href={`/blog/${related.slug}`}
+   411→                            className="transition-colors group-hover:text-purple-700"
+   412→                          >
+   413→                            {related.title}
+   414→                          </Link>
+   415→                        </h3>
+   416→                        <span className="text-xs text-muted-foreground">
+   417→                          {format(new Date(related.date), 'MMM d, yyyy')} · {related.readTime}
+   418→                        </span>
+   419→                      </div>
+   420→                    </article>
+   421→                  </Reveal>
+   422→                ))}
+   423→              </div>
+   424→            </div>
+   425→          ) : null}
+   426→        </div>
+   427→      </section>
+   428→
+   429→      <CTABand
+   430→        title="Prefer to Just Talk?"
+   431→        description="Book a free strategy call and get straight answers about your project."
+   432→        primaryLabel="Get Free Quote"
+   433→      />
+   434→    </>
+   435→  );
+   436→}
+   437→
+   438→/* ─────────────── DB-backed article (admin panel content) ─────────────── */
+   439→
+   440→/**
+   441→ * Article renderer for posts created in the admin panel. Content is a plain
+   442→ * string: blank lines separate blocks, lines starting with "## " open a
+   443→ * section heading, everything else is a paragraph (parseDbSections).
+   444→ */
+   445→function DbPostArticle({ post }: { post: DbPost }) {
+   446→  const sections = React.useMemo(() => parseDbSections(post.content), [post.content]);
+   447→  const headingSections = React.useMemo(
+   448→    () => sections.filter((section) => section.heading),
+   449→    [sections]
+   450→  );
+   451→  const initials =
+   452→    post.authorName
+   453→      .split(/\s+/)
+   454→      .map((word) => word[0] ?? '')
+   455→      .join('')
+   456→      .slice(0, 2)
+   457→      .toUpperCase() || 'D3';
+   458→
+   459→  return (
+   460→    <>
+   461→      {/* Hero */}
+   462→      <section className="section-black relative overflow-hidden py-16 md:py-20">
+   463→        <FloatingShapesDark />
+   464→        <div className="relative mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8">
+   465→          <Link
+   466→            href="/blog"
+   467→            className="group inline-flex items-center gap-2 text-sm font-bold text-white/70 transition-colors hover:text-white"
+   468→          >
+   469→            <ArrowLeft
+   470→              className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5"
+   471→              aria-hidden="true"
+   472→            />
+   473→            Back to Blog
+   474→          </Link>
+   475→          <Breadcrumbs
+   476→            className="mt-4 [&_[data-slot=breadcrumb-link]]:text-white/60 [&_[data-slot=breadcrumb-link]]:hover:text-white [&_[data-slot=breadcrumb-page]]:text-white [&_[data-slot=breadcrumb-separator]]:text-white/40 [&_[data-slot=breadcrumb-list]]:text-white/60"
+   477→            items={[{ label: 'Blog', href: '/blog' }, { label: post.title }]}
+   478→          />
+   479→          <div className="mt-6 flex flex-wrap items-center gap-2">
+   480→            <DarkMetaPill>
+   481→              <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" aria-hidden="true" />
+   482→              {post.category}
+   483→            </DarkMetaPill>
+   484→            <DarkMetaPill>
+   485→              <Clock className="h-3.5 w-3.5 text-purple-300" aria-hidden="true" />
+   486→              {post.readTime} min read
+   487→            </DarkMetaPill>
+   488→          </div>
+   489→          <h1 className="mt-5 max-w-3xl text-balance font-display text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
+   490→            <GradientLastWord title={post.title} />
+   491→          </h1>
+   492→          <p className="mt-4 text-lg leading-relaxed text-white/70">{post.excerpt}</p>
+   493→          <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2">
+   494→            <span className="flex items-center gap-2.5">
+   495→              <Avatar className="h-10 w-10 ring-2 ring-white/25">
+   496→                <AvatarFallback className="bg-purple-500/30 text-xs font-bold text-purple-100">
+   497→                  {initials}
+   498→                </AvatarFallback>
+   499→              </Avatar>
+   500→              <span className="text-sm">
+   501→                <span className="block font-semibold text-white">{post.authorName}</span>
+   502→                <span className="block text-xs text-white/60">{post.authorRole}</span>
+   503→              </span>
+   504→            </span>
+   505→            <span className="text-white/40" aria-hidden="true">
+   506→              ·
+   507→            </span>
+   508→            <span className="flex items-center gap-1.5 text-sm text-white/60">
+   509→              <CalendarDays className="h-4 w-4" aria-hidden="true" />
+   510→              {format(new Date(post.createdAt), 'MMMM d, yyyy')}
+   511→            </span>
+   512→          </div>
+   513→        </div>
+   514→      </section>
+   515→
+   516→      {/* Cover: admin-provided image when set, brand gradient otherwise */}
+   517→      <div className="section-cream px-4 pb-0 pt-2 sm:px-6 lg:px-8">
+   518→        <Reveal>
+   519→          <div className="gradient-frame mx-auto max-w-7xl shadow-[0_32px_64px_-32px_rgba(124,58,237,0.35)]">
+   520→            {post.image ? (
+   521→              <img
+   522→                src={post.image}
+   523→                alt=""
+   524→                className="relative h-44 w-full rounded-[23px] object-cover md:h-60"
+   525→              />
+   526→            ) : (
+   527→              <div
+   528→                className={cn(
+   529→                  'relative h-44 overflow-hidden rounded-[23px] bg-gradient-to-br md:h-60',
+   530→                  DB_POST_GRADIENT
+   531→                )}
+   532→              >
+   533→                <span
+   534→                  className="glow-orb -right-10 -top-14 h-56 w-56 bg-white/25"
+   535→                  aria-hidden="true"
+   536→                />
+   537→                <div className="bg-dots-dark absolute inset-0 opacity-30" aria-hidden="true" />
+   538→                <Newspaper
+   539→                  className="absolute bottom-4 right-4 h-14 w-14 text-white/30"
+   540→                  aria-hidden="true"
+   541→                />
+   542→              </div>
+   543→            )}
+   544→          </div>
+   545→        </Reveal>
+   546→      </div>
+   547→
+   548→      {/* Body */}
+   549→      <section className="section-white relative overflow-hidden py-16 md:py-24">
+   550→        <div className="mx-auto grid w-full max-w-7xl items-start gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_280px] lg:px-8">
+   551→          <article className="card-soft rounded-[24px] p-6 sm:p-10">
+   552→            <div className="flex flex-col gap-10">
+   553→              {sections.map((section, index) => {
+   554→                const id = section.heading ? slugify(section.heading) : `section-${index}`;
+   555→                return (
+   556→                  <Reveal key={`${id}-${index}`} delay={Math.min(index * 60, 180)}>
+   557→                    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-28">
+   558→                      {section.heading ? (
+   559→                        <h2
+   560→                          id={`${id}-title`}
+   561→                          className="scroll-mt-28 font-display text-2xl font-bold text-balance text-[#0a0a0a]"
+   562→                        >
+   563→                          {section.heading}
+   564→                        </h2>
+   565→                      ) : null}
+   566→                      <div className={cn('space-y-5', section.heading && 'mt-4')}>
+   567→                        {section.paragraphs.map((paragraph, pIndex) => (
+   568→                          <p key={pIndex} className="leading-8 text-[#4b5563]">
+   569→                            {paragraph}
+   570→                          </p>
+   571→                        ))}
+   572→                      </div>
+   573→                    </section>
+   574→                  </Reveal>
+   575→                );
+   576→              })}
+   577→            </div>
+   578→          </article>
+   579→
+   580→          {/* Sticky TOC (only when the post has "## " headings) */}
+   581→          {headingSections.length > 0 ? (
+   582→            <aside className="hidden flex-col gap-4 lg:sticky lg:top-24 lg:flex">
+   583→              <div className="card-soft rounded-2xl p-5">
+   584→                <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-muted-foreground">
+   585→                  On this page
+   586→                </h2>
+   587→                <hr className="divider-gradient mt-3" />
+   588→                <nav aria-label="Article table of contents" className="mt-3 flex flex-col gap-0.5">
+   589→                  {headingSections.map((section, index) => {
+   590→                    const id = slugify(section.heading);
+   591→                    return (
+   592→                      <button
+   593→                        key={id}
+   594→                        type="button"
+   595→                        onClick={() =>
+   596→                          document
+   597→                            .getElementById(id)
+   598→                            ?.scrollIntoView({ behavior: 'smooth' })
+   599→                        }
+   600→                        className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-[#4b5563] transition-colors hover:bg-purple-50 hover:text-purple-800"
+   601→                      >
+   602→                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-xs font-bold text-purple-700 ring-1 ring-inset ring-purple-600/15 transition-colors group-hover:bg-purple-600 group-hover:text-white">
+   603→                          {index + 1}
+   604→                        </span>
+   605→                        <span className="leading-snug">{section.heading}</span>
+   606→                      </button>
+   607→                    );
+   608→                  })}
+   609→                </nav>
+   610→              </div>
+   611→            </aside>
+   612→          ) : null}
+   613→        </div>
+   614→
+   615→        {/* Author box */}
+   616→        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+   617→          <Reveal className="mt-14">
+   618→            <div className="card-soft flex items-start gap-4 rounded-[20px] p-6 sm:items-center">
+   619→              <Avatar className="h-16 w-16 ring-2 ring-purple-100">
+   620→                <AvatarFallback className="bg-purple-100 font-bold text-purple-700">
+   621→                  {initials}
+   622→                </AvatarFallback>
+   623→              </Avatar>
+   624→              <div>
+   625→                <h2 className="font-display text-base font-bold text-[#0a0a0a]">
+   626→                  Written by {post.authorName}
+   627→                </h2>
+   628→                <p className="text-sm font-bold text-purple-700">{post.authorRole}</p>
+   629→                <p className="mt-1 text-sm leading-relaxed text-[#4b5563]">
+   630→                  Part of the Developers3 team, sharing practical notes from real client projects.
+   631→                </p>
+   632→              </div>
+   633→            </div>
+   634→          </Reveal>
+   635→        </div>
+   636→      </section>
+   637→
+   638→      <CTABand
+   639→        title="Prefer to Just Talk?"
+   640→        description="Book a free strategy call and get straight answers about your project."
+   641→        primaryLabel="Get Free Quote"
+   642→      />
+   643→    </>
+   644→  );
+   645→}
+   646→

@@ -1,3 +1,4 @@
+import { getToolMeta } from '@/data/tools/registry';
 import { site } from './site';
 import type { BlogPost, CaseStudy, Service } from './types';
 
@@ -13,6 +14,8 @@ export type RouteMatch =
   | { kind: 'blog' }
   | { kind: 'blog-post'; slug: string }
   | { kind: 'admin' }
+  | { kind: 'tools-hub' }
+  | { kind: 'tool'; slug: string }
   | { kind: 'privacy' }
   | { kind: 'terms' }
   | { kind: 'not-found'; path: string };
@@ -53,6 +56,17 @@ export function resolveRoute(path: string, data: RouteData): RouteMatch {
       return data.caseStudies.some((c) => c.slug === slug)
         ? { kind: 'case-study', slug }
         : { kind: 'not-found', path };
+    }
+  }
+
+  // Tools portal: /tools (hub) and /tools/<slug> (one tool).
+  if (clean === '/tools') {
+    return { kind: 'tools-hub' };
+  }
+  if (clean.startsWith('/tools/')) {
+    const slug = clean.slice('/tools/'.length);
+    if (slug && !slug.includes('/')) {
+      return { kind: 'tool', slug };
     }
   }
 
@@ -144,6 +158,18 @@ export function getRouteSeo(match: RouteMatch, data: RouteData): RouteSeo {
       return post
         ? { title: post.metaTitle, description: post.metaDescription }
         : { title: `Blog | ${site.name}`, description: site.description };
+    }
+    case 'tools-hub':
+      return {
+        title: '100 Free Online Tools — QR, PDF, SEO, Image & Dev Utilities | Developers3',
+        description:
+          '100 genuinely free online tools: QR codes, passwords, invoices, image converters, SEO and developer utilities. No signup, no watermarks — everything runs in your browser.',
+      };
+    case 'tool': {
+      const tool = getToolMeta(match.slug);
+      return tool
+        ? { title: `${tool.name} — Free Online Tool | Developers3 Tools`, description: tool.seoDescription }
+        : { title: 'Free Online Tools | Developers3', description: 'Free browser-based tools by Developers3.' };
     }
     case 'admin':
       return {

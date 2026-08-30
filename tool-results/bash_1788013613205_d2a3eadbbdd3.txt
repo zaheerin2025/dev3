@@ -1,0 +1,201 @@
+862 /home/z/my-project/worklog.md
+
+---
+Task ID: 23-a
+Agent: orchestrator (Z.ai main)
+Task: Tools Mania foundation — registry (100 tools), engines, hub/tool views, routes, URL API, AdSense system
+
+Work Log:
+- Installed qrcode, jsbarcode, gifenc, diff (+types).
+- src/data/tools/types.ts: TOOL_CATEGORIES (5 categories w/ gradients+copy), ToolMeta/ToolDoc/ToolDefinition contracts (unique per-tool copy required).
+- src/data/tools/registry.ts: all 100 tool entries (slug/name/blurb/category/engine/icon/seoTitle/seoDescription) + getToolMeta/getRelatedTools.
+- Engines in src/components/tools/engines/: generator-tool (form→document w/ live HTML preview tab), text-tool (transform w/ options+file upload+stats), analyze-tool (live report w/ stats/tables/verdicts), calc-tool (instant results w/ breakdown), url-tool (POST /api/tools/fetch + StatusPill). Shared UI kit src/components/tools/tool-ui.tsx (inputs, Copy/Download, StatCard, Verdict, OutputBox).
+- src/app/api/tools/fetch/route.ts: server-side fetch modes uptime/headers/redirects/og/links with timeouts, size caps, security-header scan, redirect-chain walk, OG/meta parsing, link extraction + concurrent HEAD checks.
+- Views: tools-hub-view (search + category pills + grid + in-feed ads + category SEO copy + CTA), tool-view (JSON-LD WebApplication/Breadcrumbs/FAQPage + not-found state), tool-shell (breadcrumb, H1, ad slots, how-to steps, FAQ accordion, related tools, trust strip), tool-card.
+- tool-renderer.tsx merges 5 batch files (stubs created in src/components/tools/batches/) with registry meta; routes.ts adds /tools + /tools/<slug>; site-app renders new views; layout.tsx injects AdSense script when NEXT_PUBLIC_ADSENSE_CLIENT is set.
+- src/components/ads/ad-slot.tsx: AdSlot (leaderboard/rectangle/sidebar/infeed) — neutral placeholder until env var set, then real responsive units; AD_SLOTS map for per-placement unit IDs.
+
+Stage Summary:
+- Full tools-portal skeleton compiles clean; agents 23-b..23-f fill the 5 batch files (100 tools) using the engines. AdSense activates via one env var.
+
+---
+Task ID: 23-c
+Agent: general-purpose
+Task: Implement the 20 TEXT TRANSFORM + TEXT ANALYSIS tools in src/components/tools/batches/text-tools.tsx (10 text-engine, 6 analyze-engine, 4 bespoke) with unique per-tool docs.
+
+Work Log:
+- Found the batch file already populated by an interrupted earlier attempt; verified it line-by-line against the 23-c spec, then fixed the defects found rather than rewriting.
+- Fixed sql-query-formatter: keyword uppercase + clause line-breaking regexes ran case-sensitively (\\bSELECT\\b with 'g' only), so lowercase input passed through unformatted — added 'i' flag to the keyword loop, clause/ON/AND/OR replacements. Sample now formats correctly (SELECT list indented, clauses stacked, strings protected).
+- Fixed html-formatter-beautifier: text tokens were trimmed before joining, gluing words to inline tags ("Hello<em>beautiful</em>world") — boundary spaces are now kept (leading space dropped only when starting a fresh line). Verified pre/script/style raw regions, void + inline tag handling.
+- Fixed reading-time-calculator breakdown to match spec: replaced sentence/seconds cards with Characters + Pages @300 wpp cards (big "X min read" hero + four-speed spread kept).
+- Aligned title-length-checker to the ~580 px desktop SERP cap (was 600) in verdict, stat hint and longDescription; added the mobile ~35–40 char cutoff hint to the Characters stat.
+- Verified pure logic in a sandboxed transpile harness (imports stubbed, no dev-server/build/tsc touch): CSS minify (calc/urls/strings preserved, ;} collapsed), JS comment stripper state machine (strings, template literals, escaped-slash regex literals, division-vs-regex heuristic), Base64 UTF-8 roundtrip incl. emoji, weightedLength (URL=23 anywhere, code point >0x2000 = 2) + thread splitter ≤275, case converter 10 variants, deterministic lorem, fancy-font maps (12 alphabets, 8 IG styles with usage notes), title px heuristic.
+- Final checks: syntax parse clean (2574 lines), batch export = 20 tools, slugs exactly match registry, no duplicate slugs, every doc has unique longDescription + 3–4 howTo + 2–3 FAQs, all components functions; tool-renderer.tsx already imports this batch.
+
+Stage Summary:
+- src/components/tools/batches/text-tools.tsx delivers all 20 assigned tools (css-minifier, js-minifier, html-formatter-beautifier, base64-encoder-decoder, fancy-font-generator, instagram-font-generator, slug-generator, lorem-ipsum-generator, text-case-converter, sql-query-formatter, word-character-counter, title-length-checker, keyword-density-checker, aso-keyword-density-checker, twitter-character-counter, email-subject-line-tester, regex-tester-generator, diff-checker, emoji-picker-by-industry, reading-time-calculator), each with working logic, samples, options and unique anti-duplicated page copy. No new deps; 'diff' used for diff-checker. Portal is ready for the remaining batch agents (23-b/d/e/f).
+
+---
+Task ID: 23-e
+Agent: general-purpose (completed by orchestrator after interruption)
+Task: Implement image-visual.tsx batch (19 image/CSS/marketing tools)
+
+Work Log:
+- A previous 23-e run was interrupted mid-write at 3117 lines (14 tool components + shared helpers present, no export). I verified the existing content, then a resumed agent completed the remaining 5 tools (youtube-thumbnail-downloader, giveaway-winner-picker, invoice-generator, quote-estimate-generator, push-notification-tester) and the final export const batch array.
+- Orchestrator verification: Bun.Transpiler parse OK (4908 lines); 19 slugs, all present in src/data/tools/registry.ts, no duplicates; 19 unique longDescriptions; every entry has howTo + faqs.
+
+Stage Summary:
+- src/components/tools/batches/image-visual.tsx delivers 19 tools: webp-image-converter, app-splash-screen-preview, app-store-screenshot-resizer, mobile-mockup-generator, reel-story-size-resizer, profile-picture-resizer, screen-recorder-to-gif (gifenc), app-wireframe-sketcher, user-flow-mapper, color-code-converter, gradient-css-generator, box-shadow-generator, border-radius-generator, instagram-grid-planner, youtube-thumbnail-downloader, giveaway-winner-picker, invoice-generator, quote-estimate-generator, push-notification-tester. All client-side, tool-ui/shadcn based.
+
+---
+Task ID: 23-f
+Agent: general-purpose (completed + fixed by orchestrator after interruption)
+Task: Implement dev-url.tsx batch (19 URL/developer tools)
+
+Work Log:
+- Agent wrote the full batch (3375 lines) but died before verification. Orchestrator review found: (1) parse error — unescaped double quotes inside a JSX attribute in open-graph-preview-tool's Verdict message ("og:") → fixed with brace-string literal; (2) undefined QRCodeShim in qr-code-generator → rewrote effect to use QRCode.default.toCanvas + toDataURL; (3) missing vTitle state in the vCard QR form (input used an undefined binding + no-op onChange) → added state, wired TextInput, included TITLE in buildVCard payload + deps; (4) calculators.tsx VIDEO_DB type demanded unit:'s' on 6 entries that never used it → dropped from type; (5) generators.tsx terms template had usercontent/userContent typo and boolean+number arithmetic → fixed to userContent and (accounts ? 1 : 0); (6) text-tools.tsx diff-checker used ignoreCase missing from installed diff typings → replaced with per-line normalize (whitespace/case) + index-walk so rows still render ORIGINAL text.
+- Post-fix verification: bunx tsc --noEmit → 0 errors under src/ (examples/skills excluded); all five batches parse OK; slug coverage = 100/100 registry slugs, none missing, none extra; unique longDescriptions per batch (22/20/20/19/19).
+
+Stage Summary:
+- src/components/tools/batches/dev-url.tsx delivers 19 tools: website-uptime-checker, open-graph-preview-tool, website-page-counter, http-header-checker, redirect-chain-checker, ip-address-lookup (ipwho.is), social-handle-availability-checker (/api/tools/fetch uptime mode), json-formatter-validator, json-to-csv-converter, csv-to-json-converter, xml-formatter, uuid-generator, password-generator, hash-generator (WebCrypto), timestamp-converter, rich-snippet-tester, youtube-tag-extractor, qr-code-generator (qrcode pkg: text/WiFi/vCard), barcode-generator (jsbarcode: CODE128/EAN13/UPC/CODE39/ITF14).
+- TOOLS PORTAL COMPLETE: all 5 batches implement exactly the 100 registry tools; toolDefinitions merges registry meta + components + unique docs; ready for browser E2E.
+
+---
+Task ID: 24
+Agent: orchestrator (Z.ai Code)
+Task: Fix 404 on /#/tools?category=software (hash-router query strings) + finish pending E2E cleanup
+
+Work Log:
+- User reported https://preview-...space-z.ai/#/tools?category=software showing the site-wide "Page Not Found" view.
+- Root cause: src/lib/router.ts pathFromLocation() treated the whole hash (including ?category=software) as the path, so resolveRoute('/tools?category=software') matched nothing → NotFoundView. Additionally ToolsHubView kept its category filter in local state only and never read the query param.
+- Fix 1 — src/lib/router.ts: added splitTarget() (splits '/tools?category=seo' into path + query), routeFromLocation() returning { path, query }, kept pathFromLocation() as query-stripped helper; navigate() now supports query strings and compares path+query; RouterState gained `query` + setRoute().
+- Fix 2 — src/components/site-app.tsx: applyHash syncs path AND query into the store; scroll-to-top now fires only when the path changes (query-only changes don't yank scroll).
+- Fix 3 — src/views/tools-hub-view.tsx: category filter is now deep-linkable — reads ?category= from the store query (validated against TOOL_CATEGORIES ids, invalid → 'all'), syncs on back/forward, and selectCategory() mirrors pill clicks + bottom SEO category cards into the URL via navigate().
+- Verification: bunx tsc --noEmit → 0 errors under src/; eslint clean on the 3 changed files.
+- Deleted leftover E2E test lead (0 rows — DB already clean, 0 leads total).
+- Browser E2E (agent-browser): fresh load /#/tools?category=software at 1440×900 → Tools hub renders, "Developer" pill active, "Showing 20 tools in Software & Developer Utilities", correct title/canonical/description (screenshot /tmp/d3-tools-software-1440.png); pill click Social → URL /#/tools?category=social + grid updates; browser BACK → restores software category (history sync works); tool page /#/tools/json-formatter-validator → correct H1/title, exercised JSON Formatter interactively ("✓ Valid JSON — 4 object keys", pretty output); breadcrumb "Developer" link (the exact link class that 404'd) navigates to filtered hub; /#/tools/nonexistent-tool → graceful "Tool not found" state; /#/tools?category=bogus → falls back to All 100; mobile 390×844 deep link renders filtered hub correctly (screenshot /tmp/d3-tools-software-390.png); /#/contact + /#/ + /#/about + /#/pricing titles and content all correct; agent-browser errors → none; dev.log → all 200s.
+- Diagnosed one red herring: a stale home-page title right after the first post-edit load was an HMR full-reload artifact (page was open during file edits), not a code bug — instrumented document.title setter proved client-side nav + fresh loads set titles correctly.
+
+Stage Summary:
+- Hash router now fully supports query strings: any /#/path?query URL deep-links correctly, filters are shareable, back/forward restore state, and scroll is preserved on query-only changes.
+- Tools portal verified end-to-end (hub, category filter deep links, tool pages, interactive tool, breadcrumbs, mobile).
+- Leads table clean; no page errors; project type-checks and lints clean.
+---
+Task ID: 3-b
+Agent: security-auditor
+Task: Full security audit (read-only)
+
+Work Log:
+- Read worklog.md for prior context; mapped all 9 API routes + auth/session libs + views that consume them.
+- Deep-read /api/tools/fetch/route.ts: protocol allowlist (http/https) exists, but NO blocking of localhost/127.0.0.1/private ranges/169.254.169.254; redirect:'follow' + manual redirect-chain mode follow into internal hosts; body read via res.arrayBuffer() BEFORE the 600KB slice (cap does not bound download); raw err.message echoed; unauthenticated + no rate limit. Timeouts present (8s/7s/5s).
+- Audited admin auth chain (api/admin/auth, lib/admin-auth.ts, api/admin/posts, api/admin/settings, views/admin-view.tsx): token === passcode, hardcoded default 'developers3-admin' (ADMIN_PASSCODE absent from .env → default live), non-timing-safe compare, token in localStorage, no expiry/rotation/logout invalidation; verified every admin verb (GET/POST/PUT/DELETE) DOES call isAdminRequest().
+- Audited /api/leads + /api/newsletter: zod validation with length caps + email regex + honeypot (leads), unique-email dedup (newsletter); no rate limiting; no lead dedup; generic error responses (no stack traces to client); lead id echoed.
+- Grepped XSS/injection surfaces: dangerouslySetInnerHTML only in json-ld.tsx, layout.tsx (3x, same JSON.stringify pattern), image-visual.tsx (static CSS const), ui/chart.tsx (shadcn config); zero innerHTML/outerHTML/document.write; zero $queryRaw/$executeRaw; zero child_process/exec/spawn; confirmed DB post content renders as escaped React text nodes (no HTML injection path).
+- Checked headers/config: next.config.ts has NO headers()/CSP/etc.; no middleware.ts anywhere; Caddyfile adds no headers; typescript.ignoreBuildErrors=true; reactStrictMode=false.
+- Checked secrets: .env contains only DATABASE_URL (file:…/db/custom.db); .gitignore ignores .env*; only env names used: ADMIN_PASSCODE (server), DATABASE_URL, NODE_ENV, NEXT_PUBLIC_GA_ID, NEXT_PUBLIC_ADSENSE_CLIENT (both public-by-design); no hardcoded keys in src/; db/custom.db lives at project root, NOT under public/ → not web-servable.
+- Dependencies: bun pm ls (970 packages) — next@16.1.3 current; unused deps next-auth@4.24.13, next-intl, @mdxeditor/editor increase surface; package.json scripts benign (db:push --accept-data-loss is dev-only; start tees server.log).
+
+Stage Summary:
+- CRITICAL 1: SSRF in src/app/api/tools/fetch/route.ts:206-218 + 32-36 + 82-96 + 152-166 — unauthenticated arbitrary fetch; only http/https allowlisted; no private/loopback/metadata-IP blocklist; redirect:'follow' bypasses any future host check; 'headers'/'og'/'links' modes leak internal response headers/content; err.message (line 59) gives internal-net oracle. Fix: resolve+validate all IPs (incl. each redirect hop) against reserved ranges, block non-public, stream-read, generic errors, per-IP rate limit.
+- CRITICAL 2: Admin passcode auth with hardcoded default — src/lib/admin-auth.ts:16 ('developers3-admin'), auth route:15-19 returns the passcode as token; .env has no ADMIN_PASSCODE so default is live and public in source. Fix: fail closed when env unset, strong secret, real expiring sessions.
+- HIGH 3: Unauthenticated memory-DoS — route.ts:43-44 arrayBuffer() reads full body before slice(0,600_000); checkLink GET fallback (164-166) also unbounded. Fix: stream-read with byte cap, enforce content-length.
+- HIGH 4: No rate limiting/lockout on /api/admin/auth (brute-force) and public writes /api/leads + /api/newsletter (spam/DB growth; newsletter response differentiates already-subscribed → minor email enumeration, route.ts:27 vs 33).
+- MEDIUM 5: Zero security headers — next.config.ts (no headers()), no middleware.ts, Caddyfile bare → add CSP, X-Frame-Options/frame-ancestors, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, HSTS.
+- MEDIUM 6: Timing-unsafe token compare (admin-auth.ts:22) — use crypto.timingSafeEqual(sha256(a), sha256(b)).
+- MEDIUM 7: JSON-LD via unescaped JSON.stringify (json-ld.tsx:16, layout.tsx:107-115) — '</script>' in any value breaks out; today data is static/admin, latent + chained with default passcode. Fix: .replace(/</g,'\\u003c').
+- MEDIUM 8: Prisma log:['query'] in prod (src/lib/db.ts:10) writes lead PII into server.log/dev.log (tee'd by npm scripts). Fix: log errors/warn only in production.
+- MEDIUM 9: Admin token in localStorage (admin-view.tsx:129/934) — XSS = passcode theft; prefer HttpOnly+Secure+SameSite=Strict cookie session.
+- LOW 10: /api/public/settings returns ALL setting rows unfiltered (future-secret leak risk; key length uncapped in admin PUT); next.config ignoreBuildErrors; unused deps next-auth/next-intl/@mdxeditor; GA id interpolated into inline script (layout.tsx:128, validate ^G-[A-Z0-9]+$).
+- Already well-secured: all admin verbs guarded; Prisma fully parameterized (no raw SQL, no exec); zod-validated public forms + honeypot; generic error responses; no CORS headers (same-origin enforced); no writes on GET; .env gitignored; SQLite at /db (not public/); fixed fetch headers (no header injection); timeouts on all outbound fetches; DB post HTML auto-escaped (no dangerouslySetInnerHTML on content).
+---
+Task ID: 3-c
+Agent: performance-code-auditor
+Task: Performance + code quality audit (read-only)
+
+Work Log:
+- Read worklog.md (743 lines) for prior context; confirmed architecture: page.tsx → SiteApp ('use client') → ALL 16 views statically imported (src/components/site-app.tsx:7-21) = single eager bundle.
+- Mapped tools graph: tool-view.tsx:8 + tools-hub-view.tsx:11 → tool-renderer.tsx:2-6 → all 5 batch files (16,167 lines / ~787KB src) + engines; gifenc STATIC import (batches/image-visual.tsx:42, used only at :1624-1631); qrcode + jsbarcode correctly dynamic (dev-url.tsx:2475/2507/2719). Registry confirmed pure data (35KB, lucide named imports) — home trending + routes import it directly, good.
+- Checked images: next/image in 10 files with proper `sizes`; only raw <img> for content = blog-post-view.tsx:521 (DB cover); admin/tool blob URLs use raw <img> correctly. Hero LCP is pure-CSS BrowserMockup (zero image LCP); hero avatars 40×40 no priority needed. public/ assets all ≤160KB (2MB total); hero-dashboard.png (72KB) referenced nowhere = orphan.
+- Fonts: layout.tsx uses next/font Google (Inter + Space Grotesk, display:swap, subsets); zero external font <link> or CSS @import; GA4/AdSense behind env vars with afterInteractive.
+- CSS/anims: all keyframes transform/opacity-only; prefers-reduced-motion disables them; marquee = duplicated w-max track translateX(-50%); Reveal = IO + disconnect-once + 3.2s failsafe + reduced-motion; backdrop-filter only 6 instances; blob = blur(80px) on 3 animated layers per decorated section (GPU cost, Low).
+- React perf: no React.memo anywhere; tools hub renders slice(0,12) first paint (good) but lines 147-158 mount up to 100 cards and re-render all on each keystroke (filter useMemo'd, no debounce/deferredValue). use-site-settings.ts: zustand loaded-once guard works but no in-flight dedupe and fetch('/api/public/settings') on every full page load.
+- DB: schema.prisma — Setting.key is @id (fine); Post lacks @@index([published, createdAt]) and @@index([updatedAt]); Lead lacks @@index([createdAt]) (only written today). db.ts:10 `log: ['query']` NOT env-gated (confirmed prisma:query lines in dev.log). Admin posts GET = single findMany (no N+1); public posts GET returns FULL content for list mode with no pagination (content unused by list rendering).
+- Code quality runs: `bunx tsc --noEmit` → 4 errors, ALL in examples/ + skills/ scaffold dirs; src/ = 0 errors. `bunx eslint src` → 0 errors, 12 warnings (all "unused eslint-disable directive" in dev-url.tsx / image-visual.tsx). `: any` in code = 0 (1 prose match); no real TODO/FIXME; 2 intentional console.log in leads/newsletter routes.
+- Dead code: 33 of 48 shadcn ui/*.tsx never imported by app code; hooks/use-mobile only used by orphan sidebar.tsx; ~22 unused package.json deps (framer-motion, @tanstack/react-query, @tanstack/react-table, next-auth, next-intl, @mdxeditor/editor, react-syntax-highlighter, react-markdown, recharts, @dnd-kit/* ×3, uuid, @reactuses/core, react-hook-form, @hookform/resolvers, cmdk, vaul, embla-carousel-react, react-resizable-panels, input-otp, sonner, next-themes, tailwindcss-animate). Used deps confirmed: zod, date-fns, diff, zustand, gifenc, qrcode, jsbarcode, lucide-react, prisma.
+- API review: tools/fetch route = solid (timeouts, 600KB body cap, 40-link check cap, concurrency 8, no huge responses); settings route lacks Cache-Control; admin-auth.ts uses default passcode 'developers3-admin' fallback + non-timing-safe compare (documented in code); next.config.ts has typescript.ignoreBuildErrors:true and reactStrictMode:false.
+
+Stage Summary:
+- HIGH src/components/site-app.tsx:7-21 + tool-renderer.tsx:2-6 — every view + all 100 tool implementations (~1MB src total graph incl. 787KB batches, 38KB admin, 268KB data) ship in the first-load chunk for homepage visitors. Fix: next/dynamic (ssr:false not needed; default works in client comp) for ToolView/ToolsHubView/AdminView/CaseStudyView/ServiceDetailView/BlogPostView etc., keep HomeView static. Expected: −50-70% initial JS (≈ −300-500KB gz), big TBT/INP win.
+- HIGH next.config.ts:6-8 `typescript.ignoreBuildErrors: true` — masks future type breakage (src is clean today). Remove the flag. Quality gate.
+- HIGH src/lib/admin-auth.ts:16-22 — default passcode fallback ('developers3-admin') + `===` compare; default is also written in client-visible comments. Fix: throw at boot if ADMIN_PASSCODE unset; use node:crypto timingSafeEqual. Security hygiene.
+- MED /api/public/posts (route.ts:11-16) — list mode returns full post `content`, no pagination; list UI drops content. Fix: `select` without content + limit/offset. Expected: −80-95% /blog list payload.
+- MED src/app/api/public/settings/route.ts — no Cache-Control + DB hit per pageview. Fix: `Cache-Control: public, s-maxage=60, stale-while-revalidate=300` + 30-60s in-memory memo. Expected: −1 DB query per pageview, faster TTFB for that call.
+- MED src/lib/db.ts:10 — `log: ['query']` runs in production too (confirmed in dev.log). Gate by NODE_ENV.
+- MED batches/image-visual.tsx:42 — gifenc statically imported though only the GIF tool uses it (qrcode/jsbarcode already lazy). Convert to `await import('gifenc')` inside the handler. Expected: −~10-15KB gz from tools chunk.
+- MED tools-hub-view.tsx:147-158 — up to 100 ToolCards re-render per keystroke; ToolCard not memoized, no debounce. Fix: React.memo(ToolCard) + useDeferredValue/debounce. Smoother search on low-end devices.
+- MED dead weight — 33 unused ui components + use-mobile hook; ~22 unused deps. Delete files + deps. Zero runtime change, faster installs; prevents accidental re-entry into bundle.
+- LOW prisma/schema.prisma — add @@index([published, createdAt]) + @@index([updatedAt]) on Post, @@index([createdAt]) on Lead (future leads admin). Setting lookup OK (@id).
+- LOW blog-post-view.tsx:521 — raw <img> for DB cover → next/image fill + sizes; hero-dashboard.png orphan (72KB) → delete; 12 eslint warnings (unused eslint-disable) → `eslint --fix`; site-app double-fetch guard for settings (share in-flight promise); next.config reactStrictMode:false; animated blur(80px) blobs (consider radial-gradient pre-render).
+- ALREADY GOOD (no churn): registry.ts pure data; qrcode/jsbarcode dynamic imports; Reveal (IO once + failsafe + reduced-motion); globals.css transform/opacity-only anims + prefers-reduced-motion; marquee dupe-track pattern; ≤6 backdrop-filters; next/font only, no external fonts; next/image with correct `sizes` everywhere content images appear; pure-CSS hero mockups (image-free LCP); zod + honeypot on lead/newsletter; tools/fetch hard caps/timeouts; 0 tsc errors in src, 0 eslint errors, 0 `any`, no TODO debt; all public assets ≤160KB.
+---
+Task ID: 3-a
+Agent: seo-content-auditor
+Task: SEO + duplicate-content + human-tone audit (read-only)
+
+Work Log:
+- Read worklog (prior tasks 1→23), site.ts, layout.tsx, routes.ts, sitemap.ts, schema.ts, json-ld.tsx, site-app.tsx, robots.txt; verified og-image.png/logo.svg exist.
+- Wrote and ran bun analysis scripts (scratch files in tool-results/audit-dups.ts, audit-dups2.ts, audit-tool-docs.ts — no source files touched).
+- Registry audit: 100 tools — 0 duplicate names/blurbs/seoTitles/seoDescriptions/slugs; seoTitles ≤60 pre-suffix; seoDescriptions 104–135 chars. 0 duplicate FAQ questions/answers/howTo steps/doc sentences across all 100 tool docs (100/100 have docs).
+- Meta uniqueness across 10 services, 10 case studies, 4 blog posts, all routes: 0 duplicates; service meta lengths in range; 8/10 case-study titles 63–72 chars; route titles home=65, services-hub=70, tools-hub=68 (over 60); 31/100 tool FINAL titles (seoTitle + " | Developers3") exceed 60 (max 67).
+- Duplicate body scan (8-word shingles, sentence-level, cross-file): only real prose overlaps found — 40/40/20 payment sentence (pricing.ts:152, services-extended.ts:153, company.ts:234), "number you approve is the number you pay" (blog-posts.ts:52, services-priority.ts:588), legal boilerplate inside generators.tsx tool templates, 3 tool blurbs reused verbatim in batch docs.
+- FAQ/testimonial reuse: home has NO FAQ section since redesign — homeFaqs now render only on contact (slice 0,3) with FAQPage JSON-LD; homeFaqs 4–6 are dead content; testimonials t1/t2/t5 shared between home and service pages (with Review JSON-LD on both).
+- Technical: og-image.png is actually 1344x768 JPEG-in-.png vs declared 1440x720 in layout; JsonLd + layout JSON.stringify lacks < escaping; every view verified to render exactly ONE h1; all Image/img tags have alt; sitemap.ts MISSING /tools + 100 tool slugs; robots.txt OK.
+- Tone scan for 40+ AI clichés across src: essentially clean (only benign "seamless Apple Health" in case-studies-2.ts:19; "digital journey" repeated company.ts:155/162; pricingNote openers templated 5x "Starting prices cover…" + 5x "Starting at $…, this covers"; "You receive a…" x6).
+- Found blog-posts.ts:18/67 factual contradiction ("twelve years and more than 300 projects") vs site stats (8+ years, 50+ projects) and pricing ($699 starter vs "below $1,500 = template/DIY").
+- /tools not linked from header or footer (only home Trending Tools + tool pages); DB-backed admin blog posts fall back to generic "Blog | Developers3" title/description (routes.ts:168-173).
+
+Stage Summary:
+- HIGH: sitemap.ts missing /tools + all 100 tool slugs (sitemap.ts:8-41) — add toolPaths from toolRegistry.
+- HIGH: blog "how-much-does-a-website-cost" contradicts brand facts (blog-posts.ts:18,67 vs site.ts stats; :19 vs pricing $699) — rewrite to 8 years/50+ projects and acknowledge own $699 tier.
+- MEDIUM: 31 tool final titles >60 (routes.ts:141 appends " | Developers3") — cap seoTitle ≤46 or drop suffix; fix 3 static route titles (routes.ts:105,110,134); shorten 8 case-study metaTitles (case-studies-1/2).
+- MEDIUM: homeFaqs.slice(0,3) on contact (contact-view.tsx:270) duplicates FAQPage schema+copy while home has no FAQ and homeFaqs 4-6 unused — restore FAQ to home, write 3 contact-specific FAQs.
+- MEDIUM: JSON-LD not escaped against </script> (json-ld.tsx:16, layout.tsx:107-115) — replace(/</g,'\\u003c').
+- MEDIUM: og-image mismatch (layout.tsx:56-58 vs actual 1344x768 JPEG) — regenerate 1200x630 PNG.
+- MEDIUM: /tools absent from header/footer nav — add sitewide link; MEDIUM: DB blog posts get generic meta (routes.ts blog-post fallback).
+- LOW: og:description/og:url/twitter not updated per route; 40/40/20 sentence x3; pricingNote openers templated; "You receive a" x6; "seamless" case-studies-2.ts:19; themeColor #7c3aed vs purple-600; robots.txt add Disallow /admin; portfolio/tools-hub/contact lack visible breadcrumbs.
+- ALREADY GOOD: 100% meta uniqueness everywhere; 0 duplicated sentences across public pages; 100 unique tool docs; one h1 per view; alt coverage complete; structured data graph well built; robots.txt correct; AI-cliché density near zero.
+
+---
+Task ID: 4
+Agent: orchestrator (Z.ai Code)
+Task: Homepage trending tools + full-site audit (SEO / content / security / performance) with fixes
+
+Work Log:
+- Added src/components/home/trending-tools-section.tsx (black band, 6 most-popular tools: QR code, password, invoice, YouTube thumbnail, WebP converter, fancy font; human-toned header copy; "Browse All 100 Tools" CTA). Wired into home-view between Stats and Testimonials. Card metadata comes from the lightweight tools registry (no batch imports).
+- Dispatched 3 read-only audit agents (SEO+content 3-a, security 3-b, performance 3-c); applied their findings.
+
+SECURITY fixes:
+- Admin auth rewritten (src/lib/admin-auth.ts, api/admin/auth): fail-closed when ADMIN_PASSCODE unset, timing-safe passcode compare (sha256+timingSafeEqual), random 256-bit server-side session tokens (8h TTL, revocable), HttpOnly SameSite=Strict cookie replaces the localStorage token; admin-view refactored to cookie sessions (GET/DELETE /api/admin/auth for check/logout). Strong passcode generated into .env.
+- SSRF hardening of /api/tools/fetch: dns-lookup host validation before EVERY fetch and redirect hop (blocks loopback/RFC1918/link-local/CGNAT/metadata/IPv6 local + decimal IP forms), redirect:'manual' hop loops (6 hops page, 3 for links) with per-hop re-validation, generic error strings (no err.message echo), streaming body read capped at 600KB + Content-Length pre-check 5MB (fixes memory-DoS), 20 req/min rate limit. Verified: 127.0.0.1 / 169.254.169.254 / localhost all blocked; example.com still fetches.
+- Rate limiting (src/lib/api-security.ts): per-IP sliding window applied to admin/auth (5/min), leads (5/min), newsletter (5/min), tools/fetch (20/min). Newsletter now returns identical copy for new+existing emails (enumeration closed). Verified: 6th auth attempt → 429.
+- Security headers in next.config.ts (nosniff, Referrer-Policy, Permissions-Policy, HSTS, CSP with tool-safe img/media/worker blob: allowances; frame-ancestors left open for the sandbox preview). Removed typescript.ignoreBuildErrors. og-image.png was a mislabeled JPEG → re-encoded to real PNG via ffmpeg, layout dims corrected (1344×768).
+- JSON-LD </script> escaping: safeJsonStringify() (api-security.ts) used in JsonLd component + 3 layout inline scripts.
+
+PERFORMANCE fixes:
+- Secondary views now load via next/dynamic (services hub/detail, portfolio, case study, tools hub, tool, pricing, about, contact, blog, post, admin, legal) — the 100-tool batches (~16k lines) + admin + data barrel no longer ship on first load; HomeView stays static. NOTE: next/dynamic options must be inline literals (shared const broke the build once — fixed).
+- /api/public/posts list mode selects everything except content (−80–95% payload) + take:50; /api/public/settings gets a 30s in-memory memo; Prisma query logging gated to dev only (PII no longer written to logs).
+- ToolCard wrapped in React.memo + tools hub uses useDeferredValue for search; gifenc now lazy-loaded only in the GIF export flow; Prisma indexes added (Lead.createdAt, Post[published, createdAt]) + db:push; deleted unused public/images/hero-dashboard.png; eslint --fix cleaned the unused-disable warnings; wireframe undo button now uses canUndo state instead of reading a ref in render.
+
+SEO fixes:
+- Sitemap: added /tools + all 100 tool slugs (33 → 134 URLs). robots.txt: added Disallow /admin.
+- Route meta titles ≤60 chars: home/services-hub/tools-hub rewritten (also in layout OG/Twitter), 8 of 10 case-study metaTitles trimmed (now all ≤58).
+- site-app SEO effect now also updates og:description, og:url, twitter:title, twitter:description per route. themeColor #7c3aed → #9333ea.
+- /tools added to header nav (+active state), mobile menu, footer Company column.
+- DB-backed blog posts now set their own document.title/description; admin cover <img> gets real alt text.
+
+CONTENT fixes (uniqueness + human tone):
+- Blog "website cost" post corrected: twelve years/300+ projects → eight years/50+ projects (matches company facts); $1,500 framing now acknowledges the $699 lean build; excerpt/summary/metaDescription aligned.
+- Duplicate-content kills: home FAQ band (all 6 homeFaqs, 2-col, FAQPage schema) added to home; contact page now has 3 NEW contact-specific FAQs (response time, NDAs, what to put in a brief) instead of reusing home's; payment-terms sentence reworded on the UI/UX service ("mirrors the 40/40/20 schedule"); "the number you approve" reworded; "seamless" + repeated "full digital journey" reworded; 5 templated pricing-note openers varied across services.
+
+Stage Summary:
+- tsc 0 errors, eslint 0 problems. Browser-verified: homepage (new tools band + FAQ band + Free Tools nav), tools hub lazy-loads fine, contact FAQs unique + form intact, admin login rejected wrong passcode + accepted real one (HttpOnly cookie), mobile 390px clean, zero page errors. API-verified: SSRF blocked, rate limits active, leads still insert, sitemap 134 URLs, robots updated. Leads table cleaned of test rows.

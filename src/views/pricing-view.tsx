@@ -22,7 +22,7 @@ import { Reveal } from '@/components/common/reveal';
 import { Link } from '@/components/common/link';
 import { Breadcrumbs } from '@/components/common/breadcrumbs';
 import { FAQSection } from '@/components/common/faq-section';
-import { LeadForm } from '@/components/common/lead-form';
+import { QuoteBuilder } from '@/components/common/quote-builder';
 import { ServiceIconGlyph } from '@/components/common/icon-map';
 import { JsonLd } from '@/components/common/json-ld';
 import { comparisonTable, pricingFaqs, servicePricingBlocks, websiteTiers } from '@/data';
@@ -447,7 +447,7 @@ export function PricingView() {
             </ul>
           </Reveal>
           <Reveal delay={100}>
-            <LeadForm source="pricing" />
+            <QuoteBuilder source="pricing" variant="full" />
           </Reveal>
         </div>
       </Section>

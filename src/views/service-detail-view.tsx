@@ -16,7 +16,7 @@ import { CaseStudyCard } from '@/components/common/case-study-card';
 import { FAQSection } from '@/components/common/faq-section';
 import { ServiceIconGlyph } from '@/components/common/icon-map';
 import { JsonLd } from '@/components/common/json-ld';
-import { LeadForm } from '@/components/common/lead-form';
+import { QuoteBuilder } from '@/components/common/quote-builder';
 import { Link } from '@/components/common/link';
 import { ProcessSteps } from '@/components/common/process-steps';
 import { Reveal } from '@/components/common/reveal';
@@ -390,7 +390,7 @@ export function ServiceDetailView({ slug }: { slug: string }) {
             </ul>
           </Reveal>
           <Reveal delay={120}>
-            <LeadForm source={`service:${service.slug}`} defaultService={service.slug} />
+            <QuoteBuilder source={`service:${service.slug}`} defaultService={service.slug} variant="full" />
           </Reveal>
         </div>
       </Section>

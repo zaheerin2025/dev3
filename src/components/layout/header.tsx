@@ -20,6 +20,7 @@ interface HeaderProps {
 }
 
 const MAIN_NAV = [
+  { label: 'Tools', href: '/tools' },
   { label: 'Portfolio', href: '/portfolio' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'About', href: '/about' },
@@ -30,6 +31,7 @@ const MAIN_NAV = [
 function isActive(path: string, href: string): boolean {
   if (href === '/') return path === '/';
   if (href === '/portfolio') return path.startsWith('/portfolio');
+  if (href === '/tools') return path === '/tools' || path.startsWith('/tools/');
   if (href === '/blog') return path.startsWith('/blog');
   // Services hub stays active on /services and on ANY service detail page.
   if (href === '/services') return path === '/services' || (services.some((s) => s.slug === path.slice(1)) && path !== '/');

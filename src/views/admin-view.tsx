@@ -39,6 +39,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { LeadsPanel, OverviewPanel, PortfoliosPanel } from '@/components/admin/panels';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -803,6 +804,23 @@ const SITE_CONTENT_FIELDS: { key: string; label: string; defaultValue: string; h
     label: 'Client satisfaction',
     defaultValue: site.stats.satisfaction,
   },
+  {
+    key: 'contact.businessEmail',
+    label: 'Business / promotions email',
+    defaultValue: '',
+    hint: 'Shown where business & promotion queries should go. Empty = hidden.',
+  },
+  {
+    key: 'video.title',
+    label: 'YouTube section title',
+    defaultValue: 'Fresh From Our YouTube Channel',
+  },
+  {
+    key: 'video.latestUrl',
+    label: 'Latest video URL',
+    defaultValue: '',
+    hint: 'Paste any YouTube watch/shorts/live URL — the home section stays hidden until this is set.',
+  },
 ];
 
 function SiteContentTab({ token, onUnauthorized }: { token: string; onUnauthorized: () => void }) {
@@ -1010,12 +1028,24 @@ export function AdminView() {
 
       <Tabs defaultValue="posts" className="mt-6">
         <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="posts">Posts</TabsTrigger>
+          <TabsTrigger value="portfolios">Portfolio</TabsTrigger>
+          <TabsTrigger value="leads">Leads</TabsTrigger>
           <TabsTrigger value="pricing">Pricing</TabsTrigger>
           <TabsTrigger value="content">Site Content</TabsTrigger>
         </TabsList>
+        <TabsContent value="overview" className="mt-5">
+          <OverviewPanel onUnauthorized={onUnauthorized} />
+        </TabsContent>
         <TabsContent value="posts" className="mt-5">
           <PostsTab token={token} onUnauthorized={onUnauthorized} />
+        </TabsContent>
+        <TabsContent value="portfolios" className="mt-5">
+          <PortfoliosPanel onUnauthorized={onUnauthorized} />
+        </TabsContent>
+        <TabsContent value="leads" className="mt-5">
+          <LeadsPanel onUnauthorized={onUnauthorized} />
         </TabsContent>
         <TabsContent value="pricing" className="mt-5">
           <PricingTab token={token} onUnauthorized={onUnauthorized} />

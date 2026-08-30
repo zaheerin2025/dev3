@@ -18,6 +18,7 @@ model Lead {
   timeline  String?
   message   String
   source    String   @default("contact")
+  read      Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
@@ -51,4 +52,18 @@ model Setting {
   key       String   @id
   value     String
   updatedAt DateTime @updatedAt
+}
+
+// Portfolio items managed from the admin panel; rendered on /portfolio.
+model Portfolio {
+  id          String   @id @default(cuid())
+  title       String
+  url         String
+  description String
+  category    String   @default("Website")
+  imageUrl    String?
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

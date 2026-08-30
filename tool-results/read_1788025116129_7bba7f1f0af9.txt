@@ -1,0 +1,855 @@
+     1→'use client';
+     2→
+     3→import * as React from 'react';
+     4→import { CheckCircle2, Loader2, Mail, MessageCircle, Phone, Send } from 'lucide-react';
+     5→import { Button } from '@/components/ui/button';
+     6→import { Input } from '@/components/ui/input';
+     7→import { Label } from '@/components/ui/label';
+     8→import { Textarea } from '@/components/ui/textarea';
+     9→import { Link } from '@/components/common/link';
+    10→import {
+    11→  Select,
+    12→  SelectContent,
+    13→  SelectItem,
+    14→  SelectTrigger,
+    15→  SelectValue,
+    16→} from '@/components/ui/select';
+    17→import { useToast } from '@/hooks/use-toast';
+    18→import { cn } from '@/lib/utils';
+    19→import { trackEvent } from '@/lib/analytics';
+    20→import { services } from '@/data';
+    21→import { site, whatsappLink } from '@/lib/site';
+    22→import { useSiteSettings } from '@/lib/use-site-settings';
+    23→import { effectiveValue } from '@/lib/content-schema';
+    24→
+    25→const BUDGET_RANGES = [
+    26→  'Under $500',
+    27→  '$500 – $1,000',
+    28→  '$1,000 – $2,500',
+    29→  '$2,500 – $5,000',
+    30→  '$5,000+',
+    31→  'Not sure yet',
+    32→];
+    33→
+    34→const TIMELINE_OPTIONS = ['ASAP — this month', '1–3 months', '3–6 months', 'Just exploring'];
+    35→
+    36→const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    37→
+    38→const MESSAGE_MAX = 500;
+    39→const MESSAGE_MIN = 20;
+    40→
+    41→interface LeadFormProps {
+    42→  /** Lead source label stored with the submission, e.g. "service:web-dev". */
+    43→  source?: string;
+    44→  /** Preselect a service (slug) in the dropdown. */
+    45→  defaultService?: string;
+    46→  /** Kept for API compatibility — the split layout now always pairs a dark rail with a white form. */
+    47→  dark?: boolean;
+    48→  /** Single-column variant used on service/pricing pages. */
+    49→  compact?: boolean;
+    50→  /** Render WITHOUT the card surface so a parent (e.g. the contact page's gradient-border card) can wrap it. */
+    51→  bare?: boolean;
+    52→  className?: string;
+    53→}
+    54→
+    55→interface FormState {
+    56→  firstName: string;
+    57→  lastName: string;
+    58→  email: string;
+    59→  phone: string;
+    60→  company: string;
+    61→  service: string;
+    62→  budget: string;
+    63→  timeline: string;
+    64→  message: string;
+    65→}
+    66→
+    67→const EMPTY_FORM: FormState = {
+    68→  firstName: '',
+    69→  lastName: '',
+    70→  email: '',
+    71→  phone: '',
+    72→  company: '',
+    73→  service: '',
+    74→  budget: '',
+    75→  timeline: '',
+    76→  message: '',
+    77→};
+    78→
+    79→type Errors = Partial<Record<'name' | 'email' | 'service' | 'budget' | 'message', string>>;
+    80→
+    81→/* ------------------------------------------------------------------ */
+    82→/*  Small building blocks                                              */
+    83→/* ------------------------------------------------------------------ */
+    84→
+    85→function Field({
+    86→  id,
+    87→  label,
+    88→  required,
+    89→  optional,
+    90→  error,
+    91→  className,
+    92→  children,
+    93→}: {
+    94→  id: string;
+    95→  label: string;
+    96→  required?: boolean;
+    97→  optional?: boolean;
+    98→  error?: string;
+    99→  className?: string;
+   100→  children: React.ReactNode;
+   101→}) {
+   102→  return (
+   103→    <div className={cn('flex flex-col gap-1.5', className)}>
+   104→      <Label htmlFor={id} className="text-sm font-bold text-[#0a0a0a]">
+   105→        {label}
+   106→        {required ? (
+   107→          <span className="ml-0.5 text-purple-600" aria-hidden="true">
+   108→            *
+   109→          </span>
+   110→        ) : null}
+   111→        {optional ? <span className="ml-1 text-xs font-normal text-muted-foreground">(optional)</span> : null}
+   112→      </Label>
+   113→      {children}
+   114→      {error ? (
+   115→        <p id={`${id}-error`} className="mt-1 text-xs font-medium text-destructive">
+   116→          {error}
+   117→        </p>
+   118→      ) : null}
+   119→    </div>
+   120→  );
+   121→}
+   122→
+   123→function SuccessPanel({
+   124→  leadId,
+   125→  dark,
+   126→  onReset,
+   127→}: {
+   128→  leadId: string | null;
+   129→  dark?: boolean;
+   130→  onReset: () => void;
+   131→}) {
+   132→  return (
+   133→    <div
+   134→      className={cn(
+   135→        'flex flex-col items-center justify-center gap-4 p-8 text-center sm:p-10',
+   136→        dark && 'text-white'
+   137→      )}
+   138→      role="status"
+   139→      aria-live="polite"
+   140→    >
+   141→      <span className="gradient-frame flex rounded-full p-3" aria-hidden="true">
+   142→        <span
+   143→          className={cn(
+   144→            'flex h-20 w-20 items-center justify-center rounded-full',
+   145→            dark ? 'bg-white/10' : 'bg-white'
+   146→          )}
+   147→        >
+   148→          <CheckCircle2 className="h-14 w-14 text-purple-600" />
+   149→        </span>
+   150→      </span>
+   151→      <h3
+   152→        className={cn('font-display text-2xl font-bold', dark ? 'text-white' : 'text-[#0a0a0a]')}
+   153→      >
+   154→        Request received — thank you!
+   155→      </h3>
+   156→      <p
+   157→        className={cn(
+   158→          'max-w-md text-sm leading-relaxed sm:text-base',
+   159→          dark ? 'text-slate-300' : 'text-[#4b5563]'
+   160→        )}
+   161→      >
+   162→        We&rsquo;ll reply within one business day with next steps and a fixed quote.
+   163→      </p>
+   164→      {leadId ? (
+   165→        <p className={cn('text-xs', dark ? 'text-slate-400' : 'text-muted-foreground')}>
+   166→          Reference: <span className="font-mono font-semibold text-purple-700">{leadId}</span>
+   167→        </p>
+   168→      ) : null}
+   169→      <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
+   170→        {whatsappLink() ? (
+   171→          <a
+   172→            href={whatsappLink()}
+   173→            target="_blank"
+   174→            rel="noopener noreferrer"
+   175→            onClick={() => trackEvent('whatsapp_click', { location: 'lead_success' })}
+   176→            className="btn-secondary-pill-sm"
+   177→          >
+   178→            <MessageCircle className="h-4 w-4" aria-hidden="true" />
+   179→            Chat on WhatsApp
+   180→          </a>
+   181→        ) : null}
+   182→        <Button variant="ghost" onClick={onReset}>
+   183→          Send another message
+   184→        </Button>
+   185→      </div>
+   186→    </div>
+   187→  );
+   188→}
+   189→
+   190→/* ------------------------------------------------------------------ */
+   191→/*  LeadForm                                                           */
+   192→/* ------------------------------------------------------------------ */
+   193→
+   194→/**
+   195→ * Project inquiry form with honeypot spam protection.
+   196→ * Posts to /api/leads (stored in DB) and fires a GA4 generate_lead event.
+   197→ */
+   198→export function LeadForm({
+   199→  source = 'contact',
+   200→  defaultService,
+   201→  dark,
+   202→  compact,
+   203→  bare,
+   204→  className,
+   205→}: LeadFormProps) {
+   206→  const { toast } = useToast();
+   207→  const [form, setForm] = React.useState<FormState>(() => ({
+   208→    ...EMPTY_FORM,
+   209→    service: defaultService ?? '',
+   210→  }));
+   211→  const [honeypot, setHoneypot] = React.useState('');
+   212→  const [errors, setErrors] = React.useState<Errors>({});
+   213→  const [submitting, setSubmitting] = React.useState(false);
+   214→  const [submitted, setSubmitted] = React.useState(false);
+   215→  const [leadId, setLeadId] = React.useState<string | null>(null);
+   216→
+   217→  /** Map form fields to their validation error keys. */
+   218→  const ERROR_KEY_FOR: Partial<Record<keyof FormState, keyof Errors>> = {
+   219→    firstName: 'name',
+   220→    email: 'email',
+   221→    service: 'service',
+   222→    budget: 'budget',
+   223→    message: 'message',
+   224→  };
+   225→
+   226→  const set = (key: keyof FormState) => (value: string) => {
+   227→    setForm((prev) => ({ ...prev, [key]: value }));
+   228→    const errorKey = ERROR_KEY_FOR[key];
+   229→    if (!errorKey) return;
+   230→    setErrors((prev) => (prev[errorKey] ? { ...prev, [errorKey]: undefined } : prev));
+   231→  };
+   232→
+   233→  const validate = (): boolean => {
+   234→    const next: Errors = {};
+   235→    if (form.firstName.trim().length < 2) next.name = 'Please enter your first name.';
+   236→    if (!EMAIL_REGEX.test(form.email.trim())) next.email = 'Please enter a valid email address.';
+   237→    if (!form.service) next.service = 'Please select a service.';
+   238→    if (!form.budget) next.budget = 'Please select a budget range.';
+   239→    if (form.message.trim().length < MESSAGE_MIN) {
+   240→      next.message = `Please add a little more detail (at least ${MESSAGE_MIN} characters).`;
+   241→    }
+   242→    setErrors(next);
+   243→    return Object.keys(next).length === 0;
+   244→  };
+   245→
+   246→  const handleSubmit = async (event: React.FormEvent) => {
+   247→    event.preventDefault();
+   248→    if (!validate()) return;
+   249→    setSubmitting(true);
+   250→    try {
+   251→      const fullName = [form.firstName.trim(), form.lastName.trim()].filter(Boolean).join(' ');
+   252→      // Company is folded into the message so nothing the client shares gets lost.
+   253→      const message = form.company.trim()
+   254→        ? `Company: ${form.company.trim()}\n\n${form.message}`
+   255→        : form.message;
+   256→
+   257→      const response = await fetch('/api/leads', {
+   258→        method: 'POST',
+   259→        headers: { 'Content-Type': 'application/json' },
+   260→        body: JSON.stringify({
+   261→          name: fullName,
+   262→          email: form.email,
+   263→          phone: form.phone,
+   264→          service: form.service,
+   265→          budget: form.budget,
+   266→          timeline: form.timeline,
+   267→          message,
+   268→          source,
+   269→          website: honeypot,
+   270→        }),
+   271→      });
+   272→      const payload = (await response.json()) as { ok?: boolean; id?: string; error?: string };
+   273→      if (!response.ok || !payload.ok) {
+   274→        throw new Error(payload.error ?? 'Something went wrong.');
+   275→      }
+   276→      trackEvent('generate_lead', {
+   277→        source,
+   278→        service: form.service || 'unspecified',
+   279→        budget: form.budget || 'unspecified',
+   280→        timeline: form.timeline || 'unspecified',
+   281→      });
+   282→      setLeadId(payload.id ?? null);
+   283→      setSubmitted(true);
+   284→      setForm({ ...EMPTY_FORM, service: defaultService ?? '' });
+   285→      toast({
+   286→        title: 'Request received!',
+   287→        description: 'Thanks — we will send your fixed quote within one business day.',
+   288→      });
+   289→    } catch (error) {
+   290→      toast({
+   291→        title: 'Could not send your request',
+   292→        description: error instanceof Error ? error.message : 'Please try again or email us directly.',
+   293→        variant: 'destructive',
+   294→      });
+   295→    } finally {
+   296→      setSubmitting(false);
+   297→    }
+   298→  };
+   299→
+   300→  const resetToForm = () => {
+   301→    setSubmitted(false);
+   302→    setLeadId(null);
+   303→    setErrors({});
+   304→  };
+   305→
+   306→  /* ---------------------------- styles ---------------------------- */
+   307→
+   308→  // The split layout pairs a dark rail with a white form (pricing / service
+   309→  // pages, full content width). `bare` is the clear single-column form —
+   310→  // the parent (contact page gradient-border card) supplies the surface.
+   311→  const wrapperClass = bare
+   312→    ? 'rounded-[24px]'
+   313→    : cn('card-soft grid overflow-hidden rounded-[24px] lg:grid-cols-[0.85fr_1.15fr]');
+   314→  const inputClass = dark
+   315→    ? 'h-11 rounded-xl border-white/15 bg-white/5 text-white placeholder:text-white/40 focus-visible:border-purple-400 focus-visible:ring-purple-400'
+   316→    : 'h-11 rounded-xl border-gray-200 bg-white text-[#0a0a0a] placeholder:text-gray-400 focus-visible:border-purple-500 focus-visible:ring-purple-500';
+   317→  const triggerClass = cn(inputClass, 'w-full data-[size=default]:h-11');
+   318→
+   319→  /* ------------------------- form fields -------------------------- */
+   320→
+   321→  const timelineField = (
+   322→    <Field id={`lead-timeline-${source}`} label="Timeline" optional>
+   323→      <Select value={form.timeline} onValueChange={set('timeline')}>
+   324→        <SelectTrigger
+   325→          id={`lead-timeline-${source}`}
+   326→          className={triggerClass}
+   327→          aria-label="Project timeline"
+   328→        >
+   329→          <SelectValue placeholder="When do you want to start?" />
+   330→        </SelectTrigger>
+   331→        <SelectContent>
+   332→          {TIMELINE_OPTIONS.map((option) => (
+   333→            <SelectItem key={option} value={option}>
+   334→              {option}
+   335→            </SelectItem>
+   336→          ))}
+   337→        </SelectContent>
+   338→      </Select>
+   339→    </Field>
+   340→  );
+   341→
+   342→  const companyField = (
+   343→    <Field id={`lead-company-${source}`} label="Company" optional>
+   344→      <Input
+   345→        id={`lead-company-${source}`}
+   346→        value={form.company}
+   347→        onChange={(e) => set('company')(e.target.value)}
+   348→        placeholder="Company or brand name"
+   349→        autoComplete="organization"
+   350→        className={inputClass}
+   351→      />
+   352→    </Field>
+   353→  );
+   354→
+   355→  const nameFields = (
+   356→    <>
+   357→      <Field
+   358→        id={`lead-first-${source}`}
+   359→        label="First name"
+   360→        required
+   361→        error={errors.name}
+   362→      >
+   363→        <Input
+   364→          id={`lead-first-${source}`}
+   365→          value={form.firstName}
+   366→          onChange={(e) => set('firstName')(e.target.value)}
+   367→          placeholder="Jane"
+   368→          autoComplete="given-name"
+   369→          required
+   370→          aria-invalid={Boolean(errors.name)}
+   371→          aria-describedby={errors.name ? `lead-first-${source}-error` : undefined}
+   372→          className={inputClass}
+   373→        />
+   374→      </Field>
+   375→      <Field id={`lead-last-${source}`} label="Last name" optional>
+   376→        <Input
+   377→          id={`lead-last-${source}`}
+   378→          value={form.lastName}
+   379→          onChange={(e) => set('lastName')(e.target.value)}
+   380→          placeholder="Smith"
+   381→          autoComplete="family-name"
+   382→          className={inputClass}
+   383→        />
+   384→      </Field>
+   385→    </>
+   386→  );
+   387→
+   388→  const contactFields = (
+   389→    <>
+   390→      <Field id={`lead-email-${source}`} label="Email" required error={errors.email}>
+   391→        <Input
+   392→          id={`lead-email-${source}`}
+   393→          type="email"
+   394→          value={form.email}
+   395→          onChange={(e) => set('email')(e.target.value)}
+   396→          placeholder="jane@company.com"
+   397→          autoComplete="email"
+   398→          required
+   399→          aria-invalid={Boolean(errors.email)}
+   400→          aria-describedby={errors.email ? `lead-email-${source}-error` : undefined}
+   401→          className={inputClass}
+   402→        />
+   403→      </Field>
+   404→      <Field id={`lead-phone-${source}`} label="Phone" optional>
+   405→        <Input
+   406→          id={`lead-phone-${source}`}
+   407→          type="tel"
+   408→          value={form.phone}
+   409→          onChange={(e) => set('phone')(e.target.value)}
+   410→          placeholder="+1 (555) 000-0000"
+   411→          autoComplete="tel"
+   412→          className={inputClass}
+   413→        />
+   414→      </Field>
+   415→    </>
+   416→  );
+   417→
+   418→  const pickFields = (
+   419→    <>
+   420→      <Field id={`lead-service-${source}`} label="Service" required error={errors.service}>
+   421→        <Select value={form.service} onValueChange={set('service')}>
+   422→          <SelectTrigger
+   423→            id={`lead-service-${source}`}
+   424→            className={triggerClass}
+   425→            aria-label="Service needed"
+   426→            aria-invalid={Boolean(errors.service)}
+   427→            aria-describedby={errors.service ? `lead-service-${source}-error` : undefined}
+   428→          >
+   429→            <SelectValue placeholder="What do you need?" />
+   430→          </SelectTrigger>
+   431→          <SelectContent>
+   432→            {services.map((service) => (
+   433→              <SelectItem key={service.slug} value={service.slug}>
+   434→                {service.name}
+   435→              </SelectItem>
+   436→            ))}
+   437→            <SelectItem value="not-sure">Not sure yet / something else</SelectItem>
+   438→          </SelectContent>
+   439→        </Select>
+   440→      </Field>
+   441→      <Field id={`lead-budget-${source}`} label="Budget" required error={errors.budget}>
+   442→        <Select value={form.budget} onValueChange={set('budget')}>
+   443→          <SelectTrigger
+   444→            id={`lead-budget-${source}`}
+   445→            className={triggerClass}
+   446→            aria-label="Budget range"
+   447→            aria-invalid={Boolean(errors.budget)}
+   448→            aria-describedby={errors.budget ? `lead-budget-${source}-error` : undefined}
+   449→          >
+   450→            <SelectValue placeholder="Select a range" />
+   451→          </SelectTrigger>
+   452→          <SelectContent>
+   453→            {BUDGET_RANGES.map((range) => (
+   454→              <SelectItem key={range} value={range}>
+   455→                {range}
+   456→              </SelectItem>
+   457→            ))}
+   458→          </SelectContent>
+   459→        </Select>
+   460→      </Field>
+   461→    </>
+   462→  );
+   463→
+   464→  const messageField = (
+   465→    <Field
+   466→      id={`lead-message-${source}`}
+   467→      label="Project details"
+   468→      required
+   469→      error={errors.message}
+   470→      className={compact ? undefined : 'sm:col-span-2'}
+   471→    >
+   472→      <Textarea
+   473→        id={`lead-message-${source}`}
+   474→        value={form.message}
+   475→        onChange={(e) => set('message')(e.target.value)}
+   476→        placeholder="Tell us about your project, goals, and timeline…"
+   477→        rows={compact ? 4 : 5}
+   478→        maxLength={MESSAGE_MAX}
+   479→        required
+   480→        aria-invalid={Boolean(errors.message)}
+   481→        aria-describedby={
+   482→          errors.message ? `lead-message-${source}-error` : `lead-message-${source}-hint`
+   483→        }
+   484→        className={cn(
+   485→          inputClass,
+   486→          'h-auto min-h-[120px] py-3 focus-visible:border-purple-500 focus-visible:ring-purple-500'
+   487→        )}
+   488→      />
+   489→      <div
+   490→        id={`lead-message-${source}-hint`}
+   491→        className="flex items-center justify-between text-[11px] text-muted-foreground"
+   492→      >
+   493→        <span>Min. {MESSAGE_MIN} characters — goals, scope, links all help.</span>
+   494→        <span
+   495→          className={cn('tabular-nums', form.message.length >= MESSAGE_MAX - 20 && 'text-destructive')}
+   496→          aria-live="polite"
+   497→        >
+   498→          {form.message.length}/{MESSAGE_MAX}
+   499→        </span>
+   500→      </div>
+   501→    </Field>
+   502→  );
+   503→
+   504→  const honeypotField = (
+   505→    <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+   506→      <label>
+   507→        Company website
+   508→        <input
+   509→          type="text"
+   510→          name="website"
+   511→          tabIndex={-1}
+   512→          autoComplete="off"
+   513→          value={honeypot}
+   514→          onChange={(e) => setHoneypot(e.target.value)}
+   515→        />
+   516→      </label>
+   517→    </div>
+   518→  );
+   519→
+   520→  const consentCopy = (
+   521→    <p
+   522→      className={cn(
+   523→        'text-xs leading-relaxed',
+   524→        dark ? 'text-slate-400' : 'text-muted-foreground'
+   525→      )}
+   526→    >
+   527→      By submitting, you agree to our{' '}
+   528→      <Link
+   529→        href="/privacy-policy"
+   530→        className="font-medium text-purple-700 underline decoration-purple-300 underline-offset-2 hover:text-purple-800"
+   531→      >
+   532→        Privacy Policy
+   533→      </Link>
+   534→      . We reply within one business day and never share your details.
+   535→    </p>
+   536→  );
+   537→
+   538→  const submitButton = (
+   539→    <button
+   540→      type="submit"
+   541→      disabled={submitting}
+   542→      className="btn-primary-pill w-full disabled:pointer-events-none disabled:opacity-60"
+   543→    >
+   544→      {submitting ? (
+   545→        <>
+   546→          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+   547→          Sending…
+   548→        </>
+   549→      ) : (
+   550→        <>
+   551→          <Send className="h-4 w-4" aria-hidden="true" />
+   552→          Send message
+   553→        </>
+   554→      )}
+   555→    </button>
+   556→  );
+   557→
+   558→  /* -------------------------- success ----------------------------- */
+   559→
+   560→  if (submitted) {
+   561→    if (compact) {
+   562→      return (
+   563→        <div
+   564→          className={cn('card-soft overflow-hidden rounded-[24px]', className)}
+   565→          data-slot="lead-form-success"
+   566→        >
+   567→          <SuccessPanel leadId={leadId} dark={dark} onReset={resetToForm} />
+   568→        </div>
+   569→      );
+   570→    }
+   571→    if (bare) {
+   572→      return (
+   573→        <div
+   574→          className={cn('relative rounded-[24px] bg-white p-6 sm:p-8 lg:p-10', className)}
+   575→          data-slot="lead-form-success"
+   576→        >
+   577→          <SuccessPanel leadId={leadId} dark={dark} onReset={resetToForm} />
+   578→        </div>
+   579→      );
+   580→    }
+   581→    return (
+   582→      <div
+   583→        className={cn(wrapperClass, className)}
+   584→        data-slot="lead-form-success"
+   585→      >
+   586→        <LeadRail />
+   587→        <div className="relative bg-white p-6 sm:p-8 lg:p-10">
+   588→          <SuccessPanel leadId={leadId} dark={dark} onReset={resetToForm} />
+   589→        </div>
+   590→      </div>
+   591→    );
+   592→  }
+   593→
+   594→  /* ------------------------------ bare ----------------------------- */
+   595→  /*
+   596→   * `bare` — the CLEAR single-column form used inside the contact page's
+   597→   * gradient-border card. No dark rail, no nested splits: one white,
+   598→   * airy, readable form with its own heading. Parent supplies the card.
+   599→   */
+   600→  if (bare) {
+   601→    return (
+   602→      <div className={cn('relative bg-white p-6 sm:p-8 lg:p-10', className)} data-slot="lead-form">
+   603→        {submitted ? (
+   604→          <SuccessPanel leadId={leadId} dark={dark} onReset={resetToForm} />
+   605→        ) : (
+   606→          <>
+   607→            {/* Heading row */}
+   608→            <div className="flex items-center gap-3.5">
+   609→              <span className="icon-tile size-11 shrink-0" aria-hidden="true">
+   610→                <Send className="h-5 w-5" />
+   611→              </span>
+   612→              <div className="min-w-0">
+   613→                <h3 className="font-display text-xl font-bold text-[#0a0a0a]">
+   614→                  Get your free <span className="text-gradient">quote</span>
+   615→                </h3>
+   616→                <p className="text-sm text-muted-foreground">
+   617→                  Fixed price, no obligation — reply within one business day.
+   618→                </p>
+   619→              </div>
+   620→            </div>
+   621→            <div className="dashed-divider my-6" role="presentation" />
+   622→            <form
+   623→              onSubmit={handleSubmit}
+   624→              noValidate
+   625→              className="flex flex-col gap-5"
+   626→              aria-label="Project inquiry form"
+   627→            >
+   628→              {honeypotField}
+   629→              <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2">
+   630→                {nameFields}
+   631→                {contactFields}
+   632→                {pickFields}
+   633→                {timelineField}
+   634→                {companyField}
+   635→                {messageField}
+   636→              </div>
+   637→              {submitButton}
+   638→              {consentCopy}
+   639→            </form>
+   640→          </>
+   641→        )}
+   642→      </div>
+   643→    );
+   644→  }
+   645→
+   646→  /* --------------------------- compact ---------------------------- */
+   647→
+   648→  if (compact) {
+   649→    return (
+   650→      <div
+   651→        className={cn(
+   652→          'card-soft relative overflow-hidden rounded-[24px] p-6',
+   653→          className
+   654→        )}
+   655→      >
+   656→        <span
+   657→          className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-600 to-pink-500"
+   658→          aria-hidden="true"
+   659→        />
+   660→        <div className="flex items-center gap-3">
+   661→          <span className="icon-tile size-11 shrink-0" aria-hidden="true">
+   662→            <Send className="h-5 w-5" />
+   663→          </span>
+   664→          <div>
+   665→            <h3 className="font-display text-lg font-bold text-[#0a0a0a]">
+   666→              Get your free <span className="text-gradient">quote</span>
+   667→            </h3>
+   668→            <p className="text-sm text-muted-foreground">
+   669→              Fixed price, no obligation — reply within one business day.
+   670→            </p>
+   671→          </div>
+   672→        </div>
+   673→        <form
+   674→          onSubmit={handleSubmit}
+   675→          noValidate
+   676→          className="mt-5 flex flex-col gap-4"
+   677→          aria-label="Project inquiry form"
+   678→        >
+   679→          {honeypotField}
+   680→          <div className="grid gap-4 sm:grid-cols-2">
+   681→            {nameFields}
+   682→            {contactFields}
+   683→            {pickFields}
+   684→          </div>
+   685→          {messageField}
+   686→          {submitButton}
+   687→          {consentCopy}
+   688→        </form>
+   689→      </div>
+   690→    );
+   691→  }
+   692→
+   693→  /* ----------------------------- full ----------------------------- */
+   694→
+   695→  return (
+   696→    <div className={cn(wrapperClass, className)}>
+   697→      <LeadRail />
+   698→      <div className="relative bg-white p-6 sm:p-8 lg:p-10">
+   699→        <form
+   700→          onSubmit={handleSubmit}
+   701→          noValidate
+   702→          className="flex flex-col gap-4"
+   703→          aria-label="Project inquiry form"
+   704→        >
+   705→          {honeypotField}
+   706→          <div className="grid gap-4 sm:grid-cols-2">
+   707→            {nameFields}
+   708→            {contactFields}
+   709→            {pickFields}
+   710→            {timelineField}
+   711→            {companyField}
+   712→            {messageField}
+   713→          </div>
+   714→          {submitButton}
+   715→          {consentCopy}
+   716→        </form>
+   717→      </div>
+   718→    </div>
+   719→  );
+   720→}
+   721→
+   722→/* ------------------------------------------------------------------ */
+   723→/*  Dark left rail (full variant, desktop only)                        */
+   724→/* ------------------------------------------------------------------ */
+   725→
+   726→function LeadRail() {
+   727→  // Contact rows come from the admin-editable settings; channels without
+   728→  // a real value simply don't render.
+   729→  const settings = useSiteSettings((s) => s.settings);
+   730→  const email = effectiveValue(settings, 'contact.email');
+   731→  const phoneDisplay = effectiveValue(settings, 'contact.phoneDisplay');
+   732→  const whatsappHref = whatsappLink();
+   733→
+   734→  const rows: {
+   735→    icon: typeof Mail;
+   736→    label: string;
+   737→    value: string;
+   738→    href: string;
+   739→    external: boolean;
+   740→    event: 'email_click' | 'call_click' | 'whatsapp_click';
+   741→  }[] = [
+   742→    {
+   743→      icon: Mail,
+   744→      label: 'Email us',
+   745→      value: email,
+   746→      href: `mailto:${email}`,
+   747→      external: false,
+   748→      event: 'email_click',
+   749→    },
+   750→    ...(phoneDisplay
+   751→      ? [
+   752→          {
+   753→            icon: Phone,
+   754→            label: 'Call us',
+   755→            value: phoneDisplay,
+   756→            href: `tel:${phoneDisplay.replace(/[^+\d]/g, '')}`,
+   757→            external: false,
+   758→            event: 'call_click' as const,
+   759→          },
+   760→        ]
+   761→      : []),
+   762→    ...(whatsappHref
+   763→      ? [
+   764→          {
+   765→            icon: MessageCircle,
+   766→            label: 'WhatsApp',
+   767→            value: 'Chat instantly',
+   768→            href: whatsappHref,
+   769→            external: true,
+   770→            event: 'whatsapp_click' as const,
+   771→          },
+   772→        ]
+   773→      : []),
+   774→  ];
+   775→
+   776→  return (
+   777→    <aside className="relative hidden overflow-hidden bg-[#0a0a0a] text-white lg:flex lg:flex-col">
+   778→      {/* Ambient gradient glows */}
+   779→      <span
+   780→        className="blob -right-20 top-10 size-72 bg-gradient-to-br from-purple-600 to-pink-500"
+   781→        aria-hidden="true"
+   782→      />
+   783→      <span
+   784→        className="blob -bottom-24 -left-16 size-64 bg-gradient-to-br from-blue-600 to-cyan-500 opacity-[0.18]"
+   785→        aria-hidden="true"
+   786→      />
+   787→      <div className="relative z-10 flex h-full flex-col gap-7 p-8 lg:p-10">
+   788→        <p className="flex w-fit items-center gap-2 text-xs font-semibold text-purple-200">
+   789→          <span
+   790→            className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-purple-300"
+   791→            aria-hidden="true"
+   792→          />
+   793→          We reply within one business day.
+   794→        </p>
+   795→
+   796→        <div>
+   797→          <h3 className="font-display text-2xl font-bold text-white">
+   798→            Get your free <span className="text-gradient-soft">quote</span>
+   799→          </h3>
+   800→          <p className="mt-2 text-sm leading-relaxed text-white/60">
+   801→            A few lines are enough — fixed price, no obligation, straight answers.
+   802→          </p>
+   803→        </div>
+   804→
+   805→        <div className="flex flex-col gap-2.5">
+   806→          {rows.map((row) => (
+   807→            <a
+   808→              key={row.label}
+   809→              href={row.href}
+   810→              target={row.external ? '_blank' : undefined}
+   811→              rel={row.external ? 'noopener noreferrer' : undefined}
+   812→              onClick={() => trackEvent(row.event, { location: 'lead_form' })}
+   813→              className="group flex items-center gap-3 rounded-xl p-1.5 transition-colors hover:bg-white/5"
+   814→            >
+   815→              <span
+   816→                className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-pink-500 text-white shadow-[0_8px_18px_-8px_rgb(124_58_237/0.55)] transition-transform duration-300 group-hover:scale-105"
+   817→                aria-hidden="true"
+   818→              >
+   819→                <row.icon className="h-[18px] w-[18px]" />
+   820→              </span>
+   821→              <span className="min-w-0">
+   822→                <span className="block text-[11px] font-medium uppercase tracking-[0.12em] text-white/40">
+   823→                  {row.label}
+   824→                </span>
+   825→                <span className="block truncate text-sm font-semibold text-white">
+   826→                  {row.value}
+   827→                </span>
+   828→              </span>
+   829→            </a>
+   830→          ))}
+   831→        </div>
+   832→
+   833→        <div className="border-t-2 border-dashed border-white/15" role="presentation" />
+   834→
+   835→        <div className="mt-auto flex flex-col gap-5">
+   836→          {/* Mini stats — plain process facts only, no invented ratings */}
+   837→          <p className="text-sm font-semibold text-white/80">
+   838→            {site.stats.projects} projects · {site.stats.years} years · 24hr reply
+   839→          </p>
+   840→
+   841→          <figure className="rounded-2xl bg-white/5 p-4 ring-1 ring-inset ring-white/10">
+   842→            <blockquote className="text-[13px] leading-relaxed text-white/70">
+   843→              Every inquiry lands with a senior engineer — you get real questions or a fixed
+   844→              quote, never a sales pitch.
+   845→            </blockquote>
+   846→            <figcaption className="mt-1.5 text-xs font-medium text-white/40">
+   847→              The Developers3 working rule
+   848→            </figcaption>
+   849→          </figure>
+   850→        </div>
+   851→      </div>
+   852→    </aside>
+   853→  );
+   854→}
+   855→

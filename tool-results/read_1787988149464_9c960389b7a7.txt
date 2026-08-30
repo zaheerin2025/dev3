@@ -1,0 +1,2002 @@
+     1→'use client';
+     2→
+     3→/**
+     4→ * Batch: guided form → document/output GENERATORS (task 23-b) — 22 tools, all on the
+     5→ * shared GeneratorTool engine. Each tool is a pure GeneratorConfig: fields in, document out.
+     6→ * Slugs MUST match src/data/tools/registry.ts exactly.
+     7→ */
+     8→
+     9→import * as React from 'react';
+    10→import { GeneratorTool, type GeneratorConfig } from '../engines/generator-tool';
+    11→import type { BatchTool } from '../batch-types';
+    12→
+    13→/* ═══════════════════════════════════════════════════════════════
+    14→   1. META TAG GENERATOR
+    15→   ═══════════════════════════════════════════════════════════════ */
+    16→
+    17→const MetaTags = makeGen({
+    18→  fields: [
+    19→    { kind: 'text', id: 'title', label: 'Page title', half: true, placeholder: 'e.g. Handmade Leather Wallets | Acme Goods', help: 'Keep the important phrase inside the first 50–60 characters — Google truncates around there.' },
+    20→    { kind: 'text', id: 'author', label: 'Author', half: true, placeholder: 'e.g. Acme Goods editorial team' },
+    21→    { kind: 'textarea', id: 'description', label: 'Meta description', rows: 3, placeholder: 'A 150–160 character summary of the page that makes a searcher want to click.', help: '155–160 characters displays in full on desktop; mobile cuts earlier.' },
+    22→    { kind: 'textarea', id: 'keywords', label: 'Keywords (optional)', rows: 2, placeholder: 'leather wallets, handmade gifts, full-grain leather', help: 'Comma-separated. Google has ignored this tag since 2009 — include it only for niche engines.' },
+    23→    { kind: 'text', id: 'canonical', label: 'Canonical URL', placeholder: 'https://example.com/shop/wallets', help: 'Absolute URL of the preferred version of this page.' },
+    24→    {
+    25→      kind: 'select', id: 'robots', label: 'Robots directive', half: true, default: 'index, follow',
+    26→      options: [
+    27→        { value: 'index, follow', label: 'index, follow — normal public page' },
+    28→        { value: 'noindex, follow', label: 'noindex, follow — hide from results, keep passing links' },
+    29→        { value: 'index, nofollow', label: 'index, nofollow — rank page, ignore its links' },
+    30→        { value: 'noindex, nofollow', label: 'noindex, nofollow — hide page entirely' },
+    31→      ],
+    32→    },
+    33→    { kind: 'toggle', id: 'viewport', label: 'Include responsive viewport tag', default: true, help: 'Required for mobile-friendly rendering — leave on for every public page.' },
+    34→  ],
+    35→  template: (v) => {
+    36→    const t = txt(v.title);
+    37→    const d = txt(v.description);
+    38→    const k = txt(v.keywords);
+    39→    const a = txt(v.author);
+    40→    const c = txt(v.canonical);
+    41→    const r = txt(v.robots) || 'index, follow';
+    42→    const out: string[] = ['<!-- Paste inside the <head> of your page -->'];
+    43→    if (t) out.push('<title>' + escapeHtml(t) + '</title>');
+    44→    if (d) out.push('<meta name="description" content="' + escapeHtml(d) + '" />');
+    45→    if (k) out.push('<meta name="keywords" content="' + escapeHtml(k) + '" />');
+    46→    if (a) out.push('<meta name="author" content="' + escapeHtml(a) + '" />');
+    47→    out.push('<meta name="robots" content="' + escapeHtml(r) + '" />');
+    48→    if (c) out.push('<link rel="canonical" href="' + escapeHtml(c) + '" />');
+    49→    if (bl(v.viewport)) out.push('<meta name="viewport" content="width=device-width, initial-scale=1" />');
+    50→    return out.join('\n');
+    51→  },
+    52→  outputLabel: 'Meta tag block',
+    53→  downloadName: 'meta-tags',
+    54→  downloadExt: 'html',
+    55→});
+    56→
+    57→/* ═══════════════════════════════════════════════════════════════
+    58→   2. ROBOTS.TXT GENERATOR
+    59→   ═══════════════════════════════════════════════════════════════ */
+    60→
+    61→const RobotsTxt = makeGen({
+    62→  fields: [
+    63→    {
+    64→      kind: 'select', id: 'policy', label: 'Default policy', default: 'allow',
+    65→      options: [
+    66→        { value: 'allow', label: 'Allow everything (live site)' },
+    67→        { value: 'block', label: 'Block everything (staging / private)' },
+    68→        { value: 'custom', label: 'Custom — allow all except my Disallow list' },
+    69→      ],
+    70→    },
+    71→    { kind: 'list', id: 'disallow', label: 'Paths to Disallow (custom mode)', placeholder: '/admin\n/private/*\n/cart', help: 'One path per line. A leading slash is added if missing; wildcards (*) are allowed.' },
+    72→    {
+    73→      kind: 'select', id: 'crawlDelay', label: 'Crawl-delay', half: true, default: 'none',
+    74→      options: [
+    75→        { value: 'none', label: 'No crawl-delay (recommended)' },
+    76→        { value: '5', label: '5 seconds' },
+    77→        { value: '10', label: '10 seconds' },
+    78→        { value: '30', label: '30 seconds' },
+    79→        { value: '60', label: '60 seconds' },
+    80→      ],
+    81→    },
+    82→    { kind: 'text', id: 'sitemap', label: 'Sitemap URL', half: true, placeholder: 'https://example.com/sitemap.xml', help: 'Absolute URL — crawlers read it straight from robots.txt.' },
+    83→  ],
+    84→  template: (v) => {
+    85→    const policy = txt(v.policy) || 'allow';
+    86→    const disallow = ls(v.disallow);
+    87→    const delay = txt(v.crawlDelay);
+    88→    const sm = txt(v.sitemap);
+    89→    const out: string[] = ['# robots.txt — upload to your site root: https://yourdomain.com/robots.txt', '', 'User-agent: *'];
+    90→    if (policy === 'block') {
+    91→      out.push('Disallow: /');
+    92→    } else if (policy === 'custom' && disallow.length > 0) {
+    93→      out.push('Allow: /');
+    94→      for (const p of disallow) {
+    95→        const norm = p.startsWith('/') || p.startsWith('http') || p.includes('*') || p.endsWith(':') ? p : '/' + p;
+    96→        out.push('Disallow: ' + norm);
+    97→      }
+    98→    } else {
+    99→      out.push('Allow: /');
+   100→    }
+   101→    if (delay !== 'none' && delay !== '') {
+   102→      out.push('', 'Crawl-delay: ' + delay);
+   103→    }
+   104→    if (sm) {
+   105→      out.push('', 'Sitemap: ' + sm);
+   106→    }
+   107→    return out.join('\n') + '\n';
+   108→  },
+   109→  outputLabel: 'robots.txt',
+   110→  downloadName: 'robots',
+   111→  downloadExt: 'txt',
+   112→});
+   113→
+   114→/* ═══════════════════════════════════════════════════════════════
+   115→   3. SITEMAP XML GENERATOR
+   116→   ═══════════════════════════════════════════════════════════════ */
+   117→
+   118→const SitemapXml = makeGen({
+   119→  fields: [
+   120→    { kind: 'list', id: 'urls', label: 'URLs', placeholder: 'https://example.com/\nhttps://example.com/about\nhttps://example.com/blog/post-1', help: 'One canonical, indexable URL per line — homepage first, then sections, then individual pages.' },
+   121→    {
+   122→      kind: 'select', id: 'changefreq', label: 'Change frequency', half: true, default: 'weekly',
+   123→      options: [
+   124→        { value: 'always', label: 'always' },
+   125→        { value: 'hourly', label: 'hourly' },
+   126→        { value: 'daily', label: 'daily' },
+   127→        { value: 'weekly', label: 'weekly' },
+   128→        { value: 'monthly', label: 'monthly' },
+   129→        { value: 'yearly', label: 'yearly' },
+   130→        { value: 'never', label: 'never (archived pages)' },
+   131→      ],
+   132→    },
+   133→    {
+   134→      kind: 'select', id: 'priority', label: 'Priority', half: true, default: '0.8',
+   135→      options: [
+   136→        { value: '1.0', label: '1.0 — homepage / flagship' },
+   137→        { value: '0.9', label: '0.9' },
+   138→        { value: '0.8', label: '0.8 — key landing pages' },
+   139→        { value: '0.7', label: '0.7' },
+   140→        { value: '0.6', label: '0.6 — regular content' },
+   141→        { value: '0.5', label: '0.5 — secondary pages' },
+   142→      ],
+   143→    },
+   144→  ],
+   145→  template: (v) => {
+   146→    const urls = ls(v.urls);
+   147→    const freq = txt(v.changefreq) || 'weekly';
+   148→    const pri = txt(v.priority) || '0.8';
+   149→    const head = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+   150→    const entries = urls.map((u) =>
+   151→      '  <url>\n    <loc>' + escapeHtml(u) + '</loc>\n    <changefreq>' + freq + '</changefreq>\n    <priority>' + pri + '</priority>\n  </url>'
+   152→    );
+   153→    return head + (entries.length ? '\n' + entries.join('\n') + '\n' : '\n') + '</urlset>\n';
+   154→  },
+   155→  outputLabel: 'sitemap.xml',
+   156→  downloadName: 'sitemap',
+   157→  downloadExt: 'xml',
+   158→});
+   159→
+   160→/* ═══════════════════════════════════════════════════════════════
+   161→   4. EMAIL SIGNATURE GENERATOR
+   162→   ═══════════════════════════════════════════════════════════════ */
+   163→
+   164→const EmailSignature = makeGen({
+   165→  fields: [
+   166→    { kind: 'text', id: 'name', label: 'Full name', half: true, placeholder: 'Jane Rivera', default: 'Jane Rivera' },
+   167→    { kind: 'text', id: 'role', label: 'Role / title', half: true, placeholder: 'Account Director' },
+   168→    { kind: 'text', id: 'company', label: 'Company', half: true, placeholder: 'Northlight Studio' },
+   169→    { kind: 'text', id: 'color', label: 'Accent color (hex)', half: true, placeholder: '#0f766e', default: '#0f766e', help: 'Six-digit hex. Invalid values fall back to teal.' },
+   170→    { kind: 'text', id: 'phone', label: 'Phone', half: true, placeholder: '+1 (555) 210-4477' },
+   171→    { kind: 'text', id: 'email', label: 'Email', half: true, placeholder: 'jane@northlight.co' },
+   172→    { kind: 'text', id: 'website', label: 'Website', placeholder: 'northlight.co', help: 'Domain or full URL — the link is made https:// automatically.' },
+   173→    {
+   174→      kind: 'select', id: 'style', label: 'Layout style', default: 'bar',
+   175→      options: [
+   176→        { value: 'bar', label: 'Accent bar — vertical color stripe on the left' },
+   177→        { value: 'center', label: 'Centered — top rule, centered stack' },
+   178→        { value: 'rule', label: 'Rule line — horizontal line, uppercase name' },
+   179→      ],
+   180→    },
+   181→  ],
+   182→  template: (v) => {
+   183→    const name = txt(v.name) || 'Your Name';
+   184→    const role = txt(v.role);
+   185→    const company = txt(v.company);
+   186→    const phone = txt(v.phone);
+   187→    const email = txt(v.email);
+   188→    const site = txt(v.website);
+   189→    const style = txt(v.style) || 'bar';
+   190→    let color = txt(v.color) || '#0f766e';
+   191→    if (!/^#[0-9a-fA-F]{6}$/.test(color)) color = '#0f766e';
+   192→
+   193→    const siteUrl = site ? (site.startsWith('http') ? site : 'https://' + site) : '';
+   194→    const siteLabel = site.replace(/^https?:\/\//, '').replace(/\/$/, '');
+   195→    const parts: string[] = [];
+   196→    if (phone) parts.push('<span style="color:#6b7280;white-space:nowrap;">' + escapeHtml(phone) + '</span>');
+   197→    if (email) parts.push('<a href="mailto:' + escapeHtml(email) + '" style="color:#6b7280;text-decoration:none;">' + escapeHtml(email) + '</a>');
+   198→    if (siteUrl) parts.push('<a href="' + escapeHtml(siteUrl) + '" style="color:#6b7280;text-decoration:none;">' + escapeHtml(siteLabel) + '</a>');
+   199→    const contactLine = parts.length
+   200→      ? '<div style="font-size:12px;line-height:1.7;color:#6b7280;padding-top:6px;">' + parts.join('<span style="color:' + color + ';">&nbsp;&nbsp;|&nbsp;&nbsp;</span>') + '</div>'
+   201→      : '';
+   202→
+   203→    let sig = '';
+   204→    if (style === 'center') {
+   205→      sig =
+   206→        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="font-family:Arial,Helvetica,sans-serif;text-align:center;">\n' +
+   207→        '  <tr><td style="padding:12px 32px 14px;border-top:3px solid ' + color + ';">\n' +
+   208→        '    <div style="font-size:17px;font-weight:bold;color:' + color + ';letter-spacing:1px;">' + escapeHtml(name) + '</div>\n' +
+   209→        (role || company ? '    <div style="font-size:12px;color:#4b5563;padding-top:3px;">' + escapeHtml([role, company].filter(Boolean).join(' · ')) + '</div>\n' : '') +
+   210→        contactLine.replace('padding-top:6px;', 'padding-top:8px;') +
+   211→        '  </td></tr>\n</table>';
+   212→    } else if (style === 'rule') {
+   213→      sig =
+   214→        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif;">\n' +
+   215→        '  <tr><td style="padding:10px 4px 6px;border-top:2px solid ' + color + ';">\n' +
+   216→        '    <div style="font-size:14px;font-weight:bold;color:#111827;letter-spacing:2px;text-transform:uppercase;">' + escapeHtml(name) + '</div>\n' +
+   217→        (role || company ? '    <div style="font-size:12px;color:' + color + ';padding-top:3px;">' + escapeHtml([role, company].filter(Boolean).join(', ')) + '</div>\n' : '') +
+   218→        contactLine +
+   219→        '  </td></tr>\n</table>';
+   220→    } else {
+   221→      sig =
+   222→        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif;">\n' +
+   223→        '  <tr>\n' +
+   224→        '    <td width="4" bgcolor="' + color + '" style="width:4px;background:' + color + ';"></td>\n' +
+   225→        '    <td style="padding:8px 18px;">\n' +
+   226→        '      <div style="font-size:16px;font-weight:bold;color:#111827;">' + escapeHtml(name) + '</div>\n' +
+   227→        (role ? '      <div style="font-size:12px;font-weight:bold;color:' + color + ';padding-top:2px;">' + escapeHtml(role) + '</div>\n' : '') +
+   228→        (company ? '      <div style="font-size:12px;color:#4b5563;">' + escapeHtml(company) + '</div>\n' : '') +
+   229→        contactLine +
+   230→        '    </td>\n  </tr>\n</table>';
+   231→    }
+   232→
+   233→    const body =
+   234→      '<p class="hint">Email signature — open this file in a browser, press Ctrl/Cmd+A to select, copy, then paste into Gmail or Outlook signature settings.</p>\n<hr />\n' +
+   235→      sig;
+   236→    return htmlDoc(name + ' — email signature', body, '');
+   237→  },
+   238→  outputLabel: 'HTML signature',
+   239→  previewHtml: true,
+   240→  downloadName: 'email-signature',
+   241→  downloadExt: 'html',
+   242→});
+   243→
+   244→/* ═══════════════════════════════════════════════════════════════
+   245→   5. PRIVACY POLICY GENERATOR
+   246→   ═══════════════════════════════════════════════════════════════ */
+   247→
+   248→const PrivacyPolicy = makeGen({
+   249→  fields: [
+   250→    { kind: 'text', id: 'company', label: 'Company name', half: true, placeholder: 'Acme Goods Ltd.' },
+   251→    { kind: 'text', id: 'website', label: 'Website', half: true, placeholder: 'https://acmegoods.com' },
+   252→    { kind: 'text', id: 'email', label: 'Privacy contact email', half: true, placeholder: 'privacy@acmegoods.com', help: 'Blank = auto-derived from your domain.' },
+   253→    { kind: 'text', id: 'effective', label: 'Effective date', half: true, placeholder: 'e.g. 1 January 2026', help: 'Blank = today.' },
+   254→    {
+   255→      kind: 'select', id: 'jurisdiction', label: 'Jurisdiction (drives the rights section)', default: 'us',
+   256→      options: [
+   257→        { value: 'us', label: 'United States — CCPA/CPRA framing' },
+   258→        { value: 'eu', label: 'European Union — GDPR' },
+   259→        { value: 'uk', label: 'United Kingdom — UK GDPR / ICO' },
+   260→        { value: 'ca', label: 'Canada — PIPEDA' },
+   261→        { value: 'au', label: 'Australia — Privacy Act 1988' },
+   262→        { value: 'other', label: 'Other / general' },
+   263→      ],
+   264→    },
+   265→    { kind: 'toggle', id: 'analytics', label: 'We use analytics tools (GA4, Plausible, etc.)', default: true },
+   266→    { kind: 'toggle', id: 'marketing', label: 'We send marketing emails / newsletters' },
+   267→    { kind: 'toggle', id: 'ads', label: 'We run advertising pixels / ad partnerships' },
+   268→  ],
+   269→  template: (v) => {
+   270→    const co = txt(v.company) || 'Our Company';
+   271→    const site = txt(v.website) || 'our website';
+   272→    const domain = site.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+   273→    const email = txt(v.email) || (domain ? 'privacy@' + domain : 'privacy@example.com');
+   274→    const eff = txt(v.effective) || todayStr();
+   275→    const j = txt(v.jurisdiction) || 'us';
+   276→    const analytics = bl(v.analytics);
+   277→    const marketing = bl(v.marketing);
+   278→    const ads = bl(v.ads);
+   279→
+   280→    const jName: Record<string, string> = {
+   281→      us: 'the United States', eu: 'the European Economic Area', uk: 'the United Kingdom',
+   282→      ca: 'Canada', au: 'Australia', other: 'the jurisdictions where we operate',
+   283→    };
+   284→    const rights: Record<string, string> = {
+   285→      us: 'Depending on your state of residence, you may have the right to know what personal information we collect, request access to it or its deletion, correct inaccuracies, and opt out of the “sale” or “sharing” of personal information — which we do not engage in. California residents may exercise CCPA/CPRA rights by emailing us; we verify requests before acting on them and will not discriminate against anyone for making a request.',
+   286→      eu: 'Under the GDPR you have the right to access, rectify or erase your personal data, restrict or object to processing, receive a portable copy of your data, and withdraw consent at any time without affecting prior processing. You may also lodge a complaint with your national supervisory authority.',
+   287→      uk: 'Under the UK GDPR and the Data Protection Act 2018 you have the right to access, rectify or erase your personal data, restrict or object to processing, receive a portable copy of your data, and withdraw consent at any time. You may also complain to the Information Commissioner’s Office at ico.org.uk.',
+   288→      ca: 'Under PIPEDA you may request access to the personal information we hold about you, ask us to correct it, and — if you are unsatisfied with our response — complain to the Office of the Privacy Commissioner of Canada.',
+   289→      au: 'Under the Australian Privacy Act 1988 you may request access to the personal information we hold about you and ask us to correct it where it is inaccurate, incomplete or out of date. Complaints may also be made to the Office of the Australian Information Commissioner (OAIC).',
+   290→      other: 'You may ask what personal information we hold about you, request a copy, ask us to correct or delete it, and withdraw any consent you have previously given. Contact us using the details below and we will respond within a reasonable timeframe.',
+   291→    };
+   292→
+   293→    const collect = [
+   294→      '<li><strong>Information you give us.</strong> Contact details and anything else you choose to send us by email or through forms on ' + esc(site) + '.</li>',
+   295→      '<li><strong>Technical data.</strong> IP address, browser and device type, and the pages you visit, recorded automatically as you use the site.</li>',
+   296→      analytics ? '<li><strong>Usage analytics.</strong> Aggregated statistics about sessions, page views, referrers and approximate location, collected through analytics tools so we can improve the site.</li>' : '',
+   297→      marketing ? '<li><strong>Marketing preferences.</strong> Your email address and communication choices, kept if you subscribe to updates or newsletters from us.</li>' : '',
+   298→      ads ? '<li><strong>Advertising data.</strong> Cookie identifiers and similar technologies used to measure campaigns and, where permitted, to tailor the advertising you see.</li>' : '',
+   299→    ].filter(Boolean).join('\n    ');
+   300→
+   301→    const share = [
+   302→      'We do not sell your personal information. We share data only with service providers who process it on our behalf — hosting, email delivery' +
+   303→      (analytics ? ', analytics providers' : '') + (ads ? ' and advertising partners' : '') +
+   304→      ' — under contracts that limit their use of the data to our instructions.',
+   305→    ].join('');
+   306→
+   307→    const body =
+   308→      '<h1>Privacy Policy</h1>\n' +
+   309→      '<p class="meta">' + esc(co) + ' · Effective ' + esc(eff) + '</p>\n' +
+   310→      '<p>This Privacy Policy explains what information ' + esc(co) + ' (“we”, “us”) collects when you visit ' + esc(site) +
+   311→      ', how we use it, and the choices available to you. We keep this document in plain language and update it whenever our practices change.</p>\n' +
+   312→
+   313→      '<h2>Information we collect</h2>\n' +
+   314→      '    <ul>\n    ' + collect + '\n    </ul>\n' +
+   315→
+   316→      '<h2>How we use information</h2>\n' +
+   317→      '<p>We use the information above to operate and secure ' + esc(site) + ', respond to enquiries, understand how the site is used, and' +
+   318→      (marketing ? ' — only with your consent — send you updates we believe are relevant' : '') +
+   319→      (marketing && ads ? ';' : '') +
+   320→      (ads && !marketing ? ' — where permitted — to measure the performance of our advertising' : '') +
+   321→      (ads && marketing ? ' measure the performance of our advertising' : '') +
+   322→      '. We do not use your data for purposes that are incompatible with those described here without telling you first.</p>\n' +
+   323→
+   324→      '<h2>Cookies &amp; similar technologies</h2>\n' +
+   325→      '<p>' + esc(site) + ' uses cookies: small files stored by your browser. Strictly necessary cookies keep the site working and cannot be switched off.' +
+   326→      (analytics ? ' Analytics cookies help us count visits and see which content is useful.' : '') +
+   327→      (ads ? ' Advertising cookies may be set by our partners to measure campaigns and, where you have consented, tailor the ads you see.' : '') +
+   328→      ' You can clear or block cookies in your browser settings at any time; blocking strictly necessary cookies may affect how parts of the site function.</p>\n' +
+   329→
+   330→      (ads
+   331→        ? '<h2>Advertising opt-outs</h2>\n<p>If you prefer not to receive personalised advertising, you can opt out through your browser or device settings and through industry opt-out pages such as the DAA’s aboutads.info or the NAI’s opt-out page. Opting out does not mean you will stop seeing ads — only that they will be less relevant to you.</p>\n'
+   332→        : '') +
+   333→
+   334→      '<h2>Sharing</h2>\n<p>' + esc(share) + '</p>\n' +
+   335→
+   336→      (j === 'eu' || j === 'uk'
+   337→        ? '<h2>Legal bases for processing</h2>\n<p>Where the GDPR applies we rely on: your consent (analytics, marketing emails and advertising cookies); performance of a contract (responding to your enquiries); our legitimate interests (site security, service improvement); and legal obligations (record-keeping where required).</p>\n'
+   338→        : '') +
+   339→
+   340→      '<h2>Your rights</h2>\n<p>' + (rights[j] || rights.other) + '</p>\n' +
+   341→
+   342→      '<h2>Data retention &amp; security</h2>\n' +
+   343→      '<p>We keep personal information only as long as needed for the purposes above or as required by law, then delete or anonymise it. We apply reasonable technical and organisational measures to protect it — no method of transmission over the internet is perfectly secure, but we treat your data with the same care we expect from the services we use.</p>\n' +
+   344→
+   345→      '<h2>Children</h2>\n<p>' + esc(site) + ' is not directed at children under 13 (or under 16 in the EEA/UK), and we do not knowingly collect their personal information. If you believe a child has provided us data, contact us and we will delete it.</p>\n' +
+   346→
+   347→      '<h2>Changes to this policy</h2>\n<p>We may update this policy as our practices evolve. Material changes will be announced on this page with a new effective date.</p>\n' +
+   348→
+   349→      '<h2>Contact</h2>\n<p>Questions or requests: <strong>' + esc(email) + '</strong> — ' + esc(co) + '. We aim to respond within 30 days.</p>\n';
+   350→
+   351→    return htmlDoc('Privacy Policy — ' + co, body);
+   352→  },
+   353→  outputLabel: 'Privacy policy (HTML)',
+   354→  previewHtml: true,
+   355→  downloadName: 'privacy-policy',
+   356→  downloadExt: 'html',
+   357→});
+   358→
+   359→/* ═══════════════════════════════════════════════════════════════
+   360→   6. TERMS & CONDITIONS GENERATOR
+   361→   ═══════════════════════════════════════════════════════════════ */
+   362→
+   363→const TermsConditions = makeGen({
+   364→  fields: [
+   365→    { kind: 'text', id: 'company', label: 'Company name', half: true, placeholder: 'Acme Goods Ltd.' },
+   366→    { kind: 'text', id: 'website', label: 'Website', half: true, placeholder: 'https://acmegoods.com' },
+   367→    { kind: 'text', id: 'email', label: 'Contact email (legal notices)', half: true, placeholder: 'legal@acmegoods.com' },
+   368→    { kind: 'text', id: 'law', label: 'Governing law', half: true, placeholder: 'e.g. the State of Delaware, USA', help: 'Names the jurisdiction whose law interprets this agreement.' },
+   369→    { kind: 'toggle', id: 'accounts', label: 'Site has user accounts / registration', default: true },
+   370→    { kind: 'toggle', id: 'payments', label: 'We sell products or subscriptions' },
+   371→    { kind: 'toggle', id: 'usercontent', label: 'Users can post content (reviews, comments, uploads)' },
+   372→  ],
+   373→  template: (v) => {
+   374→    const co = txt(v.company) || 'Our Company';
+   375→    const site = txt(v.website) || 'our website';
+   376→    const email = txt(v.email) || 'legal@example.com';
+   377→    const law = txt(v.law) || 'the jurisdiction where ' + co + ' is registered';
+   378→    const accounts = bl(v.accounts);
+   379→    const payments = bl(v.payments);
+   380→    const userContent = bl(v.usercontent);
+   381→
+   382→    const body =
+   383→      '<h1>Terms &amp; Conditions</h1>\n' +
+   384→      '<p class="meta">' + esc(co) + ' · ' + esc(site) + '</p>\n' +
+   385→      '<p>These Terms &amp; Conditions (“Terms”) govern your use of ' + esc(site) + ' and any related services provided by ' + esc(co) +
+   386→      '. By accessing or using the site you agree to be bound by these Terms. If you do not agree, please do not use the site.</p>\n' +
+   387→
+   388→      '<h2>1. Eligibility &amp; acceptable use</h2>\n' +
+   389→      '<p>You must be at least 13 years old (or the age of digital consent in your region, if higher) to use the site. You agree not to misuse the site: no interfering with its operation, no scraping at volumes that degrade service, no unlawful activity, and no attempts to access systems or accounts you are not authorised to use.</p>\n' +
+   390→
+   391→      (accounts
+   392→        ? '<h2>2. Accounts</h2>\n<p>You are responsible for the accuracy of your registration details, for keeping your password confidential, and for all activity that happens under your account. Notify us immediately at ' + esc(email) + ' if you suspect unauthorised access. We may suspend or close accounts that violate these Terms.</p>\n'
+   393→        : '') +
+   394→
+   395→      (payments
+   396→        ? '<h2>' + (accounts ? '3' : '2') + '. Orders, pricing &amp; payment</h2>\n<p>Prices are shown before checkout and include any taxes required by law. You authorise us (or our payment processor) to charge your chosen payment method for the total at checkout. Digital purchases are licensed, not sold, and — to the extent permitted by law — are non-refundable once access is delivered, except where mandatory consumer law provides otherwise. Subscriptions renew automatically until cancelled and may be cancelled any time before the next billing date.</p>\n'
+   397→        : '') +
+   398→
+   399→      (usercontent
+   400→        ? '<h2>' + (accounts ? (payments ? '4' : '3') : (payments ? '3' : '2')) + '. User content</h2>\n<p>You keep ownership of anything you post — reviews, comments, uploads. By posting you grant ' + esc(co) + ' a worldwide, royalty-free licence to display, moderate and distribute that content in connection with operating and promoting the site. You are responsible for having the rights to what you post, and you must not post content that is unlawful, defamatory, or infringes anyone’s rights. We may remove content that breaches these rules.</p>\n'
+   401→        : '') +
+   402→
+   403→      '<h2>' + (accounts + (payments ? 1 : 0) + (usercontent ? 1 : 0) + 1) + '. Intellectual property</h2>\n' +
+   404→      '<p>All site content — text, design, logos, code and imagery — is owned by ' + esc(co) + ' or its licensors and protected by intellectual property laws. You may view and print pages for personal, non-commercial use; anything beyond that requires our written permission.</p>\n' +
+   405→
+   406→      '<h2>' + (accounts + (payments ? 1 : 0) + (usercontent ? 1 : 0) + 2) + '. Disclaimers &amp; limitation of liability</h2>\n' +
+   407→      '<p>The site is provided “as is” and “as available” without warranties of any kind, to the maximum extent permitted by law. To the fullest extent permitted by applicable law, ' + esc(co) + ' is not liable for indirect, incidental or consequential damages arising from your use of the site. Nothing in these Terms limits liability that cannot be limited by law, such as liability for fraud or for death or personal injury caused by negligence.</p>\n' +
+   408→
+   409→      '<h2>' + (accounts + (payments ? 1 : 0) + (usercontent ? 1 : 0) + 3) + '. Termination</h2>\n' +
+   410→      '<p>We may suspend or terminate access to the site at our discretion, with or without notice, for conduct that we believe violates these Terms or is harmful to other users or to us. Sections that by their nature should survive termination (intellectual property, disclaimers, governing law) will survive.</p>\n' +
+   411→
+   412→      '<h2>' + (accounts + (payments ? 1 : 0) + (usercontent ? 1 : 0) + 4) + '. Governing law &amp; disputes</h2>\n' +
+   413→      '<p>These Terms are governed by the laws of ' + esc(law) + ', without regard to conflict-of-law rules. The courts of that jurisdiction have exclusive authority over any dispute arising from these Terms or your use of the site.</p>\n' +
+   414→
+   415→      '<h2>' + (accounts + (payments ? 1 : 0) + (usercontent ? 1 : 0) + 5) + '. Changes &amp; contact</h2>\n' +
+   416→      '<p>We may update these Terms from time to time; the current version always lives on this page with its revision date. Continued use after changes take effect constitutes acceptance. Questions and legal notices: <strong>' + esc(email) + '</strong>.</p>\n';
+   417→
+   418→    return htmlDoc('Terms & Conditions — ' + co, body);
+   419→  },
+   420→  outputLabel: 'Terms & conditions (HTML)',
+   421→  previewHtml: true,
+   422→  downloadName: 'terms-conditions',
+   423→  downloadExt: 'html',
+   424→});
+   425→
+   426→/* ═══════════════════════════════════════════════════════════════
+   427→   7. COOKIE POLICY GENERATOR
+   428→   ═══════════════════════════════════════════════════════════════ */
+   429→
+   430→const CookiePolicy = makeGen({
+   431→  fields: [
+   432→    { kind: 'text', id: 'company', label: 'Company name', half: true, placeholder: 'Acme Goods Ltd.' },
+   433→    { kind: 'text', id: 'website', label: 'Website', half: true, placeholder: 'https://acmegoods.com' },
+   434→    { kind: 'toggle', id: 'essential', label: 'Essential cookies (cart, session, security)', default: true },
+   435→    { kind: 'toggle', id: 'analytics', label: 'Analytics cookies (GA4, Plausible, etc.)', default: true },
+   436→    { kind: 'toggle', id: 'marketing', label: 'Marketing / advertising cookies (pixels, retargeting)' },
+   437→    { kind: 'list', id: 'cookies', label: 'Cookie inventory (optional)', placeholder: '_ga | Google Analytics | 2 years\n_gcl_au | Google Ads | 90 days\nsession | First party | Session', help: 'One per line: Name | Provider | Duration — rendered as a table.' },
+   438→  ],
+   439→  template: (v) => {
+   440→    const co = txt(v.company) || 'Our Company';
+   441→    const site = txt(v.website) || 'our website';
+   442→    const essential = bl(v.essential);
+   443→    const analytics = bl(v.analytics);
+   444→    const marketing = bl(v.marketing);
+   445→    const rows = ls(v.cookies).map((l) => {
+   446→      const parts = l.split('|').map((p) => p.trim());
+   447→      return { name: parts[0] || '—', provider: parts[1] || 'First party', life: parts[2] || 'Session' };
+   448→    });
+   449→
+   450→    const cats = [
+   451→      essential ? ['Strictly necessary', 'Required for core features — sessions, shopping cart, security tokens, load balancing. These cannot be switched off because the site would not function without them.'] : '',
+   452→      analytics ? ['Analytics', 'Help us count visits and understand which pages and content perform, so we can improve the site. These cookies only fire after you consent (where consent is required).'] : '',
+   453→      marketing ? ['Marketing & advertising', 'Measure the performance of campaigns and, where you have consented, help show you relevant offers on other sites. They never fire before consent in the EU/UK.'] : '',
+   454→    ].filter(Boolean) as string[][];
+   455→
+   456→    const table = rows.length
+   457→      ? '<h2>Cookie inventory</h2>\n<table>\n<tr><th>Name</th><th>Provider</th><th>Duration</th></tr>\n' +
+   458→        rows.map((r) => '<tr><td>' + esc(r.name) + '</td><td>' + esc(r.provider) + '</td><td>' + esc(r.life) + '</td></tr>').join('\n') +
+   459→        '\n</table>\n'
+   460→      : '';
+   461→
+   462→    const body =
+   463→      '<h1>Cookie Policy</h1>\n' +
+   464→      '<p class="meta">' + esc(co) + ' · ' + esc(site) + '</p>\n' +
+   465→      '<p>This Cookie Policy explains how ' + esc(co) + ' uses cookies and similar technologies on ' + esc(site) +
+   466→      ', what each category does, and how you can control them. It complements our Privacy Policy, which covers the data those technologies collect.</p>\n' +
+   467→
+   468→      '<h2>What cookies are</h2>\n' +
+   469→      '<p>Cookies are small text files a website stores in your browser. They remember your actions and preferences over time — keeping you signed in, remembering a cart, or telling us which pages are useful. Similar technologies (local storage, pixels, SDKs) work in comparable ways and are covered by this policy too.</p>\n' +
+   470→
+   471→      '<h2>Categories we use</h2>\n' +
+   472→      cats.map((c) => '<h3>' + esc(c[0]) + '</h3>\n<p>' + esc(c[1]) + '</p>').join('\n') + '\n' +
+   473→
+   474→      table +
+   475→
+   476→      '<h2>Managing your choices</h2>\n' +
+   477→      '<p>You can accept or refuse non-essential cookies through our consent banner, change your mind at any time via the “Cookie settings” link in the footer, and clear existing cookies in your browser. Blocking all cookies in browser settings may break site features that depend on them.</p>\n' +
+   478→
+   479→      '<h2>Your rights</h2>\n' +
+   480→      '<p>Under the GDPR and UK GDPR you can withdraw consent to non-essential cookies at any time. Under the CCPA/CPRA, opting out of advertising cookies is treated as opting out of “sharing” for cross-context behavioural advertising, and we honour recognised opt-out signals such as Global Privacy Control.</p>\n' +
+   481→
+   482→      '<h2>Updates &amp; contact</h2>\n' +
+   483→      '<p>We re-audit our cookie usage regularly and update this policy when categories or specific cookies change. Questions about this policy: contact ' + esc(co) + ' through the details on our contact page.</p>\n';
+   484→
+   485→    return htmlDoc('Cookie Policy — ' + co, body);
+   486→  },
+   487→  outputLabel: 'Cookie policy (HTML)',
+   488→  previewHtml: true,
+   489→  downloadName: 'cookie-policy',
+   490→  downloadExt: 'html',
+   491→});
+   492→
+   493→/* ═══════════════════════════════════════════════════════════════
+   494→   8. SCHEMA MARKUP GENERATOR (FAQ / LocalBusiness JSON-LD)
+   495→   ═══════════════════════════════════════════════════════════════ */
+   496→
+   497→const SchemaMarkup = makeGen({
+   498→  fields: [
+   499→    {
+   500→      kind: 'select', id: 'type', label: 'Schema type', default: 'faq',
+   501→      options: [
+   502→        { value: 'faq', label: 'FAQPage — question & answer rich results' },
+   503→        { value: 'local', label: 'LocalBusiness — location, hours & contact' },
+   504→      ],
+   505→    },
+   506→    { kind: 'textarea', id: 'questions', label: 'FAQ questions (used when type = FAQ)', rows: 5, placeholder: 'Do you ship internationally?\nHow long does delivery take?', help: 'One question per line.' },
+   507→    { kind: 'textarea', id: 'answers', label: 'FAQ answers (same order as questions)', rows: 5, placeholder: 'Yes — we ship to 40+ countries.\n3–5 business days for EU, 7–10 elsewhere.', help: 'Line 1 answers question 1, and so on.' },
+   508→    { kind: 'text', id: 'bizName', label: 'Business name (used when type = LocalBusiness)', half: true, placeholder: 'Acme Dental Studio' },
+   509→    { kind: 'text', id: 'phone', label: 'Phone', half: true, placeholder: '+1 (217) 555-0142' },
+   510→    { kind: 'text', id: 'url', label: 'Website URL', half: true, placeholder: 'https://acmedental.com' },
+   511→    { kind: 'text', id: 'geo', label: 'Coordinates "lat, lng"', half: true, placeholder: '39.7817, -89.6501' },
+   512→    { kind: 'text', id: 'address', label: 'Street address', placeholder: '123 S Main St, Suite 4, Springfield, IL 62701', help: 'Full street line — search engines match this against maps data.' },
+   513→    { kind: 'list', id: 'hours', label: 'Opening hours', placeholder: 'Mo-Fr 09:00-17:00\nSa 10:00-14:00', help: 'Schema.org format, one range per line.' },
+   514→  ],
+   515→  template: (v) => {
+   516→    if (txt(v.type) !== 'local') {
+   517→      const qs = ls(v.questions);
+   518→      const as = ls(v.answers);
+   519→      const main = qs.map((q, i) => ({
+   520→        '@type': 'Question',
+   521→        name: q,
+   522→        acceptedAnswer: { '@type': 'Answer', text: as[i] ?? '' },
+   523→      }));
+   524→      const obj = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: main };
+   525→      return '<script type="application/ld+json">\n' + JSON.stringify(obj, null, 2) + '\n</script>';
+   526→    }
+   527→    const geoRaw = txt(v.geo);
+   528→    const geoParts = geoRaw.split(',').map((s) => s.trim());
+   529→    const hours = ls(v.hours);
+   530→    const obj2: Record<string, unknown> = {
+   531→      '@context': 'https://schema.org',
+   532→      '@type': 'LocalBusiness',
+   533→      name: txt(v.bizName) || 'My Business',
+   534→    };
+   535→    if (txt(v.url)) obj2.url = txt(v.url);
+   536→    if (txt(v.phone)) obj2.telephone = txt(v.phone);
+   537→    if (txt(v.address)) obj2.address = { '@type': 'PostalAddress', streetAddress: txt(v.address) };
+   538→    if (hours.length) obj2.openingHours = hours;
+   539→    if (geoParts.length === 2 && geoParts[0] && geoParts[1]) {
+   540→      obj2.geo = { '@type': 'GeoCoordinates', latitude: geoParts[0], longitude: geoParts[1] };
+   541→    }
+   542→    return '<script type="application/ld+json">\n' + JSON.stringify(obj2, null, 2) + '\n</script>';
+   543→  },
+   544→  outputLabel: 'JSON-LD markup',
+   545→  downloadName: 'schema-markup',
+   546→  downloadExt: 'html',
+   547→});
+   548→
+   549→/* ═══════════════════════════════════════════════════════════════
+   550→   9. PRESS RELEASE TEMPLATE GENERATOR
+   551→   ═══════════════════════════════════════════════════════════════ */
+   552→
+   553→const PressRelease = makeGen({
+   554→  fields: [
+   555→    { kind: 'text', id: 'company', label: 'Company', half: true, placeholder: 'Northlight Studio' },
+   556→    { kind: 'text', id: 'city', label: 'Dateline city', half: true, placeholder: 'Chicago, IL' },
+   557→    { kind: 'text', id: 'headline', label: 'Headline', placeholder: 'Northlight Studio Opens Second Chicago Location, Doubling Production Capacity', help: 'One concrete sentence — active verb, real subject.' },
+   558→    { kind: 'text', id: 'subhead', label: 'Subheadline', placeholder: 'Expansion adds 14 jobs and a dedicated post-production suite by Q3 2026' },
+   559→    { kind: 'textarea', id: 'body', label: 'Body paragraphs', rows: 6, placeholder: 'Lead with the most newsworthy fact in the first paragraph — who, what, when, where.\n\nAdd context and detail in the second paragraph. Blank line = new paragraph.', help: 'One paragraph per block, separated by a blank line.' },
+   560→    { kind: 'textarea', id: 'quote', label: 'Quote', rows: 3, placeholder: 'This expansion is a bet on Chicago’s creative talent — and our clients made it possible.', help: 'A real, speakable sentence from a real person.' },
+   561→    { kind: 'text', id: 'attribution', label: 'Quote attribution', half: true, placeholder: 'Maya Chen, Founder and CEO, Northlight Studio' },
+   562→    { kind: 'textarea', id: 'boilerplate', label: 'Boilerplate ("About …")', rows: 3, placeholder: 'About Northlight Studio: founded in 2016, Northlight is a full-service production company specialising in brand films and documentary work for clients across the Midwest.' },
+   563→    { kind: 'textarea', id: 'contact', label: 'Media contact', rows: 3, placeholder: 'Press contact: Jordan Alvarez\npress@northlight.co\n+1 (312) 555-0192' },
+   564→  ],
+   565→  template: (v) => {
+   566→    const co = txt(v.company) || 'Your Company';
+   567→    const city = txt(v.city).toUpperCase();
+   568→    const headline = txt(v.headline) || 'Company Announces News';
+   569→    const sub = txt(v.subhead);
+   570→    const paras = String(v.body ?? '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+   571→    const quote = txt(v.quote);
+   572→    const attr = txt(v.attribution);
+   573→    const boiler = ls(v.boilerplate);
+   574→    const contact = ls(v.contact);
+   575→
+   576→    const bodyHtml = paras.map((p) => '<p>' + esc(p) + '</p>').join('\n');
+   577→    const quoteHtml = quote
+   578→      ? '<blockquote>\n  <p>“' + esc(quote) + '”</p>\n' + (attr ? '  <p class="attr">— ' + esc(attr) + '</p>\n' : '') + '</blockquote>\n'
+   579→      : '';
+   580→    const boilerHtml = boiler.length
+   581→      ? '<h2>About ' + esc(co) + '</h2>\n' + boiler.map((b) => '<p>' + esc(b) + '</p>').join('\n') + '\n'
+   582→      : '';
+   583→    const contactHtml = contact.length
+   584→      ? '<h2>Media contact</h2>\n<div class="contact">' + contact.map((c) => esc(c) + '<br />').join('') + '</div>\n'
+   585→      : '';
+   586→
+   587→    const docBody =
+   588→      '<p class="release-tag">FOR IMMEDIATE RELEASE</p>\n' +
+   589→      '<h1>' + esc(headline) + '</h1>\n' +
+   590→      (sub ? '<p class="subhead">' + esc(sub) + '</p>\n' : '') +
+   591→      '<p class="dateline">' + esc(city || 'CITY') + ', ' + esc(todayStr()) + ' — </p>\n' +
+   592→      bodyHtml + '\n' +
+   593→      quoteHtml +
+   594→      boilerHtml +
+   595→      contactHtml +
+   596→      '<p class="end">###</p>';
+   597→
+   598→    return htmlDoc(headline, docBody, PR_CSS);
+   599→  },
+   600→  outputLabel: 'Press release (HTML)',
+   601→  previewHtml: true,
+   602→  downloadName: 'press-release',
+   603→  downloadExt: 'html',
+   604→});
+   605→
+   606→/* ═══════════════════════════════════════════════════════════════
+   607→   10. CLIENT BRIEF GENERATOR
+   608→   ═══════════════════════════════════════════════════════════════ */
+   609→
+   610→const ClientBrief = makeGen({
+   611→  fields: [
+   612→    { kind: 'text', id: 'project', label: 'Project name', half: true, placeholder: 'Acme website redesign' },
+   613→    { kind: 'text', id: 'client', label: 'Client', half: true, placeholder: 'Acme Goods Ltd.' },
+   614→    { kind: 'text', id: 'industry', label: 'Industry', half: true, placeholder: 'Consumer goods / e-commerce' },
+   615→    { kind: 'text', id: 'audience', label: 'Primary audience', half: true, placeholder: 'First-time buyers, 25–40, mobile-first' },
+   616→    {
+   617→      kind: 'select', id: 'budget', label: 'Budget band', half: true, default: 'flexible',
+   618→      options: [
+   619→        { value: 'under-2.5k', label: 'Under $2,500' },
+   620→        { value: '2.5-10k', label: '$2,500 – $10,000' },
+   621→        { value: '10-25k', label: '$10,000 – $25,000' },
+   622→        { value: '25k-plus', label: '$25,000+' },
+   623→        { value: 'flexible', label: 'Flexible — to be discussed' },
+   624→      ],
+   625→    },
+   626→    { kind: 'text', id: 'timeline', label: 'Timeline', half: true, placeholder: 'e.g. 6–8 weeks, launch before May 1' },
+   627→    { kind: 'textarea', id: 'goals', label: 'Goals (what changes when this succeeds)', rows: 4, placeholder: 'Double online orders within 6 months.\nReduce support tickets caused by confusing checkout.' },
+   628→    { kind: 'list', id: 'scope', label: 'In-scope deliverables', placeholder: 'New responsive storefront (12 templates)\nCheckout flow redesign\nEmail capture integration' },
+   629→    { kind: 'list', id: 'metrics', label: 'Success metrics', placeholder: 'Conversion rate: 1.4% → 2.5%\nCheckout abandonment down 30%' },
+   630→  ],
+   631→  template: (v) => {
+   632→    const project = txt(v.project) || 'Untitled project';
+   633→    const client = txt(v.client) || '—';
+   634→    const industry = txt(v.industry) || '—';
+   635→    const audience = txt(v.audience) || '—';
+   636→    const budgetMap: Record<string, string> = {
+   637→      'under-2.5k': 'Under $2,500', '2.5-10k': '$2,500 – $10,000', '10-25k': '$10,000 – $25,000',
+   638→      '25k-plus': '$25,000+', flexible: 'Flexible — to be discussed',
+   639→    };
+   640→    const budget = budgetMap[txt(v.budget)] || 'Flexible — to be discussed';
+   641→    const timeline = txt(v.timeline) || '—';
+   642→    const goals = ls(v.goals);
+   643→    const scope = ls(v.scope);
+   644→    const metrics = ls(v.metrics);
+   645→
+   646→    const ul = (arr: string[]) => arr.length ? '<ul>\n' + arr.map((x) => '<li>' + esc(x) + '</li>').join('\n') + '\n</ul>\n' : '<p class="meta">—</p>\n';
+   647→
+   648→    const body =
+   649→      '<h1>Project Brief</h1>\n' +
+   650→      '<p class="meta">' + esc(project) + ' · prepared for ' + esc(client) + '</p>\n' +
+   651→      '<table>\n<tr><th>Client</th><td>' + esc(client) + '</td></tr>\n' +
+   652→      '<tr><th>Industry</th><td>' + esc(industry) + '</td></tr>\n' +
+   653→      '<tr><th>Audience</th><td>' + esc(audience) + '</td></tr>\n' +
+   654→      '<tr><th>Budget band</th><td>' + esc(budget) + '</td></tr>\n' +
+   655→      '<tr><th>Timeline</th><td>' + esc(timeline) + '</td></tr>\n</table>\n' +
+   656→
+   657→      '<h2>Goals</h2>\n' +
+   658→      '<p>The business outcomes this project exists to deliver:</p>\n' + ul(goals) +
+   659→
+   660→      '<h2>Audience</h2>\n' +
+   661→      '<p>' + esc(audience) + ' — every design, copy and prioritisation decision below should be defensible against this group’s needs and context.</p>\n' +
+   662→
+   663→      '<h2>In scope</h2>\n' + ul(scope) +
+   664→
+   665→      '<h2>Success metrics</h2>\n' +
+   666→      '<p>Agreed measures of success — vague goals produce vague reviews:</p>\n' + ul(metrics) +
+   667→
+   668→      '<h2>Working agreement</h2>\n' +
+   669→      '<p>Anything not listed under “In scope” is a change request with its own conversation about time and cost. This brief is the reference document for acceptance decisions; material changes should be re-issued and acknowledged in writing.</p>\n';
+   670→
+   671→    return htmlDoc('Project brief — ' + project, body);
+   672→  },
+   673→  outputLabel: 'Project brief (HTML)',
+   674→  previewHtml: true,
+   675→  downloadName: 'client-brief',
+   676→  downloadExt: 'html',
+   677→});
+   678→
+   679→/* ═══════════════════════════════════════════════════════════════
+   680→   11. PROJECT SCOPE BUILDER
+   681→   ═══════════════════════════════════════════════════════════════ */
+   682→
+   683→const ProjectScope = makeGen({
+   684→  fields: [
+   685→    { kind: 'text', id: 'title', label: 'Project title', half: true, placeholder: 'Acme Goods — Storefront Build' },
+   686→    { kind: 'text', id: 'client', label: 'Client', half: true, placeholder: 'Acme Goods Ltd.' },
+   687→    { kind: 'list', id: 'deliverables', label: 'Deliverables (what gets handed over)', placeholder: 'Responsive storefront, 12 page templates\nContent entry for up to 50 products\nAnalytics + Search Console setup' },
+   688→    { kind: 'list', id: 'milestones', label: 'Milestones (in order)', placeholder: 'Kickoff & discovery — week 1\nDesign sign-off — week 3\nStaging handover — week 5\nLaunch — week 6' },
+   689→    { kind: 'list', id: 'exclusions', label: 'Exclusions (explicitly NOT included)', placeholder: 'Copywriting\nOngoing maintenance after 30 days\nPaid advertising management' },
+   690→    { kind: 'textarea', id: 'assumptions', label: 'Assumptions', rows: 4, placeholder: 'Client provides brand assets and product data by week 1.\nFeedback consolidated into one round per milestone (5 business days).' },
+   691→    { kind: 'list', id: 'signoffs', label: 'Sign-offs', placeholder: 'A. Rivera — Client Lead — ____________\nJ. Chen — Studio Director — ____________', help: 'Name — Role — Signature/Date lines.' },
+   692→  ],
+   693→  template: (v) => {
+   694→    const title = txt(v.title) || 'Untitled engagement';
+   695→    const client = txt(v.client) || '—';
+   696→    const deliverables = ls(v.deliverables);
+   697→    const milestones = ls(v.milestones);
+   698→    const exclusions = ls(v.exclusions);
+   699→    const assumptions = ls(v.assumptions);
+   700→    const signoffs = ls(v.signoffs);
+   701→
+   702→    const ul = (arr: string[]) => arr.length ? '<ul>\n' + arr.map((x) => '<li>' + esc(x) + '</li>').join('\n') + '\n</ul>\n' : '<p class="meta">—</p>\n';
+   703→
+   704→    const body =
+   705→      '<h1>Scope of Work</h1>\n' +
+   706→      '<p class="meta">' + esc(title) + ' · ' + esc(client) + '</p>\n' +
+   707→      '<p>This document defines what will be delivered, in what order, and — just as importantly — what falls outside this engagement. It is the reference for change requests and acceptance.</p>\n' +
+   708→
+   709→      '<h2>Deliverables</h2>\n' + ul(deliverables) +
+   710→
+   711→      '<h2>Milestones</h2>\n' + ul(milestones) +
+   712→
+   713→      '<h2>Exclusions</h2>\n' +
+   714→      '<p>The following are <strong>not</strong> part of this engagement. Requests to add them trigger a written change order:</p>\n' + ul(exclusions) +
+   715→
+   716→      '<h2>Assumptions</h2>\n' +
+   717→      '<p>This scope and timeline hold true as long as the following remain valid:</p>\n' + ul(assumptions) +
+   718→
+   719→      '<h2>Change control</h2>\n' +
+   720→      '<p>Any deliverable, milestone or assumption that changes is handled as a change request: described in writing, priced, scheduled, and approved by both parties before work continues. Verbal agreements do not modify this scope.</p>\n' +
+   721→
+   722→      '<h2>Sign-off</h2>\n' +
+   723→      '<table>\n<tr><th style="width:50%;">Name &amp; role</th><th>Signature / date</th></tr>\n' +
+   724→      (signoffs.length
+   725→        ? signoffs.map((s) => '<tr><td>' + esc(s.split('—')[0].trim() || s) + (s.includes('—') ? '<br /><span class="meta">' + esc(s.split('—').slice(1).join('—').trim()) + '</span>' : '') + '</td><td></td></tr>').join('\n')
+   726→        : '<tr><td>Client representative</td><td></td></tr>\n<tr><td>Provider representative</td><td></td></tr>') +
+   727→      '\n</table>\n';
+   728→
+   729→    return htmlDoc('Scope of work — ' + title, body);
+   730→  },
+   731→  outputLabel: 'Scope document (HTML)',
+   732→  previewHtml: true,
+   733→  downloadName: 'project-scope',
+   734→  downloadExt: 'html',
+   735→});
+   736→
+   737→/* ═══════════════════════════════════════════════════════════════
+   738→   12. APP DESCRIPTION WRITER
+   739→   ═══════════════════════════════════════════════════════════════ */
+   740→
+   741→const AppDescription = makeGen({
+   742→  fields: [
+   743→    { kind: 'text', id: 'name', label: 'App name', half: true, placeholder: 'Shiftly' },
+   744→    { kind: 'text', id: 'category', label: 'Category', half: true, placeholder: 'shift-planning app' },
+   745→    { kind: 'text', id: 'benefit', label: 'Core benefit (one sentence)', placeholder: 'Builds your team’s weekly schedule in under five minutes' },
+   746→    { kind: 'list', id: 'features', label: 'Key features', placeholder: 'Drag-and-drop shift builder\nAutomatic conflict detection\nPunch-clock with GPS check-in' },
+   747→    { kind: 'text', id: 'audience', label: 'Target audience', half: true, placeholder: 'Café, retail and restaurant managers' },
+   748→    {
+   749→      kind: 'select', id: 'tone', label: 'Tone', half: true, default: 'friendly',
+   750→      options: [
+   751→        { value: 'friendly', label: 'Friendly & warm' },
+   752→        { value: 'professional', label: 'Professional & confident' },
+   753→        { value: 'playful', label: 'Playful' },
+   754→        { value: 'bold', label: 'Bold & direct' },
+   755→      ],
+   756→    },
+   757→    { kind: 'text', id: 'cta', label: 'Closing call to action', placeholder: 'Download Shiftly free and publish your next schedule before your coffee cools.' },
+   758→  ],
+   759→  template: (v) => {
+   760→    const name = txt(v.name) || 'Your App';
+   761→    const cat = txt(v.category) || 'app';
+   762→    const benefit = txt(v.benefit) || 'saves you time every week';
+   763→    const feats = ls(v.features);
+   764→    const aud = txt(v.audience) || 'busy teams';
+   765→    const tone = txt(v.tone) || 'friendly';
+   766→    const cta = txt(v.cta) || 'Download today and see the difference.';
+   767→
+   768→    const openers: Record<string, string> = { friendly: 'Meet', professional: 'Introducing', playful: 'Say hello to', bold: 'This is' };
+   769→    const closers: Record<string, string> = {
+   770→      friendly: 'Simple, dependable and easy to love — give it a try and make it yours.',
+   771→      professional: 'Built to a professional standard, with the details done properly.',
+   772→      playful: 'Warning: you may wonder how you ever managed without it.',
+   773→      bold: 'No fluff, no filler — just the fastest way to get it done.',
+   774→    };
+   775→    const art = /^[aeiou]/i.test(cat) ? 'an' : 'a';
+   776→    const benefitCap = benefit.charAt(0).toUpperCase() + benefit.slice(1);
+   777→
+   778→    const out: string[] = [];
+   779→    out.push(name + ' — ' + benefit);
+   780→    out.push('');
+   781→    out.push((openers[tone] || 'Meet') + ' ' + name + ', ' + art + ' ' + cat + ' built for ' + aud + '. ' + benefitCap + ' — without the usual friction.');
+   782→    if (feats.length) {
+   783→      out.push('');
+   784→      out.push('KEY FEATURES');
+   785→      for (const f of feats) out.push('• ' + f);
+   786→    }
+   787→    out.push('');
+   788→    out.push('WHO IT IS FOR');
+   789→    out.push(name + ' is made for ' + aud + '. If ' + benefit + ' is on your wishlist, this is the ' + cat + ' you have been waiting for.');
+   790→    out.push('');
+   791→    out.push(closers[tone] || closers.friendly);
+   792→    out.push('');
+   793→    out.push(cta);
+   794→    return out.join('\n');
+   795→  },
+   796→  outputLabel: 'Store description',
+   797→  downloadName: 'app-description',
+   798→  downloadExt: 'txt',
+   799→});
+   800→
+   801→/* ═══════════════════════════════════════════════════════════════
+   802→   13. APP REVIEW RESPONSE GENERATOR
+   803→   ═══════════════════════════════════════════════════════════════ */
+   804→
+   805→const ReviewResponse = makeGen({
+   806→  fields: [
+   807→    {
+   808→      kind: 'select', id: 'kind', label: 'Review type', default: 'praise',
+   809→      options: [
+   810→        { value: 'praise', label: '5★ praise' },
+   811→        { value: 'bug', label: '1★ bug report' },
+   812→        { value: 'crash', label: 'Crash report' },
+   813→        { value: 'feature', label: '3★ feature request' },
+   814→      ],
+   815→    },
+   816→    { kind: 'text', id: 'name', label: 'Reviewer name (optional)', half: true, placeholder: 'e.g. Sarah' },
+   817→    { kind: 'text', id: 'app', label: 'App name (optional)', half: true, placeholder: 'e.g. Shiftly' },
+   818→    { kind: 'textarea', id: 'note', label: 'The review (paste or summarize)', rows: 4, placeholder: 'Love the app but the widget stops updating after two days. Otherwise perfect!' },
+   819→  ],
+   820→  template: (v) => {
+   821→    const kind = txt(v.kind) || 'praise';
+   822→    const note = txt(v.note);
+   823→    const who = txt(v.name);
+   824→    const app = txt(v.app) || 'the app';
+   825→    const hi = who ? 'Hi ' + who + ',' : 'Hi there,';
+   826→    const gist = note ? (note.length > 100 ? note.slice(0, 97).trimEnd() + '…' : note) : '';
+   827→
+   828→    const rule = '──────────────────────────────────────────────';
+   829→    const head = (n: number, t: string) => rule + '\nVARIANT ' + n + ' — ' + t + '\n' + rule;
+   830→
+   831→    let out: string[] = [];
+   832→    if (kind === 'bug') {
+   833→      out = [
+   834→        head(1, 'APOLOGETIC & BRIEF'),
+   835→        hi + ' sorry about this — that should not happen. We have reproduced the issue and our team is on it. If you can, send your device model via Settings → Help; that detail speeds up the fix. Thanks for your patience, and for helping us improve ' + app + '.',
+   836→        '',
+   837→        head(2, 'DETAILED & SPECIFIC'),
+   838→        hi + ' thank you for the clear report, and we are sorry for the trouble.' + (gist ? ' What you describe — “' + gist + '” — is not the experience we intend.' : ' What you are describing is not the experience we intend.') + ' It is with our engineers now; the fix ships in the next update. In the meantime, reinstalling or clearing the app cache usually restores things — and our team in Settings → Help can walk you through it.',
+   839→        '',
+   840→        head(3, 'PERSONAL & HUMAN'),
+   841→        hi + ' you took time out of your day to tell us what broke, and that genuinely matters to a team our size. We read this aloud in standup (really). A fix is in progress — if anything else feels off before then, reply here or write to us from Settings → Help and a human will answer.',
+   842→      ];
+   843→    } else if (kind === 'crash') {
+   844→      out = [
+   845→        head(1, 'URGENT & BRIEF'),
+   846→        hi + ' crashes are our top priority, always. We are tracking this one right now — please update ' + app + ' when the next version lands, and if it still crashes afterwards, tell us from Settings → Help. Sorry for the disruption, and thank you for reporting it.',
+   847→        '',
+   848→        head(2, 'DIAGNOSTIC & SPECIFIC'),
+   849→        hi + ' thank you for the report — crashes are treated as build-blocking on our side.' + (gist ? ' The pattern you describe (“' + gist + '”) gives our engineers a strong starting point.' : '') + ' Two things that help us pin it down fastest: the device model and OS version, and the screen you were on when it happened. Send either here or via Settings → Help and we will chase it down.',
+   850→        '',
+   851→        head(3, 'HUMAN & REASSURING'),
+   852→        hi + ' nothing is more frustrating than losing what you were doing to a crash — we are sorry. This is exactly the kind of report that gets our full attention: it is already reproduced on our devices and a fix is in progress. Thank you for the patience, and for giving us the chance to make ' + app + ' better.',
+   853→      ];
+   854→    } else if (kind === 'feature') {
+   855→      out = [
+   856→        head(1, 'GRATEFUL & BRIEF'),
+   857→        hi + ' thanks for the thoughtful suggestion! This is exactly the kind of input that shapes our roadmap — it is logged with the team, and we will share news if it makes the cut. Keep the ideas coming.',
+   858→        '',
+   859→        head(2, 'PRODUCT-THINKING & SPECIFIC'),
+   860→        hi + ' this is a great suggestion, and the timing is interesting — it overlaps with direction we are already exploring.' + (gist ? ' Your point about “' + gist + '” in particular matches what other users have been asking for.' : '') + ' We cannot promise a date, but it is firmly on the roadmap discussion, and reviews like this are direct input into those decisions.',
+   861→        '',
+   862→        head(3, 'PERSONAL & HUMAN'),
+   863→        hi + ' three stars and a feature request is honestly one of our favorite kinds of reviews — it means you see the potential. We have added your idea to our candidate list for the next planning cycle, and we would love to hear more about how you would use it if you have a minute. Thanks for building ' + app + ' with us.',
+   864→      ];
+   865→    } else {
+   866→      out = [
+   867→        head(1, 'WARM & BRIEF'),
+   868→        hi + ' thank you for the five stars! Reviews like yours are the best part of building ' + app + '. If there is ever anything you would love to see next, we are one tap away in Settings → Help.',
+   869→        '',
+   870→        head(2, 'DETAILED & SPECIFIC'),
+   871→        hi + ' this made the whole team’s day — thank you.' + (gist ? ' So glad “' + gist + '” landed exactly as intended.' : '') + ' We read every review, and notes like this shape what we build next. Enjoy ' + app + ', and see you in the next update!',
+   872→        '',
+   873→        head(3, 'PERSONAL & HUMAN'),
+   874→        hi + ' five stars — you just made a small team of builders very happy. We put a lot of care into ' + app + ', and knowing it is working for you is why we keep going. Thanks for taking the time to write this; it genuinely helps others discover the app too.',
+   875→      ];
+   876→    }
+   877→    out.push('');
+   878→    out.push('NOTE: pick one variant, adjust one or two words to your voice, and post — future users read these as much as reviewers do.');
+   879→    return out.join('\n');
+   880→  },
+   881→  outputLabel: '3 reply variants',
+   882→  downloadName: 'review-responses',
+   883→  downloadExt: 'txt',
+   884→});
+   885→
+   886→/* ═══════════════════════════════════════════════════════════════
+   887→   14. AD COPY GENERATOR
+   888→   ═══════════════════════════════════════════════════════════════ */
+   889→
+   890→const AdCopy = makeGen({
+   891→  fields: [
+   892→    { kind: 'text', id: 'product', label: 'Product / service', half: true, placeholder: 'Meal-prep delivery' },
+   893→    { kind: 'text', id: 'audience', label: 'Audience', half: true, placeholder: 'Busy parents' },
+   894→    { kind: 'textarea', id: 'benefit', label: 'Key benefit', rows: 2, placeholder: 'A week of healthy dinners without cooking or cleanup' },
+   895→    { kind: 'text', id: 'offer', label: 'Offer (optional)', half: true, placeholder: '$40 off your first two boxes' },
+   896→    {
+   897→      kind: 'select', id: 'platform', label: 'Platform', half: true, default: 'meta',
+   898→      options: [
+   899→        { value: 'meta', label: 'Facebook / Instagram' },
+   900→        { value: 'google', label: 'Google Search' },
+   901→        { value: 'linkedin', label: 'LinkedIn' },
+   902→        { value: 'tiktok', label: 'TikTok' },
+   903→      ],
+   904→    },
+   905→  ],
+   906→  template: (v) => {
+   907→    const product = txt(v.product) || 'our product';
+   908→    const aud = txt(v.audience) || 'busy people';
+   909→    const benefit = txt(v.benefit) || 'saves time and hassle';
+   910→    const offer = txt(v.offer);
+   911→    const platform = txt(v.platform) || 'meta';
+   912→
+   913→    const ctas: Record<string, string[]> = {
+   914→      meta: ['Shop Now', 'Learn More', 'Sign Up'],
+   915→      google: ['Shop Now', 'Get a Quote', 'Call Today'],
+   916→      linkedin: ['Request Demo', 'Download', 'Register'],
+   917→      tiktok: ['Shop Now', 'Learn More', 'Download'],
+   918→    };
+   919→    const tips: Record<string, string> = {
+   920→      meta: 'Keep primary text under ~125 characters before the “See more” fold; the first 40 characters decide the stop.',
+   921→      google: 'Search ads: headlines ≤30 characters each, descriptions ≤90. Shorter, concrete claims win auctions.',
+   922→      linkedin: 'Lead with the professional outcome, not the product; LinkedIn readers respond to status and ROI.',
+   923→      tiktok: 'Write like a caption, not an ad — native-feeling copy outperforms polished brand lines.',
+   924→    };
+   925→    const c = ctas[platform] || ctas.meta;
+   926→    const decap = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+   927→    const benefitLow = decap(benefit);
+   928→
+   929→    const rule = '──────────────────────────────────────────────';
+   930→    const head = (n: number, t: string) => rule + '\nVARIATION ' + n + ' — ' + t + '\n' + rule;
+   931→
+   932→    const out: string[] = [
+   933→      'AD COPY — 5 TEST VARIATIONS for ' + product.toUpperCase(),
+   934→      'Platform note: ' + tips[platform],
+   935→      '',
+   936→      head(1, 'BENEFIT-LED'),
+   937→      'Headline: ' + benefit.charAt(0).toUpperCase() + benefit.slice(1),
+   938→      'Primary text: Meet ' + product + ' — ' + benefitLow + '. Built for ' + aud + '.' + (offer ? ' ' + offer + '.' : ''),
+   939→      'CTA: ' + c[0],
+   940→      '',
+   941→      head(2, 'PROBLEM → SOLUTION'),
+   942→      'Headline: The smarter way for ' + aud,
+   943→      'Primary text: If ' + product + ' has been on your someday list, this is your sign. ' + benefit.charAt(0).toUpperCase() + benefit.slice(1) + ' — without the usual hassle.' + (offer ? ' ' + offer + '.' : ''),
+   944→      'CTA: ' + c[1],
+   945→      '',
+   946→      head(3, 'SOCIAL PROOF'),
+   947→      'Headline: ' + aud.charAt(0).toUpperCase() + aud.slice(1) + ' are switching to ' + product,
+   948→      'Primary text: Join the ' + aud + ' who already ' + benefitLow + ' with ' + product + '. See why they stay.' + (offer ? ' ' + offer + ' to start.' : ''),
+   949→      'CTA: ' + c[1],
+   950→      '',
+   951→      head(4, 'OFFER-LED'),
+   952→      'Headline: ' + (offer || 'Special launch offer inside'),
+   953→      'Primary text: For a limited time: ' + (offer || 'an introductory offer for new customers') + '. ' + product + ' gives ' + aud + ' ' + benefitLow + ' — claim it while it lasts.',
+   954→      'CTA: ' + c[0],
+   955→      '',
+   956→      head(5, 'CURIOSITY / BOLD CLAIM'),
+   957→      'Headline: There’s a reason ' + aud + ' keep ' + product + ' on hand',
+   958→      'Primary text: ' + benefit.charAt(0).toUpperCase() + benefit.slice(1) + '. That’s the reason. Try it once and see why word travels.' + (offer ? ' ' + offer + '.' : ''),
+   959→      'CTA: ' + c[2],
+   960→      '',
+   961→      'TESTING NOTE: run all five against the same audience and budget split, give each 1–2 weeks of data, then keep the winning angle and rewrite its weakest line.',
+   962→    ];
+   963→    return out.join('\n');
+   964→  },
+   965→  outputLabel: '5 ad variations',
+   966→  downloadName: 'ad-copy',
+   967→  downloadExt: 'txt',
+   968→});
+   969→
+   970→/* ═══════════════════════════════════════════════════════════════
+   971→   15. CAPTION GENERATOR
+   972→   ═══════════════════════════════════════════════════════════════ */
+   973→
+   974→const Captions = makeGen({
+   975→  fields: [
+   976→    { kind: 'text', id: 'topic', label: 'Topic', placeholder: 'e.g. cold brew subscription', help: 'Specific beats broad — “cold brew subscription” outperforms “coffee”.' },
+   977→    {
+   978→      kind: 'select', id: 'tone', label: 'Tone', half: true, default: 'fun',
+   979→      options: [
+   980→        { value: 'fun', label: 'Fun & casual' },
+   981→        { value: 'professional', label: 'Professional' },
+   982→        { value: 'inspirational', label: 'Inspirational' },
+   983→        { value: 'luxury', label: 'Premium & polished' },
+   984→      ],
+   985→    },
+   986→    {
+   987→      kind: 'select', id: 'platform', label: 'Platform', half: true, default: 'instagram',
+   988→      options: [
+   989→        { value: 'instagram', label: 'Instagram' },
+   990→        { value: 'facebook', label: 'Facebook' },
+   991→        { value: 'tiktok', label: 'TikTok' },
+   992→        { value: 'linkedin', label: 'LinkedIn' },
+   993→        { value: 'x', label: 'X (Twitter)' },
+   994→      ],
+   995→    },
+   996→    { kind: 'toggle', id: 'hashtags', label: 'Append hashtag suggestions', default: true },
+   997→  ],
+   998→  template: (v) => {
+   999→    const topic = txt(v.topic) || 'your topic';
+  1000→    const tone = txt(v.tone) || 'fun';
+  1001→    const platform = txt(v.platform) || 'instagram';
+  1002→    const tags = bl(v.hashtags);
+  1003→
+  1004→    const prefixes: Record<string, string> = {
+  1005→      fun: 'Okay, real talk — ',
+  1006→      professional: 'A quick observation — ',
+  1007→      inspirational: 'Your reminder — ',
+  1008→      luxury: 'Quietly exceptional — ',
+  1009→    };
+  1010→    const pfx = prefixes[tone] || '';
+  1011→
+  1012→    const topicTags = topic
+  1013→      .split(/\s+/)
+  1014→      .slice(0, 3)
+  1015→      .map((w) => '#' + w.toLowerCase().replace(/[^a-z0-9]/g, ''))
+  1016→      .filter((t) => t.length > 2);
+  1017→    const staples: Record<string, string[]> = {
+  1018→      instagram: ['#smallbusiness', '#instadaily', '#reels'],
+  1019→      facebook: ['#smallbusiness', '#community'],
+  1020→      tiktok: ['#fyp', '#learnontiktok'],
+  1021→      linkedin: ['#professional', '#growth'],
+  1022→      x: [],
+  1023→    };
+  1024→    const tagLine = (extra?: string) => {
+  1025→      if (!tags) return '';
+  1026→      const all = [...topicTags, ...(staples[platform] || [])];
+  1027→      if (extra) all.unshift(extra);
+  1028→      const seen = new Set<string>();
+  1029→      const uniq = all.filter((t) => t.length > 2 && !seen.has(t) && seen.add(t));
+  1030→      return uniq.slice(0, 8).join(' ');
+  1031→    };
+  1032→
+  1033→    const caps: { label: string; text: string; tag?: string }[] = [
+  1034→      { label: 'THE QUESTION HOOK', text: pfx + 'what if ' + topic + ' didn’t have to be complicated? Here’s the three-step version we wish someone had told us first.' },
+  1035→      { label: 'THE BOLD STATEMENT', text: topic.charAt(0).toUpperCase() + topic.slice(1) + ' is changing fast. The businesses that adapt early will own the next five years — here’s what we’re seeing.' },
+  1036→      { label: 'BEHIND THE SCENES', text: 'Behind the scenes: this is what ' + topic + ' actually looks like on our side. Messy notes, strong opinions, and one rule — keep it useful.' },
+  1037→      { label: 'SAVE-THIS VALUE POST', text: 'Save this post: everything we’ve learned about ' + topic + ', distilled into a checklist you can run this week.' },
+  1038→      { label: 'THE TAG-A-FRIEND', text: 'Tag someone who needs ' + topic + ' in their life — you know exactly who we mean.' },
+  1039→      { label: 'DIRECT CTA', text: pfx + 'ready to take ' + topic + ' seriously? Start with one small step today, and tell us how it goes in the comments.' },
+  1040→    ];
+  1041→
+  1042→    const rule = '──────────────────────────────────────────────';
+  1043→    const out: string[] = ['6 CAPTIONS — ' + topic.toUpperCase() + ' (' + platform.toUpperCase() + ', ' + tone + ')', ''];
+  1044→    caps.forEach((cap, i) => {
+  1045→      out.push(rule);
+  1046→      out.push((i + 1) + ' — ' + cap.label);
+  1047→      out.push(rule);
+  1048→      out.push(cap.text.charAt(0).toUpperCase() + cap.text.slice(1));
+  1049→      const t = tagLine();
+  1050→      if (t) out.push('Hashtags: ' + t);
+  1051→      out.push('');
+  1052→    });
+  1053→    out.push('TIP: the first line is the hook — feeds truncate after one or two lines, so never bury the interesting part.');
+  1054→    return out.join('\n');
+  1055→  },
+  1056→  outputLabel: '6 captions',
+  1057→  downloadName: 'captions',
+  1058→  downloadExt: 'txt',
+  1059→});
+  1060→
+  1061→/* ═══════════════════════════════════════════════════════════════
+  1062→   16. CONTENT CALENDAR GENERATOR
+  1063→   ═══════════════════════════════════════════════════════════════ */
+  1064→
+  1065→const ContentCalendar = makeGen({
+  1066→  fields: [
+  1067→    { kind: 'text', id: 'niche', label: 'Niche / topic', half: true, placeholder: 'home barista' },
+  1068→    {
+  1069→      kind: 'select', id: 'platform', label: 'Platform', half: true, default: 'instagram',
+  1070→      options: [
+  1071→        { value: 'instagram', label: 'Instagram' },
+  1072→        { value: 'tiktok', label: 'TikTok' },
+  1073→        { value: 'linkedin', label: 'LinkedIn' },
+  1074→        { value: 'facebook', label: 'Facebook' },
+  1075→        { value: 'x', label: 'X (Twitter)' },
+  1076→        { value: 'youtube', label: 'YouTube Shorts' },
+  1077→      ],
+  1078→    },
+  1079→    {
+  1080→      kind: 'select', id: 'frequency', label: 'Posting frequency', half: true, default: 'daily',
+  1081→      options: [
+  1082→        { value: 'daily', label: 'Every day — 30 posts' },
+  1083→        { value: 'weekdays', label: 'Weekdays only — ~22 posts' },
+  1084→        { value: 'three', label: '3× per week (Mon/Wed/Fri) — 13 posts' },
+  1085→      ],
+  1086→    },
+  1087→    {
+  1088→      kind: 'select', id: 'goal', label: 'Primary goal', half: true, default: 'engagement',
+  1089→      options: [
+  1090→        { value: 'awareness', label: 'Awareness — grow reach' },
+  1091→        { value: 'engagement', label: 'Engagement — comments & saves' },
+  1092→        { value: 'traffic', label: 'Traffic — clicks to site' },
+  1093→        { value: 'sales', label: 'Sales — product focus' },
+  1094→      ],
+  1095→    },
+  1096→  ],
+  1097→  template: (v) => {
+  1098→    const niche = txt(v.niche) || 'your niche';
+  1099→    const platform = txt(v.platform) || 'instagram';
+  1100→    const freq = txt(v.frequency) || 'daily';
+  1101→    const goal = txt(v.goal) || 'engagement';
+  1102→
+  1103→    const platformLabel: Record<string, string> = {
+  1104→      instagram: 'Instagram', tiktok: 'TikTok', linkedin: 'LinkedIn',
+  1105→      facebook: 'Facebook', x: 'X (Twitter)', youtube: 'YouTube Shorts',
+  1106→    };
+  1107→    const goalLabel: Record<string, string> = {
+  1108→      awareness: 'Awareness', engagement: 'Engagement', traffic: 'Traffic', sales: 'Sales',
+  1109→    };
+  1110→    const freqLabel: Record<string, string> = {
+  1111→      daily: 'Every day', weekdays: 'Weekdays only', three: '3× per week',
+  1112→    };
+  1113→
+  1114→    const ideas = [
+  1115→      'How to get started with ' + niche + ' (beginner roadmap)',
+  1116→      '5 mistakes people make with ' + niche + ' — and the fix',
+  1117→      'Myth vs. fact: what really works in ' + niche,
+  1118→      'Behind the scenes: our ' + niche + ' process',
+  1119→      'The question everyone asks us about ' + niche,
+  1120→      'Checklist: the ' + niche + ' essentials we never skip',
+  1121→      '3 tools we use every day for ' + niche,
+  1122→      'Before & after: a real ' + niche + ' transformation',
+  1123→      'The fastest win we know in ' + niche,
+  1124→      'Trend watch: what is changing in ' + niche + ' right now',
+  1125→      'Save this: a simple weekly ' + niche + ' routine',
+  1126→      'Hot take: most ' + niche + ' advice is backwards',
+  1127→      'A ' + niche + ' number that genuinely surprised us',
+  1128→      'Mini-tutorial: ' + niche + ' in 60 seconds',
+  1129→      'Recap: the best ' + niche + ' tip from this month',
+  1130→    ];
+  1131→
+  1132→    const formats: Record<string, string[]> = {
+  1133→      instagram: ['Reel', 'Carousel', 'Story', 'Photo post'],
+  1134→      tiktok: ['Short video', 'Talking head', 'Trend remix', 'Tutorial'],
+  1135→      linkedin: ['Text post', 'Document post', 'Poll', 'Case study'],
+  1136→      facebook: ['Reel', 'Link post', 'Photo album', 'Group prompt'],
+  1137→      x: ['Thread', 'Single post', 'Quote repost', 'Poll'],
+  1138→      youtube: ['Short', 'Explainer', 'Myth-bust', 'Vlog cut'],
+  1139→    };
+  1140→    const pillars: Record<string, string[]> = {
+  1141→      awareness: ['Educate', 'Inspire', 'Behind-scenes', 'Trend', 'Promote'],
+  1142→      engagement: ['Ask', 'Educate', 'Community', 'Fun', 'Promote'],
+  1143→      traffic: ['Educate', 'Teaser', 'Value', 'Promote', 'Educate'],
+  1144→      sales: ['Product', 'Proof', 'Offer', 'Educate', 'Objection'],
+  1145→    };
+  1146→    const pillarCta: Record<string, string> = {
+  1147→      Educate: 'Save this for later',
+  1148→      Inspire: 'Share it with someone who needs it',
+  1149→      'Behind-scenes': 'Ask us anything in the comments',
+  1150→      Trend: 'Stitch / reply with your take',
+  1151→      Promote: 'Link in bio — details inside',
+  1152→      Ask: 'Answer in the comments',
+  1153→      Community: 'Tag a friend who gets it',
+  1154→      Fun: 'Vote in the poll',
+  1155→      Product: 'See it in the shop',
+  1156→      Proof: 'Read the full story — link in bio',
+  1157→      Offer: 'Claim it before it ends',
+  1158→      Teaser: 'Read the rest — link in bio',
+  1159→      Value: 'Save this checklist',
+  1160→      Objection: 'Questions? DM us',
+  1161→    };
+  1162→
+  1163→    const allowed = (d: number): boolean => {
+  1164→      if (freq === 'weekdays') return d % 7 !== 0 && d % 7 !== 6;
+  1165→      if (freq === 'three') return d % 7 === 1 || d % 7 === 3 || d % 7 === 5;
+  1166→      return true;
+  1167→    };
+  1168→
+  1169→    const fmts = formats[platform] || formats.instagram;
+  1170→    const pl = pillars[goal] || pillars.engagement;
+  1171→    const clip = (s: string, n: number) => (s.length <= n ? s : s.slice(0, n - 3).trimEnd() + '...');
+  1172→
+  1173→    const rows: string[] = [];
+  1174→    let i = 0;
+  1175→    for (let d = 1; d <= 30; d++) {
+  1176→      if (!allowed(d)) continue;
+  1177→      const pillar = pl[i % pl.length];
+  1178→      const format = fmts[(i * 2 + 1) % fmts.length];
+  1179→      const idea = ideas[(i * 3 + 2) % ideas.length];
+  1180→      const cta = pillarCta[pillar] || 'Follow for more';
+  1181→      rows.push(
+  1182→        ('Day ' + String(d).padStart(2, '0')).padEnd(9) +
+  1183→        pillar.padEnd(14) +
+  1184→        format.padEnd(15) +
+  1185→        clip(idea, 44).padEnd(44) +
+  1186→        cta
+  1187→      );
+  1188→      i++;
+  1189→    }
+  1190→
+  1191→    const header =
+  1192→      'Day      Pillar         Format         Idea                                         Call to action';
+  1193→    const divider = '──────────────────────────────────────────────────────────────────────────────────────';
+  1194→
+  1195→    return [
+  1196→      '30-DAY CONTENT CALENDAR',
+  1197→      'Niche: ' + niche + '   |   Platform: ' + (platformLabel[platform] || platform) +
+  1198→        '   |   Goal: ' + (goalLabel[goal] || goal) + '   |   Frequency: ' + (freqLabel[freq] || freq),
+  1199→      'Week starts Monday (Day 1 = Monday) — shift day labels if your week starts differently.',
+  1200→      '',
+  1201→      header,
+  1202→      divider,
+  1203→      ...rows,
+  1204→      divider,
+  1205→      'Total scheduled posts: ' + rows.length,
+  1206→      'Pillars rotate so the feed never reads as an ad channel — Promote days are capped on purpose.',
+  1207→    ].join('\n');
+  1208→  },
+  1209→  outputLabel: '30-day calendar',
+  1210→  downloadName: 'content-calendar',
+  1211→  downloadExt: 'txt',
+  1212→});
+  1213→
+  1214→/* ═══════════════════════════════════════════════════════════════
+  1215→   17. LINKEDIN HEADLINE GENERATOR
+  1216→   ═══════════════════════════════════════════════════════════════ */
+  1217→
+  1218→const LinkedinHeadline = makeGen({
+  1219→  fields: [
+  1220→    { kind: 'text', id: 'role', label: 'Role / title', half: true, placeholder: 'Product Manager' },
+  1221→    { kind: 'text', id: 'industry', label: 'Industry', half: true, placeholder: 'SaaS / fintech' },
+  1222→    { kind: 'text', id: 'skill', label: 'Top skill (searchable)', half: true, placeholder: 'product strategy', help: 'The exact phrase recruiters or clients would type.' },
+  1223→    { kind: 'text', id: 'value', label: 'Value proposition', half: true, placeholder: 'helping teams ship faster with less rework' },
+  1224→    {
+  1225→      kind: 'select', id: 'style', label: 'Lead style', default: 'professional',
+  1226→      options: [
+  1227→        { value: 'professional', label: 'Professional' },
+  1228→        { value: 'results', label: 'Results-driven' },
+  1229→        { value: 'bold', label: 'Bold' },
+  1230→        { value: 'approachable', label: 'Approachable' },
+  1231→        { value: 'hiring', label: 'Job-seeking' },
+  1232→      ],
+  1233→    },
+  1234→  ],
+  1235→  template: (v) => {
+  1236→    const role = txt(v.role) || 'Product Manager';
+  1237→    const ind = txt(v.industry) || 'tech';
+  1238→    const skill = txt(v.skill) || 'product strategy';
+  1239→    const val = txt(v.value) || 'helping teams ship faster';
+  1240→    const style = txt(v.style) || 'professional';
+  1241→
+  1242→    const t: Record<string, string> = {
+  1243→      classic: role + ' | ' + ind + ' | ' + val,
+  1244→      value: 'Helping ' + ind + ' teams ' + val,
+  1245→      skill: role + ' · ' + skill + ' · ' + ind,
+  1246→      bold: val.charAt(0).toUpperCase() + val.slice(1) + '. That is what I do as a ' + role + '.',
+  1247→      warm: role + ' who loves ' + skill + ' — sharing what actually works in ' + ind + '.',
+  1248→      seo: role + ' | ' + skill + ' | ' + ind + ' | ' + val,
+  1249→    };
+  1250→    const labels: Record<string, string> = {
+  1251→      classic: 'Classic & clear', value: 'Value-first', skill: 'Skill spotlight',
+  1252→      bold: 'Bold statement', warm: 'Approachable', seo: 'Keyword-optimized',
+  1253→    };
+  1254→    const orders: Record<string, string[]> = {
+  1255→      professional: ['classic', 'value', 'seo', 'skill', 'bold', 'warm'],
+  1256→      results: ['value', 'bold', 'classic', 'seo', 'skill', 'warm'],
+  1257→      bold: ['bold', 'value', 'classic', 'warm', 'skill', 'seo'],
+  1258→      approachable: ['warm', 'value', 'skill', 'classic', 'bold', 'seo'],
+  1259→      hiring: ['skill', 'classic', 'value', 'seo', 'warm', 'bold'],
+  1260→    };
+  1261→    const styleLabel: Record<string, string> = {
+  1262→      professional: 'Professional', results: 'Results-driven', bold: 'Bold',
+  1263→      approachable: 'Approachable', hiring: 'Job-seeking',
+  1264→    };
+  1265→    const order = orders[style] || orders.professional;
+  1266→
+  1267→    const out: string[] = [
+  1268→      '6 LINKEDIN HEADLINES — ' + (styleLabel[style] || 'Professional') + ' lead',
+  1269→      '',
+  1270→    ];
+  1271→    order.forEach((k, i) => {
+  1272→      out.push((i + 1) + '. [' + labels[k] + ']');
+  1273→      out.push('   ' + t[k]);
+  1274→      out.push('');
+  1275→    });
+  1276→    if (style === 'hiring') {
+  1277→      out.push('JOB-SEEKING BOOST: append “· Open to new opportunities” to your pick and enable the #OpenToWork frame — recruiters filter on both.');
+  1278→      out.push('');
+  1279→    }
+  1280→    out.push('CHARACTER NOTES: the cap is 220 characters, and some views truncate around 120 — keep the role and skill keywords in the first half so they survive truncation.');
+  1281→    return out.join('\n');
+  1282→  },
+  1283→  outputLabel: '6 headline variants',
+  1284→  downloadName: 'linkedin-headlines',
+  1285→  downloadExt: 'txt',
+  1286→});
+  1287→
+  1288→/* ═══════════════════════════════════════════════════════════════
+  1289→   18. BUSINESS NAME GENERATOR
+  1290→   ═══════════════════════════════════════════════════════════════ */
+  1291→
+  1292→const BusinessName = makeGen({
+  1293→  fields: [
+  1294→    { kind: 'text', id: 'keyword', label: 'Core keyword', placeholder: 'e.g. coffee, studio, logistics', help: 'One word works best — it drives the whole combinator.' },
+  1295→    {
+  1296→      kind: 'select', id: 'style', label: 'Lead style', default: 'modern',
+  1297→      options: [
+  1298→        { value: 'modern', label: 'Modern & brandable' },
+  1299→        { value: 'classic', label: 'Classic & professional' },
+  1300→        { value: 'compound', label: 'Descriptive compounds' },
+  1301→        { value: 'playful', label: 'Playful & catchy' },
+  1302→      ],
+  1303→    },
+  1304→    { kind: 'text', id: 'location', label: 'Location (optional)', half: true, placeholder: 'e.g. Austin' },
+  1305→  ],
+  1306→  template: (v) => {
+  1307→    const kwRaw = txt(v.keyword) || 'studio';
+  1308→    const style = txt(v.style) || 'modern';
+  1309→    const loc = txt(v.location);
+  1310→
+  1311→    const words = kwRaw.split(/\s+/).filter(Boolean);
+  1312→    const base = (words[0] || 'nova').toLowerCase().replace(/[^a-z]/g, '') || 'nova';
+  1313→    const Cap = base.charAt(0).toUpperCase() + base.slice(1);
+  1314→    const locCap = loc ? loc.toLowerCase().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : '';
+  1315→
+  1316→    const groups: { name: string; names: string[] }[] = [
+  1317→      { name: 'MODERN & BRANDABLE', names: [Cap + 'ly', Cap + 'ify', Cap + 'io', Cap + 'sy', Cap + 'ora'] },
+  1318→      { name: 'CLASSIC & PROFESSIONAL', names: [Cap + ' & Co.', Cap + ' Group', Cap + ' Partners', Cap + ' Advisory'] },
+  1319→      { name: 'DESCRIPTIVE COMPOUNDS', names: [Cap + 'Labs', Cap + 'Hub', Cap + 'Works', Cap + 'Forge', Cap + 'Craft', Cap + 'Nest'] },
+  1320→      { name: 'PLAYFUL & CATCHY', names: ['Go' + Cap, 'Get' + Cap, 'Zen' + Cap, 'Hey' + Cap, 'Bright' + Cap] },
+  1321→      locCap
+  1322→        ? { name: 'LOCATION-FLAVORED', names: [locCap + ' ' + Cap, Cap + ' ' + locCap, Cap + ' of ' + locCap, locCap + ' ' + Cap + ' Co.'] }
+  1323→        : { name: 'MINIMAL & MODERN', names: [Cap, base, 'The ' + Cap, Cap + ' Co.'] },
+  1324→    ];
+  1325→
+  1326→    const order: Record<string, string[]> = {
+  1327→      modern: ['MODERN & BRANDABLE', 'DESCRIPTIVE COMPOUNDS', 'PLAYFUL & CATCHY', 'CLASSIC & PROFESSIONAL', locCap ? 'LOCATION-FLAVORED' : 'MINIMAL & MODERN'],
+  1328→      classic: ['CLASSIC & PROFESSIONAL', 'DESCRIPTIVE COMPOUNDS', 'MINIMAL & MODERN', 'MODERN & BRANDABLE', locCap ? 'LOCATION-FLAVORED' : 'PLAYFUL & CATCHY'],
+  1329→      compound: ['DESCRIPTIVE COMPOUNDS', 'MODERN & BRANDABLE', 'PLAYFUL & CATCHY', 'CLASSIC & PROFESSIONAL', locCap ? 'LOCATION-FLAVORED' : 'MINIMAL & MODERN'],
+  1330→      playful: ['PLAYFUL & CATCHY', 'MODERN & BRANDABLE', 'DESCRIPTIVE COMPOUNDS', 'CLASSIC & PROFESSIONAL', locCap ? 'LOCATION-FLAVORED' : 'MINIMAL & MODERN'],
+  1331→    };
+  1332→    const ordered = (order[style] || order.modern)
+  1333→      .map((name) => groups.find((g) => g.name === name))
+  1334→      .filter(Boolean) as { name: string; names: string[] }[];
+  1335→
+  1336→    const seen = new Set<string>();
+  1337→    let count = 0;
+  1338→    const out: string[] = [
+  1339→      '~20 NAME IDEAS from the seed “' + kwRaw + '”' + (locCap ? ' + ' + locCap : ''),
+  1340→      '',
+  1341→    ];
+  1342→    for (const g of ordered) {
+  1343→      out.push('■ ' + g.name);
+  1344→      for (const n of g.names) {
+  1345→        if (seen.has(n)) continue;
+  1346→        seen.add(n);
+  1347→        count++;
+  1348→        out.push('   • ' + n);
+  1349→      }
+  1350→      out.push('');
+  1351→    }
+  1352→    out.push('NEXT STEPS (' + count + ' candidates):');
+  1353→    out.push('1. Shortlist 3–5 that are easy to say and spell after hearing once.');
+  1354→    out.push('2. Check the .com (or a clean alternative TLD) and company registries.');
+  1355→    out.push('3. Search the trademark register (USPTO / EUIPO / UKIPO) for the mark and close variants.');
+  1356→    out.push('4. Say it out loud in a sentence — “I booked with ___” — if it stumbles, it is not the one.');
+  1357→    return out.join('\n');
+  1358→  },
+  1359→  outputLabel: 'Name ideas',
+  1360→  downloadName: 'business-names',
+  1361→  downloadExt: 'txt',
+  1362→});
+  1363→
+  1364→/* ═══════════════════════════════════════════════════════════════
+  1365→   19. BACKLINK ANCHOR TEXT GENERATOR
+  1366→   ═══════════════════════════════════════════════════════════════ */
+  1367→
+  1368→const AnchorText = makeGen({
+  1369→  fields: [
+  1370→    { kind: 'text', id: 'keyword', label: 'Target keyword', half: true, placeholder: 'email drip campaigns' },
+  1371→    { kind: 'text', id: 'brand', label: 'Brand name', half: true, placeholder: 'Mailflow' },
+  1372→    { kind: 'text', id: 'url', label: 'Target URL', placeholder: 'https://mailflow.com/guides/drip-campaigns' },
+  1373→  ],
+  1374→  template: (v) => {
+  1375→    const kw = txt(v.keyword) || 'your keyword';
+  1376→    const brand = txt(v.brand) || 'Your Brand';
+  1377→    const url = txt(v.url) || 'https://example.com';
+  1378→    const host = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  1379→    const kwCap = kw.charAt(0).toUpperCase() + kw.slice(1);
+  1380→
+  1381→    const buckets: { name: string; pct: string; why: string; items: string[] }[] = [
+  1382→      {
+  1383→        name: 'BRANDED',
+  1384→        pct: '35%',
+  1385→        why: 'Safest anchor class — builds entity trust and never reads as manipulation.',
+  1386→        items: [brand, brand + ' team', 'go to ' + brand, host],
+  1387→      },
+  1388→      {
+  1389→        name: 'NAKED URL',
+  1390→        pct: '10%',
+  1391→        why: 'Natural in citations, resource pages and author bios.',
+  1392→        items: [url, host, 'www.' + host],
+  1393→      },
+  1394→      {
+  1395→        name: 'GENERIC',
+  1396→        pct: '5%',
+  1397→        why: 'Keeps the profile human; low value, low risk.',
+  1398→        items: ['click here', 'this guide', 'learn more', 'this resource'],
+  1399→      },
+  1400→      {
+  1401→        name: 'PARTIAL MATCH',
+  1402→        pct: '25%',
+  1403→        why: 'Carries topical relevance while staying natural — your workhorse bucket.',
+  1404→        items: ['guide to ' + kw, kw + ' tips', 'how to approach ' + kw, kw + ' strategies', 'more about ' + kw],
+  1405→      },
+  1406→      {
+  1407→        name: 'EXACT MATCH',
+  1408→        pct: '10%',
+  1409→        why: 'Strongest relevance signal — keep it scarce or filters read it as a pattern.',
+  1410→        items: [kw, kwCap],
+  1411→      },
+  1412→      {
+  1413→        name: 'LONG-TAIL & QUESTION',
+  1414→        pct: '15%',
+  1415→        why: 'Mirrors how real writers actually reference content.',
+  1416→        items: ['what is ' + kw, 'how does ' + kw + ' work', kw + ' explained simply', 'why ' + kw + ' matters'],
+  1417→      },
+  1418→    ];
+  1419→
+  1420→    const out: string[] = [
+  1421→      'ANCHOR TEXT PLAN — target: ' + kw,
+  1422→      'URL: ' + url + '   |   Brand: ' + brand,
+  1423→      '',
+  1424→    ];
+  1425→    buckets.forEach((b, i) => {
+  1426→      out.push((i + 1) + '. ' + b.name + ' — ' + b.pct + ' of links');
+  1427→      out.push('   Why: ' + b.why);
+  1428→      for (const item of b.items) out.push('   • ' + item);
+  1429→      out.push('');
+  1430→    });
+  1431→    out.push('HOW TO USE THIS PLAN:');
+  1432→    out.push('• Treat the percentages as a target for your next 20–30 links, not a per-link rule.');
+  1433→    out.push('• Natural profiles are top-heavy on branded and naked URLs — if your existing profile is exact-match heavy, prioritize branded links first.');
+  1434→    out.push('• Vary word order and add surrounding context when you can influence it (“read our guide to ' + kw + '” beats a bare exact match).');
+  1435→    return out.join('\n');
+  1436→  },
+  1437→  outputLabel: 'Anchor text plan',
+  1438→  downloadName: 'anchor-text-plan',
+  1439→  downloadExt: 'txt',
+  1440→});
+  1441→
+  1442→/* ═══════════════════════════════════════════════════════════════
+  1443→   20. AUDIENCE PERSONA BUILDER
+  1444→   ═══════════════════════════════════════════════════════════════ */
+  1445→
+  1446→const PersonaBuilder = makeGen({
+  1447→  fields: [
+  1448→    { kind: 'text', id: 'name', label: 'Persona name', half: true, placeholder: 'Operations Olivia' },
+  1449→    { kind: 'text', id: 'age', label: 'Age range', half: true, placeholder: '32–42' },
+  1450→    { kind: 'text', id: 'role', label: 'Role / job title', half: true, placeholder: 'Operations manager' },
+  1451→    { kind: 'text', id: 'industry', label: 'Industry', half: true, placeholder: 'Regional logistics' },
+  1452→    { kind: 'text', id: 'budget', label: 'Budget & sensitivity', half: true, placeholder: '$5–15k/year; needs ROI proof in 90 days' },
+  1453→    { kind: 'text', id: 'channels', label: 'Trusted channels', half: true, placeholder: 'LinkedIn, operator newsletters, peer Slack groups' },
+  1454→    { kind: 'textarea', id: 'goals', label: 'Goals (what they want to achieve)', rows: 4, placeholder: 'Cut manual scheduling to under 2 hours a week.\nLook genuinely modern in front of the executive team.' },
+  1455→    { kind: 'list', id: 'pains', label: 'Pain points', placeholder: 'Drowning in spreadsheets\nTools that ignore how dispatch actually works\nVendors who disappear after the sale' },
+  1456→    { kind: 'textarea', id: 'triggers', label: 'Buying triggers', rows: 3, placeholder: 'A missed deadline that reaches a customer.\nA key operator quitting and taking tribal knowledge with them.' },
+  1457→  ],
+  1458→  template: (v) => {
+  1459→    const name = txt(v.name) || 'Your Persona';
+  1460→    const age = txt(v.age) || '—';
+  1461→    const role = txt(v.role) || '—';
+  1462→    const industry = txt(v.industry) || '—';
+  1463→    const budget = txt(v.budget) || '—';
+  1464→    const channels = txt(v.channels) || '—';
+  1465→    const goals = ls(v.goals);
+  1466→    const pains = ls(v.pains);
+  1467→    const triggers = ls(v.triggers);
+  1468→
+  1469→    const initials = name
+  1470→      .split(/\s+/)
+  1471→      .slice(0, 2)
+  1472→      .map((w) => w.charAt(0).toUpperCase())
+  1473→      .join('');
+  1474→
+  1475→    const listHtml = (arr: string[]) => arr.length ? '<ul>' + arr.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<p class="meta">—</p>';
+  1476→    const chips = channels
+  1477→      .split(/[,;]/)
+  1478→      .map((c) => c.trim())
+  1479→      .filter(Boolean)
+  1480→      .map((c) => '<span class="chip">' + esc(c) + '</span>')
+  1481→      .join('');
+  1482→
+  1483→    const body =
+  1484→      '<div class="persona-head">\n' +
+  1485→      '  <div class="avatar">' + esc(initials) + '</div>\n' +
+  1486→      '  <div>\n' +
+  1487→      '    <h1 style="margin-bottom:4px;">' + esc(name) + '</h1>\n' +
+  1488→      '    <p style="margin:0;">' + esc(role) + ' · ' + esc(industry) + '</p>\n' +
+  1489→      '    <p style="margin:4px 0 0;"><span class="chip">Age ' + esc(age) + '</span><span class="chip">Budget: ' + esc(budget) + '</span></p>\n' +
+  1490→      '  </div>\n</div>\n' +
+  1491→
+  1492→      '<div class="grid2">\n' +
+  1493→      '  <section><h2>Goals</h2><p class="meta">What pulls them forward</p>' + listHtml(goals) + '</section>\n' +
+  1494→      '  <section><h2>Pain points</h2><p class="meta">What pushes them away from the status quo</p>' + listHtml(pains) + '</section>\n' +
+  1495→      '</div>\n' +
+  1496→
+  1497→      '<h2>Buying triggers</h2>\n' +
+  1498→      '<p class="meta">Events that start an active search — market to the trigger, not the demographic:</p>\n' + listHtml(triggers) +
+  1499→
+  1500→      '<h2>Trusted channels</h2>\n' +
+  1501→      '<p>' + (chips || '<span class="meta">—</span>') + '</p>\n' +
+  1502→
+  1503→      '<h2>How to win them</h2>\n' +
+  1504→      '<ul>\n' +
+  1505→      '  <li>Lead with outcomes, not features — tie every message to a goal above.</li>\n' +
+  1506→      '  <li>Name a pain in the first line; recognition is what earns the next 10 seconds.</li>\n' +
+  1507→      '  <li>Show proof from someone like them (same industry, same role) before any ask.</li>\n' +
+  1508→      '  <li>Remove risk: free trial, pilot, or a 90-day success metric they can take upstairs.</li>\n' +
+  1509→      '</ul>\n' +
+  1510→
+  1511→      '<p class="meta">Persona sheet — review quarterly and date-stamp every update. A persona no one has refreshed in two years is fiction wearing a headshot.</p>';
+  1512→
+  1513→    return htmlDoc('Persona — ' + name, body, PERSONA_CSS);
+  1514→  },
+  1515→  outputLabel: 'Persona sheet (HTML)',
+  1516→  previewHtml: true,
+  1517→  downloadName: 'audience-persona',
+  1518→  downloadExt: 'html',
+  1519→});
+  1520→
+  1521→/* ═══════════════════════════════════════════════════════════════
+  1522→   21. LOGO COLOR PSYCHOLOGY TOOL
+  1523→   ═══════════════════════════════════════════════════════════════ */
+  1524→
+  1525→const LogoColors = makeGen({
+  1526→  fields: [
+  1527→    {
+  1528→      kind: 'select', id: 'industry', label: 'Your industry', default: 'tech',
+  1529→      options: [
+  1530→        { value: 'tech', label: 'Technology & SaaS' },
+  1531→        { value: 'finance', label: 'Finance & Insurance' },
+  1532→        { value: 'health', label: 'Health & Wellness' },
+  1533→        { value: 'food', label: 'Food & Restaurant' },
+  1534→        { value: 'realestate', label: 'Real Estate & Property' },
+  1535→        { value: 'creative', label: 'Creative & Agency' },
+  1536→        { value: 'fitness', label: 'Fitness & Sport' },
+  1537→        { value: 'education', label: 'Education & Learning' },
+  1538→      ],
+  1539→    },
+  1540→    {
+  1541→      kind: 'select', id: 'feeling', label: 'Feeling to trigger', default: 'trust',
+  1542→      options: [
+  1543→        { value: 'trust', label: 'Trust & stability' },
+  1544→        { value: 'energy', label: 'Energy & excitement' },
+  1545→        { value: 'calm', label: 'Calm & wellness' },
+  1546→        { value: 'luxury', label: 'Premium & luxury' },
+  1547→        { value: 'growth', label: 'Growth & innovation' },
+  1548→        { value: 'friendly', label: 'Friendly & approachable' },
+  1549→      ],
+  1550→    },
+  1551→  ],
+  1552→  template: (v) => {
+  1553→    const industry = txt(v.industry) || 'tech';
+  1554→    const feeling = txt(v.feeling) || 'trust';
+  1555→    const ind = INDUSTRY_NOTES[industry] || INDUSTRY_NOTES.tech;
+  1556→    const palettes = PALETTES[feeling] || PALETTES.trust;
+  1557→    const feelingLabel: Record<string, string> = {
+  1558→      trust: 'Trust & stability', energy: 'Energy & excitement', calm: 'Calm & wellness',
+  1559→      luxury: 'Premium & luxury', growth: 'Growth & innovation', friendly: 'Friendly & approachable',
+  1560→    };
+  1561→
+  1562→    const swatches = palettes
+  1563→      .map((p) =>
+  1564→        '<h2>' + esc(p.name) + '</h2>\n<p>' + esc(p.note) + '</p>\n<div class="swrow">\n' +
+  1565→        p.chips
+  1566→          .map(
+  1567→            (c) =>
+  1568→              '<div class="sw"><div class="box" style="background:' + c.hex + ';"></div>' +
+  1569→              '<p class="nm">' + esc(c.name) + '</p><p class="hx">' + esc(c.hex) + ' · ' + esc(c.role) + '</p></div>'
+  1570→          )
+  1571→          .join('\n') +
+  1572→        '\n</div>'
+  1573→      )
+  1574→      .join('\n');
+  1575→
+  1576→    const body =
+  1577→      '<h1>Logo color palettes for ' + esc(ind.label) + '</h1>\n' +
+  1578→      '<p class="meta">Feeling target: ' + esc(feelingLabel[feeling] || feeling) + ' · 3 palettes × 4 roles · hex codes ready for your designer</p>\n' +
+  1579→      swatches + '\n' +
+  1580→      '<h2>Psychology in ' + esc(ind.label) + '</h2>\n' +
+  1581→      '<p>' + esc(ind.note) + '</p>\n' +
+  1582→      '<div class="dodont"><strong>Do:</strong><ul>' + ind.dos.map((d) => '<li>' + esc(d) + '</li>').join('') + '</ul></div>\n' +
+  1583→      '<div class="dodont no"><strong>Avoid:</strong><ul>' + ind.donts.map((d) => '<li>' + esc(d) + '</li>').join('') + '</ul></div>\n' +
+  1584→      '<h2>Applying it</h2>\n' +
+  1585→      '<p>Use the 60/30/10 rule: dominant color ~60% of the composition, secondary ~30%, and the accent — reserved for calls-to-action and the moments you want noticed. Check every text/background pair against WCAG AA (4.5:1 for body text), and test the logo at 16 pixels before you commit.</p>';
+  1586→
+  1587→    return htmlDoc('Logo colors — ' + ind.label, body, SWATCH_CSS);
+  1588→  },
+  1589→  outputLabel: 'Palettes & psychology',
+  1590→  previewHtml: true,
+  1591→  downloadName: 'logo-color-palettes',
+  1592→  downloadExt: 'html',
+  1593→});
+  1594→
+  1595→/* ═══════════════════════════════════════════════════════════════
+  1596→   22. NAP CONSISTENCY CHECKER
+  1597→   ═══════════════════════════════════════════════════════════════ */
+  1598→
+  1599→const NapChecker = makeGen({
+  1600→  fields: [
+  1601→    { kind: 'text', id: 'name', label: 'Business name (exact, canonical spelling)', placeholder: 'e.g. Acme Dental Studio — pick one form and keep it everywhere' },
+  1602→    { kind: 'list', id: 'address', label: 'Address lines', placeholder: '123 S Main St, Suite 4' },
+  1603→    { kind: 'text', id: 'city', label: 'City', half: true, placeholder: 'Springfield' },
+  1604→    { kind: 'text', id: 'state', label: 'State (2-letter code)', half: true, placeholder: 'IL' },
+  1605→    { kind: 'text', id: 'zip', label: 'ZIP / postcode', half: true, placeholder: '62701' },
+  1606→    { kind: 'text', id: 'phone', label: 'Primary phone', half: true, placeholder: '(217) 555-0142', help: 'Never a tracking number — it must match every listing.' },
+  1607→    { kind: 'text', id: 'website', label: 'Website', placeholder: 'acmedental.com' },
+  1608→  ],
+  1609→  template: (v) => {
+  1610→    const name = txt(v.name) || 'My Business';
+  1611→    const addrLines = ls(v.address);
+  1612→    const city = txt(v.city);
+  1613→    const st = txt(v.state);
+  1614→    const zip = txt(v.zip);
+  1615→    const phoneFmt = formatPhone(txt(v.phone));
+  1616→    const site = txt(v.website);
+  1617→    const url = site ? (site.startsWith('http') ? site : 'https://' + site) : '';
+  1618→
+  1619→    const addr = addrLines.join(', ');
+  1620→    const cityLine = [city, [st, zip].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+  1621→
+  1622→    const napPlain = [name, addr, cityLine, phoneFmt, url].filter(Boolean).join('\n');
+  1623→
+  1624→    const md =
+  1625→      '<div itemscope itemtype="https://schema.org/LocalBusiness">\n' +
+  1626→      '  <span itemprop="name">' + escapeHtml(name) + '</span><br />\n' +
+  1627→      (addr
+  1628→        ? '  <address itemprop="address" itemscope itemtype="https://schema.org/PostalAddress" style="font-style:normal;">\n' +
+  1629→          '    <span itemprop="streetAddress">' + escapeHtml(addr) + '</span><br />\n' +
+  1630→          (city ? '    <span itemprop="addressLocality">' + escapeHtml(city) + '</span>, ' : '') +
+  1631→          (st ? '<span itemprop="addressRegion">' + escapeHtml(st) + '</span> ' : '') +
+  1632→          (zip ? '<span itemprop="postalCode">' + escapeHtml(zip) + '</span>' : '') + '<br />\n' +
+  1633→          '  </address><br />\n'
+  1634→        : '') +
+  1635→      (phoneFmt ? '  <span itemprop="telephone">' + escapeHtml(phoneFmt) + '</span><br />\n' : '') +
+  1636→      (url ? '  <a itemprop="url" href="' + escapeHtml(url) + '">' + escapeHtml(url) + '</a>\n' : '') +
+  1637→      '</div>';
+  1638→
+  1639→    const checklist = [
+  1640→      'Use the exact same business name everywhere — “Acme Dental” and “Acme Dental Studio” are two different entities to a search engine. Pick the legal or most common form and lock it.',
+  1641→      'Standardize street suffixes: choose “St” or “Street” and never mix them across listings. USPS-standardized addresses also improve mail deliverability.',
+  1642→      'Keep suite/unit formatting identical (“Suite 4” vs “Ste 4” vs “#4”) — minor variants add small confidence deductions that compound.',
+  1643→      'One primary phone number everywhere. Call-tracking numbers on directories split your NAP signal and can cost you the maps pack.',
+  1644→      'Fix the phone format too: this sheet normalizes to (XXX) XXX-XXXX for 10-digit US numbers — use the same rendering in every listing.',
+  1645→      'Use the 2-letter state code consistently, and never abbreviate the city one place and spell it out another.',
+  1646→      'Publish the canonical NAP in your site footer with LocalBusiness microdata (above) — it becomes the source of truth every citation should copy.',
+  1647→      'Re-audit quarterly and within one week of any move or rebrand: update Google Business Profile first, then Apple Maps, Bing Places, Yelp and industry directories.',
+  1648→    ];
+  1649→
+  1650→    const body =
+  1651→      '<h1>NAP Consistency Sheet</h1>\n' +
+  1652→      '<p class="meta">' + esc(name) + ' · canonical data for citations, directories and schema</p>\n' +
+  1653→
+  1654→      '<h2>Canonical NAP — copy this everywhere</h2>\n' +
+  1655→      '<div class="napbox">' + napPlain.split('\n').map((l) => esc(l)).join('<br />') + '</div>\n' +
+  1656→
+  1657→      '<h2>Copy-paste LocalBusiness microdata</h2>\n' +
+  1658→      '<p class="meta">Paste into your site footer or contact page — view source to copy the raw HTML:</p>\n' +
+  1659→      '<pre class="md">' + escapeHtml(md) + '</pre>\n' +
+  1660→
+  1661→      '<h2>The 8-point consistency checklist</h2>\n' +
+  1662→      '<ol class="check">\n' + checklist.map((c) => '<li>' + esc(c) + '</li>').join('\n') + '\n</ol>\n' +
+  1663→
+  1664→      '<p class="meta">Why it matters: search engines cross-check your details across the web to build confidence in your entity. Consistent NAP is a confirmed local ranking signal — mismatched listings are among the most common findings on businesses stuck just outside the maps pack.</p>';
+  1665→
+  1666→    return htmlDoc('NAP consistency — ' + name, body, NAP_CSS);
+  1667→  },
+  1668→  outputLabel: 'NAP sheet (HTML)',
+  1669→  previewHtml: true,
+  1670→  downloadName: 'nap-consistency',
+  1671→  downloadExt: 'html',
+  1672→});
+  1673→
+  1674→/* ═══════════════════════════════════════════════════════════════
+  1675→   BATCH EXPORT — slug + component + unique page copy per tool
+  1676→   ═══════════════════════════════════════════════════════════════ */
+  1677→
+  1678→export const batch: BatchTool[] = [
+  1679→  {
+  1680→    slug: 'meta-tag-generator',
+  1681→    Component: MetaTags,
+  1682→    doc: {
+  1683→      longDescription:
+  1684→        'Your title tag and meta description are the snippet searchers actually see — they decide the click long before your page loads. This generator turns a short form into a clean, copy-ready <head> block with canonical link, robots directives and the viewport tag done properly.',
+  1685→      howTo: [
+  1686→        'Type the page title and a 150–160 character description — the two lines Google shows on the results page.',
+  1687→        'Add keywords, author and the canonical URL so every tag on the page agrees on a single address.',
+  1688→        'Pick a robots directive: keep index, follow for normal pages and switch to noindex only for thank-you or internal screens.',
+  1689→        'Copy the block into the <head> of your HTML or paste each value into your CMS SEO settings.',
+  1690→      ],
+  1691→      faqs: [
+  1692→        {
+  1693→          q: 'Does Google still use the keywords meta tag?',
+  1694→          a: 'No — Google has ignored it since 2009, and Bing treats stuffing as a spam signal. Fill it in only if niche engines or internal site search still read it, and keep it to a handful of genuinely relevant terms.',
+  1695→        },
+  1696→        {
+  1697→          q: 'What happens if my title runs past 60 characters?',
+  1698→          a: 'Google rewrites or truncates the display title around 580–600 pixels, so carefully chosen words can vanish. Front-load the important phrase in the first 50 characters and let the brand name sit at the end.',
+  1699→        },
+  1700→        {
+  1701→          q: 'When should I use noindex?',
+  1702→          a: 'On pages that add no search value — cart pages, internal search results, confirmation screens, staging copies. Pair it with follow when you still want link equity to flow through the page’s outbound links.',
+  1703→        },
+  1704→      ],
+  1705→    },
+  1706→  },
+  1707→  {
+  1708→    slug: 'robots-txt-generator',
+  1709→    Component: RobotsTxt,
+  1710→    doc: {
+  1711→      longDescription:
+  1712→        'robots.txt is the first file well-behaved crawlers read, and one wrong Disallow line can deindex an entire section of your site. This generator writes it for you — an open policy, a full staging block, or a custom rule set — plus crawl-delay and a sitemap pointer.',
+  1713→      howTo: [
+  1714→        'Choose a default policy: allow everything for live sites, block everything for staging copies, or write custom rules.',
+  1715→        'In custom mode, list the paths to hide — one per line, like /admin or /private — and they become Disallow entries.',
+  1716→        'Set a crawl-delay only if a specific bot is hammering your server; most major crawlers ignore it anyway.',
+  1717→        'Add your sitemap URL, download the file as robots.txt, and upload it to your site root.',
+  1718→      ],
+  1719→      faqs: [
+  1720→        {
+  1721→          q: 'Is robots.txt the right place to hide private pages?',
+  1722→          a: 'No — it is a public file that tells anyone exactly which paths exist, and some scrapers ignore it entirely. Use authentication for anything sensitive; robots.txt controls crawling, not access.',
+  1723→        },
+  1724→        {
+  1725→          q: 'Which crawlers actually respect Crawl-delay?',
+  1726→          a: 'Bing, Yandex, DuckDuckGo and most smaller bots honour it; Google explicitly does not. To slow Google’s crawl rate you adjust settings in Search Console or fix the server responses that trigger throttling.',
+  1727→        },
+  1728→        {
+  1729→          q: 'Should my sitemap URL live in robots.txt?',
+  1730→          a: 'It is not required, but it is free discovery — bots from every engine read the file and will find your sitemap even without Search Console. Use the absolute URL, https included.',
+  1731→        },
+  1732→      ],
+  1733→    },
+  1734→  },
+  1735→  {
+  1736→    slug: 'sitemap-xml-generator',
+  1737→    Component: SitemapXml,
+  1738→    doc: {
+  1739→      longDescription:
+  1740→        'A sitemap.xml hands search engines your canonical URL list in the exact protocol they parse — no crawling required to discover new pages. Paste your URLs here and export a spec-compliant file with sensible changefreq and priority values on every entry.',
+  1741→      howTo: [
+  1742→        'Paste every indexable URL, one per line — homepage first, then sections, then individual pages or posts.',
+  1743→        'Choose how often the typical page changes and how important it is relative to the rest of the site.',
+  1744→        'Save the output as sitemap.xml and upload it to your site root so it serves at yoursite.com/sitemap.xml.',
+  1745→        'Submit it in Google Search Console and Bing Webmaster Tools so indexing starts immediately.',
+  1746→      ],
+  1747→      faqs: [
+  1748→        {
+  1749→          q: 'Do changefreq and priority actually matter?',
+  1750→          a: 'Google mostly ignores both — it infers recency from real signals — but they cost nothing and some smaller engines still read them. Honest values beat aggressive ones; claiming hourly updates on a static page helps nobody.',
+  1751→        },
+  1752→        {
+  1753→          q: 'How many URLs can one sitemap hold?',
+  1754→          a: 'The limit is 50,000 URLs or 50 MB uncompressed per file. Larger sites split URLs across multiple sitemaps referenced by a sitemap index file — if you are near that ceiling, your CMS probably should be generating these.',
+  1755→        },
+  1756→        {
+  1757→          q: 'Should paginated or parameterised pages be listed?',
+  1758→          a: 'Generally no — list canonical, indexable pages only. If a URL has a canonical tag pointing elsewhere or returns a redirect, it does not belong in the sitemap and will generate Search Console warnings.',
+  1759→        },
+  1760→      ],
+  1761→    },
+  1762→  },
+  1763→  {
+  1764→    slug: 'email-signature-generator',
+  1765→    Component: EmailSignature,
+  1766→    doc: {
+  1767→      longDescription:
+  1768→        'A plain-text sign-off wastes the most-viewed real estate in your entire email stream. This generator builds an HTML table signature — the only structure that survives Gmail, Outlook and Apple Mail — with your colors, role and contact links baked in as inline styles.',
+  1769→      howTo: [
+  1770→        'Fill in your name, role, company and the contact lines you want shown — any field left blank disappears from the design.',
+  1771→        'Pick an accent color that matches your brand and choose a layout: accent bar, centered stack, or rule line.',
+  1772→        'Download the file, open it in a browser, then select and copy the rendered signature.',
+  1773→        'Paste it into Gmail’s or Outlook’s signature editor — the table and inline styles carry the design with it.',
+  1774→      ],
+  1775→      faqs: [
+  1776→        {
+  1777→          q: 'Why is the signature built from tables instead of divs?',
+  1778→          a: 'Outlook desktop renders on Microsoft Word’s engine, which never learned flexbox or grid. Nested tables with inline styles are the only layout method that renders near-identically across Gmail, Outlook, and Apple Mail.',
+  1779→        },
+  1780→        {
+  1781→          q: 'Why inline styles instead of a CSS block?',
+  1782→          a: 'Most email clients strip <style> tags or ignore classes; inline style attributes are the only CSS guaranteed to arrive intact. That is also why the signature sticks to system fonts every client has.',
+  1783→        },
+  1784→        {
+  1785→          q: 'Can I add a logo or social icons?',
+  1786→          a: 'Yes, after pasting — insert <img> tags with absolute https URLs and fixed width/height attributes. Keep the whole signature under ~10 KB and host images on your own domain so filters do not block them.',
+  1787→        },
+  1788→      ],
+  1789→    },
+  1790→  },
+  1791→  {
+  1792→    slug: 'privacy-policy-generator',
+  1793→    Component: PrivacyPolicy,
+  1794→    doc: {
+  1795→      longDescription:
+  1796→        'Every site that touches visitor data needs a plain-language privacy policy, and regulators from the GDPR to the CCPA expect it to reflect what you actually collect. Answer a short form here and get a structured policy — with analytics, marketing and advertising clauses included only if you use them.',
+  1797→      howTo: [
+  1798→        'Enter your company name, website and a contact address for privacy requests.',
+  1799→        'Toggle the tracking you genuinely use — analytics, marketing email, advertising — so the policy matches reality.',
+  1800→        'Pick the jurisdiction whose rules should drive the rights section, and set the effective date.',
+  1801→        'Download the HTML, read it once end to end, and publish it at a link in your site footer.',
+  1802→      ],
+  1803→      faqs: [
+  1804→        {
+  1805→          q: 'Is a generated policy legally sufficient?',
+  1806→          a: 'It gives you a professionally structured starting point covering the clauses regulators look for, but it is not legal advice. If you handle sensitive data, sell in regulated industries or operate across many jurisdictions, have counsel review the final text.',
+  1807→        },
+  1808→        {
+  1809→          q: 'Which jurisdiction should I choose?',
+  1810→          a: 'The one where you are established, plus any that reaches you: serving EU or UK users triggers GDPR rights, and Californians invoke the CCPA regardless of where you are based. When unsure, the EU/UK wording is strictest and travels well.',
+  1811→        },
+  1812→        {
+  1813→          q: 'Do I need a cookie banner too?',
+  1814→          a: 'If the policy discloses non-essential cookies, EU/UK rules require consent before they fire — so yes, a consent banner is expected. The policy explains the details; the banner collects the consent the policy promises.',
+  1815→        },
+  1816→      ],
+  1817→    },
+  1818→  },
+  1819→  {
+  1820→    slug: 'terms-conditions-generator',
+  1821→    Component: TermsConditions,
+  1822→    doc: {
+  1823→      longDescription:
+  1824→        'Terms & Conditions set the rules of the road: who can use your site, what happens with payments, who owns content and where disputes land. This generator assembles a clear, sectioned agreement from your answers, adding account, payment and user-content clauses only when they apply.',
+  1825→      howTo: [
+  1826→        'Enter the company and website the agreement governs, plus a contact email for legal notices.',
+  1827→        'Toggle the sections that apply — user accounts, paid products or subscriptions, and user-generated content.',
+  1828→        'Name the governing law so the dispute clause names a real jurisdiction instead of a blank.',
+  1829→        'Review, download, and link the terms from your footer, checkout flow and signup screens.',
+  1830→      ],
+  1831→      faqs: [
+  1832→        {
+  1833→          q: 'Where should the terms link appear?',
+  1834→          a: 'In the footer on every page — and, more importantly, next to an unchecked checkbox at signup and checkout. Terms a user never actively accepted are far harder to enforce than terms agreed with a click.',
+  1835→        },
+  1836→        {
+  1837→          q: 'What does the governing law clause actually do?',
+  1838→          a: 'It pins which courts and which body of law interpret the contract — without it, a user could sue from their home jurisdiction. Name a place you can realistically litigate in, typically where your company is registered.',
+  1839→        },
+  1840→        {
+  1841→          q: 'Do I need both terms and a privacy policy?',
+  1842→          a: 'Yes — they cover different ground: the privacy policy explains data handling, the terms govern the commercial relationship. Generate the privacy policy as well and cross-link both in your footer.',
+  1843→        },
+  1844→      ],
+  1845→    },
+  1846→  },
+  1847→  {
+  1848→    slug: 'cookie-policy-generator',
+  1849→    Component: CookiePolicy,
+  1850→    doc: {
+  1851→      longDescription:
+  1852→        'Cookie policies have to do more than say “we use cookies” — GDPR and CCPA expect a table of what fires, who sets it, how long it lives and how to refuse it. Describe the categories you run and list individual cookies to get a policy that matches your consent banner.',
+  1853→      howTo: [
+  1854→        'Enter the company and site the policy covers.',
+  1855→        'Toggle the categories you actually use — essential, analytics, marketing — and the matching sections appear.',
+  1856→        'List known cookies one per line as Name | Provider | Duration, e.g. _ga | Google Analytics | 2 years.',
+  1857→        'Download the HTML and link it next to your consent banner and in the footer.',
+  1858→      ],
+  1859→      faqs: [
+  1860→        {
+  1861→          q: 'Do I really have to list every cookie?',
+  1862→          a: 'Regulators expect category transparency at minimum, and EU guidance increasingly favours naming individual cookies with providers and lifespans. If your tag manager lists them, paste them here; otherwise document the main ones per category.',
+  1863→        },
+  1864→        {
+  1865→          q: 'What counts as strictly necessary?',
+  1866→          a: 'Cookies without which the site literally breaks — session login, shopping cart, security tokens, load balancing. Analytics and advertising never qualify, which is why both need consent before they run.',
+  1867→        },
+  1868→        {
+  1869→          q: 'How often should a cookie policy be updated?',
+  1870→          a: 'Re-audit every six months and after adding any new tag or pixel — providers also change cookie lifespans, so stale durations are one of the most common audit findings.',
+  1871→        },
+  1872→      ],
+  1873→    },
+  1874→  },
+  1875→  {
+  1876→    slug: 'schema-markup-generator',
+  1877→    Component: SchemaMarkup,
+  1878→    doc: {
+  1879→      longDescription:
+  1880→        'JSON-LD structured markup is how pages earn rich results: FAQ dropdowns in search, business details in local panels. Choose FAQPage or LocalBusiness, fill the form, and get valid schema.org markup wrapped in its <script> tag — ready to paste and validate.',
+  1881→      howTo: [
+  1882→        'Pick the schema type: FAQPage for question-and-answer content, LocalBusiness for a physical location.',
+  1883→        'For FAQ, list questions and matching answers in the same order — each pair becomes a Question object.',
+  1884→        'For LocalBusiness, enter the name, address, phone, coordinates and opening hours in the formats shown.',
+  1885→        'Paste the script block into the page HTML, then run it through Google’s Rich Results Test before deploying.',
+  1886→      ],
+  1887→      faqs: [
+  1888→        {
+  1889→          q: 'JSON-LD or microdata — which should I use?',
+  1890→          a: 'JSON-LD is Google’s recommended format: one script block, no attributes woven through your HTML, and it can be injected by tag managers. Microdata still works but breaks easily when a theme changes.',
+  1891→        },
+  1892→        {
+  1893→          q: 'Why don’t my FAQs show rich results after adding markup?',
+  1894→          a: 'Eligibility is not a guarantee — Google decides when to display enhancements, and thin content or policy issues keep pages plain. Confirm the markup validates, wait for re-crawling, then check coverage in Search Console.',
+  1895→        },
+  1896→        {
+  1897→          q: 'Can one page contain several schema types?',
+  1898→          a: 'Yes — multiple JSON-LD blocks (Organization, FAQPage, BreadcrumbList) on one page are fine and common. Keep each block internally consistent, and make sure LocalBusiness data matches what visitors actually see.',
+  1899→        },
+  1900→      ],
+  1901→    },
+  1902→  },
+  1903→  {
+  1904→    slug: 'press-release-template-generator',
+  1905→    Component: PressRelease,
+  1906→    doc: {
+  1907→      longDescription:
+  1908→        'Editors read hundreds of releases a week and bin anything missing the expected format: headline, dateline, quote, boilerplate. Fill the form and get a properly structured release — FOR IMMEDIATE RELEASE masthead, inverted-pyramid body, styled quote and media contact — as clean HTML.',
+  1909→      howTo: [
+  1910→        'Write the headline first — one concrete, active sentence — then a subheadline that adds the context.',
+  1911→        'Draft the body: most newsworthy fact in the first paragraph, details after, blank line between paragraphs.',
+  1912→        'Add one strong quote from a named person, your boilerplate, and the media contact journalists should reach.',
+  1913→        'Download the HTML and paste it into your email body or CMS — the formatting travels with it.',
+  1914→      ],
+  1915→      faqs: [
+  1916→        {
+  1917→          q: 'What belongs in the first paragraph?',
+  1918→          a: 'The who, what, when, where and why in two sentences — editors often read nothing else. If the news is not visible by the end of the dateline sentence, the release will not get picked up.',
+  1919→        },
+  1920→        {
+  1921→          q: 'How long should a press release be?',
+  1922→          a: '400–500 words is the working ceiling: three to five short paragraphs plus the quote, ending with the boilerplate and the ### mark that tells editors the document is complete.',
+  1923→        },
+  1924→        {
+  1925→          q: 'What does the ### at the end mean?',
+  1926→          a: 'It is the traditional end-of-release marker, letting journalists confirm nothing was cut in transmission. Centered on its own line, it also signals where your formatting stops.',
+  1927→        },
+  1928→      ],
+  1929→    },
+  1930→  },
+  1931→  {
+  1932→    slug: 'client-brief-generator',
+  1933→    Component: ClientBrief,
+  1934→    doc: {
+  1935→      longDescription:
+  1936→        'Half of all project friction traces back to a vague brief — different unspoken assumptions about scope, audience and what “done” means. This generator walks you through the questions a professional brief always answers and formats them into a document you can hand to a team or a client.',
+  1937→      howTo: [
+  1938→        'Name the project and client, then set industry and budget band so expectations start calibrated.',
+  1939→        'Describe the goals as plain business outcomes — what changes when this succeeds.',
+  1940→        'List the audience, the in-scope deliverables and the metrics that will define success.',
+  1941→        'Download the brief and walk through it with the client before any work starts.',
+  1942→      ],
+  1943→      faqs: [
+  1944→        {
+  1945→          q: 'Who should write the brief?',
+  1946→          a: 'The person who owns the outcome — usually the client-side project lead — reviewed by the team executing it. A brief written by the agency alone is a wish list; a brief the client signs is a contract of expectations.',
+  1947→        },
+  1948→        {
+  1949→          q: 'How detailed should the metrics be?',
+  1950→          a: 'Specific enough to verify later: not “more traffic” but “organic sessions up 25% in six months”. Measurable metrics let everyone agree the project succeeded instead of arguing about it.',
+  1951→        },
+  1952→        {
+  1953→          q: 'What if scope changes mid-project?',
+  1954→          a: 'That is what the deliverables list is for — anything not listed becomes a change request with its own time and cost conversation. Reissue the brief with the additions and keep the sign-off trail.',
+  1955→        },
+  1956→      ],
+  1957→    },
+  1958→  },
+  1959→  {
+  1960→    slug: 'project-scope-builder',
+  1961→    Component: ProjectScope,
+  1962→    doc: {
+  1963→      longDescription:
+  1964→        'A scope document is the cheapest insurance a project can buy: it turns “build me a website” into deliverables, milestones and — critically — exclusions. Fill the form and get a sign-off-ready scope with assumptions stated up front, so change requests have something to be measured against.',
+  1965→      howTo: [
+  1966→        'Title the project and name the client exactly as they appear on the contract.',
+  1967→        'List deliverables and milestones — every concrete thing you will hand over, in order.',
+  1968→        'Write the exclusions and assumptions honestly; this is where scope creep is prevented, not in the deliverables list.',
+  1969→        'Add sign-off lines, download the HTML, and get written approval before kickoff.',
+  1970→      ],
+  1971→      faqs: [
+  1972→        {
+  1973→          q: 'Why are exclusions the most valuable section?',
+  1974→          a: 'Because disputes are almost never about what was delivered — they are about what the client assumed was included. A written “not included” list converts assumptions into a conversation you can point to later.',
+  1975→        },
+  1976→        {
+  1977→          q: 'How granular should milestones be?',
+  1978→          a: 'Fine enough that slippage becomes visible within a week, coarse enough that tracking them is not a job of its own. Two-to-three-week milestones with named deliverables suit most engagements.',
+  1979→        },
+  1980→        {
+  1981→          q: 'Does the scope document replace a contract?',
+  1982→          a: 'No — it complements one. The contract covers liability, payment terms and IP; the scope defines the work itself. Reference the scope from the contract so both documents govern together.',
+  1983→        },
+  1984→      ],
+  1985→    },
+  1986→  },
+  1987→  {
+  1988→    slug: 'app-description-writer',
+  1989→    Component: AppDescription,
+  1990→    doc: {
+  1991→      longDescription:
+  1992→        'Store listings convert in the first three lines — before a reader scrolls to features or screenshots. This generator assembles a store-ready description from your app’s core benefit, features and audience, with tone-matched phrasing and a scannable feature list.',
+  1993→      howTo: [
+  1994→        'Enter the app name, category and the single core benefit it delivers.',
+  1995→        'List the features worth scanning — stores truncate paragraphs, but bullets get read.',
+  1996→        'Describe the audience and pick a tone so the phrasing matches your brand.',
+  1997→        'Copy the description into App Store Connect and Google Play, then trim to each store’s length limits.',
+  1998→      ],
+  1999→      faqs: [
+  2000→        {
+
+[showing lines 1-2000 of 2728; use offset=2001 with limit to continue reading]

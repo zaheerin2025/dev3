@@ -1,0 +1,902 @@
+     1→   561→
+     2→   562→const SPLASH_DEVICES: SplashDevice[] = [
+     3→   563→  { id: 'iphone15', label: 'iPhone 15 Pro', w: 393, h: 852, scale: 3, radius: 55 },
+     4→   564→  { id: 'iphone15-plus', label: 'iPhone 15 Plus', w: 430, h: 932, scale: 3, radius: 55 },
+     5→   565→  { id: 'iphone-se', label: 'iPhone SE (home button)', w: 375, h: 667, scale: 2, radius: 0 },
+     6→   566→  { id: 'pixel8', label: 'Pixel 8', w: 412, h: 915, scale: 2.625, radius: 46 },
+     7→   567→  { id: 'galaxy-s24', label: 'Galaxy S24 Ultra', w: 412, h: 893, scale: 3.5, radius: 40 },
+     8→   568→  { id: 'ipad-129', label: 'iPad Pro 12.9"', w: 1024, h: 1366, scale: 2, radius: 18 },
+     9→   569→  { id: 'ipad-mini', label: 'iPad mini', w: 744, h: 1133, scale: 2, radius: 18 },
+    10→   570→];
+    11→   571→
+    12→   572→const SplashPreviewTool = () => {
+    13→   573→  const [deviceId, setDeviceId] = React.useState('iphone15');
+    14→   574→  const [bgMode, setBgMode] = React.useState<'solid' | 'gradient'>('gradient');
+    15→   575→  const [bg1, setBg1] = React.useState('#7c3aed');
+    16→   576→  const [bg2, setBg2] = React.useState('#ec4899');
+    17→   577→  const [bgAngle, setBgAngle] = React.useState(160);
+    18→   578→  const [icon, setIcon] = React.useState<LoadedImage | null>(null);
+    19→   579→  const [iconScale, setIconScale] = React.useState(24);
+    20→   580→  const [iconRadius, setIconRadius] = React.useState(24);
+    21→   581→  const [appName, setAppName] = React.useState('My App');
+    22→   582→  const [textColor, setTextColor] = React.useState('#ffffff');
+    23→   583→  const [showName, setShowName] = React.useState(true);
+    24→   584→
+    25→   585→  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+    26→   586→  const device = SPLASH_DEVICES.find((d) => d.id === deviceId) ?? SPLASH_DEVICES[0];
+    27→   587→
+    28→   588→  React.useEffect(() => {
+    29→   589→    const canvas = canvasRef.current;
+    30→   590→    if (!canvas) return;
+    31→   591→    const W = Math.round(device.w * device.scale);
+    32→   592→    const H = Math.round(device.h * device.scale);
+    33→   593→    canvas.width = W;
+    34→   594→    canvas.height = H;
+    35→   595→    const ctx = canvas.getContext('2d');
+    36→   596→    if (!ctx) return;
+    37→   597→
+    38→   598→    if (bgMode === 'solid') {
+    39→   599→      ctx.fillStyle = hexToRgb(bg1) ? bg1 : '#7c3aed';
+    40→   600→      ctx.fillRect(0, 0, W, H);
+    41→   601→    } else {
+    42→   602→      const rad = (bgAngle * Math.PI) / 180;
+    43→   603→      const len = Math.abs(W * Math.cos(rad)) + Math.abs(H * Math.sin(rad));
+    44→   604→      const cx = W / 2, cy = H / 2;
+    45→   605→      const grad = ctx.createLinearGradient(cx - (Math.cos(rad) * len) / 2, cy - (Math.sin(rad) * len) / 2, cx + (Math.cos(rad) * len) / 2, cy + (Math.sin(rad) * len) / 2);
+    46→   606→      grad.addColorStop(0, hexToRgb(bg1) ? bg1 : '#7c3aed');
+    47→   607→      grad.addColorStop(1, hexToRgb(bg2) ? bg2 : '#ec4899');
+    48→   608→      ctx.fillStyle = grad;
+    49→   609→      ctx.fillRect(0, 0, W, H);
+    50→   610→    }
+    51→   611→
+    52→   612→    const iconSize = (Math.min(W, H) * iconScale) / 100;
+    53→   613→    const iconX = (W - iconSize) / 2;
+    54→   614→    const iconCenterY = H * (showName ? 0.4 : 0.5);
+    55→   615→    const iconY = iconCenterY - iconSize / 2;
+    56→   616→
+    57→   617→    ctx.save();
+    58→   618→    roundRectPath(ctx, iconX, iconY, iconSize, iconSize, (iconSize * iconRadius) / 100);
+    59→   619→    ctx.clip();
+    60→   620→    if (icon) {
+    61→   621→      ctx.drawImage(icon.img, iconX, iconY, iconSize, iconSize);
+    62→   622→    } else {
+    63→   623→      ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    64→   624→      ctx.fillRect(iconX, iconY, iconSize, iconSize);
+    65→   625→      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    66→   626→      ctx.font = `600 ${iconSize * 0.42}px ${CANVAS_FONT}`;
+    67→   627→      ctx.textAlign = 'center';
+    68→   628→      ctx.textBaseline = 'middle';
+    69→   629→      ctx.fillText((appName.trim()[0] || 'A').toUpperCase(), W / 2, iconCenterY);
+    70→   630→    }
+    71→   631→    ctx.restore();
+    72→   632→
+    73→   633→    if (showName && appName.trim()) {
+    74→   634→      ctx.fillStyle = hexToRgb(textColor) ? textColor : '#ffffff';
+    75→   635→      ctx.font = `600 ${Math.round(W * 0.055)}px ${CANVAS_FONT}`;
+    76→   636→      ctx.textAlign = 'center';
+    77→   637→      ctx.textBaseline = 'middle';
+    78→   638→      ctx.fillText(appName.trim(), W / 2, iconY + iconSize + W * 0.12);
+    79→   639→    }
+    80→   640→  }, [device, bgMode, bg1, bg2, bgAngle, icon, iconScale, iconRadius, appName, textColor, showName]);
+    81→   641→
+    82→   642→  const exportPng = async () => {
+    83→   643→    const canvas = canvasRef.current;
+    84→   644→    if (!canvas) return;
+    85→   645→    try {
+    86→   646→      const blob = await canvasToBlob(canvas, 'image/png');
+    87→   647→      downloadBlob(`splash-${device.id}.png`, blob);
+    88→   648→    } catch {
+    89→   649→      /* canvasToBlob already reports via its rejection; nothing else to surface here */
+    90→   650→    }
+    91→   651→  };
+    92→   652→
+    93→   653→  return (
+    94→   654→    <div className="flex flex-col gap-5">
+    95→   655→      <div className="grid gap-4 lg:grid-cols-2">
+    96→   656→        <div className="flex flex-col gap-4">
+    97→   657→          <SelectInput
+    98→   658→            label="Device preset"
+    99→   659→            value={deviceId}
+   100→   660→            onChange={setDeviceId}
+   101→   661→            options={SPLASH_DEVICES.map((d) => ({ value: d.id, label: `${d.label} — ${Math.round(d.w * d.scale)}×${Math.round(d.h * d.scale)}` }))}
+   102→   662→            help="Exports at the device's full pixel resolution (points × scale factor)."
+   103→   663→          />
+   104→   664→          <SelectInput
+   105→   665→            label="Background style"
+   106→   666→            value={bgMode}
+   107→   667→            onChange={(v) => setBgMode(v as 'solid' | 'gradient')}
+   108→   668→            options={[
+   109→   669→              { value: 'solid', label: 'Solid color' },
+   110→   670→              { value: 'gradient', label: 'Linear gradient (two colors)' },
+   111→   671→            ]}
+   112→   672→          />
+   113→   673→          <div className="grid gap-3 sm:grid-cols-2">
+   114→   674→            <ColorField label={bgMode === 'gradient' ? 'Gradient start' : 'Background color'} value={bg1} onChange={setBg1} />
+   115→   675→            {bgMode === 'gradient' ? <ColorField label="Gradient end" value={bg2} onChange={setBg2} /> : null}
+   116→   676→          </div>
+   117→   677→          {bgMode === 'gradient' ? (
+   118→   678→            <LabeledSlider label="Gradient angle" value={bgAngle} onChange={setBgAngle} min={0} max={360} format={(v) => `${v}°`} />
+   119→   679→          ) : null}
+   120→   680→        </div>
+   121→   681→        <div className="flex flex-col gap-4">
+   122→   682→          <FileDrop
+   123→   683→            compact
+   124→   684→            accept="image/*"
+   125→   685→            title={icon ? `Icon: ${icon.name} — click to replace` : 'Add app icon (PNG with transparency works best)'}
+   126→   686→            icon={<ImageIcon />}
+   127→   687→            onFiles={async (files) => {
+   128→   688→              try { setIcon(await fileToImage(files[0])); } catch { /* ignore undecodable icon */ }
+   129→   689→            }}
+   130→   690→          />
+   131→   691→          <div className="grid gap-3 sm:grid-cols-2">
+   132→   692→            <LabeledSlider label="Icon size" value={iconScale} onChange={setIconScale} min={10} max={45} format={(v) => `${v}%`} />
+   133→   693→            <LabeledSlider label="Icon corner radius" value={iconRadius} onChange={setIconRadius} min={0} max={50} format={(v) => `${v}%`} help="22% ≈ iOS squircle, 50% = circle." />
+   134→   694→          </div>
+   135→   695→          <TextInput label="App name" value={appName} onChange={setAppName} placeholder="My App" />
+   136→   696→          <div className="grid gap-3 sm:grid-cols-2">
+   137→   697→            <ColorField label="Name color" value={textColor} onChange={setTextColor} />
+   138→   698→            <ToggleInput label="Show app name" checked={showName} onChange={setShowName} />
+   139→   699→          </div>
+   140→   700→        </div>
+   141→   701→      </div>
+   142→   702→
+   143→   703→      <div className="flex flex-col items-center gap-3">
+   144→   704→        <div className="rounded-3xl border-4 border-[#0a0a0a] bg-[#0a0a0a] p-1 shadow-xl">
+   145→   705→          <canvas ref={canvasRef} className="h-auto w-auto max-w-full rounded-[2rem]" style={{ maxHeight: 480 }} aria-label="Splash screen preview" />
+   146→   706→        </div>
+   147→   707→        <div className="flex flex-wrap items-center justify-center gap-3">
+   148→   708→          <PillButton onClick={exportPng}>
+   149→   709→            <Download className="size-4" /> Export PNG ({Math.round(device.w * device.scale)}×{Math.round(device.h * device.scale)})
+   150→   710→          </PillButton>
+   151→   711→        </div>
+   152→   712→      </div>
+   153→   713→    </div>
+   154→   714→  );
+   155→   715→};
+   156→   716→
+   157→   717→/* ═════════════════════ 3. app-store-screenshot-resizer ═════════════════════ */
+   158→   718→
+   159→   719→interface StorePreset { id: string; label: string; w: number; h: number; note: string }
+   160→   720→
+   161→   721→const STORE_PRESETS: StorePreset[] = [
+   162→   722→  { id: 'iphone-67', label: 'iPhone 6.7"', w: 1290, h: 2796, note: 'Required for iPhone 15/14 Pro Max listings' },
+   163→   723→  { id: 'iphone-65', label: 'iPhone 6.5"', w: 1284, h: 2778, note: 'iPhone 11 / XS Max class devices' },
+   164→   724→  { id: 'iphone-55', label: 'iPhone 5.5"', w: 1242, h: 2208, note: 'Legacy App Store support' },
+   165→   725→  { id: 'ipad-129', label: 'iPad Pro 12.9"', w: 2048, h: 2732, note: 'Required for universal iOS apps' },
+   166→   726→  { id: 'play-phone', label: 'Phone (Play)', w: 1080, h: 1920, note: 'Google Play phone screenshots' },
+   167→   727→  { id: 'play-tablet', label: '10" Tablet (Play)', w: 1600, h: 2560, note: 'Google Play tablet screenshots' },
+   168→   728→  { id: 'play-foldable', label: 'Foldable (Play)', w: 1170, h: 2532, note: 'Google Play foldable slot' },
+   169→   729→];
+   170→   730→
+   171→   731→type StoreFit = 'cover' | 'contain' | 'blur';
+   172→   732→
+   173→   733→const StoreResizerTool = () => {
+   174→   734→  const [src, setSrc] = React.useState<LoadedImage | null>(null);
+   175→   735→  const [fit, setFit] = React.useState<StoreFit>('blur');
+   176→   736→  const [bgColor, setBgColor] = React.useState('#0f172a');
+   177→   737→  const [results, setResults] = React.useState<Record<string, { url: string; bytes: number; blob: Blob } | 'error'>>({});
+   178→   738→  const [working, setWorking] = React.useState(false);
+   179→   739→  const runId = React.useRef(0);
+   180→   740→  const urls = React.useRef<string[]>([]);
+   181→   741→
+   182→   742→  React.useEffect(() => () => {
+   183→   743→    urls.current.forEach((u) => URL.revokeObjectURL(u));
+   184→   744→  }, []);
+   185→   745→
+   186→   746→  const generate = React.useCallback(async () => {
+   187→   747→    if (!src) return;
+   188→   748→    const myRun = ++runId.current;
+   189→   749→    setWorking(true);
+   190→   750→    urls.current.forEach((u) => URL.revokeObjectURL(u));
+   191→   751→    urls.current = [];
+   192→   752→    const next: Record<string, { url: string; bytes: number; blob: Blob } | 'error'> = {};
+   193→   753→    for (const preset of STORE_PRESETS) {
+   194→   754→      if (myRun !== runId.current) return;
+   195→   755→      try {
+   196→   756→        const canvas = document.createElement('canvas');
+   197→   757→        canvas.width = preset.w;
+   198→   758→        canvas.height = preset.h;
+   199→   759→        const ctx = canvas.getContext('2d');
+   200→   760→        if (!ctx) throw new Error('no 2d');
+   201→   761→        if (fit === 'cover') {
+   202→   762→          drawImageCover(ctx, src.img, 0, 0, preset.w, preset.h);
+   203→   763→        } else if (fit === 'contain') {
+   204→   764→          ctx.fillStyle = bgColor;
+   205→   765→          ctx.fillRect(0, 0, preset.w, preset.h);
+   206→   766→          drawImageContain(ctx, src.img, 0, 0, preset.w, preset.h);
+   207→   767→        } else {
+   208→   768→          ctx.save();
+   209→   769→          ctx.filter = 'blur(48px) saturate(1.4)';
+   210→   770→          ctx.translate(preset.w / 2, preset.h / 2);
+   211→   771→          ctx.scale(1.25, 1.25);
+   212→   772→          ctx.translate(-preset.w / 2, -preset.h / 2);
+   213→   773→          drawImageCover(ctx, src.img, 0, 0, preset.w, preset.h);
+   214→   774→          ctx.restore();
+   215→   775→          const box = drawImageContain(ctx, src.img, 0, 0, preset.w, preset.h);
+   216→   776→          ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+   217→   777→          ctx.lineWidth = Math.max(2, preset.w * 0.002);
+   218→   778→          roundRectPath(ctx, box.dx - 1, box.dy - 1, box.dw + 2, box.dh + 2, preset.w * 0.012);
+   219→   779→          ctx.stroke();
+   220→   780→        }
+   221→   781→        const blob = await canvasToBlob(canvas, 'image/png');
+   222→   782→        const url = URL.createObjectURL(blob);
+   223→   783→        urls.current.push(url);
+   224→   784→        next[preset.id] = { url, bytes: blob.size, blob };
+   225→   785→      } catch {
+   226→   786→        next[preset.id] = 'error';
+   227→   787→      }
+   228→   788→      setResults({ ...next });
+   229→   789→    }
+   230→   790→    if (myRun === runId.current) setWorking(false);
+   231→   791→  }, [src, fit, bgColor]);
+   232→   792→
+   233→   793→  return (
+   234→   794→    <div className="flex flex-col gap-5">
+   235→   795→      {!src ? (
+   236→   796→        <FileDrop
+   237→   797→          accept="image/*"
+   238→   798→          title="Drop your screenshot here"
+   239→   799→          hint="Design once at 1290×2796 (6.7") and every store size below is generated from it"
+   240→   800→          icon={<Crop />}
+   241→   801→          onFiles={async (files) => {
+   242→   802→            try {
+   243→   803→              const loaded = await fileToImage(files[0]);
+   244→   804→              setSrc(loaded);
+   245→   805→              setResults({});
+   246→   806→            } catch { /* undecodable file */ }
+   247→   807→          }}
+   248→   808→        />
+   249→   809→      ) : (
+   250→   810→        <>
+   251→   811→          <div className="grid items-start gap-4 sm:grid-cols-[1fr_1fr] lg:grid-cols-[240px_1fr]">
+   252→   812→            <div className="card-soft p-2">
+   253→   813→              {/* eslint-disable-next-line @next/next/no-img-element */}
+   254→   814→              <img src={src.url} alt="Uploaded screenshot" className="mx-auto max-h-64 w-auto rounded-lg" />
+   255→   815→              <p className="mt-1 truncate text-center text-xs text-muted-foreground">{src.name} · {src.img.naturalWidth}×{src.img.naturalHeight}</p>
+   256→   816→            </div>
+   257→   817→            <div className="flex flex-col gap-3">
+   258→   818→              <SelectInput
+   259→   819→                label="Fill mode"
+   260→   820→                value={fit}
+   261→   821→                onChange={(v) => { setFit(v as StoreFit); setResults({}); }}
+   262→   822→                options={[
+   263→   823→                  { value: 'blur', label: 'Blurred backdrop — keep the whole screenshot visible' },
+   264→   824→                  { value: 'contain', label: 'Letterbox — solid background bars' },
+   265→   825→                  { value: 'cover', label: 'Cover — crop to fill the frame' },
+   266→   826→                ]}
+   267→   827→              />
+   268→   828→              {fit === 'contain' ? <ColorField label="Letterbox color" value={bgColor} onChange={(v) => { setBgColor(v); setResults({}); }} /> : null}
+   269→   829→              <div className="flex flex-wrap gap-3">
+   270→   830→                <PillButton onClick={generate} disabled={working}>
+   271→   831→                  <Wand2 className="size-4" /> {working ? 'Generating…' : results && Object.keys(results).length ? 'Regenerate all sizes' : 'Generate all store sizes'}
+   272→   832→                </PillButton>
+   273→   833→                <PillButton variant="ghost" onClick={() => { setSrc(null); setResults({}); }}>Choose a different screenshot</PillButton>
+   274→   834→              </div>
+   275→   835→              <ToolNote>
+   276→   836→                Sizes generate sequentially at full store resolution — big canvases take a couple of seconds each. Stores accept extra screenshots beyond the
+   277→   837→                required slots, so exporting every preset keeps one set reusable for both App Store Connect and Play Console.
+   278→   838→              </ToolNote>
+   279→   839→            </div>
+   280→   840→          </div>
+   281→   841→
+   282→   842→          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+   283→   843→            {STORE_PRESETS.map((preset) => {
+   284→   844→              const raw = results[preset.id];
+   285→   845→              const r = raw && raw !== 'error' ? raw : null;
+   286→   846→              return (
+   287→   847→                <div key={preset.id} className="card-soft flex flex-col gap-2 p-3">
+   288→   848→                  <div className="flex items-center justify-between gap-2">
+   289→   849→                    <p className="text-sm font-bold text-[#0a0a0a]">{preset.label}</p>
+   290→   850→                    <span className="rounded-full bg-purple-100 px-2 py-0.5 font-mono text-[10px] font-bold text-purple-700">{preset.w}×{preset.h}</span>
+   291→   851→                  </div>
+   292→   852→                  <p className="text-xs text-muted-foreground">{preset.note}</p>
+   293→   853→                  <div className="flex items-center justify-center overflow-hidden rounded-xl border border-gray-100" style={CHECKER_STYLE}>
+   294→   854→                    {r ? (
+   295→   855→                      /* eslint-disable-next-line @next/next/no-img-element */
+   296→   856→                      <img src={r.url} alt={`${preset.label} render`} className="max-h-64 w-auto" />
+   297→   857→                    ) : (
+   298→   858→                      <div className="flex h-40 items-center px-6 text-center text-xs text-gray-400">
+   299→   859→                        {raw === 'error' ? 'Export failed for this size' : working ? 'Rendering…' : 'Press “Generate all store sizes”'}
+   300→   860→                      </div>
+   301→   861→                    )}
+   302→   862→                  </div>
+   303→   863→                  {r ? (
+   304→   864→                    <PillButton variant="secondary" className="!py-2 !text-xs" onClick={() => downloadBlob(`screenshot-${preset.id}.png`, r.blob)}>
+   305→   865→                      <Download className="size-4" /> Download PNG · {fmtBytes(r.bytes)}
+   306→   866→                    </PillButton>
+   307→   867→                  ) : null}
+   308→   868→                </div>
+   309→   869→              );
+   310→   870→            })}
+   311→   871→          </div>
+   312→   872→        </>
+   313→   873→      )}
+   314→   874→    </div>
+   315→   875→  );
+   316→   876→};
+   317→   877→
+   318→   878→/* ═════════════════════ 4. mobile-mockup-generator ═════════════════════ */
+   319→   879→
+   320→   880→interface MockupOpts {
+   321→   881→  frame: string; bgMode: 'transparent' | 'solid' | 'gradient'; bg1: string; bg2: string;
+   322→   882→  shadow: boolean; notch: boolean; scale: number;
+   323→   883→}
+   324→   884→
+   325→   885→const MOCKUP_FRAMES = [
+   326→   886→  { value: '#1c1c1e', label: 'Graphite' },
+   327→   887→  { value: '#f5f5f7', label: 'Silver' },
+   328→   888→  { value: '#e7ddcf', label: 'Sand' },
+   329→   889→  { value: '#7c3aed', label: 'Brand purple' },
+   330→   890→  { value: '#ec4899', label: 'Brand pink' },
+   331→   891→  { value: '#0f766e', label: 'Teal' },
+   332→   892→];
+   333→   893→
+   334→   894→function drawMockup(canvas: HTMLCanvasElement, img: HTMLImageElement, o: MockupOpts) {
+   335→   895→  const s = o.scale;
+   336→   896→  const bodyH = 1400 * s;
+   337→   897→  const bezel = Math.max(12 * s, bodyH * 0.024);
+   338→   898→  const aspect = clamp((img.naturalWidth || 1) / (img.naturalHeight || 1), 0.45, 0.88);
+   339→   899→  const screenH = bodyH - bezel * 2;
+   340→   900→  const screenW = screenH * aspect;
+   341→   901→  const bodyW = screenW + bezel * 2;
+   342→   902→  const margin = (o.shadow ? bodyH * 0.075 : bodyH * 0.03);
+   343→   903→
+   344→   904→  canvas.width = Math.round(bodyW + margin * 2);
+   345→   905→  canvas.height = Math.round(bodyH + margin * 2);
+   346→   906→  const ctx = canvas.getContext('2d');
+   347→   907→  if (!ctx) return;
+   348→   908→
+   349→   909→  if (o.bgMode === 'solid') {
+   350→   910→    ctx.fillStyle = hexToRgb(o.bg1) ? o.bg1 : '#f4f1fa';
+   351→   911→    ctx.fillRect(0, 0, canvas.width, canvas.height);
+   352→   912→  } else if (o.bgMode === 'gradient') {
+   353→   913→    const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+   354→   914→    grad.addColorStop(0, hexToRgb(o.bg1) ? o.bg1 : '#7c3aed');
+   355→   915→    grad.addColorStop(1, hexToRgb(o.bg2) ? o.bg2 : '#ec4899');
+   356→   916→    ctx.fillStyle = grad;
+   357→   917→    ctx.fillRect(0, 0, canvas.width, canvas.height);
+   358→   918→  }
+   359→   919→
+   360→   920→  const bx = margin, by = margin;
+   361→   921→
+   362→   922→  if (o.shadow) {
+   363→   923→    ctx.save();
+   364→   924→    ctx.shadowColor = 'rgba(10, 10, 40, 0.45)';
+   365→   925→    ctx.shadowBlur = bodyH * 0.055;
+   366→   926→    ctx.shadowOffsetY = bodyH * 0.03;
+   367→   927→    ctx.fillStyle = o.frame;
+   368→   928→    roundRectPath(ctx, bx, by, bodyW, bodyH, bodyW * 0.16);
+   369→   929→    ctx.fill();
+   370→   930→    ctx.restore();
+   371→   931→  }
+   372→   932→
+   373→   933→  // body
+   374→   934→  ctx.fillStyle = o.frame;
+   375→   935→  roundRectPath(ctx, bx, by, bodyW, bodyH, bodyW * 0.16);
+   376→   936→  ctx.fill();
+   377→   937→  ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+   378→   938→  ctx.lineWidth = 2 * s;
+   379→   939→  ctx.stroke();
+   380→   940→
+   381→   941→  // screen
+   382→   942→  const sx = bx + bezel, sy = by + bezel;
+   383→   943→  ctx.save();
+   384→   944→  roundRectPath(ctx, sx, sy, screenW, screenH, bodyW * 0.16 - bezel * 0.4);
+   385→   945→  ctx.clip();
+   386→   946→  ctx.fillStyle = '#0a0a0a';
+   387→   947→  ctx.fillRect(sx, sy, screenW, screenH);
+   388→   948→  drawImageCover(ctx, img, sx, sy, screenW, screenH);
+   389→   949→  ctx.restore();
+   390→   950→  ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+   391→   951→  ctx.lineWidth = 1.5 * s;
+   392→   952→  roundRectPath(ctx, sx, sy, screenW, screenH, bodyW * 0.16 - bezel * 0.4);
+   393→   953→  ctx.stroke();
+   394→   954→
+   395→   955→  // notch
+   396→   956→  if (o.notch) {
+   397→   957→    ctx.fillStyle = darkened(o.frame, 0.35);
+   398→   958→    roundRectPath(ctx, bx + bodyW / 2 - screenW * 0.21, sy + bezel * 0.28, screenW * 0.42, bezel * 0.85, bezel * 0.42);
+   399→   959→    ctx.fill();
+   400→   960→  }
+   401→   961→
+   402→   962→  // side buttons
+   403→   963→  ctx.fillStyle = darkened(o.frame, 0.4);
+   404→   964→  roundRectPath(ctx, bx + bodyW, by + bodyH * 0.28, bezel * 0.38, bodyH * 0.10, bezel * 0.18);
+   405→   965→  ctx.fill(); // power
+   406→   966→  roundRectPath(ctx, bx - bezel * 0.38, by + bodyH * 0.22, bezel * 0.38, bodyH * 0.06, bezel * 0.18);
+   407→   967→  ctx.fill(); // vol up
+   408→   968→  roundRectPath(ctx, bx - bezel * 0.38, by + bodyH * 0.30, bezel * 0.38, bodyH * 0.06, bezel * 0.18);
+   409→   969→  ctx.fill(); // vol down
+   410→   970→}
+   411→   971→
+   412→   972→const MockupGeneratorTool = () => {
+   413→   973→  const [src, setSrc] = React.useState<LoadedImage | null>(null);
+   414→   974→  const [frame, setFrame] = React.useState('#1c1c1e');
+   415→   975→  const [bgMode, setBgMode] = React.useState<'transparent' | 'solid' | 'gradient'>('gradient');
+   416→   976→  const [bg1, setBg1] = React.useState('#7c3aed');
+   417→   977→  const [bg2, setBg2] = React.useState('#ec4899');
+   418→   978→  const [shadow, setShadow] = React.useState(true);
+   419→   979→  const [notch, setNotch] = React.useState(true);
+   420→   980→  const [exportScale, setExportScale] = React.useState(2);
+   421→   981→  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+   422→   982→  const [error, setError] = React.useState('');
+   423→   983→
+   424→   984→  React.useEffect(() => {
+   425→   985→    const canvas = canvasRef.current;
+   426→   986→    if (!canvas || !src) return;
+   427→   987→    drawMockup(canvas, src.img, { frame, bgMode, bg1, bg2, shadow, notch, scale: 0.45 });
+   428→   988→  }, [src, frame, bgMode, bg1, bg2, shadow, notch]);
+   429→   989→
+   430→   990→  const exportPng = async () => {
+   431→   991→    if (!src) return;
+   432→   992→    setError('');
+   433→   993→    try {
+   434→   994→      const canvas = document.createElement('canvas');
+   435→   995→      drawMockup(canvas, src.img, { frame, bgMode, bg1, bg2, shadow, notch, scale: exportScale });
+   436→   996→      const blob = await canvasToBlob(canvas, 'image/png');
+   437→   997→      downloadBlob(`${src.name.replace(/\.[^.]+$/, '')}-mockup.png`, blob);
+   438→   998→    } catch (e) {
+   439→   999→      setError((e as Error).message);
+   440→  1000→    }
+   441→  1001→  };
+   442→  1002→
+   443→  1003→  return (
+   444→  1004→    <div className="flex flex-col gap-5">
+   445→  1005→      {!src ? (
+   446→  1006→        <FileDrop
+   447→  1007→          accept="image/*"
+   448→  1008→          title="Drop your app screenshot here"
+   449→  1009→          hint="Portrait screenshots look best — landscape ones get letterboxed inside the frame"
+   450→  1010→          icon={<Smartphone />}
+   451→  1011→          onFiles={async (files) => {
+   452→  1012→            setError('');
+   453→  1013→            try { setSrc(await fileToImage(files[0])); } catch (e) { setError((e as Error).message); }
+   454→  1014→          }}
+   455→  1015→        />
+   456→  1016→      ) : (
+   457→  1017→        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+   458→  1018→          <div className="flex items-center justify-center rounded-2xl border border-gray-200 bg-gray-50 p-4">
+   459→  1019→            <canvas ref={canvasRef} className="h-auto max-h-[480px] w-auto max-w-full rounded-2xl" aria-label="Phone mockup preview" />
+   460→  1020→          </div>
+   461→  1021→          <div className="flex flex-col gap-3">
+   462→  1022→            <SelectInput label="Frame color" value={frame} onChange={setFrame} options={MOCKUP_FRAMES} />
+   463→  1023→            <SelectInput
+   464→  1024→              label="Background"
+   465→  1025→              value={bgMode}
+   466→  1026→              onChange={(v) => setBgMode(v as 'transparent' | 'solid' | 'gradient')}
+   467→  1027→              options={[
+   468→  1028→                { value: 'gradient', label: 'Brand gradient' },
+   469→  1029→                { value: 'solid', label: 'Solid color' },
+   470→  1030→                { value: 'transparent', label: 'Transparent PNG' },
+   471→  1031→              ]}
+   472→  1032→            />
+   473→  1033→            {bgMode !== 'transparent' ? (
+   474→  1034→              <div className="grid gap-3 sm:grid-cols-2">
+   475→  1035→                <ColorField label={bgMode === 'gradient' ? 'Background from' : 'Background color'} value={bg1} onChange={setBg1} />
+   476→  1036→                {bgMode === 'gradient' ? <ColorField label="Background to" value={bg2} onChange={setBg2} /> : null}
+   477→  1037→              </div>
+   478→  1038→            ) : null}
+   479→  1039→            <ToggleInput label="Drop shadow" checked={shadow} onChange={setShadow} />
+   480→  1040→            <ToggleInput label="Draw notch" checked={notch} onChange={setNotch} />
+   481→  1041→            <SelectInput
+   482→  1042→              label="Export resolution"
+   483→  1043→              value={String(exportScale)}
+   484→  1044→              onChange={(v) => setExportScale(Number(v))}
+   485→  1045→              options={[
+   486→  1046→                { value: '1', label: '1× — fast, previews and decks' },
+   487→  1047→                { value: '2', label: '2× — retina websites' },
+   488→  1048→                { value: '3', label: '3× — large hero sections' },
+   489→  1049→              ]}
+   490→  1050→            />
+   491→  1051→            <div className="flex flex-wrap gap-2">
+   492→  1052→              <PillButton onClick={exportPng}><Download className="size-4" /> Download mockup</PillButton>
+   493→  1053→              <PillButton variant="ghost" onClick={() => setSrc(null)}>New screenshot</PillButton>
+   494→  1054→            </div>
+   495→  1055→            {error ? <Verdict tone="bad" title="Export failed" message={error} /> : null}
+   496→  1056→          </div>
+   497→  1057→        </div>
+   498→  1058→      )}
+   499→  1059→    </div>
+   500→  1060→  );
+   501→  1061→};
+   502→  1062→
+   503→  1063→/* ═════════════════════ 5. reel-story-size-resizer ═════════════════════ */
+   504→  1064→
+   505→  1065→interface ReelPreset { id: string; label: string; w: number; h: number; guides: boolean }
+   506→  1066→
+   507→  1067→const REEL_PRESETS: ReelPreset[] = [
+   508→  1068→  { id: 'reels', label: 'Reels / Stories / TikTok — 9:16', w: 1080, h: 1920, guides: true },
+   509→  1069→  { id: 'square', label: 'Feed post — 1:1', w: 1080, h: 1080, guides: false },
+   510→  1070→  { id: 'portrait', label: 'Feed portrait — 4:5', w: 1080, h: 1350, guides: false },
+   511→  1071→  { id: 'thumb', label: 'YouTube thumbnail — 16:9', w: 1280, h: 720, guides: false },
+   512→  1072→];
+   513→  1073→
+   514→  1074→function renderReel(
+   515→  1075→  canvas: HTMLCanvasElement, img: HTMLImageElement, preset: ReelPreset,
+   516→  1076→  zoom: number, offX: number, offY: number, withGuides: boolean, bg: string,
+   517→  1077→) {
+   518→  1078→  const cw = preset.w, ch = preset.h;
+   519→  1079→  canvas.width = cw;
+   520→  1080→  canvas.height = ch;
+   521→  1081→  const ctx = canvas.getContext('2d');
+   522→  1082→  if (!ctx) return;
+   523→  1083→  ctx.fillStyle = hexToRgb(bg) ? bg : '#0a0a0a';
+   524→  1084→  ctx.fillRect(0, 0, cw, ch);
+   525→  1085→  const iw = img.naturalWidth || 1, ih = img.naturalHeight || 1;
+   526→  1086→  const scale = Math.max(cw / iw, ch / ih) * zoom;
+   527→  1087→  const dw = iw * scale, dh = ih * scale;
+   528→  1088→  const maxX = Math.max(0, (dw - cw) / 2);
+   529→  1089→  const maxY = Math.max(0, (dh - ch) / 2);
+   530→  1090→  ctx.drawImage(img, (cw - dw) / 2 + offX * maxX, (ch - dh) / 2 + offY * maxY, dw, dh);
+   531→  1091→
+   532→  1092→  if (withGuides && preset.guides) {
+   533→  1093→    const topH = ch * 0.14;
+   534→  1094→    const bottomH = ch * 0.17;
+   535→  1095→    ctx.fillStyle = 'rgba(239, 68, 68, 0.16)';
+   536→  1096→    ctx.fillRect(0, 0, cw, topH);
+   537→  1097→    ctx.fillRect(0, ch - bottomH, cw, bottomH);
+   538→  1098→    ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+   539→  1099→    ctx.setLineDash([12, 10]);
+   540→  1100→    ctx.lineWidth = 3;
+   541→  1101→    ctx.beginPath(); ctx.moveTo(0, topH); ctx.lineTo(cw, topH); ctx.stroke();
+   542→  1102→    ctx.beginPath(); ctx.moveTo(0, ch - bottomH); ctx.lineTo(cw, ch - bottomH); ctx.stroke();
+   543→  1103→    ctx.setLineDash([]);
+   544→  1104→    ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+   545→  1105→    ctx.font = `700 ${Math.round(cw * 0.032)}px ${CANVAS_FONT}`;
+   546→  1106→    ctx.textAlign = 'center';
+   547→  1107→    ctx.fillText('platform UI — keep captions and CTAs clear of this zone', cw / 2, topH - cw * 0.03);
+   548→  1108→    ctx.fillText('caption / engagement bar', cw / 2, ch - bottomH + cw * 0.06);
+   549→  1109→  }
+   550→  1110→}
+   551→  1111→
+   552→  1112→const ReelStoryResizerTool = () => {
+   553→  1113→  const [src, setSrc] = React.useState<LoadedImage | null>(null);
+   554→  1114→  const [presetId, setPresetId] = React.useState('reels');
+   555→  1115→  const [zoom, setZoom] = React.useState(100);
+   556→  1116→  const [off, setOff] = React.useState({ x: 0, y: 0 });
+   557→  1117→  const [guides, setGuides] = React.useState(true);
+   558→  1118→  const [bg, setBg] = React.useState('#0a0a0a');
+   559→  1119→  const [format, setFormat] = React.useState<'image/png' | 'image/jpeg'>('image/jpeg');
+   560→  1120→  const [quality, setQuality] = React.useState(90);
+   561→  1121→  const [busy, setBusy] = React.useState(false);
+   562→  1122→  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+   563→  1123→  const dragRef = React.useRef<{ startX: number; startY: number; ox: number; oy: number } | null>(null);
+   564→  1124→
+   565→  1125→  const preset = REEL_PRESETS.find((p) => p.id === presetId) ?? REEL_PRESETS[0];
+   566→  1126→
+   567→  1127→  React.useEffect(() => {
+   568→  1128→    const canvas = canvasRef.current;
+   569→  1129→    if (!canvas || !src) return;
+   570→  1130→    renderReel(canvas, src.img, preset, zoom / 100, off.x, off.y, guides, bg);
+   571→  1131→  }, [src, preset, zoom, off, guides, bg]);
+   572→  1132→
+   573→  1133→  const onPointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+   574→  1134→    if (!src) return;
+   575→  1135→    e.currentTarget.setPointerCapture(e.pointerId);
+   576→  1136→    dragRef.current = { startX: e.clientX, startY: e.clientY, ox: off.x, oy: off.y };
+   577→  1137→  };
+   578→  1138→  const onPointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+   579→  1139→    const drag = dragRef.current;
+   580→  1140→    if (!drag || !src) return;
+   581→  1141→    const canvas = canvasRef.current;
+   582→  1142→    if (!canvas) return;
+   583→  1143→    const rect = canvas.getBoundingClientRect();
+   584→  1144→    const cw = preset.w, ch = preset.h;
+   585→  1145→    const iw = src.img.naturalWidth || 1, ih = src.img.naturalHeight || 1;
+   586→  1146→    const scale = Math.max(cw / iw, ch / ih) * (zoom / 100);
+   587→  1147→    const maxX = Math.max(0.0001, ((iw * scale) - cw) / 2);
+   588→  1148→    const maxY = Math.max(0.0001, ((ih * scale) - ch) / 2);
+   589→  1149→    const displayScale = rect.width / cw;
+   590→  1150→    const nx = clamp(drag.ox + (e.clientX - drag.startX) / displayScale / maxX, -1, 1);
+   591→  1151→    const ny = clamp(drag.oy + (e.clientY - drag.startY) / displayScale / maxY, -1, 1);
+   592→  1152→    setOff({ x: nx, y: ny });
+   593→  1153→  };
+   594→  1154→  const onPointerUp = () => { dragRef.current = null; };
+   595→  1155→
+   596→  1156→  const exportImage = async () => {
+   597→  1157→    if (!src || busy) return;
+   598→  1158→    setBusy(true);
+   599→  1159→    try {
+   600→  1160→      const canvas = document.createElement('canvas');
+   601→  1161→      renderReel(canvas, src.img, preset, zoom / 100, off.x, off.y, false, bg);
+   602→  1162→      const blob = await canvasToBlob(canvas, format, format === 'image/jpeg' ? quality / 100 : undefined);
+   603→  1163→      downloadBlob(`${src.name.replace(/\.[^.]+$/, '')}-${preset.id}.${format === 'image/png' ? 'png' : 'jpg'}`, blob);
+   604→  1164→    } catch {
+   605→  1165→      /* canvasToBlob rejection is the guard; keep UI calm */
+   606→  1166→    } finally {
+   607→  1167→      setBusy(false);
+   608→  1168→    }
+   609→  1169→  };
+   610→  1170→
+   611→  1171→  return (
+   612→  1172→    <div className="flex flex-col gap-5">
+   613→  1173→      {!src ? (
+   614→  1174→        <FileDrop
+   615→  1175→          accept="image/*"
+   616→  1176→          title="Drop the image or exported video frame here"
+   617→  1177→          hint="Vertical screenshots, product shots and camera rolls all work"
+   618→  1178→          icon={<Crop />}
+   619→  1179→          onFiles={async (files) => {
+   620→  1180→            try { setSrc(await fileToImage(files[0])); } catch { /* ignore undecodable */ }
+   621→  1181→          }}
+   622→  1182→        />
+   623→  1183→      ) : (
+   624→  1184→        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
+   625→  1185→          <div className="flex items-center justify-center rounded-2xl border border-gray-200 bg-gray-900 p-3">
+   626→  1186→            <canvas
+   627→  1187→              ref={canvasRef}
+   628→  1188→              className="max-h-[460px] w-auto max-w-full cursor-grab touch-none rounded-lg active:cursor-grabbing"
+   629→  1189→              aria-label="Crop preview — drag to reposition"
+   630→  1190→              onPointerDown={onPointerDown}
+   631→  1191→              onPointerMove={onPointerMove}
+   632→  1192→              onPointerUp={onPointerUp}
+   633→  1193→              onPointerCancel={onPointerUp}
+   634→  1194→            />
+   635→  1195→          </div>
+   636→  1196→          <div className="flex flex-col gap-3">
+   637→  1197→            <SelectInput
+   638→  1198→              label="Output size"
+   639→  1199→              value={presetId}
+   640→  1200→              onChange={(v) => { setPresetId(v); setOff({ x: 0, y: 0 }); }}
+   641→  1201→              options={REEL_PRESETS.map((p) => ({ value: p.id, label: `${p.label} (${p.w}×${p.h})` }))}
+   642→  1202→            />
+   643→  1203→            <LabeledSlider
+   644→  1204→              label="Zoom"
+   645→  1205→              value={zoom}
+   646→  1206→              onChange={setZoom}
+   647→  1207→              min={40} max={300}
+   648→  1208→              format={(v) => `${v}%`}
+   649→  1209→              help="Below 100% letterboxes with the background color; drag the preview to reposition."
+   650→  1210→            />
+   651→  1211→            <ColorField label="Background (letterbox) color" value={bg} onChange={setBg} />
+   652→  1212→            {preset.guides ? (
+   653→  1213→              <ToggleInput
+   654→  1214→                label="Safe-zone guides"
+   655→  1215→                checked={guides}
+   656→  1216→                onChange={setGuides}
+   657→  1217→                help="Red bands mark the platform UI overlays. Guides are preview-only — exports are always clean."
+   658→  1218→              />
+   659→  1219→            ) : null}
+   660→  1220→            <SelectInput
+   661→  1221→              label="Export format"
+   662→  1222→              value={format}
+   663→  1223→              onChange={(v) => setFormat(v as 'image/png' | 'image/jpeg')}
+   664→  1224→              options={[
+   665→  1225→                { value: 'image/jpeg', label: 'JPEG — small files for uploads' },
+   666→  1226→                { value: 'image/png', label: 'PNG — lossless' },
+   667→  1227→              ]}
+   668→  1228→            />
+   669→  1229→            {format === 'image/jpeg' ? (
+   670→  1230→              <LabeledSlider label="JPEG quality" value={quality} onChange={setQuality} min={40} max={100} format={(v) => `${v}%`} />
+   671→  1231→            ) : null}
+   672→  1232→            <div className="flex flex-wrap gap-2">
+   673→  1233→              <PillButton onClick={exportImage} disabled={busy}>
+   674→  1234→                <Download className="size-4" /> {busy ? 'Exporting…' : `Export ${preset.w}×${preset.h}`}
+   675→  1235→              </PillButton>
+   676→  1236→              <PillButton variant="ghost" onClick={() => { setSrc(null); setOff({ x: 0, y: 0 }); setZoom(100); }}>New image</PillButton>
+   677→  1237→            </div>
+   678→  1238→          </div>
+   679→  1239→        </div>
+   680→  1240→      )}
+   681→  1241→    </div>
+   682→  1242→  );
+   683→  1243→};
+   684→  1244→
+   685→  1245→/* ═════════════════════ 6. profile-picture-resizer ═════════════════════ */
+   686→  1246→
+   687→  1247→const AVATAR_PLATFORMS = [
+   688→  1248→  { id: 'linkedin', label: 'LinkedIn — 400×400', size: 400 },
+   689→  1249→  { id: 'instagram', label: 'Instagram — 320×320', size: 320 },
+   690→  1250→  { id: 'x', label: 'X / Twitter — 400×400', size: 400 },
+   691→  1251→  { id: 'github', label: 'GitHub — 460×460', size: 460 },
+   692→  1252→];
+   693→  1253→
+   694→  1254→function renderAvatar(canvas: HTMLCanvasElement, img: HTMLImageElement, size: number, zoom: number, offX: number, offY: number) {
+   695→  1255→  canvas.width = size;
+   696→  1256→  canvas.height = size;
+   697→  1257→  const ctx = canvas.getContext('2d');
+   698→  1258→  if (!ctx) return;
+   699→  1259→  ctx.clearRect(0, 0, size, size);
+   700→  1260→  const iw = img.naturalWidth || 1, ih = img.naturalHeight || 1;
+   701→  1261→  const scale = Math.max(size / iw, size / ih) * zoom;
+   702→  1262→  const dw = iw * scale, dh = ih * scale;
+   703→  1263→  const maxX = Math.max(0, (dw - size) / 2);
+   704→  1264→  const maxY = Math.max(0, (dh - size) / 2);
+   705→  1265→  ctx.save();
+   706→  1266→  ctx.beginPath();
+   707→  1267→  ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+   708→  1268→  ctx.clip();
+   709→  1269→  ctx.drawImage(img, (size - dw) / 2 + offX * maxX, (size - dh) / 2 + offY * maxY, dw, dh);
+   710→  1270→  ctx.restore();
+   711→  1271→  ctx.strokeStyle = 'rgba(124, 58, 237, 0.55)';
+   712→  1272→  ctx.lineWidth = Math.max(2, size * 0.008);
+   713→  1273→  ctx.beginPath();
+   714→  1274→  ctx.arc(size / 2, size / 2, size / 2 - ctx.lineWidth / 2, 0, Math.PI * 2);
+   715→  1275→  ctx.stroke();
+   716→  1276→}
+   717→  1277→
+   718→  1278→const ProfilePictureResizerTool = () => {
+   719→  1279→  const [src, setSrc] = React.useState<LoadedImage | null>(null);
+   720→  1280→  const [platformId, setPlatformId] = React.useState('linkedin');
+   721→  1281→  const [zoom, setZoom] = React.useState(100);
+   722→  1282→  const [off, setOff] = React.useState({ x: 0, y: 0 });
+   723→  1283→  const [busy, setBusy] = React.useState(false);
+   724→  1284→  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+   725→  1285→  const dragRef = React.useRef<{ startX: number; startY: number; ox: number; oy: number } | null>(null);
+   726→  1286→
+   727→  1287→  const platform = AVATAR_PLATFORMS.find((p) => p.id === platformId) ?? AVATAR_PLATFORMS[0];
+   728→  1288→
+   729→  1289→  React.useEffect(() => {
+   730→  1290→    const canvas = canvasRef.current;
+   731→  1291→    if (!canvas || !src) return;
+   732→  1292→    renderAvatar(canvas, src.img, 320, zoom / 100, off.x, off.y);
+   733→  1293→  }, [src, zoom, off]);
+   734→  1294→
+   735→  1295→  const onPointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+   736→  1296→    if (!src) return;
+   737→  1297→    e.currentTarget.setPointerCapture(e.pointerId);
+   738→  1298→    dragRef.current = { startX: e.clientX, startY: e.clientY, ox: off.x, oy: off.y };
+   739→  1299→  };
+   740→  1300→  const onPointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+   741→  1301→    const drag = dragRef.current;
+   742→  1302→    if (!drag || !src) return;
+   743→  1303→    const canvas = canvasRef.current;
+   744→  1304→    if (!canvas) return;
+   745→  1305→    const rect = canvas.getBoundingClientRect();
+   746→  1306→    const iw = src.img.naturalWidth || 1, ih = src.img.naturalHeight || 1;
+   747→  1307→    const scale = Math.max(320 / iw, 320 / ih) * (zoom / 100);
+   748→  1308→    const maxX = Math.max(0.0001, ((iw * scale) - 320) / 2);
+   749→  1309→    const maxY = Math.max(0.0001, ((ih * scale) - 320) / 2);
+   750→  1310→    const displayScale = rect.width / 320;
+   751→  1311→    setOff({
+   752→  1312→      x: clamp(drag.ox + (e.clientX - drag.startX) / displayScale / maxX, -1, 1),
+   753→  1313→      y: clamp(drag.oy + (e.clientY - drag.startY) / displayScale / maxY, -1, 1),
+   754→  1314→    });
+   755→  1315→  };
+   756→  1316→  const onPointerUp = () => { dragRef.current = null; };
+   757→  1317→
+   758→  1318→  const exportPng = async () => {
+   759→  1319→    if (!src || busy) return;
+   760→  1320→    setBusy(true);
+   761→  1321→    try {
+   762→  1322→      const canvas = document.createElement('canvas');
+   763→  1323→      renderAvatar(canvas, src.img, platform.size, zoom / 100, off.x, off.y);
+   764→  1324→      const blob = await canvasToBlob(canvas, 'image/png');
+   765→  1325→      downloadBlob(`avatar-${platform.id}.png`, blob);
+   766→  1326→    } catch {
+   767→  1327→      /* guarded */
+   768→  1328→    } finally {
+   769→  1329→      setBusy(false);
+   770→  1330→    }
+   771→  1331→  };
+   772→  1332→
+   773→  1333→  return (
+   774→  1334→    <div className="flex flex-col gap-5">
+   775→  1335→      {!src ? (
+   776→  1336→        <FileDrop
+   777→  1337→          accept="image/*"
+   778→  1338→          title="Drop your photo here"
+   779→  1339→          hint="One crop, four platform-perfect avatars — the circle preview is exactly what gets exported"
+   780→  1340→          icon={<Circle />}
+   781→  1341→          onFiles={async (files) => {
+   782→  1342→            try { setSrc(await fileToImage(files[0])); } catch { /* ignore */ }
+   783→  1343→          }}
+   784→  1344→        />
+   785→  1345→      ) : (
+   786→  1346→        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
+   787→  1347→          <div className="flex items-center justify-center rounded-2xl border border-gray-200 bg-gray-50 p-6">
+   788→  1348→            <canvas
+   789→  1349→              ref={canvasRef}
+   790→  1350→              className="size-56 cursor-grab touch-none rounded-full shadow-lg ring-4 ring-white sm:size-72"
+   791→  1351→              aria-label="Circular avatar preview — drag to reposition the photo"
+   792→  1352→              onPointerDown={onPointerDown}
+   793→  1353→              onPointerMove={onPointerMove}
+   794→  1354→              onPointerUp={onPointerUp}
+   795→  1355→              onPointerCancel={onPointerUp}
+   796→  1356→            />
+   797→  1357→          </div>
+   798→  1358→          <div className="flex flex-col gap-3">
+   799→  1359→            <SelectInput
+   800→  1360→              label="Platform size"
+   801→  1361→              value={platformId}
+   802→  1362→              onChange={setPlatformId}
+   803→  1363→              options={AVATAR_PLATFORMS.map((p) => ({ value: p.id, label: p.label }))}
+   804→  1364→              help="Every platform stores a square image — corners outside the circle stay transparent."
+   805→  1365→            />
+   806→  1366→            <LabeledSlider
+   807→  1367→              label="Zoom"
+   808→  1368→              value={zoom}
+   809→  1369→              onChange={setZoom}
+   810→  1370→              min={100} max={300}
+   811→  1371→              format={(v) => `${v}%`}
+   812→  1372→              help="Drag the circle to reposition; zoom in for a tighter head-and-shoulders crop."
+   813→  1373→            />
+   814→  1374→            <div className="flex flex-wrap gap-2">
+   815→  1375→              <PillButton onClick={exportPng} disabled={busy}>
+   816→  1376→                <Download className="size-4" /> {busy ? 'Exporting…' : `Export ${platform.size}×${platform.size} PNG`}
+   817→  1377→              </PillButton>
+   818→  1378→              <PillButton variant="ghost" onClick={() => { setSrc(null); setZoom(100); setOff({ x: 0, y: 0 }); }}>New photo</PillButton>
+   819→  1379→            </div>
+   820→  1380→            <ToolNote>
+   821→  1381→              The export is a square PNG with fully transparent corners, so it sits cleanly on any profile background — the purple ring in the preview is a
+   822→  1382→              guide only and is never drawn into the file. One framing works for every platform, since each stores the same square asset.
+   823→  1383→            </ToolNote>
+   824→  1384→          </div>
+   825→  1385→        </div>
+   826→  1386→      )}
+   827→  1387→    </div>
+   828→  1388→  );
+   829→  1389→};
+   830→  1390→
+   831→  1391→/* ═════════════════════ 7. screen-recorder-to-gif ═════════════════════ */
+   832→  1392→
+   833→  1393→interface GifEncoderInstance {
+   834→  1394→  writeFrame(index: Uint8Array, width: number, height: number, opts?: { palette?: number[][]; delay?: number }): void;
+   835→  1395→  finish(): void;
+   836→  1396→  bytes(): Uint8Array;
+   837→  1397→}
+   838→  1398→
+   839→  1399→type GifSource =
+   840→  1400→  | { kind: 'video'; label: string; url: string; duration: number; w: number; h: number }
+   841→  1401→  | { kind: 'frames'; label: string; count: number; w: number; h: number };
+   842→  1402→
+   843→  1403→const GIF_FPS_OPTIONS = [
+   844→  1404→  { value: '5', label: '5 fps — tiny files, slideshows' },
+   845→  1405→  { value: '10', label: '10 fps — balanced (recommended)' },
+   846→  1406→  { value: '12', label: '12 fps — smooth UI motion' },
+   847→  1407→  { value: '15', label: '15 fps — silky, larger files' },
+   848→  1408→];
+   849→  1409→
+   850→  1410→const GIF_WIDTH_OPTIONS = [
+   851→  1411→  { value: '320', label: '320 px — chat and docs' },
+   852→  1412→  { value: '480', label: '480 px — README hero' },
+   853→  1413→  { value: '640', label: '640 px — landing pages' },
+   854→  1414→  { value: '800', label: '800 px — big demos' },
+   855→  1415→];
+   856→  1416→
+   857→  1417→function tickAsync(): Promise<void> {
+   858→  1418→  return new Promise((resolve) => window.setTimeout(resolve, 0));
+   859→  1419→}
+   860→  1420→
+   861→  1421→function seekVideo(v: HTMLVideoElement, t: number): Promise<void> {
+   862→  1422→  return new Promise((resolve) => {
+   863→  1423→    let done = false;
+   864→  1424→    const finish = () => {
+   865→  1425→      if (done) return;
+   866→  1426→      done = true;
+   867→  1427→      v.removeEventListener('seeked', finish);
+   868→  1428→      resolve();
+   869→  1429→    };
+   870→  1430→    v.addEventListener('seeked', finish);
+   871→  1431→    try {
+   872→  1432→      v.currentTime = clamp(t, 0, Math.max(0, (v.duration || t) - 0.001));
+   873→  1433→    } catch {
+   874→  1434→      finish();
+   875→  1435→    }
+   876→  1436→    window.setTimeout(finish, 2500);
+   877→  1437→  });
+   878→  1438→}
+   879→  1439→
+   880→  1440→async function probeVideo(blob: Blob): Promise<{ el: HTMLVideoElement; url: string; duration: number; w: number; h: number }> {
+   881→  1441→  const url = URL.createObjectURL(blob);
+   882→  1442→  const el = document.createElement('video');
+   883→  1443→  el.preload = 'auto';
+   884→  1444→  el.muted = true;
+   885→  1445→  el.playsInline = true;
+   886→  1446→  el.src = url;
+   887→  1447→  await new Promise<void>((resolve, reject) => {
+   888→  1448→    el.onloadeddata = () => resolve();
+   889→  1449→    el.onerror = () => reject(new Error('This video format cannot be decoded in your browser. Try re-recording or an MP4/WebM file.'));
+   890→  1450→  });
+   891→  1451→  try {
+   892→  1452→    await el.play();
+   893→  1453→    el.pause();
+   894→  1454→  } catch {
+   895→  1455→    /* headless or blocked autoplay — seeking usually still works */
+   896→  1456→  }
+   897→  1457→  return { el, url, duration: Number.isFinite(el.duration) ? el.duration : 0, w: el.videoWidth, h: el.videoHeight };
+   898→  1458→}
+   899→  1459→
+   900→  1460→const ScreenRecorderToGifTool = () => {
+   901→
+   902→[showing lines 561-1460 of 3118; use offset=1461 with limit to continue reading]

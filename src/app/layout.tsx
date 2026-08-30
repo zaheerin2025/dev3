@@ -96,6 +96,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
+// AdSense publisher id — the loader script + <AdSlot> units activate when set.
+const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? 'ca-pub-1264514278457797';
 
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`} suppressHydrationWarning>
@@ -129,6 +131,15 @@ export default function RootLayout({
               `}
             </Script>
           </>
+        ) : null}
+        {adsenseClient ? (
+          // Plain async script: React 19 hoists it into <head>, which is where
+          // AdSense must live (next/script's data-nscript upsets its checker).
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+            crossOrigin="anonymous"
+          />
         ) : null}
       </body>
     </html>

@@ -1,0 +1,1027 @@
+     1→'use client';
+     2→
+     3→// ─────────────────────────────────────────────────────────────
+     4→// Developers3 admin panel (/#/admin).
+     5→// Passcode login → Posts | Pricing | Site Content tabs.
+     6→// Auth: the server verifies ADMIN_PASSCODE and sets an HttpOnly
+     7→// `d3_admin_session` cookie (8h, server-side revocable) — see
+     8→// src/lib/admin-auth.ts. The browser never sees the passcode.
+     9→// ─────────────────────────────────────────────────────────────
+    10→
+    11→import * as React from 'react';
+    12→import {
+    13→  ExternalLink,
+    14→  Loader2,
+    15→  LogOut,
+    16→  Pencil,
+    17→  Plus,
+    18→  Save,
+    19→  Trash2,
+    20→} from 'lucide-react';
+    21→import { format } from 'date-fns';
+    22→import { Badge } from '@/components/ui/badge';
+    23→import { Button } from '@/components/ui/button';
+    24→import {
+    25→  AlertDialog,
+    26→  AlertDialogAction,
+    27→  AlertDialogCancel,
+    28→  AlertDialogContent,
+    29→  AlertDialogDescription,
+    30→  AlertDialogFooter,
+    31→  AlertDialogHeader,
+    32→  AlertDialogTitle,
+    33→} from '@/components/ui/alert-dialog';
+    34→import {
+    35→  Select,
+    36→  SelectContent,
+    37→  SelectItem,
+    38→  SelectTrigger,
+    39→  SelectValue,
+    40→} from '@/components/ui/select';
+    41→import { Switch } from '@/components/ui/switch';
+    42→import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+    43→import { Textarea } from '@/components/ui/textarea';
+    44→import { Input } from '@/components/ui/input';
+    45→import { Label } from '@/components/ui/label';
+    46→import { useToast } from '@/hooks/use-toast';
+    47→import { Link } from '@/components/common/link';
+    48→import { blogPosts, servicePricingBlocks, websiteTiers } from '@/data';
+    49→import { site } from '@/lib/site';
+    50→import type { PricingBlock, PricingTier } from '@/lib/types';
+    51→import type { DbPost } from '@/lib/blog-db';
+    52→import { useSiteSettings } from '@/lib/use-site-settings';
+    53→import { cn } from '@/lib/utils';
+    54→
+    55→const POST_CATEGORIES = Array.from(new Set(blogPosts.map((post) => post.category)));
+    56→
+    57→/** URL-safe slug: lowercase, alphanumerics and single dashes. */
+    58→function slugify(value: string): string {
+    59→  return value
+    60→    .toLowerCase()
+    61→    .replace(/[^a-z0-9]+/g, '-')
+    62→    .replace(/(^-|-$)+/g, '');
+    63→}
+    64→
+    65→/**
+    66→ * Authorized fetch helper — the session rides in the HttpOnly cookie, so
+    67→ * same-origin requests attach it automatically. Throws on non-OK, parses
+    68→ * `{ ok, … }` JSON.
+    69→ */
+    70→async function adminFetch<T>(path: string, init?: RequestInit): Promise<T> {
+    71→  const response = await fetch(path, {
+    72→    ...init,
+    73→    headers: { 'Content-Type': 'application/json', ...(init?.headers ?? {}) },
+    74→  });
+    75→  const payload = (await response.json().catch(() => null)) as
+    76→    | ({ ok?: boolean; error?: string } & T)
+    77→    | null;
+    78→  if (!response.ok || !payload?.ok) {
+    79→    throw new Error(payload?.error ?? 'Request failed.');
+    80→  }
+    81→  return payload;
+    82→}
+    83→
+    84→interface PostDraft {
+    85→  id?: string;
+    86→  slug: string;
+    87→  title: string;
+    88→  category: string;
+    89→  image: string;
+    90→  excerpt: string;
+    91→  content: string;
+    92→  readTime: number;
+    93→  published: boolean;
+    94→}
+    95→
+    96→const EMPTY_DRAFT: PostDraft = {
+    97→  slug: '',
+    98→  title: '',
+    99→  category: POST_CATEGORIES[0] ?? 'General',
+   100→  image: '',
+   101→  excerpt: '',
+   102→  content: '',
+   103→  readTime: 5,
+   104→  published: true,
+   105→};
+   106→
+   107→/* ─────────────────────────── Login gate ─────────────────────────── */
+   108→
+   109→function AdminLogin({ onAuthenticated }: { onAuthenticated: () => void }) {
+   110→  const { toast } = useToast();
+   111→  const [passcode, setPasscode] = React.useState('');
+   112→  const [loading, setLoading] = React.useState(false);
+   113→
+   114→  const submit = async (event: React.FormEvent) => {
+   115→    event.preventDefault();
+   116→    if (!passcode.trim() || loading) return;
+   117→    setLoading(true);
+   118→    try {
+   119→      const response = await fetch('/api/admin/auth', {
+   120→        method: 'POST',
+   121→        headers: { 'Content-Type': 'application/json' },
+   122→        body: JSON.stringify({ passcode: passcode.trim() }),
+   123→      });
+   124→      const payload = (await response.json().catch(() => null)) as {
+   125→        ok?: boolean;
+   126→        error?: string;
+   127→      } | null;
+   128→      if (!response.ok || !payload?.ok) {
+   129→        throw new Error(payload?.error ?? 'Invalid passcode.');
+   130→      }
+   131→      onAuthenticated();
+   132→    } catch (error) {
+   133→      toast({
+   134→        title: 'Sign in failed',
+   135→        description: error instanceof Error ? error.message : 'Please try again.',
+   136→        variant: 'destructive',
+   137→      });
+   138→    } finally {
+   139→      setLoading(false);
+   140→    }
+   141→  };
+   142→
+   143→  return (
+   144→    <div className="flex min-h-[60vh] items-center justify-center py-16">
+   145→      <div className="card-surface w-full max-w-sm rounded-3xl p-8 shadow-[0_24px_48px_-24px_rgb(4_16_11/0.25)]">
+   146→        <div className="flex flex-col items-center gap-1.5 text-center">
+   147→          <img src="/logo.svg" alt="Developers3 logo" className="h-10 w-10" />
+   148→          <h1 className="mt-2 text-xl font-bold tracking-tight">Admin panel</h1>
+   149→          <p className="text-sm text-muted-foreground">
+   150→            Sign in to manage posts, pricing, and site content.
+   151→          </p>
+   152→        </div>
+   153→        <form onSubmit={submit} className="mt-6 flex flex-col gap-4">
+   154→          <div className="flex flex-col gap-2">
+   155→            <Label htmlFor="admin-passcode">Passcode</Label>
+   156→            <Input
+   157→              id="admin-passcode"
+   158→              type="password"
+   159→              value={passcode}
+   160→              onChange={(event) => setPasscode(event.target.value)}
+   161→              placeholder="Enter the admin passcode"
+   162→              autoComplete="current-password"
+   163→              autoFocus
+   164→              required
+   165→            />
+   166→          </div>
+   167→          <Button type="submit" className="h-11 w-full" disabled={loading}>
+   168→            {loading ? (
+   169→              <>
+   170→                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+   171→                Signing in…
+   172→              </>
+   173→            ) : (
+   174→              'Sign in'
+   175→            )}
+   176→          </Button>
+   177→        </form>
+   178→      </div>
+   179→    </div>
+   180→  );
+   181→}
+   182→
+   183→/* ─────────────────────────── Posts tab ─────────────────────────── */
+   184→
+   185→function PostsTab({ onUnauthorized }: { onUnauthorized: () => void }) {
+   186→  const { toast } = useToast();
+   187→  const [posts, setPosts] = React.useState<DbPost[] | null>(null);
+   188→  const [draft, setDraft] = React.useState<PostDraft | null>(null);
+   189→  const [slugTouched, setSlugTouched] = React.useState(false);
+   190→  const [saving, setSaving] = React.useState(false);
+   191→  const [deleteTarget, setDeleteTarget] = React.useState<DbPost | null>(null);
+   192→
+   193→  const loadPosts = React.useCallback(async () => {
+   194→    try {
+   195→      const payload = await adminFetch<{ posts: DbPost[] }>('/api/admin/posts');
+   196→      setPosts(payload.posts);
+   197→    } catch (error) {
+   198→      if (error instanceof Error && error.message === 'Unauthorized.') return onUnauthorized();
+   199→      toast({
+   200→        title: 'Could not load posts',
+   201→        description: error instanceof Error ? error.message : 'Please try again.',
+   202→        variant: 'destructive',
+   203→      });
+   204→    }
+   205→  }, [onUnauthorized, toast]);
+   206→
+   207→  React.useEffect(() => {
+   208→    void loadPosts();
+   209→  }, [loadPosts]);
+   210→
+   211→  const openNew = () => {
+   212→    setSlugTouched(false);
+   213→    setDraft({ ...EMPTY_DRAFT });
+   214→  };
+   215→
+   216→  const openEdit = (post: DbPost) => {
+   217→    setSlugTouched(true); // existing post — keep its slug unless manually changed
+   218→    setDraft({
+   219→      id: post.id,
+   220→      slug: post.slug,
+   221→      title: post.title,
+   222→      category: post.category,
+   223→      image: post.image ?? '',
+   224→      excerpt: post.excerpt,
+   225→      content: post.content,
+   226→      readTime: post.readTime,
+   227→      published: post.published,
+   228→    });
+   229→  };
+   230→
+   231→  const updateDraft = (patch: Partial<PostDraft>) =>
+   232→    setDraft((current) => (current ? { ...current, ...patch } : current));
+   233→
+   234→  const updateTitle = (title: string) =>
+   235→    setDraft((current) =>
+   236→      current
+   237→        ? { ...current, title, slug: slugTouched ? current.slug : slugify(title) }
+   238→        : current
+   239→    );
+   240→
+   241→  const save = async () => {
+   242→    if (!draft || saving) return;
+   243→    if (!draft.title.trim() || !draft.excerpt.trim() || !draft.content.trim()) {
+   244→      toast({
+   245→        title: 'Missing fields',
+   246→        description: 'Title, excerpt and content are required.',
+   247→        variant: 'destructive',
+   248→      });
+   249→      return;
+   250→    }
+   251→    setSaving(true);
+   252→    try {
+   253→      const body = JSON.stringify({
+   254→        id: draft.id,
+   255→        slug: draft.slug.trim() || slugify(draft.title),
+   256→        title: draft.title.trim(),
+   257→        category: draft.category,
+   258→        image: draft.image.trim(),
+   259→        excerpt: draft.excerpt.trim(),
+   260→        content: draft.content,
+   261→        readTime: draft.readTime,
+   262→        published: draft.published,
+   263→      });
+   264→      if (draft.id) {
+   265→        await adminFetch('/api/admin/posts', { method: 'PUT', body });
+   266→        toast({ title: 'Post updated', description: `“${draft.title.trim()}” is saved.` });
+   267→      } else {
+   268→        await adminFetch('/api/admin/posts', { method: 'POST', body });
+   269→        toast({ title: 'Post created', description: `“${draft.title.trim()}” is live.` });
+   270→      }
+   271→      setDraft(null);
+   272→      await loadPosts();
+   273→    } catch (error) {
+   274→      if (error instanceof Error && error.message === 'Unauthorized.') return onUnauthorized();
+   275→      toast({
+   276→        title: 'Save failed',
+   277→        description: error instanceof Error ? error.message : 'Please try again.',
+   278→        variant: 'destructive',
+   279→      });
+   280→    } finally {
+   281→      setSaving(false);
+   282→    }
+   283→  };
+   284→
+   285→  const confirmDelete = async () => {
+   286→    if (!deleteTarget) return;
+   287→    try {
+   288→      await adminFetch(`/api/admin/posts?id=${encodeURIComponent(deleteTarget.id)}`, {
+   289→        method: 'DELETE',
+   290→      });
+   291→      toast({ title: 'Post deleted', description: `“${deleteTarget.title}” was removed.` });
+   292→      setDeleteTarget(null);
+   293→      await loadPosts();
+   294→    } catch (error) {
+   295→      if (error instanceof Error && error.message === 'Unauthorized.') return onUnauthorized();
+   296→      toast({
+   297→        title: 'Delete failed',
+   298→        description: error instanceof Error ? error.message : 'Please try again.',
+   299→        variant: 'destructive',
+   300→      });
+   301→      setDeleteTarget(null);
+   302→    }
+   303→  };
+   304→
+   305→  return (
+   306→    <div className="flex flex-col gap-5">
+   307→      <div className="flex flex-wrap items-center justify-between gap-3">
+   308→        <div>
+   309→          <h2 className="text-lg font-semibold">Blog posts</h2>
+   310→          <p className="text-sm text-muted-foreground">
+   311→            {posts ? `${posts.length} post${posts.length === 1 ? '' : 's'} in the database` : 'Loading…'}
+   312→          </p>
+   313→        </div>
+   314→        <Button onClick={openNew} className="h-10">
+   315→          <Plus className="h-4 w-4" aria-hidden="true" />
+   316→          New post
+   317→        </Button>
+   318→      </div>
+   319→
+   320→      {/* Editor card */}
+   321→      {draft ? (
+   322→        <div className="card-surface rounded-2xl p-6 ring-1 ring-blue-600/15">
+   323→          <div className="flex items-center justify-between gap-3">
+   324→            <h3 className="text-base font-semibold">
+   325→              {draft.id ? 'Edit post' : 'New post'}
+   326→            </h3>
+   327→            <Button variant="ghost" size="sm" onClick={() => setDraft(null)}>
+   328→              Cancel
+   329→            </Button>
+   330→          </div>
+   331→          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+   332→            <div className="flex flex-col gap-2 sm:col-span-2">
+   333→              <Label htmlFor="post-title">Title</Label>
+   334→              <Input
+   335→                id="post-title"
+   336→                value={draft.title}
+   337→                onChange={(event) => updateTitle(event.target.value)}
+   338→                placeholder="How much does a website cost?"
+   339→                required
+   340→              />
+   341→            </div>
+   342→            <div className="flex flex-col gap-2">
+   343→              <Label htmlFor="post-slug">Slug</Label>
+   344→              <Input
+   345→                id="post-slug"
+   346→                value={draft.slug}
+   347→                onChange={(event) => {
+   348→                  setSlugTouched(true);
+   349→                  updateDraft({ slug: event.target.value });
+   350→                }}
+   351→                placeholder="auto-generated-from-title"
+   352→              />
+   353→              <p className="text-xs text-muted-foreground">
+   354→                Live at /blog/{draft.slug || '…'}
+   355→              </p>
+   356→            </div>
+   357→            <div className="flex flex-col gap-2">
+   358→              <Label htmlFor="post-category">Category</Label>
+   359→              <Select
+   360→                value={draft.category}
+   361→                onValueChange={(value) => updateDraft({ category: value })}
+   362→              >
+   363→                <SelectTrigger id="post-category" className="w-full">
+   364→                  <SelectValue placeholder="Pick a category" />
+   365→                </SelectTrigger>
+   366→                <SelectContent>
+   367→                  {(POST_CATEGORIES.includes(draft.category)
+   368→                    ? POST_CATEGORIES
+   369→                    : [draft.category, ...POST_CATEGORIES]
+   370→                  ).map((category) => (
+   371→                    <SelectItem key={category} value={category}>
+   372→                      {category}
+   373→                    </SelectItem>
+   374→                  ))}
+   375→                </SelectContent>
+   376→              </Select>
+   377→            </div>
+   378→            <div className="flex flex-col gap-2">
+   379→              <Label htmlFor="post-image">Cover image URL</Label>
+   380→              <Input
+   381→                id="post-image"
+   382→                value={draft.image}
+   383→                onChange={(event) => updateDraft({ image: event.target.value })}
+   384→                placeholder="https://…/cover.png (optional)"
+   385→              />
+   386→            </div>
+   387→            <div className="flex flex-col gap-2">
+   388→              <Label>Preview</Label>
+   389→              {draft.image.trim() ? (
+   390→                <img
+   391→                  src={draft.image}
+   392→                  alt="Cover preview"
+   393→                  className="h-14 w-24 rounded-lg object-cover ring-1 ring-blue-900/10"
+   394→                  onError={(event) => {
+   395→                    event.currentTarget.style.display = 'none';
+   396→                  }}
+   397→                  onLoad={(event) => {
+   398→                    event.currentTarget.style.display = '';
+   399→                  }}
+   400→                />
+   401→              ) : (
+   402→                <div className="flex h-14 w-24 items-center justify-center rounded-lg border border-dashed border-blue-900/15 text-[11px] text-muted-foreground">
+   403→                  No image
+   404→                </div>
+   405→              )}
+   406→            </div>
+   407→            <div className="flex flex-col gap-2 sm:col-span-2">
+   408→              <Label htmlFor="post-excerpt">Excerpt</Label>
+   409→              <Textarea
+   410→                id="post-excerpt"
+   411→                rows={2}
+   412→                value={draft.excerpt}
+   413→                onChange={(event) => updateDraft({ excerpt: event.target.value })}
+   414→                placeholder="One or two sentences shown on cards and in search results."
+   415→                required
+   416→              />
+   417→            </div>
+   418→            <div className="flex flex-col gap-2 sm:col-span-2">
+   419→              <Label htmlFor="post-content">Content</Label>
+   420→              <Textarea
+   421→                id="post-content"
+   422→                rows={12}
+   423→                value={draft.content}
+   424→                onChange={(event) => updateDraft({ content: event.target.value })}
+   425→                className="font-mono text-sm"
+   426→                placeholder={"Intro paragraph.\n\n## Section heading\n\nMore text…"}
+   427→                required
+   428→              />
+   429→              <p className="text-xs text-muted-foreground">
+   430→                Blank line = new paragraph. Lines starting with &lsquo;## &rsquo; become section
+   431→                headings.
+   432→              </p>
+   433→            </div>
+   434→            <div className="flex flex-col gap-2">
+   435→              <Label htmlFor="post-readtime">Read time (minutes)</Label>
+   436→              <Input
+   437→                id="post-readtime"
+   438→                type="number"
+   439→                min={1}
+   440→                max={120}
+   441→                value={draft.readTime}
+   442→                onChange={(event) => updateDraft({ readTime: Number(event.target.value) || 5 })}
+   443→              />
+   444→            </div>
+   445→            <div className="flex items-end justify-end gap-3 sm:col-span-2">
+   446→              <div className="mr-auto flex items-center gap-2.5">
+   447→                <Switch
+   448→                  id="post-published"
+   449→                  checked={draft.published}
+   450→                  onCheckedChange={(checked) => updateDraft({ published: checked })}
+   451→                />
+   452→                <Label htmlFor="post-published" className="text-sm font-normal">
+   453→                  {draft.published ? 'Published' : 'Draft'}
+   454→                </Label>
+   455→              </div>
+   456→              <Button variant="outline" onClick={() => setDraft(null)} className="h-10">
+   457→                Cancel
+   458→              </Button>
+   459→              <Button onClick={save} disabled={saving} className="h-10">
+   460→                {saving ? (
+   461→                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+   462→                ) : (
+   463→                  <Save className="h-4 w-4" aria-hidden="true" />
+   464→                )}
+   465→                {draft.id ? 'Save changes' : 'Create post'}
+   466→              </Button>
+   467→            </div>
+   468→          </div>
+   469→        </div>
+   470→      ) : null}
+   471→
+   472→      {/* Post list */}
+   473→      <div className="card-surface max-h-[520px] overflow-y-auto rounded-2xl custom-scrollbar">
+   474→        {!posts ? (
+   475→          <div className="flex items-center justify-center gap-2 p-10 text-sm text-muted-foreground">
+   476→            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+   477→            Loading posts…
+   478→          </div>
+   479→        ) : posts.length === 0 ? (
+   480→          <p className="p-10 text-center text-sm text-muted-foreground">
+   481→            No posts yet — create your first one with “New post”.
+   482→          </p>
+   483→        ) : (
+   484→          <ul className="divide-y divide-blue-900/5">
+   485→            {posts.map((post) => (
+   486→              <li key={post.id} className="flex flex-wrap items-center gap-3 px-5 py-4">
+   487→                <div className="min-w-0 flex-1">
+   488→                  <p className="truncate text-sm font-semibold">{post.title}</p>
+   489→                  <p className="mt-0.5 truncate text-xs text-muted-foreground">
+   490→                    /blog/{post.slug} · updated{' '}
+   491→                    {format(new Date(post.updatedAt), 'MMM d, yyyy HH:mm')}
+   492→                  </p>
+   493→                </div>
+   494→                <Badge
+   495→                  variant="outline"
+   496→                  className="border-blue-600/15 bg-blue-50 text-blue-700"
+   497→                >
+   498→                  {post.category}
+   499→                </Badge>
+   500→                <Badge
+   501→                  className={cn(
+   502→                    post.published
+   503→                      ? 'border-transparent bg-green-100 text-green-700'
+   504→                      : 'border-transparent bg-muted text-muted-foreground'
+   505→                  )}
+   506→                >
+   507→                  {post.published ? 'Published' : 'Draft'}
+   508→                </Badge>
+   509→                <div className="flex items-center gap-1.5">
+   510→                  <Button variant="outline" size="sm" className="h-9" onClick={() => openEdit(post)}>
+   511→                    <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+   512→                    Edit
+   513→                  </Button>
+   514→                  <Button
+   515→                    variant="outline"
+   516→                    size="sm"
+   517→                    className="h-9 text-red-600 hover:bg-red-50 hover:text-red-700"
+   518→                    onClick={() => setDeleteTarget(post)}
+   519→                  >
+   520→                    <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+   521→                    Delete
+   522→                  </Button>
+   523→                </div>
+   524→              </li>
+   525→            ))}
+   526→          </ul>
+   527→        )}
+   528→      </div>
+   529→
+   530→      {/* Delete confirmation */}
+   531→      <AlertDialog
+   532→        open={deleteTarget !== null}
+   533→        onOpenChange={(open) => {
+   534→          if (!open) setDeleteTarget(null);
+   535→        }}
+   536→      >
+   537→        <AlertDialogContent>
+   538→          <AlertDialogHeader>
+   539→            <AlertDialogTitle>Delete this post?</AlertDialogTitle>
+   540→            <AlertDialogDescription>
+   541→              “{deleteTarget?.title}” will be permanently removed from the blog. This cannot be
+   542→              undone.
+   543→            </AlertDialogDescription>
+   544→          </AlertDialogHeader>
+   545→          <AlertDialogFooter>
+   546→            <AlertDialogCancel>Cancel</AlertDialogCancel>
+   547→            <AlertDialogAction
+   548→              onClick={confirmDelete}
+   549→              className="bg-red-600 text-white hover:bg-red-700"
+   550→            >
+   551→              Delete post
+   552→            </AlertDialogAction>
+   553→          </AlertDialogFooter>
+   554→        </AlertDialogContent>
+   555→      </AlertDialog>
+   556→    </div>
+   557→  );
+   558→}
+   559→
+   560→/* ─────────────────────────── Pricing tab ─────────────────────────── */
+   561→
+   562→function PricingTab({ onUnauthorized }: { onUnauthorized: () => void }) {
+   563→  const { toast } = useToast();
+   564→  const [tiers, setTiers] = React.useState<PricingTier[]>(websiteTiers);
+   565→  const [blocks, setBlocks] = React.useState<PricingBlock[]>(servicePricingBlocks);
+   566→  const [saving, setSaving] = React.useState(false);
+   567→
+   568→  // Prefill from saved settings; fall back to the static data imports.
+   569→  React.useEffect(() => {
+   570→    let cancelled = false;
+   571→    (async () => {
+   572→      try {
+   573→        const payload = await adminFetch<{ settings: Record<string, string> }>(
+   574→          '/api/admin/settings'
+   575→        );
+   576→        if (cancelled) return;
+   577→        const savedTiers = payload.settings['pricing.websiteTiers'];
+   578→        const savedBlocks = payload.settings['pricing.servicePricingBlocks'];
+   579→        if (savedTiers) {
+   580→          const parsed = JSON.parse(savedTiers) as PricingTier[];
+   581→          if (Array.isArray(parsed) && parsed.length > 0) setTiers(parsed);
+   582→        }
+   583→        if (savedBlocks) {
+   584→          const parsed = JSON.parse(savedBlocks) as PricingBlock[];
+   585→          if (Array.isArray(parsed) && parsed.length > 0) setBlocks(parsed);
+   586→        }
+   587→      } catch {
+   588→        // Static data stays in place when nothing is saved / fetch fails.
+   589→      }
+   590→    })();
+   591→    return () => {
+   592→      cancelled = true;
+   593→    };
+   594→  }, []);
+   595→
+   596→  const updateTier = (index: number, patch: Partial<PricingTier>) =>
+   597→    setTiers((current) =>
+   598→      current.map((tier, i) => (i === index ? { ...tier, ...patch } : tier))
+   599→    );
+   600→
+   601→  const updateTierFeatures = (index: number, raw: string) =>
+   602→    updateTier(index, {
+   603→      features: raw.split('\n').filter((line) => line.trim() !== ''),
+   604→    });
+   605→
+   606→  const updateBlock = (index: number, patch: Partial<PricingBlock>) =>
+   607→    setBlocks((current) =>
+   608→      current.map((block, i) => (i === index ? { ...block, ...patch } : block))
+   609→    );
+   610→
+   611→  const save = async () => {
+   612→    if (saving) return;
+   613→    setSaving(true);
+   614→    try {
+   615→      await adminFetch('/api/admin/settings', {
+   616→        method: 'PUT',
+   617→        body: JSON.stringify({
+   618→          entries: [
+   619→            { key: 'pricing.websiteTiers', value: JSON.stringify(tiers) },
+   620→            { key: 'pricing.servicePricingBlocks', value: JSON.stringify(blocks) },
+   621→          ],
+   622→        }),
+   623→      });
+   624→      await useSiteSettings.getState().reload();
+   625→      toast({
+   626→        title: 'Pricing updated — live on site',
+   627→        description: 'The /pricing page now shows the saved tiers and service blocks.',
+   628→      });
+   629→    } catch (error) {
+   630→      if (error instanceof Error && error.message === 'Unauthorized.') return onUnauthorized();
+   631→      toast({
+   632→        title: 'Save failed',
+   633→        description: error instanceof Error ? error.message : 'Please try again.',
+   634→        variant: 'destructive',
+   635→      });
+   636→    } finally {
+   637→      setSaving(false);
+   638→    }
+   639→  };
+   640→
+   641→  return (
+   642→    <div className="flex flex-col gap-5">
+   643→      <div className="flex flex-wrap items-center justify-between gap-3">
+   644→        <div>
+   645→          <h2 className="text-lg font-semibold">Pricing</h2>
+   646→          <p className="text-sm text-muted-foreground">
+   647→            Edit website tiers and service pricing blocks shown on /pricing.
+   648→          </p>
+   649→        </div>
+   650→        <Button onClick={save} disabled={saving} className="h-10">
+   651→          {saving ? (
+   652→            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+   653→          ) : (
+   654→            <Save className="h-4 w-4" aria-hidden="true" />
+   655→          )}
+   656→          Save pricing
+   657→        </Button>
+   658→      </div>
+   659→
+   660→      <div className="card-surface rounded-2xl p-6">
+   661→        <h3 className="text-base font-semibold">Website tiers</h3>
+   662→        <div className="mt-4 grid gap-4 lg:grid-cols-3">
+   663→          {tiers.map((tier, index) => (
+   664→            <div key={`${tier.name}-${index}`} className="rounded-xl border border-blue-900/10 p-4">
+   665→              <div className="grid gap-3">
+   666→                <div className="flex flex-col gap-1.5">
+   667→                  <Label htmlFor={`tier-name-${index}`}>Name</Label>
+   668→                  <Input
+   669→                    id={`tier-name-${index}`}
+   670→                    value={tier.name}
+   671→                    onChange={(event) => updateTier(index, { name: event.target.value })}
+   672→                  />
+   673→                </div>
+   674→                <div className="grid grid-cols-2 gap-3">
+   675→                  <div className="flex flex-col gap-1.5">
+   676→                    <Label htmlFor={`tier-price-${index}`}>Price</Label>
+   677→                    <Input
+   678→                      id={`tier-price-${index}`}
+   679→                      value={tier.price}
+   680→                      onChange={(event) => updateTier(index, { price: event.target.value })}
+   681→                    />
+   682→                  </div>
+   683→                  <div className="flex flex-col gap-1.5">
+   684→                    <Label htmlFor={`tier-period-${index}`}>Period</Label>
+   685→                    <Input
+   686→                      id={`tier-period-${index}`}
+   687→                      value={tier.period}
+   688→                      onChange={(event) => updateTier(index, { period: event.target.value })}
+   689→                    />
+   690→                  </div>
+   691→                </div>
+   692→                <div className="flex flex-col gap-1.5">
+   693→                  <Label htmlFor={`tier-best-${index}`}>Best for</Label>
+   694→                  <Input
+   695→                    id={`tier-best-${index}`}
+   696→                    value={tier.bestFor}
+   697→                    onChange={(event) => updateTier(index, { bestFor: event.target.value })}
+   698→                  />
+   699→                </div>
+   700→                <div className="flex flex-col gap-1.5">
+   701→                  <Label htmlFor={`tier-blurb-${index}`}>Blurb</Label>
+   702→                  <Textarea
+   703→                    id={`tier-blurb-${index}`}
+   704→                    rows={2}
+   705→                    value={tier.blurb}
+   706→                    onChange={(event) => updateTier(index, { blurb: event.target.value })}
+   707→                  />
+   708→                </div>
+   709→                <div className="flex flex-col gap-1.5">
+   710→                  <Label htmlFor={`tier-features-${index}`}>Features (one per line)</Label>
+   711→                  <Textarea
+   712→                    id={`tier-features-${index}`}
+   713→                    rows={6}
+   714→                    value={tier.features.join('\n')}
+   715→                    onChange={(event) => updateTierFeatures(index, event.target.value)}
+   716→                    className="font-mono text-xs"
+   717→                  />
+   718→                </div>
+   719→              </div>
+   720→            </div>
+   721→          ))}
+   722→        </div>
+   723→      </div>
+   724→
+   725→      <div className="card-surface rounded-2xl p-6">
+   726→        <h3 className="text-base font-semibold">Service pricing blocks</h3>
+   727→        <div className="mt-4 grid gap-4 md:grid-cols-2">
+   728→          {blocks.map((block, index) => (
+   729→            <div key={`${block.serviceSlug}-${index}`} className="rounded-xl border border-blue-900/10 p-4">
+   730→              <div className="grid gap-3">
+   731→                <div className="flex flex-col gap-1.5">
+   732→                  <Label htmlFor={`block-name-${index}`}>Name</Label>
+   733→                  <Input
+   734→                    id={`block-name-${index}`}
+   735→                    value={block.name}
+   736→                    onChange={(event) => updateBlock(index, { name: event.target.value })}
+   737→                  />
+   738→                </div>
+   739→                <div className="grid grid-cols-2 gap-3">
+   740→                  <div className="flex flex-col gap-1.5">
+   741→                    <Label htmlFor={`block-start-${index}`}>Starting at</Label>
+   742→                    <Input
+   743→                      id={`block-start-${index}`}
+   744→                      value={block.startingAt}
+   745→                      onChange={(event) => updateBlock(index, { startingAt: event.target.value })}
+   746→                    />
+   747→                  </div>
+   748→                  <div className="flex flex-col gap-1.5">
+   749→                    <Label htmlFor={`block-unit-${index}`}>Unit</Label>
+   750→                    <Input
+   751→                      id={`block-unit-${index}`}
+   752→                      value={block.unit}
+   753→                      onChange={(event) => updateBlock(index, { unit: event.target.value })}
+   754→                    />
+   755→                  </div>
+   756→                </div>
+   757→                <div className="flex flex-col gap-1.5">
+   758→                  <Label htmlFor={`block-blurb-${index}`}>Blurb</Label>
+   759→                  <Textarea
+   760→                    id={`block-blurb-${index}`}
+   761→                    rows={2}
+   762→                    value={block.blurb}
+   763→                    onChange={(event) => updateBlock(index, { blurb: event.target.value })}
+   764→                  />
+   765→                </div>
+   766→              </div>
+   767→            </div>
+   768→          ))}
+   769→        </div>
+   770→      </div>
+   771→    </div>
+   772→  );
+   773→}
+   774→
+   775→/* ─────────────────────── Site content tab ─────────────────────── */
+   776→
+   777→const SITE_CONTENT_FIELDS: { key: string; label: string; defaultValue: string; hint?: string }[] = [
+   778→  {
+   779→    key: 'hero.headline',
+   780→    label: 'Hero headline',
+   781→    defaultValue: 'Web, App & Software Development Company',
+   782→    hint: 'Shown as the home page H1 (overrides the default headline).',
+   783→  },
+   784→  {
+   785→    key: 'hero.subheadline',
+   786→    label: 'Hero subheadline',
+   787→    defaultValue:
+   788→      'We design, build, and grow custom websites, e-commerce stores, and digital products that turn visitors into customers — on time, on budget, with senior people on every project.',
+   789→  },
+   790→  { key: 'contact.email', label: 'Contact email', defaultValue: site.email },
+   791→  { key: 'contact.phoneDisplay', label: 'Phone (display)', defaultValue: site.phoneDisplay },
+   792→  {
+   793→    key: 'contact.whatsappNumber',
+   794→    label: 'WhatsApp number',
+   795→    defaultValue: site.whatsappNumber,
+   796→    hint: 'Digits only, with country code — e.g. 15550134567.',
+   797→  },
+   798→  { key: 'stats.projects', label: 'Projects delivered', defaultValue: site.stats.projects },
+   799→  { key: 'stats.clients', label: 'Happy clients', defaultValue: site.stats.clients },
+   800→  { key: 'stats.years', label: 'Years in business', defaultValue: site.stats.years },
+   801→  {
+   802→    key: 'stats.satisfaction',
+   803→    label: 'Client satisfaction',
+   804→    defaultValue: site.stats.satisfaction,
+   805→  },
+   806→];
+   807→
+   808→function SiteContentTab({ onUnauthorized }: { onUnauthorized: () => void }) {
+   809→  const { toast } = useToast();
+   810→  const [values, setValues] = React.useState<Record<string, string>>(() =>
+   811→    Object.fromEntries(SITE_CONTENT_FIELDS.map((field) => [field.key, '']))
+   812→  );
+   813→  const [saving, setSaving] = React.useState(false);
+   814→
+   815→  // Prefill with saved overrides; empty input = default value from the site config.
+   816→  React.useEffect(() => {
+   817→    let cancelled = false;
+   818→    (async () => {
+   819→      try {
+   820→        const payload = await adminFetch<{ settings: Record<string, string> }>(
+   821→          '/api/admin/settings'
+   822→        );
+   823→        if (cancelled) return;
+   824→        setValues((current) => {
+   825→          const next = { ...current };
+   826→          for (const field of SITE_CONTENT_FIELDS) {
+   827→            const saved = payload.settings[field.key];
+   828→            if (typeof saved === 'string') next[field.key] = saved;
+   829→          }
+   830→          return next;
+   831→        });
+   832→      } catch {
+   833→        // Defaults stay in place when fetch fails.
+   834→      }
+   835→    })();
+   836→    return () => {
+   837→      cancelled = true;
+   838→    };
+   839→  }, []);
+   840→
+   841→  const save = async () => {
+   842→    if (saving) return;
+   843→    setSaving(true);
+   844→    try {
+   845→      await adminFetch('/api/admin/settings', {
+   846→        method: 'PUT',
+   847→        body: JSON.stringify({
+   848→          entries: SITE_CONTENT_FIELDS.map((field) => ({
+   849→            key: field.key,
+   850→            value: values[field.key] ?? '',
+   851→          })),
+   852→        }),
+   853→      });
+   854→      await useSiteSettings.getState().reload();
+   855→      toast({
+   856→        title: 'Site content updated — live on site',
+   857→        description: 'Home hero, contact details, and stats now use the saved values.',
+   858→      });
+   859→    } catch (error) {
+   860→      if (error instanceof Error && error.message === 'Unauthorized.') return onUnauthorized();
+   861→      toast({
+   862→        title: 'Save failed',
+   863→        description: error instanceof Error ? error.message : 'Please try again.',
+   864→        variant: 'destructive',
+   865→      });
+   866→    } finally {
+   867→      setSaving(false);
+   868→    }
+   869→  };
+   870→
+   871→  return (
+   872→    <div className="flex flex-col gap-5">
+   873→      <div className="flex flex-wrap items-center justify-between gap-3">
+   874→        <div>
+   875→          <h2 className="text-lg font-semibold">Site content</h2>
+   876→          <p className="text-sm text-muted-foreground">
+   877→            Overrides for the home hero, contact details, and stats. Leave a field empty to use the
+   878→            default.
+   879→          </p>
+   880→        </div>
+   881→        <Button onClick={save} disabled={saving} className="h-10">
+   882→          {saving ? (
+   883→            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+   884→          ) : (
+   885→            <Save className="h-4 w-4" aria-hidden="true" />
+   886→          )}
+   887→          Save content
+   888→        </Button>
+   889→      </div>
+   890→
+   891→      <div className="card-surface rounded-2xl p-6">
+   892→        <div className="grid gap-4 sm:grid-cols-2">
+   893→          {SITE_CONTENT_FIELDS.map((field) => (
+   894→            <div
+   895→              key={field.key}
+   896→              className={cn(
+   897→                'flex flex-col gap-1.5',
+   898→                (field.key === 'hero.headline' || field.key === 'hero.subheadline') &&
+   899→                  'sm:col-span-2'
+   900→              )}
+   901→            >
+   902→              <Label htmlFor={`setting-${field.key}`}>{field.label}</Label>
+   903→              <Input
+   904→                id={`setting-${field.key}`}
+   905→                value={values[field.key] ?? ''}
+   906→                onChange={(event) =>
+   907→                  setValues((current) => ({ ...current, [field.key]: event.target.value }))
+   908→                }
+   909→                placeholder={field.defaultValue}
+   910→              />
+   911→              {field.hint ? (
+   912→                <p className="text-xs text-muted-foreground">{field.hint}</p>
+   913→              ) : null}
+   914→            </div>
+   915→          ))}
+   916→        </div>
+   917→      </div>
+   918→    </div>
+   919→  );
+   920→}
+   921→
+   922→/* ─────────────────────────── Admin view ─────────────────────────── */
+   923→
+   924→export function AdminView() {
+   925→  const { toast } = useToast();
+   926→  const [authed, setAuthed] = React.useState(false);
+   927→  const [authChecked, setAuthChecked] = React.useState(false);
+   928→
+   929→  // Session check on load — the HttpOnly cookie either rides along or not.
+   930→  React.useEffect(() => {
+   931→    let cancelled = false;
+   932→    (async () => {
+   933→      try {
+   934→        const payload = await adminFetch<{ ok: boolean }>('/api/admin/auth');
+   935→        if (!cancelled) setAuthed(Boolean(payload.ok));
+   936→      } catch {
+   937→        /* not signed in */
+   938→      } finally {
+   939→        if (!cancelled) setAuthChecked(true);
+   940→      }
+   941→    })();
+   942→    return () => {
+   943→      cancelled = true;
+   944→    };
+   945→  }, []);
+   946→
+   947→  const signOut = async () => {
+   948→    try {
+   949→      await fetch('/api/admin/auth', { method: 'DELETE' });
+   950→    } catch {
+   951→      /* clearing client state regardless */
+   952→    }
+   953→    setAuthed(false);
+   954→    toast({ title: 'Signed out', description: 'The admin session was cleared.' });
+   955→  };
+   956→
+   957→  const onUnauthorized = React.useCallback(() => {
+   958→    setAuthed(false);
+   959→    toast({
+   960→      title: 'Session expired',
+   961→      description: 'Please sign in again.',
+   962→      variant: 'destructive',
+   963→    });
+   964→  }, [toast]);
+   965→
+   966→  if (!authChecked) {
+   967→    return (
+   968→      <div className="flex min-h-[60vh] items-center justify-center text-muted-foreground">
+   969→        <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+   970→      </div>
+   971→    );
+   972→  }
+   973→
+   974→  if (!authed) {
+   975→    return <AdminLogin onAuthenticated={() => setAuthed(true)} />;
+   976→  }
+   977→
+   978→  return (
+   979→    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+   980→      <div className="flex flex-wrap items-center justify-between gap-3">
+   981→        <div className="flex items-center gap-3">
+   982→          <img src="/logo.svg" alt="" className="h-10 w-10" />
+   983→          <div>
+   984→            <h1 className="text-xl font-bold tracking-tight">Developers3 admin</h1>
+   985→            <p className="text-sm text-muted-foreground">
+   986→              Manage blog posts, pricing, and site content.
+   987→            </p>
+   988→          </div>
+   989→        </div>
+   990→        <div className="flex items-center gap-2">
+   991→          <Button variant="outline" asChild className="h-10">
+   992→            <Link href="/">
+   993→              View site
+   994→              <ExternalLink className="ml-1.5 h-3.5 w-3.5" aria-hidden="true" />
+   995→            </Link>
+   996→          </Button>
+   997→          <Button
+   998→            variant="outline"
+   999→            onClick={signOut}
+  1000→            className="h-10 text-red-600 hover:bg-red-50 hover:text-red-700"
+  1001→          >
+  1002→            <LogOut className="h-4 w-4" aria-hidden="true" />
+  1003→            Sign out
+  1004→          </Button>
+  1005→        </div>
+  1006→      </div>
+  1007→
+  1008→      <Tabs defaultValue="posts" className="mt-6">
+  1009→        <TabsList>
+  1010→          <TabsTrigger value="posts">Posts</TabsTrigger>
+  1011→          <TabsTrigger value="pricing">Pricing</TabsTrigger>
+  1012→          <TabsTrigger value="content">Site Content</TabsTrigger>
+  1013→        </TabsList>
+  1014→        <TabsContent value="posts" className="mt-5">
+  1015→          <PostsTab onUnauthorized={onUnauthorized} />
+  1016→        </TabsContent>
+  1017→        <TabsContent value="pricing" className="mt-5">
+  1018→          <PricingTab onUnauthorized={onUnauthorized} />
+  1019→        </TabsContent>
+  1020→        <TabsContent value="content" className="mt-5">
+  1021→          <SiteContentTab onUnauthorized={onUnauthorized} />
+  1022→        </TabsContent>
+  1023→      </Tabs>
+  1024→    </div>
+  1025→  );
+  1026→}
+  1027→

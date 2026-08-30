@@ -356,3 +356,158 @@
     background: rgb(37 99 235 / 0.6);
   }
 }
+
+/* ============================================================
+   COLORFUL CREATIVE LAYER — home + tools design system
+   (off-white/black sections, purple→pink accents, stickers,
+   marquees, tilted cards, pill buttons)
+   ============================================================ */
+
+.section-cream {
+  background-color: #f5f2ec;
+}
+.section-white {
+  background-color: #fafafa;
+}
+.section-black {
+  background-color: #0a0a0a;
+}
+
+/* Pill buttons */
+.btn-primary-pill {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 px-7 py-3.5 text-sm font-bold text-white shadow-[0_10px_30px_-10px_rgba(124,58,237,0.6)] transition-all duration-300 hover:shadow-[0_16px_40px_-12px_rgba(236,72,153,0.65)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2;
+}
+.btn-primary-pill-sm {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2;
+}
+.btn-secondary-pill {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#0a0a0a] bg-white px-7 py-3 text-sm font-bold text-[#0a0a0a] transition-all duration-300 hover:bg-[#0a0a0a] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2;
+}
+.btn-secondary-pill-sm {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#0a0a0a] bg-white px-5 py-2 text-sm font-bold text-[#0a0a0a] transition-all duration-300 hover:bg-[#0a0a0a] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a0a0a] focus-visible:ring-offset-2;
+}
+.btn-ghost-dark {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-white/10 px-6 py-3 text-sm font-bold text-white ring-1 ring-white/25 transition-all duration-300 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white;
+}
+
+/* Soft card (light sections) */
+.card-soft {
+  @apply rounded-3xl border border-gray-100 bg-white shadow-[0_2px_20px_rgba(10,10,10,0.04)];
+}
+
+/* 2px gradient border via mask (wraps a card; child needs rounded too) */
+.gradient-border {
+  background: linear-gradient(135deg, #7c3aed, #ec4899, #f97316);
+  padding: 2px;
+  border-radius: 1.75rem;
+}
+
+/* Sticker pill (Sticker component base) */
+.sticker {
+  @apply inline-flex items-center gap-1.5 rounded-full border-2 border-[#0a0a0a] bg-white px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wide text-[#0a0a0a] shadow-[3px_3px_0_#0a0a0a];
+}
+
+/* Tilted cards */
+.tilt-l {
+  transform: rotate(-1.2deg);
+}
+.tilt-r {
+  transform: rotate(1.2deg);
+}
+.tilt-hover {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+}
+.tilt-hover:hover {
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow: 0 24px 48px -16px rgba(10, 10, 10, 0.18);
+}
+
+/* Marker highlighter effect */
+.highlighter {
+  background-image: linear-gradient(120deg, rgba(236, 72, 153, 0.28) 0%, rgba(124, 58, 237, 0.28) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 42%;
+  background-position: 0 78%;
+}
+
+/* Dashed divider */
+.dashed-divider {
+  background-image: linear-gradient(to right, #d4d4d8 50%, transparent 50%);
+  background-size: 14px 2px;
+  background-repeat: repeat-x;
+  height: 2px;
+}
+
+/* Blobs */
+.blob {
+  @apply pointer-events-none absolute rounded-full blur-3xl;
+}
+@keyframes blob-y {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-28px) scale(1.06);
+  }
+}
+.animate-blob {
+  animation: blob-y 9s ease-in-out infinite;
+}
+.animate-blob-alt {
+  animation: blob-y 12s ease-in-out infinite reverse;
+}
+
+/* Marquee */
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee-x 28s linear infinite;
+}
+.animate-marquee-slow {
+  animation: marquee-x 44s linear infinite;
+}
+.marquee-reverse {
+  animation-direction: reverse;
+}
+.marquee-hover-pause:hover .animate-marquee,
+.marquee-hover-pause:hover .animate-marquee-slow {
+  animation-play-state: paused;
+}
+
+/* Word-rise headline animation (spans revealed with delays) */
+@keyframes word-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.word-rise {
+  display: inline-block;
+  animation: word-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-slow,
+  .animate-blob,
+  .animate-blob-alt,
+  .word-rise {
+    animation: none;
+  }
+  .tilt-l,
+  .tilt-r {
+    transform: none;
+  }
+}

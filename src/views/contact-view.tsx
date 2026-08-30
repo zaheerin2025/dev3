@@ -22,7 +22,7 @@ import { Section } from '@/components/common/section';
 import { SectionHeading } from '@/components/common/section-heading';
 import { Reveal } from '@/components/common/reveal';
 import { FAQSection } from '@/components/common/faq-section';
-import { LeadForm } from '@/components/common/lead-form';
+import { QuoteBuilder } from '@/components/common/quote-builder';
 import { JsonLd } from '@/components/common/json-ld';
 import { homeFaqs } from '@/data';
 import { site } from '@/lib/site';
@@ -169,7 +169,7 @@ export function ContactView() {
 
         {/* Inquiry form — the centerpiece */}
         <Reveal className="mt-12 md:mt-16">
-          <LeadForm source="contact" />
+          <QuoteBuilder source="contact" variant="inline" />
         </Reveal>
 
         {/* Office info strip */}
