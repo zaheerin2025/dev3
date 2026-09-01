@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { seedDefaultData } from '@/lib/seed';
 
 /** GET /api/public/portfolios — published portfolio items, admin ordering. */
 export async function GET() {
   try {
+    await seedDefaultData();
     const portfolios = await db.portfolio.findMany({
       where: { published: true },
       orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],

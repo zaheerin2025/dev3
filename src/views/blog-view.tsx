@@ -20,6 +20,10 @@ import {
 import { trackEvent } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+
 /** Author chip that works for both team-authored (static) and DB posts. */
 function AuthorLine({ item, className }: { item: BlogListItem; className?: string }) {
   const member = item.authorId ? getTeamMember(item.authorId) : undefined;
@@ -42,6 +46,65 @@ function AuthorLine({ item, className }: { item: BlogListItem; className?: strin
       </Avatar>
       <span className="text-sm font-medium text-foreground/80">{name}</span>
     </span>
+  );
+}
+
+function BlogNewsletterForm() {
+  const { toast } = useToast();
+  const [email, setEmail] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [subscribed, setSubscribed] = React.useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || loading) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error ?? 'Subscription failed.');
+      }
+      setSubscribed(true);
+      toast({ title: 'Subscribed!', description: 'You have been added to our newsletter list.' });
+    } catch (err) {
+      toast({
+        title: 'Could not subscribe',
+        description: err instanceof Error ? err.message : 'Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (subscribed) {
+    return (
+      <div className="rounded-2xl border border-[#FF4D00]/30 bg-white/10 p-6 text-center text-white">
+        <p className="font-bold text-lg">Thank you for subscribing!</p>
+        <p className="mt-1 text-sm text-white/80">You will receive our monthly web &amp; software digest.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="mx-auto flex w-full max-w-md flex-col gap-3 sm:flex-row">
+      <Input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Enter your email address"
+        className="h-12 flex-1 rounded-full bg-white px-5 text-gray-900 placeholder:text-gray-500"
+        required
+      />
+      <Button type="submit" disabled={loading} className="h-12 rounded-full bg-[#161613] px-8 text-base font-bold text-white hover:bg-black">
+        {loading ? 'Subscribing…' : 'Subscribe'}
+      </Button>
+    </form>
   );
 }
 
@@ -256,15 +319,23 @@ export function BlogView() {
       </Section>
 
       {/* Newsletter / CTA */}
-      <CTABand
-        title="One Useful Email a Month"
-        description="Web, SEO, and growth tips from real projects. No spam, unsubscribe anytime."
-        primaryHref="/contact"
-        primaryLabel="Work With Us"
-        secondaryHref=""
-        secondaryLabel=""
-        showWhatsapp={false}
-      />
+      <section className="relative w-full px-4 pb-16 pt-4 sm:px-6 md:pb-24 lg:px-8">
+        <div className="relative mx-auto max-w-7xl">
+          <div className="relative overflow-hidden rounded-3xl bg-[#FF4D00] px-6 py-12 text-center sm:px-12 md:py-16">
+            <div className="relative flex flex-col items-center gap-6">
+              <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                One Useful Email a Month
+              </h2>
+              <p className="max-w-xl text-lg text-white/90">
+                Web, SEO, and growth tips from real client projects. No spam, unsubscribe anytime.
+              </p>
+              <div className="w-full mt-2">
+                <BlogNewsletterForm />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

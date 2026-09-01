@@ -10,6 +10,7 @@ import {
   EyeOff,
   ExternalLink,
   FileText,
+  Globe,
   Inbox,
   Loader2,
   Mail,
@@ -17,6 +18,7 @@ import {
   Phone,
   Trash2,
   Check,
+  Users,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Input } from '@/components/ui/input';
@@ -164,19 +166,25 @@ function StatCard({
 export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
   const [data, setData] = React.useState<LeadsPayload | null>(null);
   const [postCount, setPostCount] = React.useState<number | null>(null);
+  const [portfolioCount, setPortfolioCount] = React.useState<number | null>(null);
+  const [subscriberCount, setSubscriberCount] = React.useState<number | null>(null);
   const [failed, setFailed] = React.useState(false);
 
   React.useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const [leads, posts] = await Promise.all([
+        const [leads, posts, portfolios, subscribers] = await Promise.all([
           adminFetch<LeadsPayload>('/api/admin/leads'),
           adminFetch<{ posts: { id: string; published: boolean }[] }>('/api/admin/posts'),
+          adminFetch<{ portfolios: { id: string }[] }>('/api/admin/portfolios').catch(() => ({ portfolios: [] })),
+          adminFetch<{ subscribers: { id: string }[] }>('/api/admin/subscribers').catch(() => ({ subscribers: [] })),
         ]);
         if (cancelled) return;
         setData(leads);
         setPostCount(posts.posts.filter((p) => p.published).length);
+        setPortfolioCount(portfolios.portfolios.length);
+        setSubscriberCount(subscribers.subscribers.length);
       } catch (error) {
         if (error instanceof Error && error.message === 'Unauthorized.') return onUnauthorized();
         if (!cancelled) setFailed(true);
@@ -203,7 +211,7 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
           Could not load the dashboard data. Refresh and try again.
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <StatCard icon={Inbox} label="Unread leads" value={unread} loading={!data} />
           <StatCard
             icon={Mail}
@@ -212,6 +220,8 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
             loading={!data}
           />
           <StatCard icon={FileText} label="Published posts" value={postCount} loading={postCount === null} />
+          <StatCard icon={Globe} label="Portfolio items" value={portfolioCount} loading={portfolioCount === null} />
+          <StatCard icon={Users} label="Subscribers" value={subscriberCount} loading={subscriberCount === null} />
         </div>
       )}
 
@@ -827,3 +837,120 @@ export function PortfoliosPanel({ onUnauthorized }: { onUnauthorized: () => void
     </div>
   );
 }
+
+/* ─────────────────────────────────────────────────────────────
+// SUBSCRIBERS — View & manage newsletter subscribers (DB-backed).
+// ───────────────────────────────────────────────────────────── */
+
+interface AdminSubscriber {
+  id: string;
+  email: string;
+  createdAt: string;
+}
+
+export function SubscribersPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
+  const { toast } = useToast();
+  const [subscribers, setSubscribers] = React.useState<AdminSubscriber[] | null>(null);
+  const [deleteTarget, setDeleteTarget] = React.useState<AdminSubscriber | null>(null);
+
+  const load = React.useCallback(async () => {
+    try {
+      const payload = await adminFetch<{ subscribers: AdminSubscriber[] }>('/api/admin/subscribers');
+      setSubscribers(payload.subscribers);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Unauthorized.') return onUnauthorized();
+      toast({
+        title: 'Could not load subscribers',
+        description: error instanceof Error ? error.message : 'Please try again.',
+        variant: 'destructive',
+      });
+    }
+  }, [onUnauthorized, toast]);
+
+  React.useEffect(() => {
+    void load();
+  }, [load]);
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await adminFetch(`/api/admin/subscribers?id=${encodeURIComponent(deleteTarget.id)}`, {
+        method: 'DELETE',
+      });
+      toast({ title: 'Subscriber removed' });
+      setDeleteTarget(null);
+      await load();
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Unauthorized.') return onUnauthorized();
+      toast({ title: 'Delete failed', variant: 'destructive' });
+      setDeleteTarget(null);
+    }
+  };
+
+  if (!subscribers) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">
+        <Loader2 className="size-5 animate-spin" aria-hidden="true" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div>
+        <h2 className="text-lg font-semibold">Newsletter Subscribers</h2>
+        <p className="text-sm text-muted-foreground">
+          Real subscriber emails captured from footer and blog newsletter signups.
+        </p>
+      </div>
+
+      {subscribers.length === 0 ? (
+        <div className="card-surface rounded-2xl p-8 text-center text-sm text-muted-foreground">
+          No newsletter subscribers yet. Signups from the site forms will appear here.
+        </div>
+      ) : (
+        <div className="card-surface overflow-hidden rounded-2xl">
+          <ul className="divide-y divide-gray-900/5">
+            {subscribers.map((sub) => (
+              <li key={sub.id} className="flex items-center justify-between gap-3 px-5 py-4">
+                <div>
+                  <p className="text-sm font-semibold">{sub.email}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    Subscribed {format(new Date(sub.createdAt), 'MMM d, yyyy · h:mm a')}
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-red-600 hover:bg-red-50 hover:text-red-700"
+                  onClick={() => setDeleteTarget(sub)}
+                >
+                  <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                  Remove
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <AlertDialog open={deleteTarget !== null} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove subscriber?</AlertDialogTitle>
+            <AlertDialogDescription>
+              “{deleteTarget?.email}” will be removed from your newsletter list.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 text-white hover:bg-red-700">
+              Remove subscriber
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
+

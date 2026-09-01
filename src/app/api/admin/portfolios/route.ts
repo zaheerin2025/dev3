@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { isAdminRequest } from '@/lib/admin-auth';
+import { seedDefaultData } from '@/lib/seed';
 import type { Prisma } from '@prisma/client';
 
 type PortfolioPayload = {
@@ -51,6 +52,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 });
   }
   try {
+    await seedDefaultData();
     const portfolios = await db.portfolio.findMany({
       orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
     });

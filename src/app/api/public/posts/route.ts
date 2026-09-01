@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { seedDefaultData } from '@/lib/seed';
 
 /**
  * GET /api/public/posts — published posts, newest first.
@@ -7,6 +8,7 @@ import { db } from '@/lib/db';
  */
 export async function GET(request: NextRequest) {
   try {
+    await seedDefaultData();
     const slug = request.nextUrl.searchParams.get('slug');
     const posts = await db.post.findMany({
       where: { published: true, ...(slug ? { slug } : {}) },

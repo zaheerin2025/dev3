@@ -106,7 +106,7 @@ export async function fetchPublicDbPosts(slug?: string): Promise<DbPost[] | null
     if (!response.ok) return null;
     const payload = (await response.json()) as { ok?: boolean; posts?: DbPost[] };
     if (!payload?.ok || !Array.isArray(payload.posts)) return null;
-    return payload.posts.length > 0 ? payload.posts : null;
+    return payload.posts;
   } catch {
     return null;
   }

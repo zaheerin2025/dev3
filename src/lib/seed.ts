@@ -1,0 +1,104 @@
+import { db } from '@/lib/db';
+import { blogPosts } from '@/data/blog-posts';
+
+/** Format a static BlogPost object's sections into plain text markdown content for Post.content */
+function formatPostContent(post: typeof blogPosts[number]): string {
+  const parts: string[] = [];
+  for (const section of post.sections) {
+    if (section.heading) {
+      parts.push(`## ${section.heading}`);
+    }
+    for (const paragraph of section.paragraphs) {
+      parts.push(paragraph);
+    }
+    if (section.bullets && section.bullets.length > 0) {
+      parts.push(section.bullets.map((b) => `- ${b}`).join('\n'));
+    }
+  }
+  return parts.join('\n\n');
+}
+
+const DEFAULT_PORTFOLIO_ITEMS = [
+  {
+    title: 'Lumina Boutique — E-Commerce Platform',
+    url: 'https://developers3.com/portfolio/lumina-boutique',
+    description: 'High-converting Shopify e-commerce store with automated email flows, instant search, and localized checkout.',
+    category: 'E-Commerce',
+    imageUrl: '/images/portfolio/lumina-boutique.png',
+    order: 1,
+    published: true,
+  },
+  {
+    title: 'Meridian Dental — Patient Portal & Booking',
+    url: 'https://developers3.com/portfolio/meridian-dental',
+    description: 'Custom Next.js clinic website with online booking, SMS appointment reminders, and patient intake forms.',
+    category: 'Website',
+    imageUrl: '/images/portfolio/meridian-dental.png',
+    order: 2,
+    published: true,
+  },
+  {
+    title: 'PulseFit — Health & Fitness Tracker App',
+    url: 'https://developers3.com/portfolio/pulsefit',
+    description: 'Cross-platform Flutter mobile app featuring workout tracking, real-time metrics, and Apple Health / Google Fit sync.',
+    category: 'Mobile App',
+    imageUrl: '/images/portfolio/pulsefit.png',
+    order: 3,
+    published: true,
+  },
+  {
+    title: 'Vantage Realty — Interactive Property Search',
+    url: 'https://developers3.com/portfolio/vantage-realty',
+    description: 'Real estate portal with map-based property search, virtual tours, and automated lead routing.',
+    category: 'Website',
+    imageUrl: '/images/portfolio/vantage-realty.png',
+    order: 4,
+    published: true,
+  },
+];
+
+/**
+ * Auto-seed initial blog posts and portfolio items if the database tables are empty.
+ * Safe to call on any API load — runs only when counts are 0.
+ */
+export async function seedDefaultData(): Promise<void> {
+  try {
+    // 1. Seed blog posts if Post table is empty
+    const postCount = await db.post.count();
+    if (postCount === 0) {
+      console.log('[seed] Seeding 4 default blog posts into DB...');
+      for (const p of blogPosts) {
+        await db.post.create({
+          data: {
+            slug: p.slug,
+            title: p.title,
+            excerpt: p.excerpt,
+            category: p.category,
+            image: null,
+            authorName: p.authorId === 'alex-morgan' ? 'Alex Morgan' : p.authorId === 'priya-sharma' ? 'Priya Sharma' : 'Sofia Alvarez',
+            authorRole: p.authorId === 'alex-morgan' ? 'Lead Web Architect' : p.authorId === 'priya-sharma' ? 'Senior Full-Stack Engineer' : 'Head of E-commerce',
+            content: formatPostContent(p),
+            readTime: parseInt(p.readTime) || 5,
+            published: true,
+            createdAt: new Date(p.date),
+          },
+        });
+      }
+      console.log('[seed] Blog posts seeded successfully.');
+    }
+
+    // 2. Seed portfolio items if Portfolio table is empty
+    const portfolioCount = await db.portfolio.count();
+    if (portfolioCount === 0) {
+      console.log('[seed] Seeding default portfolio items into DB...');
+      for (const item of DEFAULT_PORTFOLIO_ITEMS) {
+        await db.portfolio.create({
+          data: item,
+        });
+      }
+      console.log('[seed] Portfolio items seeded successfully.');
+    }
+  } catch (error) {
+    console.error('[seed] Failed to auto-seed default data:', error);
+  }
+}

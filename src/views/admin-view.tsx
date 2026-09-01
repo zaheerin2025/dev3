@@ -39,7 +39,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LeadsPanel, OverviewPanel, PortfoliosPanel } from '@/components/admin/panels';
+import { LeadsPanel, OverviewPanel, PortfoliosPanel, SubscribersPanel } from '@/components/admin/panels';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -1017,6 +1017,7 @@ export function AdminView() {
           <TabsTrigger value="posts">Posts</TabsTrigger>
           <TabsTrigger value="portfolios">Portfolio</TabsTrigger>
           <TabsTrigger value="leads">Leads</TabsTrigger>
+          <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
           <TabsTrigger value="pricing">Pricing</TabsTrigger>
           <TabsTrigger value="content">Site Content</TabsTrigger>
         </TabsList>
@@ -1031,6 +1032,9 @@ export function AdminView() {
         </TabsContent>
         <TabsContent value="leads" className="mt-5">
           <LeadsPanel onUnauthorized={onUnauthorized} />
+        </TabsContent>
+        <TabsContent value="subscribers" className="mt-5">
+          <SubscribersPanel onUnauthorized={onUnauthorized} />
         </TabsContent>
         <TabsContent value="pricing" className="mt-5">
           <PricingTab token={token} onUnauthorized={onUnauthorized} />
