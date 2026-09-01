@@ -22,6 +22,74 @@ import {
 } from '@/lib/blog-db';
 import { buildArticleSchema } from '@/lib/schema';
 import { cn, slugify } from '@/lib/utils';
+import ReactMarkdown from 'react-markdown';
+
+export const markdownComponents = {
+  h2: ({ children, ...props }: React.ComponentPropsWithoutRef<'h2'>) => {
+    const text = String(children ?? '');
+    const id = slugify(text);
+    return (
+      <h2 id={id} className="scroll-mt-28 mt-10 mb-4 text-3xl font-bold text-balance tracking-tight text-foreground" {...props}>
+        {children}
+      </h2>
+    );
+  },
+  h3: ({ children, ...props }: React.ComponentPropsWithoutRef<'h3'>) => {
+    const text = String(children ?? '');
+    const id = slugify(text);
+    return (
+      <h3 id={id} className="scroll-mt-28 mt-8 mb-3 text-2xl font-semibold text-foreground" {...props}>
+        {children}
+      </h3>
+    );
+  },
+  p: ({ children, ...props }: React.ComponentPropsWithoutRef<'p'>) => (
+    <p className="my-4 text-base sm:text-lg leading-8 text-foreground/85" {...props}>
+      {children}
+    </p>
+  ),
+  ul: ({ children, ...props }: React.ComponentPropsWithoutRef<'ul'>) => (
+    <ul className="my-5 list-disc space-y-2.5 pl-6 text-foreground/85 marker:text-gray-800" {...props}>
+      {children}
+    </ul>
+  ),
+  ol: ({ children, ...props }: React.ComponentPropsWithoutRef<'ol'>) => (
+    <ol className="my-5 list-decimal space-y-2.5 pl-6 text-foreground/85 marker:font-bold marker:text-gray-800" {...props}>
+      {children}
+    </ol>
+  ),
+  li: ({ children, ...props }: React.ComponentPropsWithoutRef<'li'>) => (
+    <li className="leading-7 text-foreground/85" {...props}>
+      {children}
+    </li>
+  ),
+  blockquote: ({ children, ...props }: React.ComponentPropsWithoutRef<'blockquote'>) => (
+    <blockquote className="my-6 border-l-4 border-[#FF4D00] bg-gray-100/60 dark:bg-zinc-900/50 p-4 sm:p-5 rounded-r-2xl italic text-foreground/90 font-medium" {...props}>
+      {children}
+    </blockquote>
+  ),
+  img: ({ src, alt, ...props }: React.ComponentPropsWithoutRef<'img'>) => (
+    <figure className="my-8">
+      <img src={src} alt={alt || ''} className="w-full max-h-[520px] rounded-2xl border border-gray-900/10 object-cover shadow-lg" {...props} />
+      {alt ? <figcaption className="mt-2.5 text-center text-xs text-muted-foreground">{alt}</figcaption> : null}
+    </figure>
+  ),
+  a: ({ href, children, ...props }: React.ComponentPropsWithoutRef<'a'>) => (
+    <a href={href} className="font-semibold text-gray-900 underline decoration-[#FF4D00] decoration-2 underline-offset-2 transition-colors hover:text-[#FF4D00]" target="_blank" rel="noopener noreferrer" {...props}>
+      {children}
+    </a>
+  ),
+  strong: ({ children, ...props }: React.ComponentPropsWithoutRef<'strong'>) => (
+    <strong className="font-bold text-foreground" {...props}>
+      {children}
+    </strong>
+  ),
+  code: ({ children, ...props }: React.ComponentPropsWithoutRef<'code'>) => (
+    <code className="rounded-md bg-gray-100 dark:bg-zinc-800 px-2 py-1 font-mono text-sm font-semibold text-gray-900 dark:text-zinc-100" {...props}>
+      {children}
+    </code>
+  ),
+};
 
 
 interface BlogPostViewProps {
@@ -462,32 +530,9 @@ function DbPostArticle({ post }: { post: DbPost }) {
       <Section>
         <div className="grid items-start gap-10 lg:grid-cols-[1fr_280px]">
           <article className="card-surface rounded-[1.5rem] p-6 sm:p-10">
-            <div className="flex flex-col gap-10">
-              {sections.map((section, index) => {
-                const id = section.heading ? slugify(section.heading) : `section-${index}`;
-                return (
-                  <Reveal key={`${id}-${index}`} delay={Math.min(index * 60, 180)}>
-                    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-28">
-                      {section.heading ? (
-                        <h2
-                          id={`${id}-title`}
-                          className="scroll-mt-28 text-3xl font-bold text-balance"
-                        >
-                          {section.heading}
-                        </h2>
-                      ) : null}
-                      <div className={cn('space-y-5', section.heading && 'mt-4')}>
-                        {section.paragraphs.map((paragraph, pIndex) => (
-                          <p key={pIndex} className="leading-8 text-foreground/85">
-                            {paragraph}
-                          </p>
-                        ))}
-                      </div>
-                    </section>
-                  </Reveal>
-                );
-              })}
-            </div>
+            <ReactMarkdown components={markdownComponents}>
+              {post.content}
+            </ReactMarkdown>
           </article>
 
           {/* Sticky TOC (only when the post has "## " headings) */}

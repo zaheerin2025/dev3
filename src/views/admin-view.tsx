@@ -9,14 +9,27 @@
 
 import * as React from 'react';
 import {
+  Bold,
+  Eye,
   ExternalLink,
+  FileCode,
+  Heading2,
+  Heading3,
+  Image as ImageIcon,
+  Italic,
+  Link2,
+  List,
+  ListOrdered,
   Loader2,
   LogOut,
   Pencil,
   Plus,
+  Quote,
   Save,
   Trash2,
 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import { markdownComponents } from '@/views/blog-post-view';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -70,6 +83,15 @@ async function adminFetch<T>(path: string, token: string, init?: RequestInit): P
     throw new Error(payload?.error ?? 'Request failed.');
   }
   return payload;
+}
+
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ''));
+    reader.onerror = () => reject(new Error('Could not read image file'));
+    reader.readAsDataURL(file);
+  });
 }
 
 interface PostDraft {
@@ -182,6 +204,12 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
   const [slugTouched, setSlugTouched] = React.useState(false);
   const [saving, setSaving] = React.useState(false);
   const [deleteTarget, setDeleteTarget] = React.useState<DbPost | null>(null);
+  const [editorMode, setEditorMode] = React.useState<'write' | 'preview'>('write');
+
+  // Photo insert modal state
+  const [photoModalOpen, setPhotoModalOpen] = React.useState(false);
+  const [photoUrl, setPhotoUrl] = React.useState('');
+  const [photoCaption, setPhotoCaption] = React.useState('');
 
   const loadPosts = React.useCallback(async () => {
     try {
@@ -203,11 +231,13 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
 
   const openNew = () => {
     setSlugTouched(false);
+    setEditorMode('write');
     setDraft({ ...EMPTY_DRAFT });
   };
 
   const openEdit = (post: DbPost) => {
-    setSlugTouched(true); // existing post — keep its slug unless manually changed
+    setSlugTouched(true);
+    setEditorMode('write');
     setDraft({
       id: post.id,
       slug: post.slug,
@@ -230,6 +260,53 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
         ? { ...current, title, slug: slugTouched ? current.slug : slugify(title) }
         : current
     );
+
+  const insertSnippet = (prefix: string, suffix: string = '') => {
+    if (!draft) return;
+    const textarea = document.getElementById('post-content') as HTMLTextAreaElement | null;
+    if (!textarea) {
+      updateDraft({ content: draft.content + `\n\n${prefix}sample text${suffix}` });
+      return;
+    }
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = draft.content.substring(start, end);
+    const textToWrap = selected || 'your text here';
+    const replacement = `${prefix}${textToWrap}${suffix}`;
+    const nextContent = draft.content.substring(0, start) + replacement + draft.content.substring(end);
+    updateDraft({ content: nextContent });
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + prefix.length, start + prefix.length + textToWrap.length);
+    }, 0);
+  };
+
+  const confirmInsertPhoto = () => {
+    if (!photoUrl.trim()) {
+      toast({ title: 'Please select an image or enter a photo URL', variant: 'destructive' });
+      return;
+    }
+    const markdownImg = `\n\n![${photoCaption.trim() || 'Photo'}](${photoUrl.trim()})\n\n`;
+    updateDraft({ content: (draft?.content ?? '') + markdownImg });
+    setPhotoModalOpen(false);
+    setPhotoUrl('');
+    setPhotoCaption('');
+    toast({ title: 'Photo inserted into post content' });
+  };
+
+  const onPickPhotoFile = async (file: File | undefined) => {
+    if (!file) return;
+    if (file.size > 1_500_000) {
+      toast({ title: 'Image too large', description: 'Please choose an image under ~1.5 MB.', variant: 'destructive' });
+      return;
+    }
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      setPhotoUrl(dataUrl);
+    } catch {
+      toast({ title: 'Upload failed', variant: 'destructive' });
+    }
+  };
 
   const save = async () => {
     if (!draft || saving) return;
@@ -313,14 +390,35 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
       {/* Editor card */}
       {draft ? (
         <div className="card-surface rounded-2xl p-6 ring-1 ring-gray-800/15">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <h3 className="text-base font-semibold">
               {draft.id ? 'Edit post' : 'New post'}
             </h3>
-            <Button variant="ghost" size="sm" onClick={() => setDraft(null)}>
-              Cancel
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant={editorMode === 'write' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setEditorMode('write')}
+                className="h-9 gap-1.5"
+              >
+                <FileCode className="h-4 w-4" />
+                Write
+              </Button>
+              <Button
+                variant={editorMode === 'preview' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setEditorMode('preview')}
+                className="h-9 gap-1.5"
+              >
+                <Eye className="h-4 w-4" />
+                Live Preview
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setDraft(null)} className="h-9">
+                Cancel
+              </Button>
+            </div>
           </div>
+
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-2 sm:col-span-2">
               <Label htmlFor="post-title">Title</Label>
@@ -369,7 +467,7 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
               </Select>
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="post-image">Cover image URL</Label>
+              <Label htmlFor="post-image">Main Cover Image URL</Label>
               <Input
                 id="post-image"
                 value={draft.image}
@@ -378,7 +476,7 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
               />
             </div>
             <div className="flex flex-col gap-2">
-              <Label>Preview</Label>
+              <Label>Cover Preview</Label>
               {draft.image.trim() ? (
                 <img
                   src={draft.image}
@@ -408,22 +506,131 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
                 required
               />
             </div>
+
+            {/* Content area with Write / Preview toggle */}
             <div className="flex flex-col gap-2 sm:col-span-2">
-              <Label htmlFor="post-content">Content</Label>
-              <Textarea
-                id="post-content"
-                rows={12}
-                value={draft.content}
-                onChange={(event) => updateDraft({ content: event.target.value })}
-                className="font-mono text-sm"
-                placeholder={"Intro paragraph.\n\n## Section heading\n\nMore text…"}
-                required
-              />
-              <p className="text-xs text-muted-foreground">
-                Blank line = new paragraph. Lines starting with &lsquo;## &rsquo; become section
-                headings.
-              </p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <Label htmlFor="post-content">Article Content</Label>
+                {editorMode === 'write' ? (
+                  <div className="flex flex-wrap items-center gap-1 rounded-lg border bg-muted/50 p-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-xs font-bold"
+                      onClick={() => insertSnippet('**', '**')}
+                      title="Bold (**text**)"
+                    >
+                      <Bold className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      onClick={() => insertSnippet('*', '*')}
+                      title="Italic (*text*)"
+                    >
+                      <Italic className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-xs font-bold"
+                      onClick={() => insertSnippet('## ')}
+                      title="Heading 2 (## Section)"
+                    >
+                      <Heading2 className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      onClick={() => insertSnippet('### ')}
+                      title="Heading 3 (### Subheading)"
+                    >
+                      <Heading3 className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      onClick={() => insertSnippet('- ')}
+                      title="Bullet List (- item)"
+                    >
+                      <List className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      onClick={() => insertSnippet('1. ')}
+                      title="Numbered List (1. item)"
+                    >
+                      <ListOrdered className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      onClick={() => insertSnippet('> ')}
+                      title="Quote (> quote)"
+                    >
+                      <Quote className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      onClick={() => insertSnippet('[', '](https://example.com)')}
+                      title="Link ([Text](url))"
+                    >
+                      <Link2 className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="default"
+                      size="sm"
+                      className="h-7 gap-1 px-2.5 text-xs bg-[#FF4D00] hover:bg-[#FF4D00]/90 text-white"
+                      onClick={() => setPhotoModalOpen(true)}
+                    >
+                      <ImageIcon className="h-3.5 w-3.5" />
+                      Add Photo
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
+
+              {editorMode === 'write' ? (
+                <>
+                  <Textarea
+                    id="post-content"
+                    rows={14}
+                    value={draft.content}
+                    onChange={(event) => updateDraft({ content: event.target.value })}
+                    className="font-mono text-sm leading-relaxed"
+                    placeholder={"Intro paragraph.\n\n## Section heading\n\nMore text...\n\n![Image caption](https://...)"}
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Format with Markdown: &lsquo;## Heading&rsquo;, &lsquo;**bold**&rsquo;, &lsquo;- list item&rsquo;, &lsquo;&gt; quote&rsquo;, &lsquo;![photo](url)&rsquo;. Click <strong>Live Preview</strong> above to test styling.
+                  </p>
+                </>
+              ) : (
+                <div className="rounded-xl border border-gray-900/10 bg-white p-6 dark:bg-zinc-950 min-h-[300px]">
+                  <ReactMarkdown components={markdownComponents}>
+                    {draft.content || '*No content written yet. Click Write to add text.*'}
+                  </ReactMarkdown>
+                </div>
+              )}
             </div>
+
             <div className="flex flex-col gap-2">
               <Label htmlFor="post-readtime">Read time (minutes)</Label>
               <Input
@@ -461,6 +668,58 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
           </div>
         </div>
       ) : null}
+
+      {/* Insert Photo Modal */}
+      <AlertDialog open={photoModalOpen} onOpenChange={setPhotoModalOpen}>
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Insert Photo into Article</AlertDialogTitle>
+            <AlertDialogDescription>
+              Upload an image file from your device or paste a photo URL to insert into your post.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex flex-col gap-4 py-2">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="photo-file">Upload image file</Label>
+              <Input
+                id="photo-file"
+                type="file"
+                accept="image/*"
+                onChange={(e) => void onPickPhotoFile(e.target.files?.[0])}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="photo-url">Or Image URL</Label>
+              <Input
+                id="photo-url"
+                value={photoUrl.startsWith('data:') ? '' : photoUrl}
+                onChange={(e) => setPhotoUrl(e.target.value)}
+                placeholder="https://images.unsplash.com/..."
+              />
+            </div>
+            {photoUrl ? (
+              <div className="flex justify-center rounded-lg border p-2 bg-muted/40">
+                <img src={photoUrl} alt="Preview" className="max-h-36 rounded-md object-cover" />
+              </div>
+            ) : null}
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="photo-caption">Photo Caption / Alt Text</Label>
+              <Input
+                id="photo-caption"
+                value={photoCaption}
+                onChange={(e) => setPhotoCaption(e.target.value)}
+                placeholder="E.g., 2025 Website cost breakdown diagram"
+              />
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPhotoModalOpen(false)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmInsertPhoto} className="bg-[#FF4D00] text-white hover:bg-[#FF4D00]/90">
+              Insert Photo
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Post list */}
       <div className="card-surface max-h-[520px] overflow-y-auto rounded-2xl custom-scrollbar">
