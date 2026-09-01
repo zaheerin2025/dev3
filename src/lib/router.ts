@@ -14,9 +14,10 @@ interface RouterState {
   setPath: (path: string) => void;
 }
 
+// Initial state must be consistent on server and client initial hydration to prevent React hydration mismatch.
 export const useRouterStore = create<RouterState>((set) => ({
-  path: typeof window !== 'undefined' ? routeFromLocation().path : '/',
-  query: typeof window !== 'undefined' ? routeFromLocation().query : '',
+  path: '/',
+  query: '',
   setRoute: (path, query) => set({ path, query }),
   setPath: (path) => set({ path }),
 }));

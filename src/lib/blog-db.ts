@@ -21,6 +21,8 @@ export interface DbPost {
   content: string;
   readTime: number;
   published: boolean;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
   createdAt: string;
   updatedAt: string;
 }

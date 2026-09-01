@@ -12,13 +12,23 @@ type PostPayload = {
   excerpt?: unknown;
   category?: unknown;
   image?: unknown;
+  authorName?: unknown;
+  authorRole?: unknown;
   content?: unknown;
   readTime?: unknown;
   published?: unknown;
+  metaTitle?: unknown;
+  metaDescription?: unknown;
 };
 
 function str(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+/** Compute reading time automatically based on word count (~200 wpm) */
+function calculateReadTime(text: string): number {
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 200));
 }
 
 /** Ensure slug uniqueness by appending -2, -3, … on conflicts. */
@@ -59,6 +69,10 @@ export async function POST(request: NextRequest) {
     const content = str(body?.content);
     const category = str(body?.category) || 'General';
     const image = str(body?.image) || null;
+    const authorName = str(body?.authorName) || 'Developers3 Team';
+    const authorRole = str(body?.authorRole) || 'Contributor';
+    const metaTitle = str(body?.metaTitle) || null;
+    const metaDescription = str(body?.metaDescription) || null;
 
     if (!title || !excerpt || !content) {
       return NextResponse.json(
@@ -75,12 +89,25 @@ export async function POST(request: NextRequest) {
     }
 
     const readTimeRaw = Number(body?.readTime);
-    const readTime = Number.isFinite(readTimeRaw) && readTimeRaw > 0 ? Math.round(readTimeRaw) : 5;
+    const readTime = Number.isFinite(readTimeRaw) && readTimeRaw > 0 ? Math.round(readTimeRaw) : calculateReadTime(content);
     const published = body?.published === undefined ? true : Boolean(body?.published);
     const slug = await uniqueSlug(slugify(str(body?.slug) || title));
 
     const post = await db.post.create({
-      data: { slug, title, excerpt, category, image, content, readTime, published },
+      data: {
+        slug,
+        title,
+        excerpt,
+        category,
+        image,
+        authorName,
+        authorRole,
+        content,
+        readTime,
+        published,
+        metaTitle,
+        metaDescription,
+      },
     });
 
     return NextResponse.json({ ok: true, post }, { status: 201 });
@@ -129,12 +156,16 @@ export async function PUT(request: NextRequest) {
       excerpt,
       content,
       category: str(body?.category) || existing.category,
-      image: str(body?.image) || null,
+      image: body?.image !== undefined ? (str(body?.image) || null) : existing.image,
+      authorName: str(body?.authorName) || existing.authorName,
+      authorRole: str(body?.authorRole) || existing.authorRole,
       readTime:
         Number.isFinite(Number(body?.readTime)) && Number(body?.readTime) > 0
           ? Math.round(Number(body?.readTime))
-          : existing.readTime,
+          : calculateReadTime(content),
       published: body?.published === undefined ? existing.published : Boolean(body?.published),
+      metaTitle: body?.metaTitle !== undefined ? (str(body?.metaTitle) || null) : existing.metaTitle,
+      metaDescription: body?.metaDescription !== undefined ? (str(body?.metaDescription) || null) : existing.metaDescription,
     };
 
     const requestedSlug = str(body?.slug);

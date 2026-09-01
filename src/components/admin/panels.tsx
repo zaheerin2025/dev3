@@ -1,8 +1,9 @@
 'use client';
 
-// Admin panels: Overview (dashboard) + Leads inbox.
-// Consumes /api/admin/leads and /api/admin/posts with the HttpOnly session
-// cookie. Extracted from views/admin-view.tsx to keep the shell readable.
+// ─────────────────────────────────────────────────────────────
+// Admin panels: Overview (dashboard) + Leads inbox + Portfolio + Subscribers.
+// Clean light styling for the administrative dashboard.
+// ─────────────────────────────────────────────────────────────
 
 import * as React from 'react';
 import {
@@ -41,7 +42,6 @@ import { Link } from '@/components/common/link';
 import { navigate } from '@/lib/router';
 import { useVisualEditor } from '@/lib/visual-editor';
 
-/** Same contract as the adminFetch helper in views/admin-view.tsx. */
 async function adminFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const token =
     typeof window !== 'undefined' ? localStorage.getItem('d3_admin_token') ?? '' : '';
@@ -78,7 +78,6 @@ interface AdminLead {
   createdAt: string;
 }
 
-/** Human-readable labels for the serialized QuoteBuilder configuration. */
 const QUOTE_CONFIG_LABELS: Record<string, string> = {
   service: 'Service',
   type: 'Project type',
@@ -107,17 +106,17 @@ function QuoteConfigDetails({ json }: { json: string | null }) {
   if (rows.length === 0) return null;
 
   return (
-    <details className="mt-3 rounded-xl border bg-muted/40 px-3 py-2">
-      <summary className="cursor-pointer text-xs font-semibold text-muted-foreground transition-colors hover:text-gray-800">
+    <details className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+      <summary className="cursor-pointer text-xs font-semibold text-slate-600 transition-colors hover:text-slate-900">
         Quote configuration ({rows.length} fields)
       </summary>
       <dl className="mt-2 flex flex-col gap-1.5 text-sm">
         {rows.map(([key, value]) => (
           <div key={key} className="flex items-start justify-between gap-3">
-            <dt className="shrink-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <dt className="shrink-0 text-xs font-medium uppercase tracking-wide text-slate-500">
               {QUOTE_CONFIG_LABELS[key] ?? key}
             </dt>
-            <dd className="min-w-0 text-right font-medium">
+            <dd className="min-w-0 text-right font-medium text-slate-800">
               {Array.isArray(value) ? value.join(', ') : String(value)}
             </dd>
           </div>
@@ -131,7 +130,9 @@ interface LeadsPayload {
   leads: AdminLead[];
 }
 
-/* ─────────────────────────── Overview ─────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   OVERVIEW / DASHBOARD
+   ───────────────────────────────────────────────────────────── */
 
 function StatCard({
   icon: Icon,
@@ -145,18 +146,18 @@ function StatCard({
   loading: boolean;
 }) {
   return (
-    <div className="card-surface flex items-center gap-4 rounded-2xl p-5">
-      <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-gray-800 to-gray-500 text-white">
+    <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
         <Icon className="size-5" aria-hidden="true" />
       </span>
       <div className="min-w-0">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
           {label}
         </p>
         {loading || value === null ? (
-          <Loader2 className="mt-1 size-4 animate-spin text-muted-foreground" aria-hidden="true" />
+          <Loader2 className="mt-1 size-4 animate-spin text-slate-400" aria-hidden="true" />
         ) : (
-          <p className="font-display text-2xl font-bold">{value}</p>
+          <p className="text-2xl font-bold text-slate-900">{value}</p>
         )}
       </div>
     </div>
@@ -190,82 +191,77 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
         if (!cancelled) setFailed(true);
       }
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [onUnauthorized]);
 
   const unread = data ? data.leads.filter((lead) => !lead.read).length : null;
 
   return (
-    <div className="flex flex-col gap-5">
-      <div>
-        <h2 className="text-lg font-semibold">Dashboard</h2>
-        <p className="text-sm text-muted-foreground">
-          Everything on the site at a glance — real numbers from your database.
+    <div className="flex flex-col gap-6">
+      <div className="border-b border-slate-200 pb-4">
+        <h2 className="text-xl font-bold text-slate-900">Dashboard Overview</h2>
+        <p className="mt-0.5 text-xs text-slate-500">
+          Summary metrics pulled directly from database.
         </p>
       </div>
 
       {failed ? (
-        <div className="card-surface rounded-2xl p-5 text-sm text-destructive">
-          Could not load the dashboard data. Refresh and try again.
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-600">
+          Could not load dashboard data. Please refresh.
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          <StatCard icon={Inbox} label="Unread leads" value={unread} loading={!data} />
-          <StatCard
-            icon={Mail}
-            label="Total leads"
-            value={data ? data.leads.length : null}
-            loading={!data}
-          />
-          <StatCard icon={FileText} label="Published posts" value={postCount} loading={postCount === null} />
-          <StatCard icon={Globe} label="Portfolio items" value={portfolioCount} loading={portfolioCount === null} />
+          <StatCard icon={Inbox} label="Unread Leads" value={unread} loading={!data} />
+          <StatCard icon={Mail} label="Total Leads" value={data ? data.leads.length : null} loading={!data} />
+          <StatCard icon={FileText} label="Published Posts" value={postCount} loading={postCount === null} />
+          <StatCard icon={Globe} label="Portfolio Items" value={portfolioCount} loading={portfolioCount === null} />
           <StatCard icon={Users} label="Subscribers" value={subscriberCount} loading={subscriberCount === null} />
         </div>
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="card-surface rounded-2xl p-5">
-          <h3 className="text-base font-semibold">Quick actions</h3>
-          <div className="mt-4 flex flex-col gap-2.5">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h3 className="text-sm font-bold text-slate-900">Quick Actions</h3>
+          <div className="mt-4 flex flex-col gap-2">
             <Button
               variant="outline"
-              className="justify-start"
+              className="justify-start border-slate-300 text-slate-700 hover:bg-slate-50"
               onClick={() => {
                 useVisualEditor.getState().setEnabled(true);
                 navigate('/');
               }}
             >
-              <Pencil className="size-4" aria-hidden="true" />
-              Edit the homepage visually
+              <Pencil className="size-4 mr-2" aria-hidden="true" />
+              Edit website visually
             </Button>
-            <Button variant="outline" className="justify-start" onClick={() => navigate('/admin?tab=leads')}>
-              <Inbox className="size-4" aria-hidden="true" />
-              Open the leads inbox
+            <Button
+              variant="outline"
+              className="justify-start border-slate-300 text-slate-700 hover:bg-slate-50"
+              onClick={() => navigate('/admin?tab=leads')}
+            >
+              <Inbox className="size-4 mr-2" aria-hidden="true" />
+              Open leads inbox
             </Button>
-            <Button variant="outline" className="justify-start" asChild>
+            <Button
+              variant="outline"
+              className="justify-start border-slate-300 text-slate-700 hover:bg-slate-50"
+              asChild
+            >
               <Link href="/">
-                <ExternalLink className="size-4" aria-hidden="true" />
-                View the live site
+                <ExternalLink className="size-4 mr-2" aria-hidden="true" />
+                View live site
               </Link>
             </Button>
           </div>
         </div>
 
-        <div className="card-surface rounded-2xl p-5">
-          <h3 className="text-base font-semibold">Going live checklist</h3>
-          <ul className="mt-4 flex flex-col gap-2.5 text-sm text-muted-foreground">
-            <li>
-              1. Set a strong <code className="rounded bg-muted px-1 py-0.5 text-xs">ADMIN_PASSCODE</code>{' '}
-              in <code className="rounded bg-muted px-1 py-0.5 text-xs">.env</code> and keep it private.
-            </li>
-            <li>2. Replace the default stats and intro copy with your real numbers (Site Content tab or the visual editor).</li>
-            <li>3. Save real contact details — phone, WhatsApp, address and socials stay hidden until you do.</li>
-            <li>
-              4. Deploy for free with the step-by-step guide in{' '}
-              <code className="rounded bg-muted px-1 py-0.5 text-xs">DEPLOYMENT-GUIDE.md</code>.
-            </li>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h3 className="text-sm font-bold text-slate-900">Site Status Checklist</h3>
+          <ul className="mt-4 flex flex-col gap-2 text-xs text-slate-600">
+            <li>1. Set a secure <code className="rounded bg-slate-100 px-1 py-0.5 font-mono text-slate-800">ADMIN_PASSCODE</code> in <code className="rounded bg-slate-100 px-1 py-0.5 font-mono text-slate-800">.env</code>.</li>
+            <li>2. Replace stats and intro copy with real company metrics.</li>
+            <li>3. Configure business email, phone, and WhatsApp numbers in Site Content tab.</li>
+            <li>4. Test all forms locally before pushing live.</li>
           </ul>
         </div>
       </div>
@@ -273,7 +269,9 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
   );
 }
 
-/* ─────────────────────────── Leads inbox ─────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   LEADS INBOX
+   ───────────────────────────────────────────────────────────── */
 
 export function LeadsPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
   const { toast } = useToast();
@@ -336,52 +334,54 @@ export function LeadsPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
 
   if (!data) {
     return (
-      <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">
-        <Loader2 className="size-5 animate-spin" aria-hidden="true" />
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <Loader2 className="size-5 animate-spin text-slate-400" aria-hidden="true" />
       </div>
     );
   }
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h2 className="text-lg font-semibold">Leads inbox</h2>
-        <p className="text-sm text-muted-foreground">
-          Every project inquiry from the contact, service, and pricing forms. Newest first.
+      <div className="border-b border-slate-200 pb-4">
+        <h2 className="text-xl font-bold text-slate-900">Leads Inbox</h2>
+        <p className="mt-0.5 text-xs text-slate-500">
+          Inquiries submitted via contact and service forms.
         </p>
       </div>
 
       {data.leads.length === 0 ? (
-        <div className="card-surface rounded-2xl p-8 text-center text-sm text-muted-foreground">
-          No leads yet. Submissions from the site forms will appear here instantly.
+        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+          No leads received yet.
         </div>
       ) : (
         <div className="flex flex-col gap-3">
           {data.leads.map((lead) => (
             <article
               key={lead.id}
-              className={`card-surface rounded-2xl p-5 ${lead.read ? '' : 'border-l-4 border-l-gray-800'}`}
+              className={`rounded-xl border bg-white p-5 shadow-sm transition-colors ${
+                lead.read ? 'border-slate-200' : 'border-l-4 border-l-[#FF4D00] border-slate-200'
+              }`}
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-semibold">{lead.name}</h3>
+                    <h3 className="font-semibold text-slate-900">{lead.name}</h3>
                     {!lead.read ? (
-                      <Badge className="bg-gray-800 text-white hover:bg-gray-800">New</Badge>
+                      <Badge className="bg-[#FF4D00] text-white">New</Badge>
                     ) : null}
-                    <Badge variant="outline" className="font-mono text-[11px]">
+                    <Badge variant="outline" className="border-slate-200 font-mono text-[10px] text-slate-500">
                       {lead.source}
                     </Badge>
                   </div>
-                  <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                    <a href={`mailto:${lead.email}`} className="inline-flex items-center gap-1.5 hover:text-gray-800">
+                  <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600">
+                    <a href={`mailto:${lead.email}`} className="inline-flex items-center gap-1 hover:text-slate-900">
                       <Mail className="size-3.5" aria-hidden="true" />
                       {lead.email}
                     </a>
                     {lead.phone ? (
                       <a
                         href={`tel:${lead.phone.replace(/[^+\d]/g, '')}`}
-                        className="inline-flex items-center gap-1.5 hover:text-gray-800"
+                        className="inline-flex items-center gap-1 hover:text-slate-900"
                       >
                         <Phone className="size-3.5" aria-hidden="true" />
                         {lead.phone}
@@ -390,51 +390,51 @@ export function LeadsPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-[11px] text-slate-400">
                     {format(new Date(lead.createdAt), 'MMM d, yyyy · h:mm a')}
                   </span>
                   <Button
                     size="icon"
                     variant="ghost"
-                    className="size-8"
+                    className="size-8 text-slate-500 hover:text-slate-900"
                     onClick={() => toggleRead(lead)}
-                    aria-label={lead.read ? 'Mark as unread' : 'Mark as read'}
-                    title={lead.read ? 'Mark as unread' : 'Mark as read'}
+                    aria-label={lead.read ? 'Mark unread' : 'Mark read'}
+                    title={lead.read ? 'Mark unread' : 'Mark read'}
                   >
-                    {lead.read ? <EyeOff className="size-4" aria-hidden="true" /> : <Eye className="size-4" aria-hidden="true" />}
+                    {lead.read ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </Button>
                   <Button
                     size="icon"
                     variant="ghost"
-                    className="size-8 text-red-600 hover:bg-red-50 hover:text-red-700"
+                    className="size-8 text-red-600 hover:bg-red-50"
                     onClick={() =>
                       setDeleteTarget({ id: lead.id, type: 'lead', label: `the lead from ${lead.name}` })
                     }
                     aria-label="Delete lead"
                   >
-                    <Trash2 className="size-4" aria-hidden="true" />
+                    <Trash2 className="size-4" />
                   </Button>
                 </div>
               </div>
 
               <div className="mt-3 flex flex-wrap gap-2">
                 {lead.service ? (
-                  <Badge variant="secondary" className="font-normal">
+                  <Badge variant="secondary" className="bg-slate-100 text-slate-700 font-normal">
                     Service: {lead.service}
                   </Badge>
                 ) : null}
                 {lead.estimate ? (
-                  <Badge className="bg-gray-800 font-normal text-white hover:bg-gray-800">
+                  <Badge className="bg-[#FF4D00]/10 text-[#FF4D00] hover:bg-[#FF4D00]/10 font-normal">
                     Estimate: {lead.estimate}
                   </Badge>
                 ) : null}
                 {lead.budget ? (
-                  <Badge variant="secondary" className="font-normal">
+                  <Badge variant="secondary" className="bg-slate-100 text-slate-700 font-normal">
                     Budget: {lead.budget}
                   </Badge>
                 ) : null}
                 {lead.timeline ? (
-                  <Badge variant="secondary" className="font-normal">
+                  <Badge variant="secondary" className="bg-slate-100 text-slate-700 font-normal">
                     Timeline: {lead.timeline}
                   </Badge>
                 ) : null}
@@ -442,7 +442,7 @@ export function LeadsPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
 
               <QuoteConfigDetails json={lead.quoteConfig} />
 
-              <p className="mt-3 whitespace-pre-wrap rounded-xl bg-muted/60 p-3 text-sm leading-relaxed">
+              <p className="mt-3 whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-xs text-slate-800 border border-slate-200">
                 {lead.message}
               </p>
             </article>
@@ -455,7 +455,7 @@ export function LeadsPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete {deleteTarget?.label}?</AlertDialogTitle>
             <AlertDialogDescription>
-              This permanently removes it from the database. There is no undo.
+              This permanently removes it from the database.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -473,9 +473,9 @@ export function LeadsPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────
-// PORTFOLIOS — CRUD for the /portfolio page items (DB-backed).
-// ─────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────────────────────────
+   PORTFOLIO PANEL
+   ───────────────────────────────────────────────────────────── */
 
 interface AdminPortfolio {
   id: string;
@@ -498,12 +498,11 @@ const EMPTY_PORTFOLIO = {
   published: true,
 };
 
-/** Inline image upload → compressed data URL (keeps payloads small). */
 function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result ?? ''));
-    reader.onerror = () => reject(new Error('Could not read the image file.'));
+    reader.onerror = () => reject(new Error('Could not read file.'));
     reader.readAsDataURL(file);
   });
 }
@@ -528,7 +527,7 @@ export function PortfoliosPanel({ onUnauthorized }: { onUnauthorized: () => void
         return;
       }
       toast({
-        title: 'Could not load portfolio items',
+        title: 'Could not load portfolios',
         description: error instanceof Error ? error.message : 'Please try again.',
         variant: 'destructive',
       });
@@ -564,7 +563,7 @@ export function PortfoliosPanel({ onUnauthorized }: { onUnauthorized: () => void
     if (!draft.title.trim() || !draft.url.trim() || !draft.description.trim()) {
       toast({
         title: 'Missing details',
-        description: 'Title, website URL and description are required.',
+        description: 'Title, URL and description are required.',
         variant: 'destructive',
       });
       return;
@@ -586,8 +585,8 @@ export function PortfoliosPanel({ onUnauthorized }: { onUnauthorized: () => void
         body: JSON.stringify(body),
       });
       toast({
-        title: editingId ? 'Portfolio item updated' : 'Portfolio item added',
-        description: 'It is now live on the /portfolio page.',
+        title: editingId ? 'Portfolio updated' : 'Portfolio added',
+        description: 'Changes are live on /portfolio.',
       });
       resetForm();
       await load();
@@ -611,7 +610,7 @@ export function PortfoliosPanel({ onUnauthorized }: { onUnauthorized: () => void
       await adminFetch(`/api/admin/portfolios?id=${encodeURIComponent(item.id)}`, {
         method: 'DELETE',
       });
-      toast({ title: 'Portfolio item deleted' });
+      toast({ title: 'Portfolio deleted' });
       if (editingId === item.id) resetForm();
       await load();
     } catch (error) {
@@ -628,7 +627,7 @@ export function PortfoliosPanel({ onUnauthorized }: { onUnauthorized: () => void
     if (file.size > 1_100_000) {
       toast({
         title: 'Image too large',
-        description: 'Please use an image under ~1 MB (WebP/JPEG screenshots work best).',
+        description: 'Max ~1 MB allowed.',
         variant: 'destructive',
       });
       return;
@@ -646,99 +645,103 @@ export function PortfoliosPanel({ onUnauthorized }: { onUnauthorized: () => void
   };
 
   return (
-    <div className="flex flex-col gap-5">
-      <div>
-        <h2 className="text-lg font-semibold">Portfolio</h2>
-        <p className="text-sm text-muted-foreground">
-          Items shown on /portfolio. Add real client sites with a screenshot, reorder with the
-          Order field, and unpublish anything you want to hide.
+    <div className="flex flex-col gap-6">
+      <div className="border-b border-slate-200 pb-4">
+        <h2 className="text-xl font-bold text-slate-900">Portfolio Items</h2>
+        <p className="mt-0.5 text-xs text-slate-500">
+          Projects displayed on the public /portfolio page.
         </p>
       </div>
 
-      {/* Editor / create form */}
-      <div className="card-surface rounded-2xl p-5">
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-sm font-semibold">
-            {editingId ? 'Edit portfolio item' : 'Add a portfolio item'}
+          <h3 className="text-sm font-bold text-slate-900">
+            {editingId ? 'Edit Portfolio Item' : 'Add Portfolio Item'}
           </h3>
           {editingId ? (
-            <Button variant="ghost" size="sm" onClick={resetForm}>
+            <Button variant="ghost" size="sm" onClick={resetForm} className="text-xs text-slate-500">
               Cancel edit
             </Button>
           ) : null}
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="pf-title">Title *</Label>
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="pf-title" className="text-xs text-slate-600">Title *</Label>
             <Input
               id="pf-title"
               value={draft.title}
               onChange={(e) => setDraft((d) => ({ ...d, title: e.target.value }))}
-              placeholder="Kamylla Cleaning — Booking site"
+              placeholder="Client Project Title"
+              className="border-slate-300 bg-white text-slate-900 text-xs"
             />
           </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="pf-url">Website URL *</Label>
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="pf-url" className="text-xs text-slate-600">URL *</Label>
             <Input
               id="pf-url"
               type="url"
               value={draft.url}
               onChange={(e) => setDraft((d) => ({ ...d, url: e.target.value }))}
               placeholder="https://example.com"
+              className="border-slate-300 bg-white text-slate-900 text-xs"
             />
           </div>
-          <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <Label htmlFor="pf-desc">Description *</Label>
+          <div className="flex flex-col gap-1 sm:col-span-2">
+            <Label htmlFor="pf-desc" className="text-xs text-slate-600">Description *</Label>
             <Textarea
               id="pf-desc"
               rows={3}
               value={draft.description}
               onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
-              placeholder="One or two sentences about the project and the result."
+              placeholder="Project summary..."
+              className="border-slate-300 bg-white text-slate-900 text-xs"
             />
           </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="pf-category">Category</Label>
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="pf-category" className="text-xs text-slate-600">Category</Label>
             <Input
               id="pf-category"
               value={draft.category}
               onChange={(e) => setDraft((d) => ({ ...d, category: e.target.value }))}
               placeholder="Website"
+              className="border-slate-300 bg-white text-slate-900 text-xs"
             />
           </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="pf-order">Order</Label>
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="pf-order" className="text-xs text-slate-600">Order</Label>
             <Input
               id="pf-order"
               type="number"
               value={draft.order}
               onChange={(e) => setDraft((d) => ({ ...d, order: e.target.value }))}
+              className="border-slate-300 bg-white text-slate-900 text-xs"
             />
           </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="pf-image">Screenshot</Label>
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="pf-image" className="text-xs text-slate-600">Screenshot</Label>
             <Input
               id="pf-image"
               type="file"
               accept="image/*"
               onChange={(e) => void onPickImage(e.target.files?.[0])}
+              className="border-slate-300 bg-white text-xs"
             />
             <Input
               value={draft.imageUrl.startsWith('data:') ? '' : draft.imageUrl}
               onChange={(e) => setDraft((d) => ({ ...d, imageUrl: e.target.value }))}
-              placeholder="…or paste an image URL"
+              placeholder="...or paste image URL"
+              className="border-slate-300 bg-white text-xs mt-1 text-slate-900"
             />
           </div>
           <div className="flex items-end gap-3">
             {draft.imageUrl ? (
-               
               <img
                 src={draft.imageUrl}
-                alt="Portfolio screenshot preview"
-                className="h-14 w-24 rounded-lg border object-cover"
+                alt="Preview"
+                className="h-14 w-24 rounded border border-slate-200 object-cover"
               />
             ) : null}
-            <label className="flex cursor-pointer items-center gap-2 text-sm">
+            <label className="flex cursor-pointer items-center gap-2 text-xs text-slate-700">
               <input
                 type="checkbox"
                 checked={draft.published}
@@ -750,60 +753,39 @@ export function PortfoliosPanel({ onUnauthorized }: { onUnauthorized: () => void
           </div>
         </div>
         <div className="mt-4 flex justify-end">
-          <Button onClick={save} disabled={saving} className="h-10">
-            {saving ? (
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-            ) : (
-              <Check className="h-4 w-4" aria-hidden="true" />
-            )}
-            {editingId ? 'Save changes' : 'Add item'}
+          <Button onClick={save} disabled={saving} className="h-9 gap-1 bg-[#FF4D00] text-white hover:bg-[#e04400]">
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+            {editingId ? 'Save Item' : 'Add Item'}
           </Button>
         </div>
       </div>
 
-      {/* List */}
       {loading ? (
-        <div className="card-surface rounded-2xl p-6 text-sm text-muted-foreground">Loading…</div>
+        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-xs text-slate-500">
+          Loading portfolio items...
+        </div>
       ) : items.length === 0 ? (
-        <div className="card-surface rounded-2xl p-6 text-sm text-muted-foreground">
-          No portfolio items yet — add your first one above.
+        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-xs text-slate-500">
+          No portfolio items created yet.
         </div>
       ) : (
         <div className="flex flex-col gap-2">
           {items.map((item) => (
-            <div
-              key={item.id}
-              className="card-surface flex items-center gap-4 rounded-2xl p-3"
-            >
+            <div key={item.id} className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
               {item.imageUrl ? (
-                 
-                <img
-                  src={item.imageUrl}
-                  alt=""
-                  className="h-14 w-24 shrink-0 rounded-lg border object-cover"
-                />
+                <img src={item.imageUrl} alt="" className="h-12 w-20 shrink-0 rounded border border-slate-200 object-cover" />
               ) : (
-                <div className="h-14 w-24 shrink-0 rounded-lg border bg-muted" />
+                <div className="h-12 w-20 shrink-0 rounded border border-slate-200 bg-slate-100" />
               )}
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <p className="truncate text-sm font-semibold">{item.title}</p>
-                  {!item.published ? <Badge variant="secondary">Hidden</Badge> : null}
-                </div>
-                <p className="truncate text-xs text-muted-foreground">
-                  {item.category} · order {item.order} · {item.url}
-                </p>
+                <p className="truncate text-sm font-semibold text-slate-900">{item.title}</p>
+                <p className="truncate text-xs text-slate-500">{item.category} · order {item.order} · {item.url}</p>
               </div>
-              <div className="flex shrink-0 gap-2">
-                <Button variant="outline" size="sm" onClick={() => startEdit(item)}>
+              <div className="flex shrink-0 gap-1.5">
+                <Button variant="outline" size="sm" onClick={() => startEdit(item)} className="h-8 border-slate-300 text-xs">
                   Edit
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-destructive hover:text-destructive"
-                  onClick={() => setDeleteTarget(item)}
-                >
+                <Button variant="outline" size="sm" onClick={() => setDeleteTarget(item)} className="h-8 border-slate-300 text-xs text-red-600 hover:bg-red-50">
                   Delete
                 </Button>
               </div>
@@ -815,20 +797,14 @@ export function PortfoliosPanel({ onUnauthorized }: { onUnauthorized: () => void
       <AlertDialog open={Boolean(deleteTarget)} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete this portfolio item?</AlertDialogTitle>
+            <AlertDialogTitle>Delete portfolio item?</AlertDialogTitle>
             <AlertDialogDescription>
-              “{deleteTarget?.title}” will be removed from the public portfolio page. This cannot
-              be undone.
+              &ldquo;{deleteTarget?.title}&rdquo; will be removed from the portfolio page.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (deleteTarget) void remove(deleteTarget);
-                setDeleteTarget(null);
-              }}
-            >
+            <AlertDialogAction onClick={() => { if (deleteTarget) void remove(deleteTarget); setDeleteTarget(null); }}>
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -839,8 +815,8 @@ export function PortfoliosPanel({ onUnauthorized }: { onUnauthorized: () => void
 }
 
 /* ─────────────────────────────────────────────────────────────
-// SUBSCRIBERS — View & manage newsletter subscribers (DB-backed).
-// ───────────────────────────────────────────────────────────── */
+   SUBSCRIBERS PANEL
+   ───────────────────────────────────────────────────────────── */
 
 interface AdminSubscriber {
   id: string;
@@ -889,48 +865,48 @@ export function SubscribersPanel({ onUnauthorized }: { onUnauthorized: () => voi
 
   if (!subscribers) {
     return (
-      <div className="flex min-h-[40vh] items-center justify-center text-muted-foreground">
-        <Loader2 className="size-5 animate-spin" aria-hidden="true" />
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <Loader2 className="size-5 animate-spin text-slate-400" aria-hidden="true" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <div>
-        <h2 className="text-lg font-semibold">Newsletter Subscribers</h2>
-        <p className="text-sm text-muted-foreground">
-          Real subscriber emails captured from footer and blog newsletter signups.
+    <div className="flex flex-col gap-6">
+      <div className="border-b border-slate-200 pb-4">
+        <h2 className="text-xl font-bold text-slate-900">Newsletter Subscribers</h2>
+        <p className="mt-0.5 text-xs text-slate-500">
+          Emails captured from website footer and blog forms.
         </p>
       </div>
 
       {subscribers.length === 0 ? (
-        <div className="card-surface rounded-2xl p-8 text-center text-sm text-muted-foreground">
-          No newsletter subscribers yet. Signups from the site forms will appear here.
+        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-xs text-slate-500">
+          No newsletter subscribers recorded.
         </div>
       ) : (
-        <div className="card-surface overflow-hidden rounded-2xl">
-          <ul className="divide-y divide-gray-900/5">
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="divide-y divide-slate-100">
             {subscribers.map((sub) => (
-              <li key={sub.id} className="flex items-center justify-between gap-3 px-5 py-4">
+              <div key={sub.id} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-slate-50">
                 <div>
-                  <p className="text-sm font-semibold">{sub.email}</p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
+                  <p className="text-sm font-semibold text-slate-900">{sub.email}</p>
+                  <p className="text-[11px] text-slate-400">
                     Subscribed {format(new Date(sub.createdAt), 'MMM d, yyyy · h:mm a')}
                   </p>
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-8 text-red-600 hover:bg-red-50 hover:text-red-700"
+                  className="h-8 border-slate-300 text-xs text-red-600 hover:bg-red-50"
                   onClick={() => setDeleteTarget(sub)}
                 >
-                  <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                  <Trash2 className="h-3.5 w-3.5 mr-1" />
                   Remove
                 </Button>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
 
@@ -939,13 +915,13 @@ export function SubscribersPanel({ onUnauthorized }: { onUnauthorized: () => voi
           <AlertDialogHeader>
             <AlertDialogTitle>Remove subscriber?</AlertDialogTitle>
             <AlertDialogDescription>
-              “{deleteTarget?.email}” will be removed from your newsletter list.
+              &ldquo;{deleteTarget?.email}&rdquo; will be deleted from your list.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDelete} className="bg-red-600 text-white hover:bg-red-700">
-              Remove subscriber
+              Remove
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -953,4 +929,3 @@ export function SubscribersPanel({ onUnauthorized }: { onUnauthorized: () => voi
     </div>
   );
 }
-

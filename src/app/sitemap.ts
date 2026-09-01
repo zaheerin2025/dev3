@@ -1,8 +1,9 @@
 import type { MetadataRoute } from 'next';
 import { blogPosts, caseStudies, services } from '@/data';
 import { site } from '@/lib/site';
+import { db } from '@/lib/db';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const staticPaths: MetadataRoute.Sitemap = [
@@ -31,12 +32,33 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  const blogPaths: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+  // Static fallback blog posts
+  const staticBlogSlugs = new Set(blogPosts.map((p) => p.slug));
+  const staticBlogPaths: MetadataRoute.Sitemap = blogPosts.map((post) => ({
     url: `${site.url}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: 'monthly',
     priority: 0.6,
   }));
 
-  return [...staticPaths, ...servicePaths, ...caseStudyPaths, ...blogPaths];
+  // Dynamic DB blog posts (published only)
+  let dbBlogPaths: MetadataRoute.Sitemap = [];
+  try {
+    const dbPosts = await db.post.findMany({
+      where: { published: true },
+      select: { slug: true, updatedAt: true },
+    });
+    dbBlogPaths = dbPosts
+      .filter((post) => !staticBlogSlugs.has(post.slug))
+      .map((post) => ({
+        url: `${site.url}/blog/${post.slug}`,
+        lastModified: new Date(post.updatedAt),
+        changeFrequency: 'monthly',
+        priority: 0.6,
+      }));
+  } catch {
+    // Fallback gracefully if database is unreachable
+  }
+
+  return [...staticPaths, ...servicePaths, ...caseStudyPaths, ...staticBlogPaths, ...dbBlogPaths];
 }

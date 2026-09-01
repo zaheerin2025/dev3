@@ -18,7 +18,6 @@ interface HeaderProps {
   path: string;
 }
 
-/** Same link set as the full-screen mobile menu — desktop and mobile stay in sync. */
 const MAIN_NAV = [
   { label: 'Work', href: '/portfolio' },
   { label: 'Free Tools', href: '/tools' },
@@ -32,12 +31,11 @@ function isActive(path: string, href: string): boolean {
   if (href === '/portfolio') return path.startsWith('/portfolio');
   if (href === '/tools') return path === '/tools' || path.startsWith('/tools/');
   if (href === '/blog') return path.startsWith('/blog');
-  // Services hub stays active on /services and on ANY service detail page.
   if (href === '/services') return path === '/services' || (services.some((s) => s.slug === path.slice(1)) && path !== '/');
   return path === href;
 }
 
-/** Logo lockup — same as the one in the full-screen mobile menu. */
+/** Logo lockup with pro live green dot indicator. */
 export function Logo({ className }: { className?: string }) {
   return (
     <Link
@@ -45,11 +43,18 @@ export function Logo({ className }: { className?: string }) {
       className={cn('flex items-center gap-2.5 transition-opacity hover:opacity-80', className)}
       ariaLabel="Developers3 — home"
     >
-      <span
-        aria-hidden="true"
-        className="flex size-9 items-center justify-center rounded-xl bg-[#161613]"
-      >
-        <Sparkle className="size-4.5 text-[#FF4D00]" fill="currentColor" />
+      <span className="relative flex items-center justify-center">
+        <span
+          aria-hidden="true"
+          className="flex size-9 items-center justify-center rounded-xl bg-[#161613]"
+        >
+          <Sparkle className="size-4.5 text-[#FF4D00]" fill="currentColor" />
+        </span>
+        {/* Pro green live status dot */}
+        <span className="absolute -right-0.5 -top-0.5 flex size-2.5" title="Live & Active">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+          <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500 ring-2 ring-[#fafaf7]" />
+        </span>
       </span>
       <span className="font-display text-[22px] font-bold tracking-tight text-[#161613]">
         Developers3
@@ -58,22 +63,14 @@ export function Logo({ className }: { className?: string }) {
   );
 }
 
-/** Sans nav link styling — shared by every desktop item (readable, modern). */
 const NAV_LINK_CLASS =
   'relative inline-flex h-20 items-center text-[15px] font-semibold transition-colors hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00]';
 
-/**
- * HEADER — clean paper bar: solid background (no backdrop blur — cheaper
- * paint), roomy 80px height, sans nav links, grotesk logotype, tangerine
- * active marker. Services opens the featured-services dropdown with the
- * 4-color accent ramp on the icon tiles.
- */
 export function Header({ path }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [megaOpen, setMegaOpen] = React.useState(false);
   const servicesActive = isActive(path, '/services');
 
-  // Close menus whenever the route changes (hash navigation keeps the SPA alive).
   const [prevPath, setPrevPath] = React.useState(path);
   if (prevPath !== path) {
     setPrevPath(path);
@@ -85,17 +82,9 @@ export function Header({ path }: HeaderProps) {
     <>
       <header className="sticky top-0 z-50 w-full border-b border-[#e6e5de] bg-[#fafaf7]">
         <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          {/* Left group — logo + availability status (relocated from the
-              hero so the badge stays visible without adding hero height) */}
+          {/* Logo with pro green dot */}
           <div className="flex items-center gap-7">
             <Logo />
-            <p className="hidden items-center gap-2 text-[13px] font-semibold text-[#6f6e66] xl:inline-flex">
-              <span
-                className="size-2 rounded-full bg-[#0FA36B] animate-pulse-dot"
-                aria-hidden="true"
-              />
-              Available for new projects
-            </p>
           </div>
 
           {/* Desktop nav */}
@@ -122,13 +111,11 @@ export function Header({ path }: HeaderProps) {
                 </button>
               </DropdownMenuTrigger>
 
-              {/* Services panel */}
               <DropdownMenuContent
                 align="start"
                 sideOffset={10}
                 className="w-[560px] rounded-2xl border border-[#e6e5de] bg-white p-2.5 shadow-[0_24px_48px_-24px_rgba(22,22,19,0.35)]"
               >
-                {/* Panel header row */}
                 <div className="flex items-center justify-between gap-3 px-3 pb-2 pt-2">
                   <span className="eyebrow inline-flex items-center gap-2">
                     <Sparkle className="size-3.5 text-[#FF4D00]" fill="currentColor" aria-hidden="true" />
@@ -143,7 +130,6 @@ export function Header({ path }: HeaderProps) {
                   </Link>
                 </div>
 
-                {/* Featured service rows */}
                 <div className="flex flex-col">
                   {featuredServices.map((service, index) => {
                     const href = `/${service.slug}`;
@@ -181,7 +167,6 @@ export function Header({ path }: HeaderProps) {
                   })}
                 </div>
 
-                {/* Bottom action row */}
                 <div className="mt-1.5 border-t border-[#e6e5de] px-3 py-3.5">
                   <div className="flex items-center justify-end gap-2.5">
                     <Link href="/services" className="btn-secondary-pill-sm">
@@ -239,8 +224,6 @@ export function Header({ path }: HeaderProps) {
         </div>
       </header>
 
-      {/* Full-screen mobile navigation overlay — rendered OUTSIDE the sticky
-          header so the fixed overlay is not clipped by the sticky bar. */}
       <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
     </>
   );

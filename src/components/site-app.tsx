@@ -33,7 +33,6 @@ export function SiteApp() {
   const loadSettings = useSiteSettings((s) => s.load);
 
   // Load admin-editable site settings once (hero copy, contacts, pricing…).
-  // Failures are ignored — views fall back to the static defaults.
   React.useEffect(() => {
     void loadSettings();
   }, [loadSettings]);
@@ -76,6 +75,11 @@ export function SiteApp() {
       ?.setAttribute('content', match.kind === 'admin' ? 'noindex, nofollow' : 'index, follow');
   }, [match, path]);
 
+  // Admin view renders standalone without public header/footer
+  if (match.kind === 'admin') {
+    return <AdminView />;
+  }
+
   let view: React.ReactNode;
   switch (match.kind) {
     case 'home':
@@ -107,9 +111,6 @@ export function SiteApp() {
       break;
     case 'blog-post':
       view = <BlogPostView slug={match.slug} />;
-      break;
-    case 'admin':
-      view = <AdminView />;
       break;
     case 'tools-hub':
       view = <ToolsHubView />;

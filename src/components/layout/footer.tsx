@@ -106,9 +106,12 @@ export function Footer() {
             </Link>
             <p className="max-w-xs text-[15px] leading-relaxed text-zinc-400">{blurb}</p>
             {/* Availability status */}
-            <p className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3.5 py-2 text-sm font-semibold text-zinc-300">
-              <span className="size-2 rounded-full bg-green-500" aria-hidden="true" />
-              Available for new projects
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3.5 py-1.5 text-xs font-semibold text-zinc-300">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+              </span>
+              Live Development Studio
             </p>
           </div>
 
