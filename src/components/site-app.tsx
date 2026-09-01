@@ -38,17 +38,21 @@ export function SiteApp() {
     void loadSettings();
   }, [loadSettings]);
 
-  // Hash → state sync (initial load + back/forward + link clicks)
+  // Location → state sync (initial load + back/forward + link clicks)
   React.useEffect(() => {
-    const applyHash = () => {
+    const applyLocation = () => {
       const { path: nextPath, query } = routeFromLocation();
       const prevPath = useRouterStore.getState().path;
       setRoute(nextPath, query);
       if (nextPath !== prevPath) window.scrollTo({ top: 0, behavior: 'auto' });
     };
-    applyHash();
-    window.addEventListener('hashchange', applyHash);
-    return () => window.removeEventListener('hashchange', applyHash);
+    applyLocation();
+    window.addEventListener('popstate', applyLocation);
+    window.addEventListener('hashchange', applyLocation);
+    return () => {
+      window.removeEventListener('popstate', applyLocation);
+      window.removeEventListener('hashchange', applyLocation);
+    };
   }, [setRoute]);
 
   const match = React.useMemo(() => resolveRoute(path, routeData), [path]);
