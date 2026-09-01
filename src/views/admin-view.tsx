@@ -50,19 +50,12 @@ import { site } from '@/lib/site';
 import type { PricingBlock, PricingTier } from '@/lib/types';
 import type { DbPost } from '@/lib/blog-db';
 import { useSiteSettings } from '@/lib/use-site-settings';
-import { cn } from '@/lib/utils';
+import { cn, slugify } from '@/lib/utils';
 
 const TOKEN_KEY = 'd3_admin_token';
 
 const POST_CATEGORIES = Array.from(new Set(blogPosts.map((post) => post.category)));
 
-/** URL-safe slug: lowercase, alphanumerics and single dashes. */
-function slugify(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)+/g, '');
-}
 
 /** Authorized fetch helper — throws on non-OK, parses `{ ok, … }` JSON. */
 async function adminFetch<T>(path: string, token: string, init?: RequestInit): Promise<T> {

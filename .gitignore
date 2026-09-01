@@ -53,3 +53,8 @@ server.log
 # Skills directory
 /skills/tool-results/
 tool-results/
+
+# Database files — NEVER commit (may contain real leads/user data)
+db/
+*.db
+*.db-journal

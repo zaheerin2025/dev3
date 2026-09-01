@@ -1,5 +1,7 @@
 'use client';
 
+import { safeJsonStringify } from '@/lib/api-security';
+
 interface JsonLdProps {
   data: object | object[];
 }
@@ -13,9 +15,10 @@ export function JsonLd({ data }: JsonLdProps) {
         <script
           key={index}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(item) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonStringify(item) }}
         />
       ))}
     </>
   );
 }
+

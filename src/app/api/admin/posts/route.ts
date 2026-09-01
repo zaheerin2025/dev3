@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { isAdminRequest } from '@/lib/admin-auth';
 import type { Prisma } from '@prisma/client';
+import { slugify } from '@/lib/utils';
 
 type PostPayload = {
   id?: unknown;
@@ -17,15 +18,6 @@ type PostPayload = {
 
 function str(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';
-}
-
-/** URL-safe slug: lowercase, alphanumerics and single dashes. */
-function slugify(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)+/g, '')
-    .slice(0, 120);
 }
 
 /** Ensure slug uniqueness by appending -2, -3, … on conflicts. */
@@ -73,6 +65,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (title.length > 300 || excerpt.length > 500 || content.length > 100_000) {
+      return NextResponse.json(
+        { ok: false, error: 'Field length exceeded (title: 300, excerpt: 500, content: 100,000).' },
+        { status: 400 }
+      );
+    }
+
     const readTimeRaw = Number(body?.readTime);
     const readTime = Number.isFinite(readTimeRaw) && readTimeRaw > 0 ? Math.round(readTimeRaw) : 5;
     const published = body?.published === undefined ? true : Boolean(body?.published);
@@ -112,6 +111,13 @@ export async function PUT(request: NextRequest) {
     if (!title || !excerpt || !content) {
       return NextResponse.json(
         { ok: false, error: 'Title, excerpt and content are required.' },
+        { status: 400 }
+      );
+    }
+
+    if (title.length > 300 || excerpt.length > 500 || content.length > 100_000) {
+      return NextResponse.json(
+        { ok: false, error: 'Field length exceeded (title: 300, excerpt: 500, content: 100,000).' },
         { status: 400 }
       );
     }

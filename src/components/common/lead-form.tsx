@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
+import { cn, EMAIL_REGEX } from '@/lib/utils';
 import { trackEvent } from '@/lib/analytics';
 import { services } from '@/data';
 import { site, whatsappLink } from '@/lib/site';
@@ -31,7 +31,6 @@ const BUDGET_RANGES = [
 
 const TIMELINE_OPTIONS = ['ASAP — this month', '1–3 months', '3–6 months', 'Just exploring'];
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const MESSAGE_MAX = 500;
 const MESSAGE_MIN = 20;

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { isAdminRequest } from '@/lib/admin-auth';
 
+/** Only allow safe characters in setting keys. */
+const SAFE_KEY_RE = /^[a-zA-Z0-9._-]+$/;
+
 /** GET /api/admin/settings — every Setting row as a plain key/value object. */
 export async function GET(request: NextRequest) {
   if (!isAdminRequest(request)) {
@@ -49,8 +52,11 @@ export async function PUT(request: NextRequest) {
     for (const entry of entries) {
       const key = typeof entry?.key === 'string' ? entry.key.trim() : '';
       const value = typeof entry?.value === 'string' ? entry.value : '';
-      if (!key) {
-        return NextResponse.json({ ok: false, error: 'Every entry needs a key.' }, { status: 400 });
+      if (!key || key.length > 120 || !SAFE_KEY_RE.test(key)) {
+        return NextResponse.json(
+          { ok: false, error: `Invalid key "${key.slice(0, 30)}…". Keys must be 1-120 alphanumeric characters with dots, underscores, or hyphens.` },
+          { status: 400 }
+        );
       }
       if (value.length > 8000) {
         return NextResponse.json(

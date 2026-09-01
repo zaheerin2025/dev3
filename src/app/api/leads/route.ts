@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+import { rateLimitOr429 } from '@/lib/api-security';
+import { EMAIL_REGEX } from '@/lib/utils';
 
 const leadSchema = z.object({
   name: z.string().trim().min(2, 'Name is required').max(120),
@@ -18,6 +18,15 @@ const leadSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit: 5 lead submissions per minute per IP.
+    const limit = rateLimitOr429(request, 'leads', 5, 60_000);
+    if (!limit.ok) {
+      return NextResponse.json(
+        { ok: false, error: 'Too many submissions. Please wait a moment and try again.' },
+        { status: 429, headers: { 'Retry-After': String(limit.retryAfterSec) } }
+      );
+    }
+
     const body = await request.json();
     const parsed = leadSchema.safeParse(body);
 

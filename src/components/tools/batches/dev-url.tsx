@@ -1629,7 +1629,6 @@ const PasswordGenerator = () => {
 
   React.useEffect(() => {
     generate();
-     
   }, [length, useLower, useUpper, useDigits, useSymbols, avoidAmbiguous]);
 
   const entropy = pool ? length * Math.log2(pool.length) : 0;

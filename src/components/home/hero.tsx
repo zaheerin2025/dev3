@@ -37,7 +37,6 @@ const ROTATOR_ITEMS = [
   'A Mobile App',
   'Google Ads',
   'Meta Ads',
-  'AI Automation',
   'Better Visibility',
 ];
 
@@ -113,8 +112,8 @@ export function Hero() {
                   {/* Screen readers get the full sentence once; the visual
                       rotator below is decorative. */}
                   <span className="sr-only">
-                    Your business needs a better website, more customers, a mobile app, Google
-                    Ads, Meta Ads, AI automation or better visibility — we make it happen.
+                  Your business needs a better website, more customers, a mobile app, Google
+                    Ads, Meta Ads, or better visibility — we make it happen.
                   </span>
                   <span aria-hidden="true">
                     <span className="word-rise block" style={{ ['--rise-delay' as string]: '0ms' }}>

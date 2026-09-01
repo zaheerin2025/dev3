@@ -19,7 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Link } from '@/components/common/link';
 import { ServiceIconGlyph } from '@/components/common/icon-map';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
+import { cn, EMAIL_REGEX } from '@/lib/utils';
 import { trackEvent } from '@/lib/analytics';
 import { services } from '@/data';
 import { whatsappLink } from '@/lib/site';
@@ -65,7 +65,6 @@ const STEP_META: Record<StepId, string> = {
   3: 'Your details',
 };
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const NOTES_MAX = 800;
 
 type Errors = { name?: string; email?: string };

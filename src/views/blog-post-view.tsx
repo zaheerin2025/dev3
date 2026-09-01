@@ -21,15 +21,8 @@ import {
   type DbPost,
 } from '@/lib/blog-db';
 import { buildArticleSchema } from '@/lib/schema';
-import { cn } from '@/lib/utils';
+import { cn, slugify } from '@/lib/utils';
 
-/** Deterministic heading → element id helper for the in-page table of contents. */
-function slugify(heading: string): string {
-  return heading
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
 
 interface BlogPostViewProps {
   slug: string;

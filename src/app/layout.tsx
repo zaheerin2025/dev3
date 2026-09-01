@@ -9,6 +9,7 @@ import {
   buildOrganizationSchema,
   buildWebSiteSchema,
 } from "@/lib/schema";
+import { safeJsonStringify } from "@/lib/api-security";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -96,8 +97,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
-// AdSense publisher id — the loader script + <AdSlot> units activate when set.
-const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? 'ca-pub-1264514278457797';
+  // AdSense publisher id — the loader script + <AdSlot> units activate only when explicitly set.
+  const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || '';
+  const localBusiness = buildLocalBusinessSchema();
 
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} suppressHydrationWarning>
@@ -106,17 +108,17 @@ const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? 'ca-pub-12645142
         <Toaster />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildOrganizationSchema()) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonStringify(buildOrganizationSchema()) }}
         />
-        {buildLocalBusinessSchema() ? (
+        {localBusiness ? (
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(buildLocalBusinessSchema()) }}
+            dangerouslySetInnerHTML={{ __html: safeJsonStringify(localBusiness) }}
           />
         ) : null}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildWebSiteSchema()) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonStringify(buildWebSiteSchema()) }}
         />
         {gaId ? (
           <>

@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // Project inquiries from contact/service/pricing forms (honeypot-filtered).
@@ -20,6 +21,8 @@ model Lead {
   source    String   @default("contact")
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  @@index([createdAt])
 }
 
 // Footer newsletter subscribers.
@@ -45,6 +48,8 @@ model Post {
   published  Boolean  @default(true)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@index([published, createdAt])
 }
 
 // Simple key/value site content overrides (hero copy, contacts, stats, pricing JSON).
@@ -66,4 +71,6 @@ model Portfolio {
   published   Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([published, order])
 }

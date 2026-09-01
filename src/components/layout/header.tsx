@@ -74,10 +74,12 @@ export function Header({ path }: HeaderProps) {
   const servicesActive = isActive(path, '/services');
 
   // Close menus whenever the route changes (hash navigation keeps the SPA alive).
-  React.useEffect(() => {
+  const [prevPath, setPrevPath] = React.useState(path);
+  if (prevPath !== path) {
+    setPrevPath(path);
     setMegaOpen(false);
     setMobileOpen(false);
-  }, [path]);
+  }
 
   return (
     <>

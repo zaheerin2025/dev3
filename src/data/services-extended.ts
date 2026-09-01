@@ -225,9 +225,9 @@ export const servicesExtended: Service[] = [
           'Crawl errors, duplicate content and slow Core Web Vitals silently cap your rankings no matter how good the content is. Our audits fix that foundation first, so every article and link you invest in afterwards performs at full strength instead of leaking rankings to fixable problems.',
       },
       {
-        title: 'Visibility in Local and AI Search',
+        title: 'Visibility in Local and Featured Search',
         description:
-          'Beyond classic rankings we optimise for the map pack and for AI-generated answers that now quote sources directly. Structured data, review velocity and clearly structured content make your business the one search engines and assistants cite — visibility that compounds as more discovery shifts to these surfaces.',
+          'Beyond classic rankings we optimise for the map pack and for featured snippets that now appear at the top of results. Structured data, review velocity and clearly structured content make your business the one search engines cite first — visibility that compounds as more discovery shifts to zero-click surfaces.',
       },
       {
         title: 'Reporting You Can Hand to Your Board',

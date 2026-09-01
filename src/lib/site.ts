@@ -2,11 +2,14 @@
 // Contact fields hold the owner's REAL details (also editable from the
 // admin panel, whose saved overrides always win over these defaults).
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://developers3.com';
+const siteDomain = siteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
 export const site = {
   name: 'Developers3',
   legalName: 'Developers3',
-  domain: 'developers3.com',
-  url: 'https://developers3.com',
+  domain: siteDomain,
+  url: siteUrl,
   tagline: 'Web, App & Software Development Company',
   description:
     'Developers3 is a full-service web development agency building custom websites, WordPress, e-commerce stores, mobile apps and software that convert. Get a free quote today.',
