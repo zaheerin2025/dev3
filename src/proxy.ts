@@ -1,10 +1,10 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 /**
- * Production security headers middleware.
+ * Production security headers proxy (formerly middleware in Next 16+).
  * Runs on every request and adds standard security headers.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = NextResponse.next();
   const headers = response.headers;
 
@@ -35,7 +35,7 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
-/** Run middleware on all routes except static assets and Next.js internals. */
+/** Run proxy on all routes except static assets and Next.js internals. */
 export const config = {
   matcher: [
     /*
