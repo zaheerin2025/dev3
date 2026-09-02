@@ -87,11 +87,16 @@ const POST_CATEGORIES = Array.from(new Set(blogPosts.map((post) => post.category
 async function adminFetch<T>(path: string, token: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     ...init,
-    headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+    headers: { 'Content-Type': 'application/json', 'x-admin-token': token, ...(init?.headers ?? {}) },
   });
   const payload = (await response.json().catch(() => null)) as
     | ({ ok?: boolean; error?: string } & T)
     | null;
+  if (response.status === 401 || payload?.error === 'Unauthorized.') {
+    const err = new Error('Unauthorized.');
+    (err as unknown as { status?: number }).status = 401;
+    throw err;
+  }
   if (!response.ok || !payload?.ok) {
     throw new Error(payload?.error ?? 'Request failed.');
   }
@@ -1400,10 +1405,17 @@ export function AdminView() {
         return;
       }
       try {
-        await adminFetch('/api/admin/posts', stored);
+        await adminFetch('/api/admin/auth', stored);
         if (!cancelled) setToken(stored);
-      } catch {
-        localStorage.removeItem(TOKEN_KEY);
+      } catch (err: unknown) {
+        const status = (err as { status?: number })?.status;
+        const msg = (err as Error)?.message;
+        if (status === 401 || msg === 'Unauthorized.') {
+          localStorage.removeItem(TOKEN_KEY);
+        } else {
+          // Keep session logged in if it's a transient server or network issue
+          if (!cancelled) setToken(stored);
+        }
       } finally {
         if (!cancelled) setAuthChecked(true);
       }

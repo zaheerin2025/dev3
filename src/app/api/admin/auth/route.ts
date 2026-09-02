@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { expectedAdminToken } from '@/lib/admin-auth';
+import { expectedAdminToken, isAdminRequest } from '@/lib/admin-auth';
 import { rateLimitOr429 } from '@/lib/api-security';
+
+/**
+ * GET /api/admin/auth — verify stored admin token.
+ */
+export async function GET(request: NextRequest) {
+  if (!isAdminRequest(request)) {
+    return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 });
+  }
+  return NextResponse.json({ ok: true });
+}
 
 /**
  * POST /api/admin/auth — simple passcode login.
@@ -34,3 +44,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Authentication failed.' }, { status: 500 });
   }
 }
+

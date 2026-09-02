@@ -56,6 +56,11 @@ async function adminFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const payload = (await response.json().catch(() => null)) as
     | ({ ok?: boolean; error?: string } & T)
     | null;
+  if (response.status === 401 || payload?.error === 'Unauthorized.') {
+    const err = new Error('Unauthorized.');
+    (err as unknown as { status?: number }).status = 401;
+    throw err;
+  }
   if (!response.ok || !payload?.ok) {
     throw new Error(payload?.error ?? 'Request failed.');
   }
