@@ -207,20 +207,26 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
   const setupDatabase = async () => {
     setSettingUp(true);
     try {
-      const result = await adminFetch<{ ok: boolean; postsSeeded?: number; portfoliosSeeded?: number; errors?: string[]; error?: string; details?: string[] }>('/api/admin/seed', { method: 'POST' });
-      if (result.ok) {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('d3_admin_token') ?? '' : '';
+      const response = await fetch('/api/admin/seed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
+      });
+      const result = await response.json().catch(() => null) as { ok?: boolean; postsSeeded?: number; portfoliosSeeded?: number; errors?: string[]; error?: string; details?: string[] } | null;
+      if (result?.ok) {
         toast({
           title: 'Database Seeded!',
-          description: `${result.postsSeeded ?? 0} blog posts and ${result.portfoliosSeeded ?? 0} portfolio items imported.${result.errors?.length ? ` (${result.errors.length} partial errors)` : ''} Reloading...`,
+          description: `${result.postsSeeded ?? 0} blog posts and ${result.portfoliosSeeded ?? 0} portfolio items imported. Reloading...`,
         });
         setTimeout(() => window.location.reload(), 1800);
       } else {
-        const detail = (result.details && result.details.length > 0 ? result.details.slice(0, 2).join(' | ') : null) ?? result.error ?? 'Unknown error';
+        const allErrors = [...(result?.details ?? []), ...(result?.errors ?? [])];
+        const detail = allErrors.length > 0 ? allErrors.slice(0, 3).join(' | ') : result?.error ?? `HTTP ${response.status}: ${response.statusText}`;
         toast({ title: 'Seeding failed', description: detail, variant: 'destructive' });
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      toast({ title: 'Seeding failed', description: msg, variant: 'destructive' });
+      toast({ title: 'Seeding failed (network)', description: msg, variant: 'destructive' });
     } finally {
       setSettingUp(false);
     }

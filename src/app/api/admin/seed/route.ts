@@ -140,6 +140,29 @@ async function ensureTablesExist(): Promise<string[]> {
   return ddlErrors;
 }
 
+/** GET /api/admin/seed — diagnostic check of DB connection and tables. */
+export async function GET() {
+  try {
+    const postCount = await db.post.count();
+    const portfolioCount = await db.portfolio.count();
+    return NextResponse.json({
+      ok: true,
+      dbConnected: true,
+      postCount,
+      portfolioCount,
+      hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+    });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({
+      ok: false,
+      dbConnected: false,
+      error: msg,
+      hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+    });
+  }
+}
+
 /** POST /api/admin/seed — auto-creates missing tables then seeds default blog posts and portfolio items. */
 export async function POST(request: NextRequest) {
   if (!isAdminRequest(request)) {
