@@ -452,8 +452,8 @@ function DbPostArticle({ post }: { post: DbPost }) {
     () => sections.filter((section) => section.heading),
     [sections]
   );
-  const authorId = getAuthorIdFromName(post.authorName, post.slug);
-  const author = getTeamMember(authorId);
+  const authorId = getAuthorIdFromName(post.authorName);
+  const author = authorId ? getTeamMember(authorId) : undefined;
   const name = author?.name ?? post.authorName;
   const role = author?.role ?? post.authorRole;
   const initials =

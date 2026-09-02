@@ -51,12 +51,13 @@ function safeDate(d: string | undefined | null): string {
   return parsed.toISOString();
 }
 
-export function getAuthorIdFromName(name?: string | null, slug?: string | null): string {
-  const lower = (name || '').toLowerCase();
-  if (lower.includes('alex') || slug?.includes('website-cost')) return 'alex-morgan';
-  if (lower.includes('priya') || slug?.includes('wordpress') || slug?.includes('flutter')) return 'priya-sharma';
-  if (lower.includes('sofia') || slug?.includes('shopify')) return 'sofia-alvarez';
-  return 'alex-morgan';
+export function getAuthorIdFromName(name?: string | null): string | undefined {
+  if (!name) return undefined;
+  const lower = name.toLowerCase().trim();
+  if (lower.includes('alex morgan') || lower === 'alex') return 'alex-morgan';
+  if (lower.includes('priya sharma') || lower === 'priya') return 'priya-sharma';
+  if (lower.includes('sofia alvarez') || lower === 'sofia') return 'sofia-alvarez';
+  return undefined;
 }
 
 export function staticPostToListItem(post: BlogPost): BlogListItem {
@@ -74,7 +75,7 @@ export function staticPostToListItem(post: BlogPost): BlogListItem {
 }
 
 export function dbPostToListItem(post: DbPost): BlogListItem {
-  const authorId = getAuthorIdFromName(post.authorName, post.slug);
+  const authorId = getAuthorIdFromName(post.authorName);
   return {
     slug: post.slug,
     title: post.title,
