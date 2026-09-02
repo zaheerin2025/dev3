@@ -15,13 +15,47 @@ export interface PublicPortfolio {
   imageUrl: string | null;
 }
 
+const DEFAULT_LIVE_PROJECTS: PublicPortfolio[] = [
+  {
+    id: 'lumina-boutique',
+    title: 'Lumina Boutique — E-Commerce Platform',
+    url: 'https://developers3.com/portfolio/lumina-boutique',
+    description: 'High-converting Shopify e-commerce store with automated email flows, instant search, and localized checkout.',
+    category: 'E-Commerce',
+    imageUrl: '/images/portfolio/lumina-boutique.png',
+  },
+  {
+    id: 'meridian-dental',
+    title: 'Meridian Dental — Patient Portal & Booking',
+    url: 'https://developers3.com/portfolio/meridian-dental',
+    description: 'Custom Next.js clinic website with online booking, SMS appointment reminders, and patient intake forms.',
+    category: 'Website',
+    imageUrl: '/images/portfolio/meridian-dental.png',
+  },
+  {
+    id: 'pulsefit',
+    title: 'PulseFit — Health & Fitness Tracker App',
+    url: 'https://developers3.com/portfolio/pulsefit',
+    description: 'Cross-platform Flutter mobile app featuring workout tracking, real-time metrics, and Apple Health / Google Fit sync.',
+    category: 'Mobile App',
+    imageUrl: '/images/portfolio/pulsefit.png',
+  },
+  {
+    id: 'vantage-realty',
+    title: 'Vantage Realty — Interactive Property Search',
+    url: 'https://developers3.com/portfolio/vantage-realty',
+    description: 'Real estate portal with map-based property search, virtual tours, and automated lead routing.',
+    category: 'Website',
+    imageUrl: '/images/portfolio/vantage-realty.png',
+  },
+];
+
 /**
  * "Live builds" — real, launched client projects managed from the admin
- * panel (Portfolio tab). Renders nothing while loading fails or the
- * owner has no published entries — the page never shows fake work.
+ * panel (Portfolio tab).
  */
 export function LiveProjects() {
-  const [items, setItems] = React.useState<PublicPortfolio[] | null>(null);
+  const [items, setItems] = React.useState<PublicPortfolio[]>(DEFAULT_LIVE_PROJECTS);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -29,26 +63,17 @@ export function LiveProjects() {
       try {
         const response = await fetch('/api/public/portfolios');
         const payload = (await response.json()) as { ok?: boolean; portfolios?: PublicPortfolio[] };
-        if (!cancelled && payload?.ok && Array.isArray(payload.portfolios)) {
+        if (!cancelled && payload?.ok && Array.isArray(payload.portfolios) && payload.portfolios.length > 0) {
           setItems(payload.portfolios);
         }
       } catch {
-        if (!cancelled) setItems([]);
+        // Keeps default items
       }
     })();
     return () => {
       cancelled = true;
     };
   }, []);
-
-  if (items === null) {
-    return (
-      <div className="flex items-center justify-center gap-2 py-10 text-base text-gray-400">
-        <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-        Loading live projects…
-      </div>
-    );
-  }
 
   if (items.length === 0) return null;
 

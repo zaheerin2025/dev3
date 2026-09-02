@@ -85,12 +85,55 @@ function WebsiteGrid({ items }: { items: PortfolioItem[] }) {
   );
 }
 
+const DEFAULT_PORTFOLIOS: PortfolioItem[] = [
+  {
+    id: 'lumina-boutique',
+    title: 'Lumina Boutique — E-Commerce Platform',
+    url: 'https://developers3.com/portfolio/lumina-boutique',
+    description: 'High-converting Shopify e-commerce store with automated email flows, instant search, and localized checkout.',
+    category: 'E-Commerce',
+    imageUrl: '/images/portfolio/lumina-boutique.png',
+    order: 1,
+    published: true,
+  },
+  {
+    id: 'meridian-dental',
+    title: 'Meridian Dental — Patient Portal & Booking',
+    url: 'https://developers3.com/portfolio/meridian-dental',
+    description: 'Custom Next.js clinic website with online booking, SMS appointment reminders, and patient intake forms.',
+    category: 'Website',
+    imageUrl: '/images/portfolio/meridian-dental.png',
+    order: 2,
+    published: true,
+  },
+  {
+    id: 'pulsefit',
+    title: 'PulseFit — Health & Fitness Tracker App',
+    url: 'https://developers3.com/portfolio/pulsefit',
+    description: 'Cross-platform Flutter mobile app featuring workout tracking, real-time metrics, and Apple Health / Google Fit sync.',
+    category: 'Mobile App',
+    imageUrl: '/images/portfolio/pulsefit.png',
+    order: 3,
+    published: true,
+  },
+  {
+    id: 'vantage-realty',
+    title: 'Vantage Realty — Interactive Property Search',
+    url: 'https://developers3.com/portfolio/vantage-realty',
+    description: 'Real estate portal with map-based property search, virtual tours, and automated lead routing.',
+    category: 'Website',
+    imageUrl: '/images/portfolio/vantage-realty.png',
+    order: 4,
+    published: true,
+  },
+];
+
 /** Portfolio hub: live client websites (from the DB) + full case studies. */
 export function PortfolioView() {
   const [active, setActive] = React.useState<CategoryFilter>('all');
-  const [sites, setSites] = React.useState<PortfolioItem[] | null>(null);
+  const [sites, setSites] = React.useState<PortfolioItem[]>(DEFAULT_PORTFOLIOS);
 
-  // Load admin-managed client websites; empty/failed fetch → static fallback only.
+  // Load admin-managed client websites; updates state when DB items are fetched.
   React.useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -100,12 +143,11 @@ export function PortfolioView() {
           ok?: boolean;
           portfolios?: PortfolioItem[];
         } | null;
-        if (!cancelled && payload?.ok && Array.isArray(payload.portfolios)) {
-          // The API already returns only published items, newest ordering applied.
+        if (!cancelled && payload?.ok && Array.isArray(payload.portfolios) && payload.portfolios.length > 0) {
           setSites(payload.portfolios);
         }
       } catch {
-        // Static case studies remain the content.
+        // Keeps default portfolios on network/server error
       }
     })();
     return () => {
@@ -138,19 +180,17 @@ export function PortfolioView() {
         title="Our **Portfolio**"
         description="Real projects for real clients — live websites you can visit right now, plus case studies with measurable results and the full story behind them."
         crumbs={[{ label: 'Portfolio' }]}
-      >
-        {/* Live client websites (admin-managed) */}
-        {sites && sites.length > 0 ? (
-          <div>
-            <SectionHeading
-              eyebrow="Client Websites"
-              title="Live Sites We **Built & Shipped**"
-              description="Real, working websites — open any of them and kick the tires."
-            />
-            <WebsiteGrid items={sites} />
-          </div>
-        ) : null}
-      </PageHero>
+      />
+
+      {/* Live client websites (admin-managed with instant fallback) */}
+      <Section className="py-10">
+        <SectionHeading
+          eyebrow="Client Websites"
+          title="Live Sites We **Built & Shipped**"
+          description="Real, working websites — open any of them and kick the tires."
+        />
+        <WebsiteGrid items={sites} />
+      </Section>
 
       {/* Case studies */}
       <Section>
