@@ -33,6 +33,9 @@ function staticPostFallback(slug?: string | null) {
 export async function GET(request: NextRequest) {
   const slug = request.nextUrl.searchParams.get('slug');
   try {
+    // Migrate legacy 2025 dates in Neon DB to current date
+    await db.$executeRawUnsafe(`UPDATE "Post" SET "createdAt" = CURRENT_TIMESTAMP WHERE "createdAt" < '2026-01-01'`).catch(() => null);
+
     const posts = await db.post.findMany({
       where: { published: true, ...(slug ? { slug } : {}) },
       orderBy: { createdAt: 'desc' },

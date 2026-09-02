@@ -49,6 +49,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 });
   }
 
+  // Migrate legacy 2025 dates in Neon DB to current date
+  await db.$executeRawUnsafe(`UPDATE "Post" SET "createdAt" = CURRENT_TIMESTAMP WHERE "createdAt" < '2026-01-01'`).catch(() => null);
+
   // Tier 1: Try Prisma ORM query
   try {
     const posts = await db.post.findMany({ orderBy: { createdAt: 'desc' } });
