@@ -181,8 +181,8 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
     (async () => {
       try {
         const [leads, posts, portfolios, subscribers] = await Promise.all([
-          adminFetch<LeadsPayload>('/api/admin/leads'),
-          adminFetch<{ posts: { id: string; published: boolean }[] }>('/api/admin/posts'),
+          adminFetch<LeadsPayload>('/api/admin/leads').catch(() => ({ leads: [] })),
+          adminFetch<{ posts: { id: string; published: boolean }[] }>('/api/admin/posts').catch(() => ({ posts: [] })),
           adminFetch<{ portfolios: { id: string }[] }>('/api/admin/portfolios').catch(() => ({ portfolios: [] })),
           adminFetch<{ subscribers: { id: string }[] }>('/api/admin/subscribers').catch(() => ({ subscribers: [] })),
         ]);

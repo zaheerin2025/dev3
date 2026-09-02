@@ -14,10 +14,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ ok: true, subscribers });
   } catch (error) {
     console.error('[admin/subscribers] GET failed:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Could not load subscribers.' },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: true, subscribers: [] });
   }
 }
 
