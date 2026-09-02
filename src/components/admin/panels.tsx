@@ -202,18 +202,27 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
 
   const unread = data ? data.leads.filter((lead) => !lead.read).length : null;
 
-  const [seeding, setSeeding] = React.useState(false);
+  const [setting_up, setSettingUp] = React.useState(false);
 
-  const seedDatabase = async () => {
-    setSeeding(true);
+  const setupDatabase = async () => {
+    setSettingUp(true);
     try {
-      await adminFetch('/api/admin/seed', { method: 'POST' });
-      toast({ title: 'Database Seeded', description: '4 default blog posts and portfolio items imported to database.' });
-      window.location.reload();
-    } catch {
-      toast({ title: 'Seeding failed', description: 'Could not seed database.', variant: 'destructive' });
+      const result = await adminFetch<{ ok: boolean; postsSeeded?: number; portfoliosSeeded?: number; errors?: string[]; error?: string; details?: string[] }>('/api/admin/seed', { method: 'POST' });
+      if (result.ok) {
+        toast({
+          title: 'Database Seeded!',
+          description: `${result.postsSeeded ?? 0} blog posts and ${result.portfoliosSeeded ?? 0} portfolio items imported.${result.errors?.length ? ` (${result.errors.length} partial errors)` : ''} Reloading...`,
+        });
+        setTimeout(() => window.location.reload(), 1800);
+      } else {
+        const detail = result.details?.[0] ?? result.error ?? 'Unknown error';
+        toast({ title: 'Seeding failed', description: detail, variant: 'destructive' });
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      toast({ title: 'Seeding failed', description: msg, variant: 'destructive' });
     } finally {
-      setSeeding(false);
+      setSettingUp(false);
     }
   };
 
@@ -225,6 +234,7 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
           Summary metrics pulled directly from database.
         </p>
       </div>
+
 
       {failed ? (
         <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-600">
@@ -247,11 +257,11 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
             <Button
               variant="outline"
               className="justify-start border-[#FF4D00]/40 text-[#FF4D00] hover:bg-[#FF4D00]/10 font-semibold"
-              onClick={seedDatabase}
-              disabled={seeding}
+              onClick={setupDatabase}
+              disabled={setting_up}
             >
-              {seeding ? <Loader2 className="size-4 mr-2 animate-spin" /> : <FileText className="size-4 mr-2" />}
-              Import 4 Default Blog Posts &amp; Portfolios into DB
+              {setting_up ? <Loader2 className="size-4 mr-2 animate-spin" /> : <FileText className="size-4 mr-2" />}
+              Setup / Seed Database
             </Button>
             <Button
               variant="outline"
