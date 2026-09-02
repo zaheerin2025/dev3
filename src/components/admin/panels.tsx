@@ -215,7 +215,7 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
         });
         setTimeout(() => window.location.reload(), 1800);
       } else {
-        const detail = result.details?.[0] ?? result.error ?? 'Unknown error';
+        const detail = (result.details && result.details.length > 0 ? result.details.slice(0, 2).join(' | ') : null) ?? result.error ?? 'Unknown error';
         toast({ title: 'Seeding failed', description: detail, variant: 'destructive' });
       }
     } catch (err) {

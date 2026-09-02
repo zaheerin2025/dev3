@@ -58,17 +58,106 @@ const DEFAULT_PORTFOLIO_ITEMS = [
   },
 ];
 
-/** POST /api/admin/seed — seed default blog posts and portfolio items into the database. */
+async function ensureTablesExist(): Promise<string[]> {
+  const ddlErrors: string[] = [];
+
+  const tableDDLs = [
+    `CREATE TABLE IF NOT EXISTS "Lead" (
+      "id" TEXT NOT NULL,
+      "name" TEXT NOT NULL,
+      "email" TEXT NOT NULL,
+      "phone" TEXT,
+      "service" TEXT,
+      "budget" TEXT,
+      "timeline" TEXT,
+      "message" TEXT NOT NULL,
+      "source" TEXT NOT NULL DEFAULT 'contact',
+      "read" BOOLEAN NOT NULL DEFAULT false,
+      "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "Lead_pkey" PRIMARY KEY ("id")
+    );`,
+    `CREATE INDEX IF NOT EXISTS "Lead_createdAt_idx" ON "Lead"("createdAt");`,
+    `CREATE TABLE IF NOT EXISTS "NewsletterSubscriber" (
+      "id" TEXT NOT NULL,
+      "email" TEXT NOT NULL,
+      "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "NewsletterSubscriber_pkey" PRIMARY KEY ("id"),
+      CONSTRAINT "NewsletterSubscriber_email_key" UNIQUE ("email")
+    );`,
+    `CREATE TABLE IF NOT EXISTS "Post" (
+      "id" TEXT NOT NULL,
+      "slug" TEXT NOT NULL,
+      "title" TEXT NOT NULL,
+      "excerpt" TEXT NOT NULL,
+      "category" TEXT NOT NULL,
+      "image" TEXT,
+      "authorName" TEXT NOT NULL DEFAULT 'Developers3 Team',
+      "authorRole" TEXT NOT NULL DEFAULT 'Contributor',
+      "content" TEXT NOT NULL,
+      "readTime" INTEGER NOT NULL DEFAULT 5,
+      "published" BOOLEAN NOT NULL DEFAULT true,
+      "metaTitle" TEXT,
+      "metaDescription" TEXT,
+      "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "Post_pkey" PRIMARY KEY ("id"),
+      CONSTRAINT "Post_slug_key" UNIQUE ("slug")
+    );`,
+    `CREATE INDEX IF NOT EXISTS "Post_published_createdAt_idx" ON "Post"("published","createdAt");`,
+    `CREATE TABLE IF NOT EXISTS "Setting" (
+      "key" TEXT NOT NULL,
+      "value" TEXT NOT NULL,
+      "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "Setting_pkey" PRIMARY KEY ("key")
+    );`,
+    `CREATE TABLE IF NOT EXISTS "Portfolio" (
+      "id" TEXT NOT NULL,
+      "title" TEXT NOT NULL,
+      "url" TEXT NOT NULL,
+      "description" TEXT NOT NULL,
+      "category" TEXT NOT NULL DEFAULT 'Website',
+      "imageUrl" TEXT,
+      "order" INTEGER NOT NULL DEFAULT 0,
+      "published" BOOLEAN NOT NULL DEFAULT true,
+      "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "Portfolio_pkey" PRIMARY KEY ("id")
+    );`,
+    `CREATE INDEX IF NOT EXISTS "Portfolio_published_order_idx" ON "Portfolio"("published","order");`,
+  ];
+
+  for (const ddl of tableDDLs) {
+    try {
+      await db.$executeRawUnsafe(ddl);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('[seed] Table DDL error:', msg);
+      ddlErrors.push(msg);
+    }
+  }
+
+  return ddlErrors;
+}
+
+/** POST /api/admin/seed — auto-creates missing tables then seeds default blog posts and portfolio items. */
 export async function POST(request: NextRequest) {
   if (!isAdminRequest(request)) {
     return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 });
   }
 
   const errors: string[] = [];
+
+  // Step 1: Automatically ensure tables exist in Neon PostgreSQL
+  const ddlErrors = await ensureTablesExist();
+  if (ddlErrors.length > 0) {
+    errors.push(...ddlErrors);
+  }
+
   let postsSeeded = 0;
   let portfoliosSeeded = 0;
 
-  // Seed blog posts with upsert
+  // Step 2: Seed blog posts with upsert
   for (const p of blogPosts) {
     const authorName =
       p.authorId === 'alex-morgan'
@@ -111,10 +200,10 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Seed portfolio items
+  // Step 3: Seed portfolio items
   for (const item of DEFAULT_PORTFOLIO_ITEMS) {
     try {
-      const existing = await db.portfolio.findFirst({ where: { url: item.url } });
+      const existing = await db.portfolio.findFirst({ where: { url: item.url } }).catch(() => null);
       if (!existing) {
         await db.portfolio.create({ data: item });
         portfoliosSeeded += 1;
