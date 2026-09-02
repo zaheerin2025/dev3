@@ -496,7 +496,13 @@ function DbPostArticle({ post }: { post: DbPost }) {
             </span>
             <span className="flex items-center gap-1.5 text-base text-muted-foreground">
               <CalendarDays className="h-4 w-4" aria-hidden="true" />
-              {format(new Date(post.createdAt), 'MMMM d, yyyy')}
+              {format(
+                (() => {
+                  const d = new Date(post.createdAt);
+                  return !isNaN(d.getTime()) && d.getFullYear() >= 2026 ? d : new Date();
+                })(),
+                'MMMM d, yyyy'
+              )}
             </span>
           </div>
         </div>

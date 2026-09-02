@@ -42,6 +42,15 @@ export interface BlogListItem {
   image?: string | null;
 }
 
+function safeDate(d: string | undefined | null): string {
+  if (!d) return new Date().toISOString();
+  const parsed = new Date(d);
+  if (isNaN(parsed.getTime()) || parsed.getFullYear() < 2026) {
+    return new Date().toISOString();
+  }
+  return parsed.toISOString();
+}
+
 export function staticPostToListItem(post: BlogPost): BlogListItem {
   return {
     slug: post.slug,
@@ -49,7 +58,7 @@ export function staticPostToListItem(post: BlogPost): BlogListItem {
     excerpt: post.excerpt,
     category: post.category,
     authorId: post.authorId,
-    date: post.date,
+    date: safeDate(post.date),
     readTime: post.readTime,
     coverGradient: post.coverGradient,
     image: post.image,
@@ -64,7 +73,7 @@ export function dbPostToListItem(post: DbPost): BlogListItem {
     category: post.category,
     authorName: post.authorName,
     authorRole: post.authorRole,
-    date: post.createdAt,
+    date: safeDate(post.createdAt),
     readTime: `${post.readTime} min read`,
     coverGradient: 'from-gray-500 to-gray-800',
     image: post.image,
