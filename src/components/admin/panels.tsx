@@ -202,36 +202,6 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
 
   const unread = data ? data.leads.filter((lead) => !lead.read).length : null;
 
-  const [setting_up, setSettingUp] = React.useState(false);
-
-  const setupDatabase = async () => {
-    setSettingUp(true);
-    try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('d3_admin_token') ?? '' : '';
-      const response = await fetch('/api/admin/seed', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-token': token },
-      });
-      const result = await response.json().catch(() => null) as { ok?: boolean; postsSeeded?: number; portfoliosSeeded?: number; errors?: string[]; error?: string; details?: string[] } | null;
-      if (result?.ok) {
-        toast({
-          title: 'Database Seeded!',
-          description: `${result.postsSeeded ?? 0} blog posts and ${result.portfoliosSeeded ?? 0} portfolio items imported. Reloading...`,
-        });
-        setTimeout(() => window.location.reload(), 1800);
-      } else {
-        const allErrors = [...(result?.details ?? []), ...(result?.errors ?? [])];
-        const detail = allErrors.length > 0 ? allErrors.slice(0, 3).join(' | ') : result?.error ?? `HTTP ${response.status}: ${response.statusText}`;
-        toast({ title: 'Seeding failed', description: detail, variant: 'destructive' });
-      }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      toast({ title: 'Seeding failed (network)', description: msg, variant: 'destructive' });
-    } finally {
-      setSettingUp(false);
-    }
-  };
-
   return (
     <div className="flex flex-col gap-6">
       <div className="border-b border-slate-200 pb-4">
@@ -240,7 +210,6 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
           Summary metrics pulled directly from database.
         </p>
       </div>
-
 
       {failed ? (
         <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-600">
@@ -260,15 +229,6 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <h3 className="text-sm font-bold text-slate-900">Quick Actions</h3>
           <div className="mt-4 flex flex-col gap-2">
-            <Button
-              variant="outline"
-              className="justify-start border-[#FF4D00]/40 text-[#FF4D00] hover:bg-[#FF4D00]/10 font-semibold"
-              onClick={setupDatabase}
-              disabled={setting_up}
-            >
-              {setting_up ? <Loader2 className="size-4 mr-2 animate-spin" /> : <FileText className="size-4 mr-2" />}
-              Setup / Seed Database
-            </Button>
             <Button
               variant="outline"
               className="justify-start border-slate-300 text-slate-700 hover:bg-slate-50"

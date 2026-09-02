@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/** PUT /api/admin/posts — update by body.id. */
+/** PUT /api/admin/posts — update by body.id or slug (creates if not in DB). */
 export async function PUT(request: NextRequest) {
   if (!isAdminRequest(request)) {
     return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 });
@@ -178,18 +178,10 @@ export async function PUT(request: NextRequest) {
   try {
     const body = (await request.json().catch(() => null)) as PostPayload | null;
     const id = str(body?.id);
-    if (!id) {
-      return NextResponse.json({ ok: false, error: 'Post id is required.' }, { status: 400 });
-    }
-
-    const existing = await db.post.findUnique({ where: { id } });
-    if (!existing) {
-      return NextResponse.json({ ok: false, error: 'Post not found.' }, { status: 404 });
-    }
-
     const title = str(body?.title);
     const excerpt = str(body?.excerpt);
     const content = str(body?.content);
+
     if (!title || !excerpt || !content) {
       return NextResponse.json(
         { ok: false, error: 'Title, excerpt and content are required.' },
@@ -204,33 +196,69 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const data: Prisma.PostUpdateInput = {
-      title,
-      excerpt,
-      content,
-      category: str(body?.category) || existing.category,
-      image: body?.image !== undefined ? (str(body?.image) || null) : existing.image,
-      authorName: str(body?.authorName) || existing.authorName,
-      authorRole: str(body?.authorRole) || existing.authorRole,
-      readTime:
-        Number.isFinite(Number(body?.readTime)) && Number(body?.readTime) > 0
-          ? Math.round(Number(body?.readTime))
-          : calculateReadTime(content),
-      published: body?.published === undefined ? existing.published : Boolean(body?.published),
-      metaTitle: body?.metaTitle !== undefined ? (str(body?.metaTitle) || null) : existing.metaTitle,
-      metaDescription: body?.metaDescription !== undefined ? (str(body?.metaDescription) || null) : existing.metaDescription,
-    };
+    // Try finding by primary key ID or by slug
+    let existing = id
+      ? await db.post.findFirst({ where: { OR: [{ id }, { slug: id }] } }).catch(() => null)
+      : null;
 
-    const requestedSlug = str(body?.slug);
-    if (requestedSlug && slugify(requestedSlug) !== existing.slug) {
-      data.slug = await uniqueSlug(slugify(requestedSlug) || existing.slug, id);
+    if (!existing && body?.slug) {
+      const slugCandidate = slugify(str(body.slug));
+      existing = await db.post.findUnique({ where: { slug: slugCandidate } }).catch(() => null);
     }
 
-    const post = await db.post.update({ where: { id }, data });
-    return NextResponse.json({ ok: true, post });
+    const readTime =
+      Number.isFinite(Number(body?.readTime)) && Number(body?.readTime) > 0
+        ? Math.round(Number(body?.readTime))
+        : calculateReadTime(content);
+    const published = body?.published === undefined ? true : Boolean(body?.published);
+
+    if (existing) {
+      const data: Prisma.PostUpdateInput = {
+        title,
+        excerpt,
+        content,
+        category: str(body?.category) || existing.category,
+        image: body?.image !== undefined ? (str(body?.image) || null) : existing.image,
+        authorName: str(body?.authorName) || existing.authorName,
+        authorRole: str(body?.authorRole) || existing.authorRole,
+        readTime,
+        published,
+        metaTitle: body?.metaTitle !== undefined ? (str(body?.metaTitle) || null) : existing.metaTitle,
+        metaDescription: body?.metaDescription !== undefined ? (str(body?.metaDescription) || null) : existing.metaDescription,
+      };
+
+      const requestedSlug = str(body?.slug);
+      if (requestedSlug && slugify(requestedSlug) !== existing.slug) {
+        data.slug = await uniqueSlug(slugify(requestedSlug) || existing.slug, existing.id);
+      }
+
+      const post = await db.post.update({ where: { id: existing.id }, data });
+      return NextResponse.json({ ok: true, post });
+    } else {
+      // If not in DB yet (e.g. static post being edited for first time), create it
+      const slug = await uniqueSlug(slugify(str(body?.slug) || title));
+      const post = await db.post.create({
+        data: {
+          slug,
+          title,
+          excerpt,
+          category: str(body?.category) || 'General',
+          image: str(body?.image) || null,
+          authorName: str(body?.authorName) || 'Developers3 Team',
+          authorRole: str(body?.authorRole) || 'Contributor',
+          content,
+          readTime,
+          published,
+          metaTitle: str(body?.metaTitle) || null,
+          metaDescription: str(body?.metaDescription) || null,
+        },
+      });
+      return NextResponse.json({ ok: true, post });
+    }
   } catch (error) {
-    console.error('[admin/posts] PUT failed:', error);
-    return NextResponse.json({ ok: false, error: 'Could not update the post.' }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[admin/posts] PUT failed:', msg);
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 }
 
