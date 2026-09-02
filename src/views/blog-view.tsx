@@ -206,17 +206,25 @@ export function BlogView() {
                 aria-label={`Read article: ${featured.title}`}
                 className="relative block aspect-[16/10] overflow-hidden lg:aspect-auto"
               >
-                <div
-                  className={cn(
-                    'absolute inset-0 bg-gradient-to-br transition-transform duration-500 group-hover:scale-105',
-                    featured.coverGradient
-                  )}
-                >
-                  <div className="bg-dots-dark absolute inset-0 opacity-30" aria-hidden="true" />
-                  <span className="flex h-full items-center justify-center">
-                    <Quote className="h-16 w-16 text-white/40" aria-hidden="true" />
-                  </span>
-                </div>
+                {featured.image ? (
+                  <img
+                    src={featured.image}
+                    alt={featured.title}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div
+                    className={cn(
+                      'absolute inset-0 bg-gradient-to-br transition-transform duration-500 group-hover:scale-105',
+                      featured.coverGradient
+                    )}
+                  >
+                    <div className="bg-dots-dark absolute inset-0 opacity-30" aria-hidden="true" />
+                    <span className="flex h-full items-center justify-center">
+                      <Quote className="h-16 w-16 text-white/40" aria-hidden="true" />
+                    </span>
+                  </div>
+                )}
                 <span className="absolute left-4 top-4 z-10 rounded-md bg-white px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-gray-800 shadow-sm">
                   {featured.category}
                 </span>
@@ -246,7 +254,7 @@ export function BlogView() {
                   <AuthorLine item={featured} />
                   <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
                     <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
-                    {format(new Date(featured.date), 'MMMM d, yyyy')}
+                    {format(new Date(featured.date || Date.now()), 'MMMM d, yyyy')}
                   </span>
                 </div>
                 <Link
@@ -274,17 +282,25 @@ export function BlogView() {
                   className="block"
                 >
                   <div className="relative aspect-[16/9] overflow-hidden">
-                    <div
-                      className={cn(
-                        'absolute inset-0 bg-gradient-to-br transition-transform duration-500 group-hover:scale-105',
-                        post.coverGradient
-                      )}
-                    >
-                      <div className="bg-dots-dark absolute inset-0 opacity-30" aria-hidden="true" />
-                      <span className="flex h-full items-center justify-center">
-                        <Newspaper className="h-10 w-10 text-white/40" aria-hidden="true" />
-                      </span>
-                    </div>
+                    {post.image ? (
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div
+                        className={cn(
+                          'absolute inset-0 bg-gradient-to-br transition-transform duration-500 group-hover:scale-105',
+                          post.coverGradient
+                        )}
+                      >
+                        <div className="bg-dots-dark absolute inset-0 opacity-30" aria-hidden="true" />
+                        <span className="flex h-full items-center justify-center">
+                          <Newspaper className="h-10 w-10 text-white/40" aria-hidden="true" />
+                        </span>
+                      </div>
+                    )}
                     <span className="absolute left-3 top-3 z-10 rounded-md bg-white px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-gray-800 shadow-sm">
                       {post.category}
                     </span>
@@ -292,7 +308,7 @@ export function BlogView() {
                 </Link>
                 <div className="flex flex-1 flex-col gap-3 p-6">
                   <p className="text-sm text-muted-foreground">
-                    {format(new Date(post.date), 'MMM d, yyyy')} · {post.readTime}
+                    {format(new Date(post.date || Date.now()), 'MMM d, yyyy')} · {post.readTime}
                   </p>
                   <h3 className="line-clamp-2 font-semibold leading-snug">
                     <Link href={`/blog/${post.slug}`} className="transition-colors group-hover:text-gray-900">

@@ -52,6 +52,7 @@ export function staticPostToListItem(post: BlogPost): BlogListItem {
     date: post.date,
     readTime: post.readTime,
     coverGradient: post.coverGradient,
+    image: post.image,
   };
 }
 

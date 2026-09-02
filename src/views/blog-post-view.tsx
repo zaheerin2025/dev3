@@ -192,26 +192,34 @@ export function BlogPostView({ slug }: BlogPostViewProps) {
         </div>
       </Section>
 
-      {/* Gradient cover band */}
+      {/* Cover band: image when set, gradient otherwise */}
       <Section noPad className="pb-0">
         <Reveal>
           <div className="gradient-frame mx-auto max-w-7xl shadow-[0_32px_64px_-32px_rgb(4_16_11/0.35)]">
-            <div
-              className={cn(
-                'relative h-44 overflow-hidden rounded-[1.45rem] bg-gradient-to-br md:h-60',
-                post.coverGradient
-              )}
-            >
-              <span
-                className="glow-orb -right-10 -top-14 h-56 w-56 bg-white/25"
-                aria-hidden="true"
+            {post.image ? (
+              <img
+                src={post.image}
+                alt=""
+                className="relative h-44 w-full rounded-[1.45rem] object-cover md:h-60"
               />
-              <div className="bg-dots-dark absolute inset-0 opacity-30" aria-hidden="true" />
-              <Newspaper
-                className="absolute bottom-4 right-4 h-14 w-14 text-white/30"
-                aria-hidden="true"
-              />
-            </div>
+            ) : (
+              <div
+                className={cn(
+                  'relative h-44 overflow-hidden rounded-[1.45rem] bg-gradient-to-br md:h-60',
+                  post.coverGradient
+                )}
+              >
+                <span
+                  className="glow-orb -right-10 -top-14 h-56 w-56 bg-white/25"
+                  aria-hidden="true"
+                />
+                <div className="bg-dots-dark absolute inset-0 opacity-30" aria-hidden="true" />
+                <Newspaper
+                  className="absolute bottom-4 right-4 h-14 w-14 text-white/30"
+                  aria-hidden="true"
+                />
+              </div>
+            )}
           </div>
         </Reveal>
       </Section>

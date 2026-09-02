@@ -130,6 +130,8 @@ export interface BlogPost {
   /** ISO date, e.g. "2025-01-20". */
   date: string;
   readTime: string;
+  /** Optional cover image URL or base64 data */
+  image?: string | null;
   /** Tailwind gradient classes for the cover, e.g. "from-gray-500 to-gray-800". */
   coverGradient: string;
   sections: BlogSection[];

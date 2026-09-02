@@ -8,7 +8,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: 'A realistic breakdown of what websites cost in 2025 — from $1,500 marketing sites to $50,000 custom platforms — plus the hidden fees most quotes conveniently forget to mention.',
     category: 'Website Costs',
     authorId: 'alex-morgan',
-    date: '2025-01-20',
+    date: new Date().toISOString(),
     readTime: '9 min read',
     coverGradient: 'from-gray-500 to-gray-800',
     sections: [
@@ -97,7 +97,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: 'WordPress or a fully custom build? An engineer who has shipped both breaks down real costs, performance, and maintenance — with a decision checklist you can run in five minutes.',
     category: 'Platform Choice',
     authorId: 'priya-sharma',
-    date: '2025-02-03',
+    date: new Date().toISOString(),
     readTime: '8 min read',
     coverGradient: 'from-gray-400 to-gray-500',
     sections: [
@@ -179,7 +179,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: 'Real 2025 totals, not marketing spin: we compare Shopify and WooCommerce on pricing, speed, SEO, and apps — and tell you which store types each platform genuinely fits.',
     category: 'E-commerce',
     authorId: 'sofia-alvarez',
-    date: '2025-02-17',
+    date: new Date().toISOString(),
     readTime: '10 min read',
     coverGradient: 'from-gray-500 to-gray-800',
     sections: [
@@ -255,7 +255,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: 'Both frameworks ship cross-platform apps on one codebase — so which one protects your startup’s runway? Real performance notes, hiring data, and the cases where we pick each.',
     category: 'Mobile Apps',
     authorId: 'priya-sharma',
-    date: '2025-03-03',
+    date: new Date().toISOString(),
     readTime: '8 min read',
     coverGradient: 'from-gray-300 to-gray-400',
     sections: [
