@@ -110,12 +110,22 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({ ok: true, posts: fallbackPosts });
 }
 
+async function ensurePostColumns(): Promise<void> {
+  try {
+    await db.$executeRawUnsafe(`ALTER TABLE "Post" ADD COLUMN IF NOT EXISTS "metaTitle" TEXT;`);
+    await db.$executeRawUnsafe(`ALTER TABLE "Post" ADD COLUMN IF NOT EXISTS "metaDescription" TEXT;`);
+  } catch (e) {
+    console.warn('[admin/posts] ensurePostColumns warning:', e);
+  }
+}
+
 /** POST /api/admin/posts — create. Title/excerpt/content required. */
 export async function POST(request: NextRequest) {
   if (!isAdminRequest(request)) {
     return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 });
   }
   try {
+    await ensurePostColumns();
     const body = (await request.json().catch(() => null)) as PostPayload | null;
     const title = str(body?.title);
     const excerpt = str(body?.excerpt);
@@ -215,6 +225,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 });
   }
   try {
+    await ensurePostColumns();
     const body = (await request.json().catch(() => null)) as PostPayload | null;
     const id = str(body?.id);
     const title = str(body?.title);
