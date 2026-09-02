@@ -48,7 +48,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Unauthorized.' }, { status: 401 });
   }
   try {
-    await seedDefaultData();
     const posts = await db.post.findMany({ orderBy: { updatedAt: 'desc' } });
     return NextResponse.json({ ok: true, posts });
   } catch (error) {

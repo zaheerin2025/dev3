@@ -33,7 +33,6 @@ function staticPostFallback(slug?: string | null) {
 export async function GET(request: NextRequest) {
   const slug = request.nextUrl.searchParams.get('slug');
   try {
-    await seedDefaultData();
     const posts = await db.post.findMany({
       where: { published: true, ...(slug ? { slug } : {}) },
       orderBy: { createdAt: 'desc' },
