@@ -170,6 +170,7 @@ function StatCard({
 }
 
 export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }) {
+  const { toast } = useToast();
   const [data, setData] = React.useState<LeadsPayload | null>(null);
   const [postCount, setPostCount] = React.useState<number | null>(null);
   const [portfolioCount, setPortfolioCount] = React.useState<number | null>(null);
@@ -201,6 +202,21 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
 
   const unread = data ? data.leads.filter((lead) => !lead.read).length : null;
 
+  const [seeding, setSeeding] = React.useState(false);
+
+  const seedDatabase = async () => {
+    setSeeding(true);
+    try {
+      await adminFetch('/api/admin/seed', { method: 'POST' });
+      toast({ title: 'Database Seeded', description: '4 default blog posts and portfolio items imported to database.' });
+      window.location.reload();
+    } catch {
+      toast({ title: 'Seeding failed', description: 'Could not seed database.', variant: 'destructive' });
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="border-b border-slate-200 pb-4">
@@ -228,6 +244,15 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <h3 className="text-sm font-bold text-slate-900">Quick Actions</h3>
           <div className="mt-4 flex flex-col gap-2">
+            <Button
+              variant="outline"
+              className="justify-start border-[#FF4D00]/40 text-[#FF4D00] hover:bg-[#FF4D00]/10 font-semibold"
+              onClick={seedDatabase}
+              disabled={seeding}
+            >
+              {seeding ? <Loader2 className="size-4 mr-2 animate-spin" /> : <FileText className="size-4 mr-2" />}
+              Import 4 Default Blog Posts &amp; Portfolios into DB
+            </Button>
             <Button
               variant="outline"
               className="justify-start border-slate-300 text-slate-700 hover:bg-slate-50"

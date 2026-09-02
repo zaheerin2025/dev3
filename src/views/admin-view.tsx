@@ -284,6 +284,21 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
   const [photoUrl, setPhotoUrl] = React.useState('');
   const [photoCaption, setPhotoCaption] = React.useState('');
 
+  const [seeding, setSeeding] = React.useState(false);
+
+  const seedDatabase = async () => {
+    setSeeding(true);
+    try {
+      await adminFetch('/api/admin/seed', token, { method: 'POST' });
+      toast({ title: 'Database Seeded', description: 'Default blog posts and portfolio items imported to database.' });
+      await loadPosts();
+    } catch {
+      toast({ title: 'Seeding failed', description: 'Could not seed database.', variant: 'destructive' });
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   const loadPosts = React.useCallback(async () => {
     try {
       const payload = await adminFetch<{ posts: DbPost[] }>('/api/admin/posts', token);
@@ -996,8 +1011,18 @@ function PostsTab({ token, onUnauthorized }: { token: string; onUnauthorized: ()
             Loading posts from database…
           </div>
         ) : filteredPosts.length === 0 ? (
-          <div className="p-10 text-center text-sm text-slate-500">
-            {searchQuery || statusFilter !== 'all' ? 'No posts matching filters.' : 'No blog posts created yet.'}
+          <div className="p-10 text-center text-sm text-slate-500 flex flex-col items-center gap-3">
+            <p>{searchQuery || statusFilter !== 'all' ? 'No posts matching filters.' : 'No blog posts in database yet.'}</p>
+            {!searchQuery && statusFilter === 'all' && (
+              <Button
+                onClick={seedDatabase}
+                disabled={seeding}
+                className="mt-2 bg-[#FF4D00] text-white hover:bg-[#e04400] text-xs font-semibold gap-1.5"
+              >
+                {seeding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                Import 4 Default Blog Posts & Portfolios into DB
+              </Button>
+            )}
           </div>
         ) : (
           <div className="divide-y divide-slate-100">

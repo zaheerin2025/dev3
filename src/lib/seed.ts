@@ -58,47 +58,69 @@ const DEFAULT_PORTFOLIO_ITEMS = [
 ];
 
 /**
- * Auto-seed initial blog posts and portfolio items if the database tables are empty.
- * Safe to call on any API load — runs only when counts are 0.
+ * Auto-seed initial blog posts and portfolio items into the database.
+ * Uses upsert so it never fails on duplicate constraints.
+ * Set `force: true` to seed missing items even if table is non-empty.
  */
-export async function seedDefaultData(): Promise<void> {
+export async function seedDefaultData(force = false): Promise<{ postsSeeded: number; portfoliosSeeded: number }> {
+  let postsSeeded = 0;
+  let portfoliosSeeded = 0;
   try {
-    // 1. Seed blog posts if Post table is empty
-    const postCount = await db.post.count();
-    if (postCount === 0) {
-      console.log('[seed] Seeding 4 default blog posts into DB...');
+    const postCount = await db.post.count().catch(() => 0);
+    if (force || postCount === 0) {
+      console.log('[seed] Seeding default blog posts into DB...');
       for (const p of blogPosts) {
-        await db.post.create({
-          data: {
-            slug: p.slug,
-            title: p.title,
-            excerpt: p.excerpt,
-            category: p.category,
-            image: null,
-            authorName: p.authorId === 'alex-morgan' ? 'Alex Morgan' : p.authorId === 'priya-sharma' ? 'Priya Sharma' : 'Sofia Alvarez',
-            authorRole: p.authorId === 'alex-morgan' ? 'Lead Web Architect' : p.authorId === 'priya-sharma' ? 'Senior Full-Stack Engineer' : 'Head of E-commerce',
-            content: formatPostContent(p),
-            readTime: parseInt(p.readTime) || 5,
-            published: true,
-            createdAt: new Date(p.date),
-          },
+        const authorName =
+          p.authorId === 'alex-morgan'
+            ? 'Alex Morgan'
+            : p.authorId === 'priya-sharma'
+            ? 'Priya Sharma'
+            : 'Sofia Alvarez';
+        const authorRole =
+          p.authorId === 'alex-morgan'
+            ? 'Lead Web Architect'
+            : p.authorId === 'priya-sharma'
+            ? 'Senior Full-Stack Engineer'
+            : 'Head of E-commerce';
+
+        const postData = {
+          slug: p.slug,
+          title: p.title,
+          excerpt: p.excerpt,
+          category: p.category,
+          image: null,
+          authorName,
+          authorRole,
+          content: formatPostContent(p),
+          readTime: parseInt(p.readTime) || 5,
+          published: true,
+          createdAt: new Date(p.date),
+        };
+
+        await db.post.upsert({
+          where: { slug: p.slug },
+          update: {},
+          create: postData,
         });
+        postsSeeded += 1;
       }
       console.log('[seed] Blog posts seeded successfully.');
     }
 
-    // 2. Seed portfolio items if Portfolio table is empty
-    const portfolioCount = await db.portfolio.count();
-    if (portfolioCount === 0) {
+    const portfolioCount = await db.portfolio.count().catch(() => 0);
+    if (force || portfolioCount === 0) {
       console.log('[seed] Seeding default portfolio items into DB...');
       for (const item of DEFAULT_PORTFOLIO_ITEMS) {
-        await db.portfolio.create({
-          data: item,
-        });
+        const existing = await db.portfolio.findFirst({ where: { url: item.url } }).catch(() => null);
+        if (!existing) {
+          await db.portfolio.create({ data: item });
+          portfoliosSeeded += 1;
+        }
       }
       console.log('[seed] Portfolio items seeded successfully.');
     }
   } catch (error) {
-    console.error('[seed] Failed to auto-seed default data:', error);
+    console.error('[seed] Failed to seed default data:', error);
   }
+  return { postsSeeded, portfoliosSeeded };
 }
