@@ -125,7 +125,7 @@ export function BlogView() {
   }, []);
 
   const listItems = React.useMemo<BlogListItem[]>(
-    () => (dbPosts ? dbPosts.map(dbPostToListItem) : blogPosts.map(staticPostToListItem)),
+    () => (dbPosts && dbPosts.length > 0 ? dbPosts.map(dbPostToListItem) : blogPosts.map(staticPostToListItem)),
     [dbPosts]
   );
 
