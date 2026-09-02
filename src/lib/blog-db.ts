@@ -51,6 +51,14 @@ function safeDate(d: string | undefined | null): string {
   return parsed.toISOString();
 }
 
+export function getAuthorIdFromName(name?: string | null, slug?: string | null): string {
+  const lower = (name || '').toLowerCase();
+  if (lower.includes('alex') || slug?.includes('website-cost')) return 'alex-morgan';
+  if (lower.includes('priya') || slug?.includes('wordpress') || slug?.includes('flutter')) return 'priya-sharma';
+  if (lower.includes('sofia') || slug?.includes('shopify')) return 'sofia-alvarez';
+  return 'alex-morgan';
+}
+
 export function staticPostToListItem(post: BlogPost): BlogListItem {
   return {
     slug: post.slug,
@@ -66,11 +74,13 @@ export function staticPostToListItem(post: BlogPost): BlogListItem {
 }
 
 export function dbPostToListItem(post: DbPost): BlogListItem {
+  const authorId = getAuthorIdFromName(post.authorName, post.slug);
   return {
     slug: post.slug,
     title: post.title,
     excerpt: post.excerpt,
     category: post.category,
+    authorId,
     authorName: post.authorName,
     authorRole: post.authorRole,
     date: safeDate(post.createdAt),

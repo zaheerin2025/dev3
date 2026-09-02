@@ -33,8 +33,12 @@ function staticPostFallback(slug?: string | null) {
 export async function GET(request: NextRequest) {
   const slug = request.nextUrl.searchParams.get('slug');
   try {
-    // Migrate legacy 2025 dates in Neon DB to current date
+    // Migrate legacy 2025 dates & author names in Neon DB to current standards
     await db.$executeRawUnsafe(`UPDATE "Post" SET "createdAt" = CURRENT_TIMESTAMP WHERE "createdAt" < '2026-01-01'`).catch(() => null);
+    await db.$executeRawUnsafe(`UPDATE "Post" SET "authorName" = 'Alex Morgan', "authorRole" = 'Lead Web Architect' WHERE "slug" = 'how-much-does-a-website-cost'`).catch(() => null);
+    await db.$executeRawUnsafe(`UPDATE "Post" SET "authorName" = 'Priya Sharma', "authorRole" = 'Senior Full-Stack Engineer' WHERE "slug" = 'custom-website-vs-wordpress'`).catch(() => null);
+    await db.$executeRawUnsafe(`UPDATE "Post" SET "authorName" = 'Sofia Alvarez', "authorRole" = 'Head of E-commerce' WHERE "slug" = 'shopify-vs-woocommerce'`).catch(() => null);
+    await db.$executeRawUnsafe(`UPDATE "Post" SET "authorName" = 'Priya Sharma', "authorRole" = 'Senior Full-Stack Engineer' WHERE "slug" = 'flutter-vs-react-native'`).catch(() => null);
 
     const posts = await db.post.findMany({
       where: { published: true, ...(slug ? { slug } : {}) },

@@ -17,6 +17,7 @@ import { blogPosts, getBlogPost, getService, getTeamMember } from '@/data';
 import {
   DB_POST_GRADIENT,
   fetchPublicDbPosts,
+  getAuthorIdFromName,
   parseDbSections,
   type DbPost,
 } from '@/lib/blog-db';
@@ -451,13 +452,18 @@ function DbPostArticle({ post }: { post: DbPost }) {
     () => sections.filter((section) => section.heading),
     [sections]
   );
+  const authorId = getAuthorIdFromName(post.authorName, post.slug);
+  const author = getTeamMember(authorId);
+  const name = author?.name ?? post.authorName;
+  const role = author?.role ?? post.authorRole;
   const initials =
-    post.authorName
+    author?.initials ??
+    (name
       .split(/\s+/)
       .map((word) => word[0] ?? '')
       .join('')
       .slice(0, 2)
-      .toUpperCase() || 'D3';
+      .toUpperCase() || 'D3');
 
   return (
     <>
@@ -481,14 +487,24 @@ function DbPostArticle({ post }: { post: DbPost }) {
           <p className="mt-4 text-xl leading-relaxed text-muted-foreground">{post.excerpt}</p>
           <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="flex items-center gap-2.5">
-              <Avatar className="h-10 w-10 ring-2 ring-gray-100">
-                <AvatarFallback className="bg-gray-100 text-sm font-bold text-gray-800">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
+              {author?.photo ? (
+                <Image
+                  src={author.photo}
+                  alt={`Portrait of ${name}`}
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-gray-100"
+                />
+              ) : (
+                <Avatar className="h-10 w-10 ring-2 ring-gray-100">
+                  <AvatarFallback className="bg-gray-100 text-sm font-bold text-gray-800">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+              )}
               <span className="text-base">
-                <span className="block font-semibold">{post.authorName}</span>
-                <span className="block text-sm text-muted-foreground">{post.authorRole}</span>
+                <span className="block font-semibold">{name}</span>
+                <span className="block text-sm text-muted-foreground">{role}</span>
               </span>
             </span>
             <span className="text-muted-foreground" aria-hidden="true">
@@ -587,16 +603,26 @@ function DbPostArticle({ post }: { post: DbPost }) {
         {/* Author box */}
         <Reveal className="mt-14">
           <div className="card-surface flex items-start gap-4 rounded-2xl p-6 sm:items-center">
-            <Avatar className="h-16 w-16 ring-2 ring-gray-100">
-              <AvatarFallback className="bg-gray-100 font-bold text-gray-800">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
+            {author?.photo ? (
+              <Image
+                src={author.photo}
+                alt={`Portrait of ${name}`}
+                width={64}
+                height={64}
+                className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-gray-100"
+              />
+            ) : (
+              <Avatar className="h-16 w-16 ring-2 ring-gray-100">
+                <AvatarFallback className="bg-gray-100 font-bold text-gray-800">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+            )}
             <div>
-              <h2 className="text-lg font-semibold">Written by {post.authorName}</h2>
-              <p className="text-base font-medium text-gray-800">{post.authorRole}</p>
+              <h2 className="text-lg font-semibold">Written by {name}</h2>
+              <p className="text-base font-medium text-gray-800">{role}</p>
               <p className="mt-1 text-base leading-relaxed text-muted-foreground">
-                Part of the Developers3 team, sharing practical notes from real client projects.
+                {author?.bio ?? 'Part of the Developers3 team, sharing practical notes from real client projects.'}
               </p>
             </div>
           </div>
