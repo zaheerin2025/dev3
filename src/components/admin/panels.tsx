@@ -189,9 +189,9 @@ export function OverviewPanel({ onUnauthorized }: { onUnauthorized: () => void }
         ]);
         if (cancelled) return;
         setData(leads);
-        setPostCount(posts.posts.filter((p) => p.published).length);
-        setPortfolioCount(portfolios.portfolios.length);
-        setSubscriberCount(subscribers.subscribers.length);
+        setPostCount(Array.isArray(posts?.posts) ? posts.posts.length : 0);
+        setPortfolioCount(Array.isArray(portfolios?.portfolios) ? portfolios.portfolios.length : 0);
+        setSubscriberCount(Array.isArray(subscribers?.subscribers) ? subscribers.subscribers.length : 0);
       } catch (error) {
         if (error instanceof Error && error.message === 'Unauthorized.') return onUnauthorized();
         if (!cancelled) setFailed(true);

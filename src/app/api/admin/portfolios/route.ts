@@ -58,8 +58,9 @@ export async function GET(request: NextRequest) {
     });
     return NextResponse.json({ ok: true, portfolios });
   } catch (error) {
-    console.error('[admin/portfolios] GET failed:', error);
-    return NextResponse.json({ ok: true, portfolios: [] });
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[admin/portfolios] GET failed:', msg);
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 }
 

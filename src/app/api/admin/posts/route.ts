@@ -52,8 +52,9 @@ export async function GET(request: NextRequest) {
     const posts = await db.post.findMany({ orderBy: { updatedAt: 'desc' } });
     return NextResponse.json({ ok: true, posts });
   } catch (error) {
-    console.error('[admin/posts] GET failed:', error);
-    return NextResponse.json({ ok: true, posts: [] });
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[admin/posts] GET failed:', msg);
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 }
 
